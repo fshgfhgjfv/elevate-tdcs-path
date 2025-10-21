@@ -3,7 +3,20 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import { Header } from "./components/Header";
+import { Footer } from "./components/Footer";
+import Home from "./pages/Home";
+import Courses from "./pages/Courses";
+import CourseDetail from "./pages/CourseDetail";
+import CourseContent from "./pages/CourseContent";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import MyProfile from "./pages/MyProfile";
+import VerifyCertificate from "./pages/VerifyCertificate";
+import CertificateDownload from "./pages/CertificateDownload";
+import AdvocateConstruction from "./pages/AdvocateConstruction";
+import ContactUs from "./pages/ContactUs";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -14,11 +27,23 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <Header />
         <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/" element={<Home />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/:id" element={<CourseDetail />} />
+          <Route path="/courses/:id/content" element={<CourseContent />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/my-profile" element={<MyProfile />} />
+          <Route path="/verify-certificate" element={<VerifyCertificate />} />
+          <Route path="/certificate-download" element={<CertificateDownload />} />
+          <Route path="/advocate-construction" element={<AdvocateConstruction />} />
+          <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
