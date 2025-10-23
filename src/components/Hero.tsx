@@ -15,10 +15,18 @@ const heroTexts = [
   "Happy TDCS student learning software engineering",
 ];
 
-export const Hero = () => {
+interface HeroProps {
+  showOnInnerPages?: boolean;
+}
+
+export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isCallbackOpen, setIsCallbackOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", phone: "" });
+
+  if (!showOnInnerPages) {
+    return null;
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {

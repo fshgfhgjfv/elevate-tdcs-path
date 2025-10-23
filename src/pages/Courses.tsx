@@ -2,6 +2,8 @@ import { useState } from "react";
 import { CourseCard } from "@/components/CourseCard";
 import { courses } from "@/data/courses";
 import { motion } from "framer-motion";
+import { HiringPartners } from "@/components/HiringPartners";
+import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
 
 const Courses = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -63,6 +65,12 @@ const Courses = () => {
           </div>
         )}
       </div>
+
+      {/* Hiring Partners Section */}
+      <HiringPartners />
+
+      {/* Recruiter Testimonial */}
+      <RecruiterTestimonial />
     </div>
   );
 };

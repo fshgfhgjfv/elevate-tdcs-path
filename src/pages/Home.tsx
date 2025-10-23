@@ -2,6 +2,9 @@ import { Hero } from "@/components/Hero";
 import { CourseCard } from "@/components/CourseCard";
 import { StatsCounter } from "@/components/StatsCounter";
 import { TestimonialCard } from "@/components/TestimonialCard";
+import { FeaturesSection } from "@/components/FeaturesSection";
+import { MentorsSection } from "@/components/MentorsSection";
+import { FoundersSection } from "@/components/FoundersSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
@@ -14,8 +17,11 @@ const Home = () => {
     <div className="min-h-screen">
       <Hero />
 
+      {/* Features Section */}
+      <FeaturesSection />
+
       {/* Featured Courses */}
-      <section className="py-16 bg-muted/20">
+      <section id="courses" className="py-16">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -47,8 +53,11 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Mentors Section */}
+      <MentorsSection />
+
       {/* Hiring Drives */}
-      <section className="py-16">
+      <section id="hiring-drives" className="py-16 bg-muted/20">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -103,7 +112,7 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-muted/20">
+      <section className="py-16">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -125,8 +134,11 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Founders Section */}
+      <FoundersSection />
+
       {/* Testimonials */}
-      <section className="py-16">
+      <section id="testimonials" className="py-16">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
