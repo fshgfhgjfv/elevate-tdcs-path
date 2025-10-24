@@ -1,0 +1,140 @@
+import { motion } from "framer-motion";
+import { Star } from "lucide-react";
+
+const testimonials = [
+  {
+    name: "Stuti Pandey",
+    role: "Software Engineer @Walmart",
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
+    quote: "TDCS transformed my career with their comprehensive training program.",
+  },
+  {
+    name: "Pradyot Verma",
+    role: "Software Developer @MakeMyTrip",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
+    quote: "From mechanical engineering to software development - TDCS made it possible!",
+  },
+  {
+    name: "Akash Ingoley",
+    role: "Software Developer @PayGlocal",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
+    quote: "It's never too late to switch careers. TDCS helped me transition to IT.",
+  },
+  {
+    name: "Kabita Mondal",
+    role: "Application Developer @Thoughtworks",
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
+    quote: "Despite low CGPA, TDCS helped me land my dream job through practical projects.",
+  },
+  {
+    name: "Meenakshi G",
+    role: "Software Engineer @Gainsight",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop",
+    quote: "The mock interviews prepared me perfectly for the real thing.",
+  },
+  {
+    name: "Abdullah Safwi",
+    role: "Software Developer @Maersk",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
+    quote: "TDCS provided the perfect structure and guidance to crack tech interviews.",
+  },
+  {
+    name: "Namrata Rathore",
+    role: "Software Developer @Searce",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop",
+    quote: "From Biotech to Software - TDCS made my career transition smooth and successful.",
+  },
+  {
+    name: "Sandeep Singh",
+    role: "Software Engineer @Innovaccer",
+    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&h=200&fit=crop",
+    quote: "Best investment in my career. The placement support is exceptional!",
+  },
+];
+
+// Duplicate for infinite scroll effect
+const duplicatedTestimonials = [...testimonials, ...testimonials];
+
+export const ScrollingTestimonials = () => {
+  return (
+    <section className="py-16 bg-gradient-to-br from-background via-muted/10 to-background overflow-hidden">
+      <div className="container mx-auto px-4 mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
+            Hear from Our Success Stories
+          </h2>
+          <p className="text-xl text-muted-foreground">
+            Join thousands who transformed their careers with TDCS
+          </p>
+        </motion.div>
+      </div>
+
+      {/* First Row - Scroll Left to Right */}
+      <div className="relative mb-8">
+        <div className="flex gap-6 animate-scroll-left">
+          {duplicatedTestimonials.map((testimonial, index) => (
+            <div
+              key={`left-${index}`}
+              className="flex-shrink-0 w-80 bg-card border rounded-xl p-6 shadow-glow hover:shadow-glow-lg transition-all duration-300"
+            >
+              <div className="flex items-start gap-4 mb-4">
+                <img
+                  src={testimonial.image}
+                  alt={testimonial.name}
+                  className="w-16 h-16 rounded-full object-cover ring-2 ring-primary/20"
+                  loading="lazy"
+                />
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg">{testimonial.name}</h3>
+                  <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                  <div className="flex gap-1 mt-2">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-primary text-primary" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <p className="text-sm leading-relaxed">{testimonial.quote}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Second Row - Scroll Right to Left */}
+      <div className="relative">
+        <div className="flex gap-6 animate-scroll-right">
+          {duplicatedTestimonials.map((testimonial, index) => (
+            <div
+              key={`right-${index}`}
+              className="flex-shrink-0 w-80 bg-card border rounded-xl p-6 shadow-glow hover:shadow-glow-lg transition-all duration-300"
+            >
+              <div className="flex items-start gap-4 mb-4">
+                <img
+                  src={testimonial.image}
+                  alt={testimonial.name}
+                  className="w-16 h-16 rounded-full object-cover ring-2 ring-primary/20"
+                  loading="lazy"
+                />
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg">{testimonial.name}</h3>
+                  <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                  <div className="flex gap-1 mt-2">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-primary text-primary" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <p className="text-sm leading-relaxed">{testimonial.quote}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};

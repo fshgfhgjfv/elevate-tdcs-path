@@ -5,6 +5,7 @@ import { TestimonialCard } from "@/components/TestimonialCard";
 import { FeaturesSection } from "@/components/FeaturesSection";
 import { MentorsSection } from "@/components/MentorsSection";
 import { FoundersSection } from "@/components/FoundersSection";
+import { ScrollingTestimonials } from "@/components/ScrollingTestimonials";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
@@ -137,7 +138,10 @@ const Home = () => {
       {/* Founders Section */}
       <FoundersSection />
 
-      {/* Testimonials */}
+      {/* Scrolling Testimonials */}
+      <ScrollingTestimonials />
+
+      {/* Testimonials Grid */}
       <section id="testimonials" className="py-16">
         <div className="container mx-auto px-4">
           <motion.div
