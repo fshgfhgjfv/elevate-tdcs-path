@@ -76,10 +76,14 @@ export const ScrollingTestimonials = () => {
 
       {/* First Row - Scroll Left to Right */}
       <div className="relative mb-8">
-        <div className="flex gap-6 animate-scroll-left">
+        <div className="flex gap-6 animate-scroll-left-fast">
           {duplicatedTestimonials.map((testimonial, index) => (
-            <div
+            <motion.div
               key={`left-${index}`}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05 }}
               className="flex-shrink-0 w-80 bg-card border rounded-xl p-6 shadow-glow hover:shadow-glow-lg transition-all duration-300"
             >
               <div className="flex items-start gap-4 mb-4">
@@ -100,17 +104,21 @@ export const ScrollingTestimonials = () => {
                 </div>
               </div>
               <p className="text-sm leading-relaxed">{testimonial.quote}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
 
       {/* Second Row - Scroll Right to Left */}
       <div className="relative">
-        <div className="flex gap-6 animate-scroll-right">
+        <div className="flex gap-6 animate-scroll-right-fast">
           {duplicatedTestimonials.map((testimonial, index) => (
-            <div
+            <motion.div
               key={`right-${index}`}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05 }}
               className="flex-shrink-0 w-80 bg-card border rounded-xl p-6 shadow-glow hover:shadow-glow-lg transition-all duration-300"
             >
               <div className="flex items-start gap-4 mb-4">
@@ -131,7 +139,7 @@ export const ScrollingTestimonials = () => {
                 </div>
               </div>
               <p className="text-sm leading-relaxed">{testimonial.quote}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

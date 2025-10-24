@@ -198,8 +198,18 @@
     animation: scroll-right 60s linear infinite;
   }
 
+  .animate-scroll-left-fast {
+    animation: scroll-left 30s linear infinite;
+  }
+
+  .animate-scroll-right-fast {
+    animation: scroll-right 30s linear infinite;
+  }
+
   .animate-scroll-left:hover,
-  .animate-scroll-right:hover {
+  .animate-scroll-right:hover,
+  .animate-scroll-left-fast:hover,
+  .animate-scroll-right-fast:hover {
     animation-play-state: paused;
   }
 }
