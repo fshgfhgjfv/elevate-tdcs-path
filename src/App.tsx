@@ -19,6 +19,7 @@ import AdvocateConstruction from "./pages/AdvocateConstruction";
 import ContactUs from "./pages/ContactUs";
 import About from "./pages/About";
 import Services from "./pages/Services";
+import ServiceDetail from "./pages/ServiceDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/services/:serviceId" element={<ServiceDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />

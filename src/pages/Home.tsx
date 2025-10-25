@@ -7,6 +7,8 @@ import { MentorsSection } from "@/components/MentorsSection";
 import { FoundersSection } from "@/components/FoundersSection";
 import { ScrollingTestimonials } from "@/components/ScrollingTestimonials";
 import { HomeFAQ } from "@/components/HomeFAQ";
+import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
+import { ApplyBatchesSection } from "@/components/ApplyBatchesSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
@@ -260,6 +262,12 @@ const Home = () => {
 
       {/* FAQ Section */}
       <HomeFAQ />
+
+      {/* Recruiter Testimonial */}
+      <RecruiterTestimonial />
+
+      {/* Apply for Upcoming Batches */}
+      <ApplyBatchesSection />
     </div>
   );
 };
