@@ -9,6 +9,8 @@ import { ScrollingTestimonials } from "@/components/ScrollingTestimonials";
 import { HomeFAQ } from "@/components/HomeFAQ";
 import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
 import { ApplyBatchesSection } from "@/components/ApplyBatchesSection";
+import { CertificatesSection } from "@/components/CertificatesSection";
+import { RecognizedBy } from "@/components/RecognizedBy";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
@@ -23,6 +25,9 @@ const Home = () => {
 
       {/* Features Section */}
       <FeaturesSection />
+
+      {/* Recognized By */}
+      <RecognizedBy />
 
       {/* Featured Courses */}
       <section id="courses" className="py-16">
@@ -170,59 +175,7 @@ const Home = () => {
       </section>
 
       {/* Certificates */}
-      <section className="py-16 bg-muted/20">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
-              Our Certificates
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Industry-recognized certificates to boost your career
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {[1, 2, 3].map((i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                whileHover={{ scale: 1.05 }}
-              >
-                <Card className="shadow-glow hover:shadow-glow-lg transition-all">
-                  <CardContent className="p-6">
-                    <div className="aspect-[3/4] bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg mb-4 flex items-center justify-center">
-                      <Award className="w-16 h-16 text-primary" />
-                    </div>
-                    <div className="text-center">
-                      <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-sm font-semibold rounded-full mb-2">
-                        ✓ Verified
-                      </span>
-                      <p className="text-sm text-muted-foreground">
-                        Professional Certificate {i}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link to="/courses">
-              <Button variant="gradient" size="lg">
-                Earn Your Certificate Today
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CertificatesSection />
 
       {/* Tools & Technologies */}
       <section className="py-16">

@@ -2,11 +2,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
+import { Download } from "lucide-react";
+import { DownloadBrochureModal } from "./DownloadBrochureModal";
 
 const heroTexts = [
   "Happy TDCS student learning coding",
@@ -21,8 +18,7 @@ interface HeroProps {
 
 export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
-  const [isCallbackOpen, setIsCallbackOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: "", phone: "" });
+  const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
 
   if (!showOnInnerPages) {
     return null;
@@ -35,13 +31,6 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleCallbackSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Callback request:", formData);
-    toast.success("We'll call you soon!");
-    setIsCallbackOpen(false);
-    setFormData({ name: "", phone: "" });
-  };
 
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
@@ -96,9 +85,10 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
               variant="outline"
               size="lg"
               className="text-lg px-8 py-6 w-full sm:w-auto border-2"
-              onClick={() => setIsCallbackOpen(true)}
+              onClick={() => setIsBrochureModalOpen(true)}
             >
-              Request Callback
+              <Download className="mr-2 h-5 w-5" />
+              Download Brochure
             </Button>
           </div>
 
@@ -122,38 +112,11 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         </motion.div>
       </div>
 
-      {/* Callback Modal */}
-      <Dialog open={isCallbackOpen} onOpenChange={setIsCallbackOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Request a Callback</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleCallbackSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="phone">Phone</Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                required
-              />
-            </div>
-            <Button type="submit" variant="gradient" className="w-full">
-              Submit
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
+      {/* Download Brochure Modal */}
+      <DownloadBrochureModal 
+        isOpen={isBrochureModalOpen} 
+        onClose={() => setIsBrochureModalOpen(false)} 
+      />
     </section>
   );
 };

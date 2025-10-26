@@ -20,6 +20,9 @@ import ContactUs from "./pages/ContactUs";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
+import Gallery from "./pages/Gallery";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,8 +49,11 @@ const App = () => (
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
-          <Route path="/services/:serviceId" element={<ServiceDetail />} />
-          <Route path="*" element={<NotFound />} />
+            <Route path="/services/:serviceId" element={<ServiceDetail />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />
       </BrowserRouter>

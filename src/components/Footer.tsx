@@ -25,9 +25,14 @@ export const Footer = () => {
   const quickLinks = [
     { name: "Home", path: "/" },
     { name: "Courses", path: "/courses" },
-    { name: "About", path: "/about" },
+    { name: "Hiring Drives", path: "/#hiring-drives" },
+    { name: "Gallery", path: "/gallery" },
+    { name: "Services", path: "/services" },
     { name: "Contact", path: "/contact-us" },
+    { name: "About", path: "/about" },
     { name: "Verify Certificate", path: "/verify-certificate" },
+    { name: "Terms and Conditions", path: "/terms" },
+    { name: "Privacy Policy", path: "/privacy" },
   ];
 
   return (
