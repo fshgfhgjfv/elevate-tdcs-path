@@ -2,7 +2,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { BookOpen, GraduationCap, Briefcase } from "lucide-react";
+import { BookOpen, GraduationCap, Briefcase, ChevronDown } from "lucide-react";
+
+// The required custom gradient class for consistency
+const GRADIENT_CLASS = "text-transparent bg-clip-text bg-gradient-to-r from-[#FF9A3C] via-[#FF50B3] to-[#8C53FF]";
 
 const faqData = {
   courses: [
@@ -64,6 +67,7 @@ const faqData = {
     },
     {
       question: "What companies hire from TDCS?",
+      question: "What companies hire from TDCS?",
       answer: "Our hiring partners include Walmart, MakeMyTrip, Thoughtworks, PayGlocal, Innovaccer, Gainsight, and 500+ other leading tech companies.",
     },
     {
@@ -75,6 +79,31 @@ const faqData = {
 
 type FAQCategory = keyof typeof faqData;
 
+// Framer Motion Variants for Staggered List
+const faqListVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      when: "beforeChildren",
+      staggerChildren: 0.08, // Subtle stagger effect
+    },
+  },
+};
+
+const faqItemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      damping: 20,
+      stiffness: 150,
+    },
+  },
+};
+
 export const HomeFAQ = () => {
   const [activeCategory, setActiveCategory] = useState<FAQCategory>("courses");
 
@@ -85,75 +114,99 @@ export const HomeFAQ = () => {
   ];
 
   return (
-    <section className="py-16 bg-muted/20">
+    <section className="py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-500">
       <div className="container mx-auto px-4">
+        {/* Header Animation */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
-            Frequently Asked Questions
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-4">
+            <span className={GRADIENT_CLASS}>Frequently Asked Questions</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Get answers to common questions about our courses, learning experience, and placements
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto dark:text-gray-400">
+            Get answers to common questions about our programs, learning experience, and placement success.
           </p>
         </motion.div>
 
         <div className="grid md:grid-cols-[250px_1fr] gap-8 max-w-6xl mx-auto">
+          
           {/* Category Sidebar */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-3"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.7 }}
+            className="space-y-4 p-2 rounded-xl bg-white dark:bg-gray-800 shadow-xl md:shadow-none"
           >
             {categories.map((category) => {
               const Icon = category.icon;
+              const isActive = activeCategory === category.key;
+
               return (
-                <Button
-                  key={category.key}
-                  variant={activeCategory === category.key ? "gradient" : "outline"}
-                  className="w-full justify-start text-left h-auto py-4 px-6 transition-all duration-300"
-                  onClick={() => setActiveCategory(category.key)}
-                  role="tab"
-                  aria-selected={activeCategory === category.key}
-                  aria-controls={`faq-panel-${category.key}`}
+                <motion.div 
+                    key={category.key}
+                    whileHover={{ scale: 1.02, x: 5, boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)" }}
+                    whileTap={{ scale: 0.98 }}
+                    className="rounded-lg overflow-hidden transition-all duration-300"
                 >
-                  <Icon className="mr-3 h-5 w-5" />
-                  <span className="font-semibold">{category.label}</span>
-                </Button>
+                    <Button
+                      variant={isActive ? "gradient" : "outline"}
+                      className={`w-full justify-start text-left h-auto py-4 px-6 transition-all duration-300 ${
+                        isActive ? 'text-white shadow-lg' : 'hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200'
+                      }`}
+                      onClick={() => setActiveCategory(category.key)}
+                      role="tab"
+                      aria-selected={isActive}
+                      aria-controls={`faq-panel-${category.key}`}
+                    >
+                      <Icon className="mr-3 h-5 w-5" />
+                      <span className="font-semibold">{category.label}</span>
+                    </Button>
+                </motion.div>
               );
             })}
           </motion.div>
 
-          {/* FAQ Content */}
+          {/* FAQ Content Area with AnimatePresence */}
           <AnimatePresence mode="wait">
             <motion.div
               key={activeCategory}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
+              className="space-y-4"
+              // Apply list staggering variants here
+              variants={faqListVariants}
+              initial="hidden"
+              animate="visible"
+              exit={{ opacity: 0, x: -20, transition: { duration: 0.3 } }}
               id={`faq-panel-${activeCategory}`}
               role="tabpanel"
               aria-labelledby={`tab-${activeCategory}`}
             >
-              <Accordion type="single" collapsible className="space-y-4">
+              <Accordion type="single" collapsible className="w-full">
                 {faqData[activeCategory].map((faq, index) => (
-                  <AccordionItem
+                  // Wrap AccordionItem inside motion.div for individual item animation
+                  <motion.div
                     key={index}
-                    value={`item-${index}`}
-                    className="border rounded-lg px-6 bg-card shadow-sm hover:shadow-glow transition-shadow duration-300"
+                    variants={faqItemVariants}
+                    whileHover={{ scale: 1.01, boxShadow: "0 6px 15px rgba(0, 0, 0, 0.1)" }}
+                    className="border-none rounded-xl overflow-hidden shadow-md transition-shadow duration-300"
                   >
-                    <AccordionTrigger className="text-left py-5 hover:no-underline">
-                      <span className="font-semibold pr-4">{faq.question}</span>
-                    </AccordionTrigger>
-                    <AccordionContent className="pb-5 text-muted-foreground leading-relaxed">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
+                    <AccordionItem
+                      value={`item-${index}`}
+                      className="border-none rounded-xl bg-white dark:bg-gray-800"
+                    >
+                      <AccordionTrigger className="text-left py-4 px-6 hover:no-underline text-lg font-medium">
+                        <span className="pr-4 dark:text-white">{faq.question}</span>
+                        <ChevronDown className="h-5 w-5 shrink-0 transition-transform duration-200" />
+                      </AccordionTrigger>
+                      <AccordionContent className="pb-5 px-6 text-muted-foreground leading-relaxed dark:text-gray-400 border-t border-gray-100 dark:border-gray-700">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </motion.div>
                 ))}
               </Accordion>
             </motion.div>
