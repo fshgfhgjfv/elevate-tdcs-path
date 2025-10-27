@@ -1,118 +1,167 @@
-import { useState, useEffect } from "react";
+import { useState } from "react"; // Re-added useState
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Download } from "lucide-react";
-import { DownloadBrochureModal } from "./DownloadBrochureModal";
-
-const heroTexts = [
-  "Happy TDCS student learning coding",
-  "Happy TDCS student learning full stack development",
-  "Happy TDCS student learning data analytics",
-  "Happy TDCS student learning software engineering",
-];
+import { DownloadBrochureModal } from "./DownloadBrochureModal"; // Assuming this component exists
 
 interface HeroProps {
   showOnInnerPages?: boolean;
 }
 
 export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
-  const [currentTextIndex, setCurrentTextIndex] = useState(0);
+  // Re-added state for the brochure modal
   const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
 
-  if (!showOnInnerPages) {
-    return null;
-  }
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTextIndex((prev) => (prev + 1) % heroTexts.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+      },
+    },
+  };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
-      {/* Animated Background Text */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
-        <motion.h1
-          key={currentTextIndex}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 1 }}
-          className="text-4xl md:text-6xl lg:text-8xl font-bold text-center px-4"
-        >
-          {heroTexts[currentTextIndex]}
-        </motion.h1>
-      </div>
-
-      {/* Main Content */}
+    <section className="relative min-h-[90vh] flex items-center pt-24 pb-16 md:pt-32 lg:pt-40">
       <div className="container mx-auto px-4 z-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center max-w-4xl mx-auto"
+          className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-16 items-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
         >
-          <motion.div
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="inline-block mb-6"
-          >
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold gradient-text mb-2">
-              35k+ Happy Students
-            </h1>
-          </motion.div>
+          {/* Left Column: Main Text, Buttons, and Badges */}
+          <div className="lg:col-span-2 space-y-6">
+            <motion.div variants={itemVariants} className="flex items-center space-x-3">
+              {/* Avatars */}
+              <div className="flex -space-x-2 overflow-hidden">
+                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white" src="https://images.unsplash.com/photo-1491528323818-fdd1faba65f8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Student avatar" />
+                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Student avatar" />
+                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Student avatar" />
+              </div>
+              <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                35k+ Happy Students
+              </p>
+            </motion.div>
 
-          <h2 className="text-2xl md:text-4xl font-semibold mb-6">
-            The Training and Placement platform for your career
-          </h2>
+            <motion.h1 variants={itemVariants} className="text-4xl md:text-6xl font-extrabold leading-tight">
+              The <span className="text-blue-600 dark:text-blue-400">Training</span> and Placement platform for your <span className="text-blue-600 dark:text-blue-400">career</span>
+            </motion.h1>
 
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Get job-ready with expert-led courses or participate in our free hiring drives.
-          </p>
+            <motion.p variants={itemVariants} className="text-lg md:text-xl text-muted-foreground max-w-xl">
+              Get job-ready with expert-led courses or participate in our free hiring drives.
+            </motion.p>
+            
+            {/* BUTTONS SECTION - Re-integrated */}
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-start mb-6">
+                <Link to="/courses">
+                    <Button variant="gradient" size="lg" className="text-lg px-8 py-6 w-full sm:w-auto">
+                        View Courses
+                    </Button>
+                </Link>
+                {/* Download Brochure Button with original logic */}
+                <Button
+                    variant="outline"
+                    size="lg"
+                    className="text-lg px-8 py-6 w-full sm:w-auto border-2"
+                    onClick={() => setIsBrochureModalOpen(true)} // Original onClick logic
+                >
+                    <Download className="mr-2 h-5 w-5" />
+                    Download Brochure
+                </Button>
+            </motion.div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Link to="/courses">
-              <Button variant="gradient" size="lg" className="text-lg px-8 py-6 w-full sm:w-auto">
-                View Courses
-              </Button>
-            </Link>
-            <Button
-              variant="outline"
-              size="lg"
-              className="text-lg px-8 py-6 w-full sm:w-auto border-2"
-              onClick={() => setIsBrochureModalOpen(true)}
+            {/* Recognition Badges - Kept from the two-column layout's look */}
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="flex flex-wrap gap-8 items-center pt-4"
             >
-              <Download className="mr-2 h-5 w-5" />
-              Download Brochure
-            </Button>
+                {/* LinkedIn Top Converted - Placeholder */}
+                <div className="w-24 h-10 bg-white dark:bg-gray-800 flex items-center justify-center rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                    <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
+                    <span className="text-blue-700 font-extrabold text-base">in</span> LinkedIn<br/>TOP
+                    </span>
+                </div>
+                {/* Y Combinator - Placeholder */}
+                <div className="w-32 h-10 bg-white dark:bg-gray-800 flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+                    <span className="text-2xl font-bold text-black dark:text-white">Y</span>
+                    <span className="ml-1 text-sm text-gray-600 dark:text-gray-400">Combinator</span>
+                </div>
+                {/* By IIT Delhi Alumni - Placeholder */}
+                <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                    <span className="text-lg font-serif mr-1">💡</span> By IIT Delhi Alumni
+                </div>
+            </motion.div>
           </div>
 
-          {/* Recognition Badges */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            className="flex flex-wrap justify-center gap-6 items-center"
-          >
-            <div className="text-sm text-muted-foreground">Recognized by:</div>
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="px-6 py-3 bg-card rounded-lg shadow-glow border"
-              >
-                <span className="font-semibold gradient-text">AccioJob Partner {i}</span>
-              </div>
-            ))}
-          </motion.div>
+          {/* Right Column: Courses and Jobs Cards (with images and zoom) */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Courses Card */}
+            <motion.div
+              variants={itemVariants}
+              className="relative p-6 md:p-8 rounded-xl shadow-lg text-white overflow-hidden" 
+              style={{ background: 'linear-gradient(135deg, #4F46E5, #3B82F6)' }}
+            >
+              <h3 className="text-2xl font-bold mb-3">COURSES</h3>
+              <p className="mb-6 z-10 relative">Industry Ready Training to get you placed!</p>
+              <Link to="/courses">
+                <Button variant="outline" size="lg" className="text-lg px-6 bg-white text-blue-600 hover:bg-gray-100 z-10 relative">
+                  View Courses ↗
+                </Button>
+              </Link>
+              <motion.img
+                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiFV4OWyD-dpHkkEFbAGYgoOAim674uDerzeBvx37rp3dl6VHIsIkbWtVaaoR4GWqdA-MW0UJpRs9VBkZO-mIeHQMrSCOoamOXHXoGopFkAVHRdo3sdIKbuameNOQCAcCWlm8EkgqTNKZ0nn1tT-Ov7QuLmGYVG_xIBVCTG454m9rfwSRdtlBWGAuY4DSjc/s539/WhatsApp_Image_2025-10-26_at_15.56.54_d2e7dc94-removebg-preview.png"
+                alt="Student for Courses"
+                className="absolute -right-8 -bottom-8 h-48 w-48 md:h-64 md:w-64 object-cover"
+                whileHover={{ scale: 1.1 }}
+                whileFocus={{ scale: 1.1 }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.div>
+
+            {/* Jobs Card */}
+            <motion.div
+              variants={itemVariants}
+              className="relative p-6 md:p-8 rounded-xl shadow-lg text-white overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, #A855F7, #EC4899)' }}
+            >
+              <h3 className="text-2xl font-bold mb-3">JOBS</h3>
+              <p className="mb-6 z-10 relative">If you're skilled, get hired directly with our FREE verified hiring drives!</p>
+              <Link to="/hiring-drives">
+                <Button variant="outline" size="lg" className="text-lg px-6 bg-white text-purple-600 hover:bg-gray-100 z-10 relative">
+                  View Hiring Drives ↗
+                </Button>
+              </Link>
+              <motion.img
+                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQ0tEjYMM5XfgAEUIFghZDgQ4qlL_i_RB2GbVyMg_xapb65wtrHWPKPOVDc2XnlAb3SurAPLjxcwTj-0v0ZtYJtoNOW8KKw69-323EdcSAM1v2sa8Vib4hMYUwNi8CE3vDP60ABkr__xPG3PXGW2On3wFSQ2J4pNZKxnBdik0U1ki5IltqyhKi5xTrjRB7/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png"
+                alt="Student for Jobs"
+                className="absolute -right-8 -bottom-8 h-48 w-48 md:h-64 md:w-64 object-cover"
+                whileHover={{ scale: 1.1 }}
+                whileFocus={{ scale: 1.1 }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.div>
+          </div>
         </motion.div>
       </div>
 
-      {/* Download Brochure Modal */}
+      {/* Download Brochure Modal - Re-integrated */}
       <DownloadBrochureModal 
         isOpen={isBrochureModalOpen} 
         onClose={() => setIsBrochureModalOpen(false)} 
