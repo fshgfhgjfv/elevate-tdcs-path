@@ -7,6 +7,21 @@ import swag2 from "@/assets/gallery/swag2.jpg";
 import swag3 from "@/assets/gallery/swag3.jpg";
 import swag4 from "@/assets/gallery/swag4.jpg";
 import swag5 from "@/assets/gallery/swag5.jpg";
+import swag6 from "@/assets/gallery/swag6.jpg";
+import swag7 from "@/assets/gallery/swag7.jpg";
+import swag8 from "@/assets/gallery/swag8.jpg";
+import team1 from "@/assets/gallery/team1.jpg";
+import office1 from "@/assets/gallery/office1.jpg";
+import office2 from "@/assets/gallery/office2.jpg";
+import office3 from "@/assets/gallery/office3.jpg";
+import office4 from "@/assets/gallery/office4.jpg";
+import office5 from "@/assets/gallery/office5.jpg";
+import idcard1 from "@/assets/gallery/idcard1.jpg";
+import tools1 from "@/assets/gallery/tools1.jpg";
+import tools2 from "@/assets/gallery/tools2.jpg";
+import tusharImg from "@/assets/founders/tushar-bhakta.jpg";
+import shivamImg from "@/assets/founders/shivam-shing.jpg";
+import dibyajitImg from "@/assets/founders/dibyajit-ghosh.jpg";
 
 const categories = [
   "All",
@@ -14,6 +29,7 @@ const categories = [
   "TOOLS",
   "Student ID Card",
   "TDCS Office Setup",
+  "Team",
   "Offline Center"
 ];
 
@@ -21,8 +37,23 @@ const galleryItems = [
   { id: 1, image: swag1, category: "SWAGS BOXES", title: "Student Swag Box 1" },
   { id: 2, image: swag2, category: "SWAGS BOXES", title: "Student Swag Box 2" },
   { id: 3, image: swag3, category: "SWAGS BOXES", title: "Student Swag Box 3" },
-  { id: 4, image: swag4, category: "TOOLS", title: "Development Tools" },
-  { id: 5, image: swag5, category: "SWAGS BOXES", title: "Course Materials" },
+  { id: 4, image: swag4, category: "SWAGS BOXES", title: "Course Materials Box" },
+  { id: 5, image: swag5, category: "SWAGS BOXES", title: "Welcome Kit" },
+  { id: 6, image: swag6, category: "SWAGS BOXES", title: "Training Materials" },
+  { id: 7, image: swag7, category: "SWAGS BOXES", title: "Student Resources Pack" },
+  { id: 8, image: swag8, category: "SWAGS BOXES", title: "Learning Essentials" },
+  { id: 9, image: tools1, category: "TOOLS", title: "Development Tools & Equipment" },
+  { id: 10, image: tools2, category: "TOOLS", title: "Lab Equipment" },
+  { id: 11, image: idcard1, category: "Student ID Card", title: "Official Student ID Card" },
+  { id: 12, image: office1, category: "TDCS Office Setup", title: "Main Office Area" },
+  { id: 13, image: office2, category: "TDCS Office Setup", title: "Training Room" },
+  { id: 14, image: office3, category: "TDCS Office Setup", title: "Workspace 1" },
+  { id: 15, image: office4, category: "TDCS Office Setup", title: "Workspace 2" },
+  { id: 16, image: office5, category: "TDCS Office Setup", title: "Conference Room" },
+  { id: 17, image: team1, category: "Team", title: "TDCS Team" },
+  { id: 18, image: tusharImg, category: "Team", title: "Tushar Bhakta - CMO" },
+  { id: 19, image: shivamImg, category: "Team", title: "Shivam Shing - COO" },
+  { id: 20, image: dibyajitImg, category: "Team", title: "Dibyajit Ghosh - Founder & CEO" },
 ];
 
 export default function Gallery() {
