@@ -23,7 +23,7 @@ export const Footer = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Split the links into two logical groups: Company/Navigation and Legal/Support
+  // Links are split into two logical groups
   const companyLinks = [
     { name: "Home", path: "/" },
     { name: "Courses", path: "/courses" },
@@ -42,12 +42,12 @@ export const Footer = () => {
   return (
     <footer className="bg-muted/30 dark:bg-gray-900 border-t mt-20 transition-colors duration-500">
       <div className="container mx-auto px-4 py-12">
+        {/* The grid is now 4 columns on large screens (lg:grid-cols-4) to fit all sections side-by-side */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           
-          {/* Logo & Typewriter */}
+          {/* Logo & Typewriter (1st Column on Desktop) */}
           <div className="col-span-1 md:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              {/* Added responsive sizing for the logo */}
               <img 
                 src={LOGO_URL} 
                 alt="TDCS Logo" 
@@ -77,7 +77,7 @@ export const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links Part 1: Company Links */}
+          {/* Quick Links Part 1: Company Links (2nd Column on Desktop) */}
           <div>
             <h4 className="font-semibold mb-4 text-lg">Company</h4>
             <ul className="space-y-3">
@@ -94,7 +94,7 @@ export const Footer = () => {
             </ul>
           </div>
           
-          {/* Quick Links Part 2: Legal & Support Links */}
+          {/* Quick Links Part 2: Legal & Support Links (3rd Column on Desktop) */}
           <div>
             <h4 className="font-semibold mb-4 text-lg">Legal & Support</h4>
             <ul className="space-y-3">
@@ -111,7 +111,7 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* Contact Info (4th Column on Desktop) */}
           <div>
             <h4 className="font-semibold mb-4 text-lg">Connect</h4>
             <ul className="space-y-4">
@@ -127,7 +127,6 @@ export const Footer = () => {
                   +91 123 456 7890
                 </a>
               </li>
-              {/* Optional: Add Address Field */}
               <li className="flex items-start gap-3 text-sm text-muted-foreground dark:text-gray-400">
                  {/* Lucide location pin icon */}
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary mt-0.5 flex-shrink-0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
