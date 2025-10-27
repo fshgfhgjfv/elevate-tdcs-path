@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { BookOpen, GraduationCap, Briefcase, ChevronDown } from "lucide-react";
+import { BookOpen, GraduationCap, Briefcase } from "lucide-react";
 
 // The required custom gradient class for consistency
 const GRADIENT_CLASS = "text-transparent bg-clip-text bg-gradient-to-r from-[#FF9A3C] via-[#FF50B3] to-[#8C53FF]";
@@ -91,15 +91,16 @@ const faqListVariants = {
   },
 };
 
+// Enhanced spring animation for item entrance
 const faqItemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       type: "spring",
-      damping: 20,
-      stiffness: 150,
+      damping: 18, // Reduced damping for a slightly bouncier feel
+      stiffness: 120, // Reduced stiffness for smoother motion
     },
   },
 };
@@ -112,6 +113,14 @@ export const HomeFAQ = () => {
     { key: "learning" as FAQCategory, label: "Learning", icon: GraduationCap },
     { key: "placements" as FAQCategory, label: "Placements", icon: Briefcase },
   ];
+
+  // Spring transition for the sidebar for a more advanced feel
+  const sidebarTransition = {
+    type: "spring",
+    damping: 15,
+    stiffness: 100,
+    duration: 0.7,
+  };
 
   return (
     <section className="py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-500">
@@ -134,12 +143,12 @@ export const HomeFAQ = () => {
 
         <div className="grid md:grid-cols-[250px_1fr] gap-8 max-w-6xl mx-auto">
           
-          {/* Category Sidebar */}
+          {/* Category Sidebar - Updated transition */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.7 }}
+            transition={sidebarTransition}
             className="space-y-4 p-2 rounded-xl bg-white dark:bg-gray-800 shadow-xl md:shadow-none"
           >
             {categories.map((category) => {
@@ -149,7 +158,8 @@ export const HomeFAQ = () => {
               return (
                 <motion.div 
                     key={category.key}
-                    whileHover={{ scale: 1.02, x: 5, boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)" }}
+                    // Adjusted hover effect for a stronger visual push
+                    whileHover={{ scale: 1.03, x: 7, boxShadow: "0 6px 15px rgba(0, 0, 0, 0.15)" }}
                     whileTap={{ scale: 0.98 }}
                     className="rounded-lg overflow-hidden transition-all duration-300"
                 >
@@ -180,7 +190,8 @@ export const HomeFAQ = () => {
               variants={faqListVariants}
               initial="hidden"
               animate="visible"
-              exit={{ opacity: 0, x: -20, transition: { duration: 0.3 } }}
+              // Exit animation for when the category is switched
+              exit={{ opacity: 0, x: 20, transition: { duration: 0.3 } }}
               id={`faq-panel-${activeCategory}`}
               role="tabpanel"
               aria-labelledby={`tab-${activeCategory}`}
@@ -191,16 +202,16 @@ export const HomeFAQ = () => {
                   <motion.div
                     key={index}
                     variants={faqItemVariants}
-                    whileHover={{ scale: 1.01, boxShadow: "0 6px 15px rgba(0, 0, 0, 0.1)" }}
+                    whileHover={{ scale: 1.01, boxShadow: "0 8px 20px rgba(0, 0, 0, 0.15)" }}
                     className="border-none rounded-xl overflow-hidden shadow-md transition-shadow duration-300"
                   >
                     <AccordionItem
                       value={`item-${index}`}
                       className="border-none rounded-xl bg-white dark:bg-gray-800"
                     >
-                      <AccordionTrigger className="text-left py-4 px-6 hover:no-underline text-lg font-medium">
+                      {/* FIX: Removed the manual ChevronDown icon. The component handles it. */}
+                      <AccordionTrigger className="text-left py-4 px-6 hover:no-underline text-lg font-medium [&[data-state=open]>svg]:rotate-180">
                         <span className="pr-4 dark:text-white">{faq.question}</span>
-                        <ChevronDown className="h-5 w-5 shrink-0 transition-transform duration-200" />
                       </AccordionTrigger>
                       <AccordionContent className="pb-5 px-6 text-muted-foreground leading-relaxed dark:text-gray-400 border-t border-gray-100 dark:border-gray-700">
                         {faq.answer}
