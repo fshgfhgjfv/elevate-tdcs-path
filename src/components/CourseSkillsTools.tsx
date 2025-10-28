@@ -3,132 +3,146 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 
 const skills = [
-  { name: "HTML", icon: "🌐" },
-  { name: "CSS", icon: "🎨" },
-  { name: "Node.js", icon: "🟢" },
-  { name: "MongoDB", icon: "🍃" },
-  { name: "Express.js", icon: "⚡" },
-  { name: "JavaScript", icon: "📜" },
-  { name: "Git", icon: "🔀" },
-  { name: "Python", icon: "🐍" },
+  { name: "HTML", img: "https://upload.wikimedia.org/wikipedia/commons/6/61/HTML5_logo_and_wordmark.svg" },
+  { name: "CSS", img: "https://upload.wikimedia.org/wikipedia/commons/d/d5/CSS3_logo_and_wordmark.svg" },
+  { name: "JavaScript", img: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png" },
+  { name: "Node.js", img: "https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg" },
+  { name: "MongoDB", img: "https://upload.wikimedia.org/wikipedia/en/4/45/MongoDB-Logo.svg" },
+  { name: "Express.js", img: "https://upload.wikimedia.org/wikipedia/commons/6/64/Expressjs.png" },
+  { name: "React", img: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" },
+  { name: "Python", img: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" },
 ];
 
 const tools = [
-  { name: "VS Code", icon: "💻" },
-  { name: "AWS", icon: "☁️" },
-  { name: "Github", icon: "🐙" },
-  { name: "Docker", icon: "🐳" },
-  { name: "Command Line", icon: "⌨️" },
+  { name: "VS Code", img: "https://code.visualstudio.com/assets/images/code-stable.png" },
+  { name: "GitHub", img: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" },
+  { name: "Docker", img: "https://www.docker.com/wp-content/uploads/2022/03/Moby-logo.png" },
+  { name: "AWS", img: "https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" },
+  { name: "Postman", img: "https://voyager.postman.com/logo/postman-logo-orange.svg" },
+  { name: "Command Line", img: "https://upload.wikimedia.org/wikipedia/commons/5/51/Windows_Terminal_logo.svg" },
 ];
 
 const careers = [
-  "Backend Developers",
-  "Frontend Developers",
-  "Full Stack Developers",
+  "Backend Developer",
+  "Frontend Developer",
+  "Full Stack Engineer",
+  "DevOps Engineer",
   "Mobile App Developer",
+  "Cloud Application Engineer",
 ];
 
 export const CourseSkillsTools = () => {
   return (
-    <section className="py-16 bg-muted/20" id="overview">
+    <section className="py-20 bg-gradient-to-b from-background via-muted/20 to-background" id="overview">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-14"
         >
-          <h2 className="text-4xl font-bold gradient-text mb-4">Course Overview</h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Future-Ready Full Stack Developer Skills Enhanced by GenAI – No Prior Coding Needed
+          <h2 className="text-4xl font-bold gradient-text mb-4">Skills, Tools & Career Outcomes</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Master Full Stack Development with Industry Tools and Career-Ready Projects — Powered by Real Technologies
           </p>
         </motion.div>
 
-        <Tabs defaultValue="skills" className="max-w-4xl mx-auto">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+        <Tabs defaultValue="skills" className="max-w-6xl mx-auto">
+          <TabsList className="grid w-full grid-cols-4 mb-10">
             <TabsTrigger value="skills">Skills</TabsTrigger>
             <TabsTrigger value="tools">Tools</TabsTrigger>
             <TabsTrigger value="projects">Projects</TabsTrigger>
             <TabsTrigger value="careers">Careers</TabsTrigger>
           </TabsList>
 
+          {/* --- SKILLS TAB --- */}
           <TabsContent value="skills">
-            <Card className="shadow-glow">
-              <CardContent className="p-8">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {skills.map((skill, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.05 }}
-                      className="flex flex-col items-center p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                    >
-                      <span className="text-4xl mb-2">{skill.icon}</span>
-                      <span className="text-sm font-medium">{skill.name}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+              {skills.map((skill, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  whileHover={{ scale: 1.05, rotate: 2 }}
+                  transition={{ type: "spring", stiffness: 200, delay: index * 0.05 }}
+                  viewport={{ once: true }}
+                  className="relative group bg-white/10 backdrop-blur-lg border border-white/10 p-6 rounded-2xl flex flex-col items-center shadow-glow hover:shadow-lg transition-all"
+                >
+                  <img src={skill.img} alt={skill.name} className="w-16 h-16 object-contain mb-3" />
+                  <span className="font-semibold">{skill.name}</span>
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 0.1 }}
+                  />
+                </motion.div>
+              ))}
+            </div>
           </TabsContent>
 
+          {/* --- TOOLS TAB --- */}
           <TabsContent value="tools">
-            <Card className="shadow-glow">
-              <CardContent className="p-8">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {tools.map((tool, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.05 }}
-                      className="flex flex-col items-center p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                    >
-                      <span className="text-4xl mb-2">{tool.icon}</span>
-                      <span className="text-sm font-medium">{tool.name}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+              {tools.map((tool, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.07 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.07 }}
+                  className="relative group bg-white/10 backdrop-blur-lg border border-white/10 p-6 rounded-2xl flex flex-col items-center shadow-glow hover:shadow-xl transition-all"
+                >
+                  <img src={tool.img} alt={tool.name} className="w-16 h-16 object-contain mb-3" />
+                  <span className="font-semibold">{tool.name}</span>
+                  <motion.div
+                    className="absolute inset-0 bg-primary/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-all"
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 0.1 }}
+                  />
+                </motion.div>
+              ))}
+            </div>
           </TabsContent>
 
+          {/* --- PROJECTS TAB --- */}
           <TabsContent value="projects">
-            <Card className="shadow-glow">
+            <Card className="shadow-glow bg-white/5 backdrop-blur-lg border border-white/10">
               <CardContent className="p-8 text-center">
-                <h3 className="text-2xl font-bold mb-4">10+ Real-World Projects</h3>
+                <h3 className="text-2xl font-bold mb-4 gradient-text">10+ Real-World Projects</h3>
                 <p className="text-muted-foreground mb-6">
-                  Build working projects to learn application, teamwork and hurdles of real production
+                  Apply every concept you learn with production-style projects integrating APIs, Databases, and UI Frameworks.
                 </p>
-                <img
-                  src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop"
-                  alt="Projects"
-                  className="w-full rounded-lg shadow-glow"
+                <motion.img
+                  src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=900&h=500&fit=crop"
+                  alt="Project Showcase"
+                  className="w-full rounded-2xl shadow-lg object-cover"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
                 />
               </CardContent>
             </Card>
           </TabsContent>
 
+          {/* --- CAREERS TAB --- */}
           <TabsContent value="careers">
-            <Card className="shadow-glow">
+            <Card className="shadow-glow bg-white/5 backdrop-blur-lg border border-white/10">
               <CardContent className="p-8">
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-6">
                   {careers.map((career, index) => (
                     <motion.div
                       key={index}
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
+                      whileHover={{ scale: 1.05 }}
                       viewport={{ once: true }}
                       transition={{ delay: index * 0.1 }}
-                      className="flex items-center gap-3 p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                      className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-muted/30 to-transparent hover:from-primary/10 transition-all"
                     >
-                      <div className="w-12 h-12 rounded-full gradient-primary flex items-center justify-center text-white font-bold">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white font-bold shadow-md">
                         {index + 1}
                       </div>
-                      <span className="font-semibold">{career}</span>
+                      <span className="font-semibold text-lg">{career}</span>
                     </motion.div>
                   ))}
                 </div>
