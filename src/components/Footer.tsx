@@ -19,7 +19,6 @@ export const Footer = () => {
         currentIndex = 0;
       }
     }, 150);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -30,20 +29,21 @@ export const Footer = () => {
     { name: "Services", path: "/services" },
     { name: "Contact", path: "/contact-us" },
     { name: "About", path: "/about" },
-    { name: "Verify Certificate", path: "/verify-certificate" },
-    { name: "Terms and Conditions", path: "/terms" },
-    { name: "Privacy Policy", path: "/privacy" },
   ];
 
-  // Split the links into two columns
-  const half = Math.ceil(quickLinks.length / 2);
-  const leftLinks = quickLinks.slice(0, half);
-  const rightLinks = quickLinks.slice(half);
+  const resources = [
+    { name: "Verify Certificate", path: "/verify-certificate" },
+    { name: "Careers", path: "/careers" },
+    { name: "Blog", path: "/blog" },
+    { name: "Partnerships", path: "/partnerships" },
+    { name: "Terms & Conditions", path: "/terms" },
+    { name: "Privacy Policy", path: "/privacy" },
+  ];
 
   return (
     <footer className="bg-muted/30 border-t mt-20 backdrop-blur-sm">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* --- Logo & About --- */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
@@ -74,39 +74,42 @@ export const Footer = () => {
             </div>
           </div>
 
-          {/* --- Quick Links (2 Columns) --- */}
-          <div className="col-span-1">
+          {/* --- Quick Links --- */}
+          <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
-            <div className="grid grid-cols-2 gap-x-8">
-              <ul className="space-y-2">
-                {leftLinks.map((link) => (
-                  <li key={link.path}>
-                    <Link
-                      to={link.path}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <ul className="space-y-2">
-                {rightLinks.map((link) => (
-                  <li key={link.path}>
-                    <Link
-                      to={link.path}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ul className="space-y-2">
+              {quickLinks.map((link) => (
+                <li key={link.path}>
+                  <Link
+                    to={link.path}
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* --- Resources / Explore --- */}
+          <div>
+            <h4 className="font-semibold mb-4">Resources</h4>
+            <ul className="space-y-2">
+              {resources.map((item) => (
+                <li key={item.path}>
+                  <Link
+                    to={item.path}
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* --- Contact Info --- */}
-          <div className="col-span-1">
+          <div>
             <h4 className="font-semibold mb-4">Contact</h4>
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-muted-foreground">
