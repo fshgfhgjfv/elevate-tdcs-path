@@ -9,7 +9,7 @@ const testimonials = [
     name: "Stuti Pandey",
     role: "Software Engineer @Walmart",
     preAccio: "B.Tech",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
+    image: "https://www.pinterest.com/pin/mens-ethnic--75294625012862570/",
     quote: "The whole training is designed keeping each and every student and their educational and professional past in mind. The batch managers keep track of our progress every month.",
     company: "https://upload.wikimedia.org/wikipedia/commons/c/ca/Walmart_logo.svg",
   },
