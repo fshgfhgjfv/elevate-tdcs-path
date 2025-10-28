@@ -32,7 +32,7 @@ const features = [
     description:
       "Work on live projects and build a portfolio that stands out to employers.",
     image:
-      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&h=400&fit=crop&q=80",
+      "https://www.google.com/url?sa=i&url=https%3A%2F%2Fsparshhealthcare.org%2Fhome-4%2F24-7-support_large_large%2F&psig=AOvVaw2ojVdVToJY4nYOU_hSGfxc&ust=1761769133385000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCJjgjM7bx5ADFQAAAAAdAAAAABBl",
   },
   {
     icon: MessageCircle,
