@@ -24,7 +24,7 @@ const features = [
     description:
       "Get placed in top companies with our proven placement assistance and hiring drives.",
     image:
-      "https://www.google.com/url?sa=i&url=https%3A%2F%2Fitnium.co.in%2FeepPlacement.html&psig=AOvVaw28dkFp0Ey9XEPwAci-YwuC&ust=1761769079940000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCKDhvbTbx5ADFQAAAAAdAAAAABAE",
+      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&h=400&fit=crop&q=80",
   },
   {
     icon: Code,
@@ -32,7 +32,7 @@ const features = [
     description:
       "Work on live projects and build a portfolio that stands out to employers.",
     image:
-      "https://www.google.com/url?sa=i&url=https%3A%2F%2Fsparshhealthcare.org%2Fhome-4%2F24-7-support_large_large%2F&psig=AOvVaw2ojVdVToJY4nYOU_hSGfxc&ust=1761769133385000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCJjgjM7bx5ADFQAAAAAdAAAAABBl",
+      "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&h=400&fit=crop&q=80",
   },
   {
     icon: MessageCircle,
@@ -63,6 +63,29 @@ const features = [
 export const FeaturesSection = () => {
   return (
     <section id="features" className="py-20 bg-gradient-to-b from-muted/20 to-muted/40 relative overflow-hidden">
+      {/* Floating Particles */}
+      {[...Array(10)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-2 h-2 bg-primary/30 rounded-full"
+          animate={{
+            y: [0, -30, 0],
+            opacity: [0.2, 1, 0.2],
+            x: [0, Math.sin(i) * 20, 0],
+          }}
+          transition={{
+            duration: 6 + i,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: i * 0.5,
+          }}
+          style={{
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+          }}
+        />
+      ))}
+
       {/* Subtle Animated Background */}
       <motion.div
         className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1920')] bg-cover bg-center opacity-10 blur-lg"
@@ -86,18 +109,19 @@ export const FeaturesSection = () => {
           </p>
         </motion.div>
 
+        {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              whileHover={{ y: -5, scale: 1.02 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
+              whileHover={{ y: -10, rotateY: 5 }}
+              transition={{ delay: index * 0.1, duration: 0.6 }}
               viewport={{ once: true }}
               className="relative"
             >
-              <Card className="overflow-hidden group rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 bg-background/60 backdrop-blur-md border border-border/50">
+              <Card className="overflow-hidden group rounded-2xl shadow-lg hover:shadow-glow transition-all duration-500 bg-background/60 backdrop-blur-md border border-border/50">
                 {/* Image Header */}
                 <div className="relative h-48 overflow-hidden">
                   <motion.img
@@ -105,10 +129,13 @@ export const FeaturesSection = () => {
                     alt={feature.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                  <div className="absolute bottom-3 left-3 p-2 bg-white/20 rounded-full backdrop-blur-sm">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <motion.div
+                    className="absolute bottom-3 left-3 p-2 bg-white/20 rounded-full backdrop-blur-sm"
+                    whileHover={{ scale: 1.1 }}
+                  >
                     <feature.icon className="w-6 h-6 text-white" />
-                  </div>
+                  </motion.div>
                 </div>
 
                 {/* Text Content */}
