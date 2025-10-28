@@ -24,7 +24,7 @@ const features = [
     description:
       "Get placed in top companies with our proven placement assistance and hiring drives.",
     image:
-      "https://images.unsplash.com/photo-1554774853-b414d2a2b3dd?w=600&h=400&fit=crop&q=80",
+      "https://www.google.com/url?sa=i&url=https%3A%2F%2Fitnium.co.in%2FeepPlacement.html&psig=AOvVaw28dkFp0Ey9XEPwAci-YwuC&ust=1761769079940000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCKDhvbTbx5ADFQAAAAAdAAAAABAE",
   },
   {
     icon: Code,
