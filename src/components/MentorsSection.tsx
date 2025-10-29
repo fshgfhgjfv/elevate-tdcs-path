@@ -21,7 +21,7 @@ const originalMentors = [
     experience: "10+ years",
   },
   {
-    name: "Arjun Patel",
+    name: "Shivam Singh",
     role: "Security Engineer",
     company: "Amazon",
     image: "https://blogger.googleusercontent.com/img/a/AVvXsEjvnQ-XVDQqDgH-7EK9Ly0kFPzidegGH5pEn8j3z2zekuxoY_mLkPGhgc70nTzGnY8KLuDuLCjrVSM3xvpQWX8miuzk9NwrFkzy3CztocerwCVTnka36nKHr4KT1pTTcVhhibfQQA9O7VChuL6GOUVEJ9E9_RuDi8yDUecEtd-qLtl0gSOLX2ZnZvUgtRpe", // New image
