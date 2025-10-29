@@ -96,7 +96,7 @@ const DownloadBrochureModal = ({ isOpen, onClose }) => {
                     </p>
                     
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label htmlFor="modal-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Name
                         </label>
                         <input
@@ -110,7 +110,7 @@ const DownloadBrochureModal = ({ isOpen, onClose }) => {
                     </div>
                     
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label htmlFor="modal-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Work Email
                         </label>
                         <input
@@ -149,7 +149,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     const rotateX = useTransform(y, [-100, 100], [10, -10]); // Map y movement to X rotation
     const rotateY = useTransform(x, [-100, 100], [-10, 10]); // Map x movement to Y rotation
 
-    // Card refs for 3D effect (UPDATED for new cards)
+    // Card refs for 3D effect
     const cardRefCEO = useRef(null);
     const cardRefCOO = useRef(null);
     const cardRefCMO = useRef(null);
@@ -254,13 +254,23 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             Get job-ready with expert-led courses or participate in our free hiring drives.
                         </motion.p>
                         
-                        {/* BUTTONS SECTION */}
+                        {/* BUTTONS SECTION - MODIFIED */}
                         <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-start mb-6">
+                            {/* 1. View Courses (Primary Gradient CTA) */}
                             <Link to="/courses">
                                 <Button variant="gradient" size="lg" className="text-lg px-8 py-6 w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow">
                                     View Courses
                                 </Button>
                             </Link>
+
+                            {/* 2. Book a Demo (New Secondary Solid CTA) */}
+                            <Link to="/demo">
+                                <Button size="lg" className="text-lg px-8 py-6 w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow bg-indigo-600 text-white hover:bg-indigo-700">
+                                    Book a Demo 📅
+                                </Button>
+                            </Link>
+                            
+                            {/* 3. Download Brochure (Outline Secondary CTA) */}
                             <Button
                                 variant="outline"
                                 size="lg"
@@ -272,31 +282,21 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             </Button>
                         </motion.div>
 
-                        {/* Recognition Badges - Simplified animation for responsiveness */}
+                        {/* Recognition Badges - REMOVED: LinkedIn, Y Combinator, and IIT Delhi Alumni badges */}
                         <motion.div 
                             variants={itemVariants}
                             className="flex flex-wrap gap-4 md:gap-8 items-center pt-4"
                         >
-                            {/* Badges... (content remains the same) */}
-                            <div className="w-24 h-10 bg-white dark:bg-gray-800 flex items-center justify-center rounded-lg shadow-md border border-gray-200 dark:border-gray-700 transition-transform hover:scale-[1.02]">
-                                <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
-                                    <span className="text-blue-700 font-extrabold text-base">in</span> LinkedIn<br/>TOP
-                                </span>
-                            </div>
-                            <div className="w-32 h-10 bg-white dark:bg-gray-800 flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded-lg shadow-md transition-transform hover:scale-[1.02]">
-                                <span className="text-2xl font-bold text-black dark:text-white">Y</span>
-                                <span className="ml-1 text-sm text-gray-600 dark:text-gray-400">Combinator</span>
-                            </div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
-                                <span className="text-lg font-serif mr-1">💡</span> By IIT Delhi Alumni
-                            </div>
+                            <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">
+                                Trusted by thousands of students globally.
+                            </p>
                         </motion.div>
                     </div>
 
-                    {/* Right Column: Tiered Leadership Cards (NEW STRUCTURE) */}
+                    {/* Right Column: Tiered Leadership Cards */}
                     <div className="lg:col-span-1 space-y-4 flex flex-col items-center lg:items-end">
                         
-                        {/* 1. CEO Card (Larger, Blue Gradient, Centered on mobile) */}
+                        {/* 1. CEO Card (Larger, Blue Gradient, Centered on mobile) - MODIFIED: Removed LinkedIn Button */}
                         <motion.div
                             ref={cardRefCEO}
                             variants={itemVariants}
@@ -313,9 +313,10 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                         >
                             <h3 className="text-3xl font-extrabold mb-2 z-10 relative">Rudra Narayan</h3>
                             <p className="text-lg mb-6 z-10 relative">CEO & Founder (IIT Delhi Alumnus)</p>
-                            <Button variant="outline" size="lg" className="text-base px-6 bg-white text-blue-700 hover:bg-gray-100 z-10 relative">
-                                Connect on LinkedIn 🔗
-                            </Button>
+                            {/* Removed: Connect on LinkedIn button */}
+                            <p className="text-sm font-semibold opacity-80 z-10 relative">
+                                Visionary leader driving future talent.
+                            </p>
                             
                             {/* CEO Image - Larger and positioned for impact */}
                             <motion.img
@@ -373,11 +374,11 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 <h3 className="text-xl font-bold mb-1 z-10 relative">Anil Sharma</h3>
                                 <p className="text-sm mb-4 z-10 relative">Chief Marketing Officer</p>
                                 <motion.img
-                                    src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh68HDmzQ4YTj9g9soRrkq-eHc9cAfbC03ZOXSClA19NofdsJ2lzm2A29d2qxG3xXSUfuEVl-sGEVnkokdgS6snQn86My-Bekn2MLrF135mZPHpwXfsLg1XxhFaClj1Uebgi6IcxeseCR6rvwc3vg6IgYUm8voolffwjQhcY4haMotxomzPVjfJm7ylnHdF/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png"
+                                    src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh68HDmzQ4YTj9g9soRrkq-eHc9cAfbC03ZOXSClA19NofdsJ2lzm2A29d2qxG3xXSUfuEVl-sGEVnkokdgS6snQn86My-Bekn2MLrF135mZPHpwXfsLg1XxhFaClj1Uebgi6IcxeseCR6rvwc3vg6IgYUm8voolffwjhcy4haMotxomzPVjfJm7ylnHdF/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png"
                                     alt="CMO"
                                     className="absolute -right-4 -bottom-4 h-24 w-24 object-cover opacity-70 z-0"
                                     style={{ x: useTransform(x, [-100, 100], [5, -5]), y: useTransform(y, [-100, 100], [5, -5]), transformStyle: "preserve-3d" }}
-                            />
+                                />
                             </motion.div>
                         </div>
                     </div>
@@ -385,11 +386,8 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
             </div>
 
             {/* Download Brochure Modal */}
-            {/* The component is now defined above and used here */}
             <DownloadBrochureModal 
                 isOpen={isBrochureModalOpen} 
                 onClose={() => setIsBrochureModalOpen(false)} 
             />
         </section>
-    );
-};
