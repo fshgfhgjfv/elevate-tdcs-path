@@ -21,7 +21,7 @@ const testimonials: Testimonial[] = [
     quoteText: "We hired rockstar developers from TDCS! The candidates are enjoying high ownership - having sound fundamentals and first principal thinking. The best part is they require minimal on-job training.",
     authorName: "Varghese Abraham",
     authorTitle: "Co-founder & CTO",
-    authorAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&q=80",
+    authorAvatar: "https://i.pinimg.com/736x/9b/6a/22/9b6a225bea5f4eca7affcd7f173f40e1.jpg",
     linkedinUrl: "#"
   },
   {
