@@ -11,7 +11,7 @@ const testimonials = [
   {
     name: "Pradyot Verma",
     role: "Software Developer @MakeMyTrip",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
+    image: "https://i.pinimg.com/736x/9b/6a/22/9b6a225bea5f4eca7affcd7f173f40e1.jpg",
     quote: "From mechanical engineering to software development - TDCS made it possible!",
   },
   {
