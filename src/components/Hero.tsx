@@ -3,19 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 // Import advanced hooks for 3D/parallax effects
 import { motion, useMotionValue, useTransform, useInView } from "framer-motion";
-import { Download, X } from "lucide-react"; 
-import type { RefObject } from "react"; // Explicitly import RefObject type for clarity
+import { Download, X } from "lucide-react"; // Added 'X' for the modal close button
 
 // --- Custom CSS to define and apply the new gradient ---
 const GRADIENT_CLASS = "text-transparent bg-clip-text bg-gradient-to-r from-[#FF9A3C] via-[#FF50B3] to-[#8C53FF]";
 
 interface HeroProps {
     showOnInnerPages?: boolean;
-}
-
-interface DownloadBrochureModalProps {
-    isOpen: boolean;
-    onClose: () => void;
 }
 
 // 1. Splitting the headline into words for individual animation
@@ -47,12 +41,11 @@ const wordItemVariants = {
 };
 
 // --- DownloadBrochureModal Component (INTEGRATED) ---
-// FIXED: Added explicit prop typing (DownloadBrochureModalProps)
-const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) => {
+const DownloadBrochureModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
     // Helper function to show a temporary notification instead of alert()
-    const alertMessage = (message: string, type: 'success' | 'error') => {
+    const alertMessage = (message, type) => {
         const alertBox = document.getElementById('global-alert-hero');
         if (alertBox) {
             alertBox.textContent = message;
@@ -60,14 +53,13 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
                 type === 'success' ? 'bg-green-600' : 'bg-red-600'
             }`;
             setTimeout(() => {
-                // Ensure opacity is properly animated out
                 alertBox.className = alertBox.className.replace('opacity-100', 'opacity-0');
             }, 3000);
         }
     };
 
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         // Simulate brochure download logic
         console.log("Form Submitted for brochure download.");
@@ -77,11 +69,11 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
 
     return (
         <div 
-            className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 transition-opacity duration-300 backdrop-blur-sm"
+            className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 transition-opacity duration-300"
             onClick={onClose}
         >
             <div 
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95"
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100"
                 onClick={e => e.stopPropagation()} // Prevent closing when clicking inside modal
             >
                 <div className="flex justify-between items-center p-5 border-b border-gray-200 dark:border-gray-700">
@@ -158,9 +150,9 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     const rotateY = useTransform(x, [-100, 100], [-10, 10]); // Map x movement to Y rotation
 
     // Card refs for 3D effect
-    const cardRefCEO: RefObject<HTMLDivElement> = useRef(null);
-    const cardRefCOO: RefObject<HTMLDivElement> = useRef(null);
-    const cardRefCMO: RefObject<HTMLDivElement> = useRef(null);
+    const cardRefCEO = useRef(null);
+    const cardRefCOO = useRef(null);
+    const cardRefCMO = useRef(null);
 
     // --- Original Animation variants (for sections other than headline) ---
     const containerVariants = {
@@ -185,7 +177,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     };
 
     // Card mouse move handler for 3D effect
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, cardRef: RefObject<HTMLDivElement>) => {
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, cardRef: React.RefObject<HTMLDivElement>) => {
         if (!cardRef.current) return;
         const rect = cardRef.current.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
@@ -258,15 +250,15 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             ))}
                         </motion.h1>
 
-                        <motion.p variants={itemVariants} className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-xl">
+                        <motion.p variants={itemVariants} className="text-lg md:text-xl text-muted-foreground max-w-xl">
                             Get job-ready with expert-led courses or participate in our free hiring drives.
                         </motion.p>
                         
-                        {/* BUTTONS SECTION */}
+                        {/* BUTTONS SECTION - MODIFIED */}
                         <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-start mb-6">
-                            {/* 1. View Courses (Primary Gradient CTA) - Assuming 'variant="gradient"' is defined in Button component */}
+                            {/* 1. View Courses (Primary Gradient CTA) */}
                             <Link to="/courses">
-                                <Button size="lg" className="text-lg px-8 py-6 w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700">
+                                <Button variant="gradient" size="lg" className="text-lg px-8 py-6 w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow">
                                     View Courses
                                 </Button>
                             </Link>
@@ -290,7 +282,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             </Button>
                         </motion.div>
 
-                        {/* Recognition Badges */}
+                        {/* Recognition Badges - REMOVED: LinkedIn, Y Combinator, and IIT Delhi Alumni badges */}
                         <motion.div 
                             variants={itemVariants}
                             className="flex flex-wrap gap-4 md:gap-8 items-center pt-4"
@@ -330,14 +322,9 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             <motion.img
                                 // Placeholder image for CEO
                                 src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhQ9heh07dWNTxnm6dhyphenhyphen2rzfxjmA_xS3UXPh3sBCY_B2ywNCfyr8QXWKLsur3PJKzLo-pUsoGmIfTmGl8m7cGmUezdk_RvStMnzxjIstX1S-V6gc2PrG8WkudchJv_c0LuVu0xbO7mUnWh5mWZHMe9THz3dwqCLTN0-2bAoI0k_rynUr6vk2xDdSKi0bM-/s539/WhatsApp_Image_2025-10-26_at_15.56.54_d2e7dc94-removebg-preview.png" 
-                                alt="Rudra Narayan"
-                                // Ensure image styles match the updated variable usage
+                                alt="Dibyajit Ghosh"
                                 className="absolute -right-4 -bottom-4 h-56 w-56 md:h-72 md:w-72 object-cover opacity-80 z-0"
-                                style={{ 
-                                    x: useTransform(x, [-100, 100], [10, -10]), 
-                                    y: useTransform(y, [-100, 100], [10, -10]), 
-                                    transformStyle: "preserve-3d" 
-                                }}
+                                style={{ x: useTransform(x, [-100, 100], [10, -10]), y: useTransform(y, [-100, 100], [10, -10]), transformStyle: "preserve-3d" }}
                             />
                         </motion.div>
 
@@ -365,11 +352,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                     src="https://placehold.co/200x200/059669/ffffff?text=COO"
                                     alt="COO"
                                     className="absolute -right-4 -bottom-4 h-24 w-24 object-cover opacity-70 z-0"
-                                    style={{ 
-                                        x: useTransform(x, [-100, 100], [5, -5]), 
-                                        y: useTransform(y, [-100, 100], [5, -5]), 
-                                        transformStyle: "preserve-3d" 
-                                    }}
+                                    style={{ x: useTransform(x, [-100, 100], [5, -5]), y: useTransform(y, [-100, 100], [5, -5]), transformStyle: "preserve-3d" }}
                                 />
                             </motion.div>
 
@@ -394,11 +377,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                     src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh68HDmzQ4YTj9g9soRrkq-eHc9cAfbC03ZOXSClA19NofdsJ2lzm2A29d2qxG3xXSUfuEVl-sGEVnkokdgS6snQn86My-Bekn2MLrF135mZPHpwXfsLg1XxhFaClj1Uebgi6IcxeseCR6rvwc3vg6IgYUm8voolffwjhcy4haMotxomzPVjfJm7ylnHdF/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png"
                                     alt="CMO"
                                     className="absolute -right-4 -bottom-4 h-24 w-24 object-cover opacity-70 z-0"
-                                    style={{ 
-                                        x: useTransform(x, [-100, 100], [5, -5]), 
-                                        y: useTransform(y, [-100, 100], [5, -5]), 
-                                        transformStyle: "preserve-3d" 
-                                    }}
+                                    style={{ x: useTransform(x, [-100, 100], [5, -5]), y: useTransform(y, [-100, 100], [5, -5]), transformStyle: "preserve-3d" }}
                                 />
                             </motion.div>
                         </div>
@@ -412,5 +391,3 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                 onClose={() => setIsBrochureModalOpen(false)} 
             />
         </section>
-    );
-};
