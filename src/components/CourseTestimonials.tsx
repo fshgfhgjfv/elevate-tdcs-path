@@ -26,7 +26,7 @@ const testimonials = [
     name: "Akshita Ale",
     role: "Full Stack Developer @HCLTech", // Placeholder Role
     preAccio: "BCA", // Placeholder Education
-    image: "https://images.unsplash.com/photo-1627192621043-4e430d4b9c1d?w=200&h=200&fit=crop", // Placeholder Photo
+    image: "https://www.google.com/url?sa=i&url=https%3A%2F%2Funsplash.com%2Fs%2Fphotos%2Findian-man&psig=AOvVaw29BmcdaIkc1jrXA8AlG6TT&ust=1761845457553000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCLjJ0P73yZADFQAAAAAdAAAAABAE", // Placeholder Photo
     quote: "The live classes, daily assignments & doubt sessions made sure that everything was crystal clear to everyone. The multiple mock interviews are a very good simulation for the actual interviews.",
     company: "https://upload.wikimedia.org/wikipedia/commons/1/15/HCL_Technologies_logo.svg", // Placeholder Company
   },
