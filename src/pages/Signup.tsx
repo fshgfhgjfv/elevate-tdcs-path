@@ -12,6 +12,7 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    number: "",
     password: "",
     confirmPassword: "",
   });
@@ -27,33 +28,37 @@ const Signup = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const { name, email, number, password, confirmPassword } = formData;
+
     // Client-side validation
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+    if (!name || !email || !number || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
       return;
     }
 
-    if (!formData.email.includes("@")) {
+    if (!email.includes("@")) {
       toast.error("Please enter a valid email");
       return;
     }
 
-    if (formData.password.length < 6) {
+    if (!/^[0-9]{10}$/.test(number)) {
+      toast.error("Please enter a valid 10-digit phone number");
+      return;
+    }
+
+    if (password.length < 6) {
       toast.error("Password must be at least 6 characters");
       return;
     }
 
-    if (formData.password !== formData.confirmPassword) {
+    if (password !== confirmPassword) {
       toast.error("Passwords don't match");
       return;
     }
 
-    // TODO: Replace with actual authentication via Supabase/Firebase
-    // For now, using localStorage for demo
-    const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
-    
     // Check if user already exists
-    if (users.find((u: any) => u.email === formData.email)) {
+    const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
+    if (users.find((u: any) => u.email === email)) {
       toast.error("User with this email already exists");
       return;
     }
@@ -61,16 +66,16 @@ const Signup = () => {
     // Create new user
     const newUser = {
       id: Date.now().toString(),
-      name: formData.name,
-      email: formData.email,
-      password: formData.password, // In production, never store plain passwords
+      name,
+      email,
+      number: `+91${number}`,
+      password, // Note: don't store plain passwords in production
     };
 
     users.push(newUser);
     localStorage.setItem("tdcs_users", JSON.stringify(users));
 
-    // Log in the user
-    const { password, ...userWithoutPassword } = newUser;
+    const { password: _, ...userWithoutPassword } = newUser;
     localStorage.setItem("tdcs_user", JSON.stringify(userWithoutPassword));
 
     toast.success("Account created successfully!");
@@ -113,6 +118,28 @@ const Signup = () => {
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
                   />
+                </div>
+                <div>
+                  <Label htmlFor="number">Phone Number</Label>
+                  <div className="flex items-center">
+                    <span className="px-3 py-2 bg-muted rounded-l-md border border-r-0 border-input text-sm text-muted-foreground">
+                      +91
+                    </span>
+                    <Input
+                      id="number"
+                      type="text"
+                      placeholder="10-digit number"
+                      value={formData.number}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, ""); // only digits
+                        if (value.length <= 10) {
+                          setFormData({ ...formData, number: value });
+                        }
+                      }}
+                      className="rounded-l-none"
+                      required
+                    />
+                  </div>
                 </div>
                 <div>
                   <Label htmlFor="password">Password</Label>
