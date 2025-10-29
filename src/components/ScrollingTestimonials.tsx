@@ -47,7 +47,7 @@ const testimonials = [
   {
     name: "Sandeep Singh",
     role: "Software Engineer @Innovaccer",
-    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&h=200&fit=crop",
+    image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhQP6_RYV3hAax0nuVRpi9j5hchef9DIpERYECc-YZLCr5xl4cRz2ibjqxM8cj-CyoKoYRU2cBMQLJaAp2HT3EmzGjC00ciWAIvZKQNez2kFD5-9fxTBMtOryu0mR0EpOA65jymISkaGUqrMns3ei8XLbqb0B8z8Mdj36kg2CYcZXtPTvOPrruIfU2NjfjI/s320/WhatsApp%20Image%202025-07-14%20at%2013.27.53_de7e757c.jpg",
     quote: "Best investment in my career. The placement support is exceptional!",
   },
 ];
