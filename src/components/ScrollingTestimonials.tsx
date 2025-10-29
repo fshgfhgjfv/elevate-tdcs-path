@@ -35,7 +35,7 @@ const testimonials = [
   {
     name: "Abdullah Safwi",
     role: "Software Developer @Maersk",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
+    image: "https://i.pinimg.com/736x/65/0a/2c/650a2c5ab4e520513a57f104547bdc41.jpg",
     quote: "TDCS provided the perfect structure and guidance to crack tech interviews.",
   },
   {
