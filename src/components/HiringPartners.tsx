@@ -25,7 +25,7 @@ export const HiringPartners = () => {
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
-            Over 500 Companies Hire from TDCS
+            Over 50+ Companies Hire from TDCS
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Our graduates work at the world's leading technology companies
