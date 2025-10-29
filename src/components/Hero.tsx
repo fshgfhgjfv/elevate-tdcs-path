@@ -320,7 +320,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             {/* CEO Image - Larger and positioned for impact */}
                             <motion.img
                                 // Placeholder image for CEO
-                                src="https://placehold.co/720x720/1D4ED8/ffffff?text=CEO" 
+                                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhQ9heh07dWNTxnm6dhyphenhyphen2rzfxjmA_xS3UXPh3sBCY_B2ywNCfyr8QXWKLsur3PJKzLo-pUsoGmIfTmGl8m7cGmUezdk_RvStMnzxjIstX1S-V6gc2PrG8WkudchJv_c0LuVu0xbO7mUnWh5mWZHMe9THz3dwqCLTN0-2bAoI0k_rynUr6vk2xDdSKi0bM-/s539/WhatsApp_Image_2025-10-26_at_15.56.54_d2e7dc94-removebg-preview.png" 
                                 alt="Rudra Narayan, CEO"
                                 className="absolute -right-4 -bottom-4 h-56 w-56 md:h-72 md:w-72 object-cover opacity-80 z-0"
                                 style={{ x: useTransform(x, [-100, 100], [10, -10]), y: useTransform(y, [-100, 100], [10, -10]), transformStyle: "preserve-3d" }}
