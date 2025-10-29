@@ -29,7 +29,7 @@ const testimonials = [
   {
     name: "Meenakshi G",
     role: "Software Engineer @Gainsight",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop",
+    image: "https://i.pinimg.com/736x/f9/a0/b1/f9a0b1afa65d0e0f16c5b1c70ec8b69f.jpg",
     quote: "The mock interviews prepared me perfectly for the real thing.",
   },
   {
