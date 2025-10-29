@@ -8,7 +8,7 @@ const originalMentors = [
     name: "Rajesh Kumar",
     role: "Senior Security Architect",
     company: "Google",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop",
+    image: "https://blogger.googleusercontent.com/img/a/AVvXsEjNQhD_FqbzJzTQupYXGoQBA-TyfWRY7LI76n5is3RoKkbKLeSkELjipGiDLQodxlbsFEfhBsyKVKj0sKLXSiPNd2GedCzGcT3DDwxb0fSspFYBWV0Lb6JV5DYj0jrrcjKZ1U1bVDn1gQ4bMdp8WViDpcHEWE8XaAyqAEeqb0rnmlIgg4au8lLLqCPYRxa9",
     expertise: ["DSA", "System Design", "Cybersecurity"],
     experience: "12+ years",
   },
