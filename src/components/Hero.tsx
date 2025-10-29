@@ -359,7 +359,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 onMouseLeave={() => { x.set(0); y.set(0); }}
                                 transition={{ type: "spring", stiffness: 100, damping: 10 }}
                             >
-                                <h3 className="text-xl font-bold mb-1 z-10 relative">Priya Verma</h3>
+                                <h3 className="text-xl font-bold mb-1 z-10 relative">Shivam Shing</h3>
                                 <p className="text-sm mb-4 z-10 relative">Chief Operating Officer</p>
                                 <motion.img
                                     src="https://placehold.co/200x200/059669/ffffff?text=COO"
