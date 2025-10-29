@@ -122,7 +122,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                         <motion.div variants={itemVariants} className="flex items-center space-x-3">
                             {/* Avatars */}
                             <div className="flex -space-x-2 overflow-hidden">
-                                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://i.pinimg.com/736x/65/0a/2c/650a2c5ab4e520513a57f104547bdc41.jpg" alt="Student avatar" />
+                                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiFV4OWyD-dpHkkEFbAGYgoOAim674uDerzeBvx37rp3dl6VHIsIkbWtVaaoR4GWqdA-MW0UJpRs9VBkZO-mIeHQMrSCOoamOXHXoGopFkAVHRdo3sdIKbuameNOQCAcCWlm8EkgqTNKZ0nn1tT-Ov7QuLmGYVG_xIBVCTG454m9rfwSRdtlBWGAuY4DSjc/s539/WhatsApp_Image_2025-10-26_at_15.56.54_d2e7dc94-removebg-preview.png" alt="Student avatar" />
                                 <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Student avatar" />
                                 <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Student avatar" />
                             </div>
