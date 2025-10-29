@@ -320,7 +320,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             transition={{ type: "spring", stiffness: 100, damping: 10 }}
                         >
                             <h3 className="text-3xl font-extrabold mb-2 z-10 relative">Dibyajit Ghosh </h3>
-                            <p className="text-lg mb-6 z-10 relative">CEO & Founder (IIT Delhi Alumnus)</p>
+                            <p className="text-lg mb-6 z-10 relative">CEO & Founder (IIT Guwahati Alumnus)</p>
                             {/* Removed: Connect on LinkedIn button */}
                             <p className="text-sm font-semibold opacity-80 z-10 relative">
                                 Visionary leader driving future talent.
