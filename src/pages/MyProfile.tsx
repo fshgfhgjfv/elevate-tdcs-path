@@ -38,7 +38,7 @@ const MyProfile = () => {
   const [editingCareer, setEditingCareer] = useState(false);
 
   const [profileData, setProfileData] = useState<ProfileData>({
-    name: "Rudra Narayan",
+    name: "TDCS USER",
     email: "",
     mobile: "",
     whatsapp: "",
