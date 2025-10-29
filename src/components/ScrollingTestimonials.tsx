@@ -17,7 +17,7 @@ const testimonials = [
   {
     name: "Akash Ingoley",
     role: "Software Developer @PayGlocal",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
+    image: "https://i.pinimg.com/736x/78/f9/1f/78f91f94b77493e89f43404ed5ede4f4.jpg",
     quote: "It's never too late to switch careers. TDCS helped me transition to IT.",
   },
   {
