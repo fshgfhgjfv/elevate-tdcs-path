@@ -16,19 +16,22 @@ const steps = [
     icon: Phone,
     title: "Request Callback",
     description: "Kickstart your learning journey by requesting callback today.",
-    number: "1"
+    number: "1",
+    img: "https://undraw.co/illustrations/active_support_v6g0.svg"  // Active support illustration :contentReference[oaicite:1]{index=1}
   },
   {
     icon: Calendar,
     title: "Get on a Call",
     description: "Chat with us to learn more about your options.",
-    number: "2"
+    number: "2",
+    img: "https://undraw.co/illustrations/contact_us_kcoa.svg"  // Contact us illustration :contentReference[oaicite:2]{index=2}
   },
   {
     icon: BookOpen,
     title: "Book your seat",
     description: "Secure your spot and embark on your learning adventure!",
-    number: "3"
+    number: "3",
+    img: "https://undraw.co/illustrations/online_learning_tgmv.svg"  // Online learning illustration :contentReference[oaicite:3]{index=3}
   }
 ];
 
@@ -86,7 +89,6 @@ export const ApplyBatchesSection = () => {
         description: "Your callback request has been submitted. We'll contact you soon!",
       });
 
-      // Track analytics event (if gtag is available)
       if (typeof window !== 'undefined' && 'gtag' in window) {
         (window as any).gtag('event', 'request_callback_submitted', {
           'event_category': 'engagement',
@@ -133,7 +135,6 @@ export const ApplyBatchesSection = () => {
             </p>
           </motion.div>
 
-          {/* Steps */}
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
             {steps.map((step, index) => {
               const IconComponent = step.icon;
@@ -150,6 +151,14 @@ export const ApplyBatchesSection = () => {
                       {step.number}
                     </div>
                     <div className="relative z-10">
+                      <motion.img
+                        src={step.img}
+                        alt={step.title}
+                        className="w-full h-40 object-contain mb-4"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                      />
                       <div className="inline-flex p-4 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 mb-4 group-hover:scale-110 transition-transform">
                         <IconComponent className="w-8 h-8 text-primary" />
                       </div>
@@ -162,7 +171,6 @@ export const ApplyBatchesSection = () => {
             })}
           </div>
 
-          {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -190,7 +198,6 @@ export const ApplyBatchesSection = () => {
         </div>
       </section>
 
-      {/* Request Callback Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
