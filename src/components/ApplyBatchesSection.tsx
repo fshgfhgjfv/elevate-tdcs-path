@@ -17,7 +17,7 @@ const steps = [
     title: "Request Callback",
     description: "Kickstart your learning journey by requesting callback today.",
     number: "1",
-    img: "https://undraw.co/illustrations/active_support_v6g0.svg"  // Active support illustration :contentReference[oaicite:1]{index=1}
+    img: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.dreamstime.com%2Fillustration%2Frequest-call-back-icon.html&psig=AOvVaw2s6MDa8N9j3DyDyre5xHNE&ust=1761845316616000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCMCb_bP3yZADFQAAAAAdAAAAABAE"  // Active support illustration :contentReference[oaicite:1]{index=1}
   },
   {
     icon: Calendar,
