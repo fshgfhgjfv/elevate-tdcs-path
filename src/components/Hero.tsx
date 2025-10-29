@@ -14,7 +14,7 @@ interface HeroProps {
 }
 
 // 1. Splitting the headline into words for individual animation
-const headline = "The Training and Placement ";
+const headline = "The Training and Placement platform for your career";
 const words = headline.split(" ");
 
 // Word-by-word animation variants
