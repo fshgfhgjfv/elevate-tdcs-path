@@ -56,7 +56,7 @@ export const HiringPartners = () => {
         </div>
 
         <div className="text-center mt-8">
-          <p className="text-muted-foreground italic">...and 490+ more companies</p>
+          <p className="text-muted-foreground italic">...and 50+ more companies</p>
         </div>
       </div>
     </section>
