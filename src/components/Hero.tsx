@@ -3,24 +3,24 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 // Import advanced hooks for 3D/parallax effects
 import { motion, useMotionValue, useTransform, useInView } from "framer-motion";
-import { Download, X } from "lucide-react"; // Added 'X' for the modal close button
+import { Download } from "lucide-react";
+import { DownloadBrochureModal } from "./DownloadBrochureModal";
 
 // --- Custom CSS to define and apply the new gradient ---
 const GRADIENT_CLASS = "text-transparent bg-clip-text bg-gradient-to-r from-[#FF9A3C] via-[#FF50B3] to-[#8C53FF]";
 
 interface HeroProps {
-    showOnInnerPages?: boolean;
+  showOnInnerPages?: boolean;
 }
 
-// 1. Splitting the headline into words for individual animation
+// 1. Splitting the headline into words for individual animation (retained from previous iteration)
 const headline = "The Training and Placement platform for your career";
 const words = headline.split(" ");
 
-// Word-by-word animation variants
 const wordContainerVariants = {
     visible: {
         transition: {
-            staggerChildren: 0.04, // Stagger effect for words
+            staggerChildren: 0.04,
             delayChildren: 0.4,
         },
     },
@@ -40,121 +40,24 @@ const wordItemVariants = {
     },
 };
 
-// --- DownloadBrochureModal Component (INTEGRATED) ---
-const DownloadBrochureModal = ({ isOpen, onClose }) => {
-    if (!isOpen) return null;
-
-    // Helper function to show a temporary notification instead of alert()
-    const alertMessage = (message, type) => {
-        const alertBox = document.getElementById('global-alert-hero');
-        if (alertBox) {
-            alertBox.textContent = message;
-            alertBox.className = `fixed top-4 right-4 z-[9999] p-4 rounded-lg shadow-xl text-white transition-opacity duration-300 opacity-100 ${
-                type === 'success' ? 'bg-green-600' : 'bg-red-600'
-            }`;
-            setTimeout(() => {
-                alertBox.className = alertBox.className.replace('opacity-100', 'opacity-0');
-            }, 3000);
-        }
-    };
-
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Simulate brochure download logic
-        console.log("Form Submitted for brochure download.");
-        alertMessage("Thank you! Your brochure download link has been sent to your email (simulated).", "success");
-        onClose();
-    };
-
-    return (
-        <div 
-            className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 transition-opacity duration-300"
-            onClick={onClose}
-        >
-            <div 
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100"
-                onClick={e => e.stopPropagation()} // Prevent closing when clicking inside modal
-            >
-                <div className="flex justify-between items-center p-5 border-b border-gray-200 dark:border-gray-700">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
-                        <Download className="w-5 h-5 mr-3 text-indigo-500" />
-                        Request Our Full Brochure
-                    </h3>
-                    <button 
-                        onClick={onClose} 
-                        className="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100 transition p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                        aria-label="Close"
-                    >
-                        <X className="w-6 h-6" />
-                    </button>
-                </div>
-                
-                <form onSubmit={handleSubmit} className="p-6 space-y-5">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Fill out the form to instantly receive a PDF brochure detailing our programs, placements, and pricing.
-                    </p>
-                    
-                    <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Name
-                        </label>
-                        <input
-                            type="text"
-                            id="modal-name"
-                            name="name"
-                            required
-                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white transition"
-                            placeholder="Your full name"
-                        />
-                    </div>
-                    
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Work Email
-                        </label>
-                        <input
-                            type="email"
-                            id="modal-email"
-                            name="email"
-                            required
-                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white transition"
-                            placeholder="email@company.com"
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
-                    >
-                        <Download className="w-5 h-5 mr-2" />
-                        Download Instantly
-                    </button>
-                </form>
-            </div>
-        </div>
-    );
-};
-
-
+// --- Main Component ---
 export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
     const heroRef = useRef(null);
-    // Use useInView to trigger animations when the component scrolls into view
     const isInView = useInView(heroRef, { once: true, amount: 0.1 });
 
     // Framer Motion 3D Tilt/Parallax values
     const x = useMotionValue(0);
     const y = useMotionValue(0);
-    const rotateX = useTransform(y, [-100, 100], [10, -10]); // Map y movement to X rotation
-    const rotateY = useTransform(x, [-100, 100], [-10, 10]); // Map x movement to Y rotation
+    const rotateX = useTransform(y, [-100, 100], [10, -10]);
+    const rotateY = useTransform(x, [-100, 100], [-10, 10]);
 
-    // Card refs for 3D effect (UPDATED for new cards)
+    // Card refs for 3D effect (updated for new cards)
     const cardRefCEO = useRef(null);
     const cardRefCOO = useRef(null);
     const cardRefCMO = useRef(null);
 
-    // --- Original Animation variants (for sections other than headline) ---
+    // Original Animation variants (for sections other than headline)
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -177,25 +80,22 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     };
 
     // Card mouse move handler for 3D effect
+    // We'll use this handler on all three cards
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, cardRef: React.RefObject<HTMLDivElement>) => {
         if (!cardRef.current) return;
         const rect = cardRef.current.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        const offsetX = e.clientX - centerX; // Mouse X offset from center
-        const offsetY = e.clientY - centerY; // Mouse Y offset from center
+        const offsetX = e.clientX - centerX;
+        const offsetY = e.clientY - centerY;
 
-        // Set motion values scaled down for a subtle effect
         x.set(offsetX * 0.2);
         y.set(offsetY * 0.2);
     };
 
     return (
         <section ref={heroRef} className="relative min-h-[90vh] flex items-center pt-24 pb-16 md:pt-32 lg:pt-40 bg-white dark:bg-gray-900 overflow-hidden">
-            {/* ALERT PLACEHOLDER: Used by the integrated DownloadBrochureModal for success messages */}
-            <div id="global-alert-hero" className="fixed top-4 right-4 z-[9999] opacity-0 transition-opacity duration-300 pointer-events-none"></div>
-
-            {/* 2. Animated Background/Overlay (Subtle Glow/Blob) */}
+             {/* Animated Background/Overlay (Glow retained) */}
             <div className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden">
                 <motion.div
                     className="absolute w-[600px] h-[600px] bg-[#FF50B3] opacity-10 rounded-full blur-3xl"
@@ -216,14 +116,14 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                     className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-16 items-center"
                     variants={containerVariants}
                     initial="hidden"
-                    animate={isInView ? "visible" : "hidden"} // Animate when in view
+                    animate={isInView ? "visible" : "hidden"}
                 >
-                    {/* Left Column: Main Text, Buttons, and Badges (Takes full width on mobile) */}
+                    {/* Left Column: Main Text, Buttons, and Badges (REMAINS THE SAME) */}
                     <div className="lg:col-span-2 space-y-6">
+                        {/* Avatars and Happy Students Count */}
                         <motion.div variants={itemVariants} className="flex items-center space-x-3">
-                            {/* Avatars */}
                             <div className="flex -space-x-2 overflow-hidden">
-                                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://i.pinimg.com/736x/9c/2a/81/9c2a81633cffd91adf5354958f50f3be.jpg" alt="Student avatar" />
+                                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://images.unsplash.com/photo-1491528323818-fdd1faba65f8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Student avatar" />
                                 <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Student avatar" />
                                 <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Student avatar" />
                             </div>
@@ -232,15 +132,14 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             </p>
                         </motion.div>
 
+                        {/* Headline */}
                         <motion.h1 
                             variants={wordContainerVariants} 
                             animate={isInView ? "visible" : "hidden"}
                             className="text-4xl md:text-6xl font-extrabold leading-tight text-gray-900 dark:text-white"
                         >
-                            {/* 3. Word-by-Word Headline Animation */}
                             {words.map((word, index) => (
                                 <motion.span key={index} variants={wordItemVariants} className="inline-block mr-2" style={{ perspective: 1000 }}>
-                                    {/* Apply gradient only to 'Training' and 'career' */}
                                     {word === 'Training' || word === 'career' ? (
                                         <span className={GRADIENT_CLASS}>{word}</span>
                                     ) : (
@@ -250,11 +149,10 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             ))}
                         </motion.h1>
 
+                        {/* Subheading and Buttons */}
                         <motion.p variants={itemVariants} className="text-lg md:text-xl text-muted-foreground max-w-xl">
                             Get job-ready with expert-led courses or participate in our free hiring drives.
                         </motion.p>
-                        
-                        {/* BUTTONS SECTION */}
                         <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-start mb-6">
                             <Link to="/courses">
                                 <Button variant="gradient" size="lg" className="text-lg px-8 py-6 w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow">
@@ -267,17 +165,16 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 className="text-lg px-8 py-6 w-full sm:w-auto border-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                                 onClick={() => setIsBrochureModalOpen(true)}
                             >
-                                <Download className="mr-2 h-5 w-5 animate-bounce-slow" /> {/* Added a subtle icon animation */}
+                                <Download className="mr-2 h-5 w-5 animate-bounce-slow" />
                                 Download Brochure
                             </Button>
                         </motion.div>
 
-                        {/* Recognition Badges - Simplified animation for responsiveness */}
+                        {/* Recognition Badges */}
                         <motion.div 
                             variants={itemVariants}
                             className="flex flex-wrap gap-4 md:gap-8 items-center pt-4"
                         >
-                            {/* Badges... (content remains the same) */}
                             <div className="w-24 h-10 bg-white dark:bg-gray-800 flex items-center justify-center rounded-lg shadow-md border border-gray-200 dark:border-gray-700 transition-transform hover:scale-[1.02]">
                                 <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
                                     <span className="text-blue-700 font-extrabold text-base">in</span> LinkedIn<br/>TOP
@@ -319,16 +216,15 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             
                             {/* CEO Image - Larger and positioned for impact */}
                             <motion.img
-                                // Placeholder image for CEO
-                                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhQ9heh07dWNTxnm6dhyphenhyphen2rzfxjmA_xS3UXPh3sBCY_B2ywNCfyr8QXWKLsur3PJKzLo-pUsoGmIfTmGl8m7cGmUezdk_RvStMnzxjIstX1S-V6gc2PrG8WkudchJv_c0LuVu0xbO7mUnWh5mWZHMe9THz3dwqCLTN0-2bAoI0k_rynUr6vk2xDdSKi0bM-/s539/WhatsApp_Image_2025-10-26_at_15.56.54_d2e7dc94-removebg-preview.png" 
-                                alt="Dibyajit Ghosh"
+                                src="https://i.ibb.co/L8dY8g0/rudra-narayan-CEO.png" // Placeholder URL for CEO
+                                alt="Rudra Narayan, CEO"
                                 className="absolute -right-4 -bottom-4 h-56 w-56 md:h-72 md:w-72 object-cover opacity-80 z-0"
                                 style={{ x: useTransform(x, [-100, 100], [10, -10]), y: useTransform(y, [-100, 100], [10, -10]), transformStyle: "preserve-3d" }}
                             />
                         </motion.div>
 
                         {/* 2. COO & CMO Cards (Smaller, Side-by-Side on wide screens, Stacked on mobile) */}
-                        <div className="flex flex-col sm:flex-row gap-4 w-full">
+                        <div className="flex flex-row gap-4 w-full">
                             
                             {/* COO Card */}
                             <motion.div
@@ -348,7 +244,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 <h3 className="text-xl font-bold mb-1 z-10 relative">Priya Verma</h3>
                                 <p className="text-sm mb-4 z-10 relative">Chief Operating Officer</p>
                                 <motion.img
-                                    src="https://placehold.co/200x200/059669/ffffff?text=COO"
+                                    src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop"
                                     alt="COO"
                                     className="absolute -right-4 -bottom-4 h-24 w-24 object-cover opacity-70 z-0"
                                     style={{ x: useTransform(x, [-100, 100], [5, -5]), y: useTransform(y, [-100, 100], [5, -5]), transformStyle: "preserve-3d" }}
@@ -373,7 +269,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 <h3 className="text-xl font-bold mb-1 z-10 relative">Anil Sharma</h3>
                                 <p className="text-sm mb-4 z-10 relative">Chief Marketing Officer</p>
                                 <motion.img
-                                    src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh68HDmzQ4YTj9g9soRrkq-eHc9cAfbC03ZOXSClA19NofdsJ2lzm2A29d2qxG3xXSUfuEVl-sGEVnkokdgS6snQn86My-Bekn2MLrF135mZPHpwXfsLg1XxhFaClj1Uebgi6IcxeseCR6rvwc3vg6IgYUm8voolffwjQhcY4haMotxomzPVjfJm7ylnHdF/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png"
+                                    src="https://images.unsplash.com/photo-1560250097-fb5c6d36e2f6?w=200&h=200&fit=crop"
                                     alt="CMO"
                                     className="absolute -right-4 -bottom-4 h-24 w-24 object-cover opacity-70 z-0"
                                     style={{ x: useTransform(x, [-100, 100], [5, -5]), y: useTransform(y, [-100, 100], [5, -5]), transformStyle: "preserve-3d" }}
@@ -384,8 +280,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                 </motion.div>
             </div>
 
-            {/* Download Brochure Modal */}
-            {/* The component is now defined above and used here */}
+            {/* Download Brochure Modal (RETAINS ORIGINAL FUNCTIONALITY) */}
             <DownloadBrochureModal 
                 isOpen={isBrochureModalOpen} 
                 onClose={() => setIsBrochureModalOpen(false)} 
