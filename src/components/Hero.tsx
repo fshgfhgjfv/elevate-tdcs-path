@@ -299,57 +299,76 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
       </section>
 
       {/* === LEADERSHIP SECTION === */}
-      <section className="py-20 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
-        <div className="container mx-auto px-4 text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-4xl font-extrabold mb-12 text-gray-900 dark:text-white"
-          >
-            Meet Our <span className={GRADIENT_CLASS}>Leadership</span>
-          </motion.h2>
+      <{/* === LEADERSHIP SECTION === */}
+<section className="py-20 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+  <div className="container mx-auto px-4 text-center">
+    <motion.h2
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="text-4xl font-extrabold mb-12 text-gray-900 dark:text-white"
+    >
+      Meet Our <span className={GRADIENT_CLASS}>Leadership</span>
+    </motion.h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-            {[
-              {
-                name: "CEO",
-                img: "https://blogger.googleusercontent.com/img/a/AVvXsEjNQhD_FqbzJzTQupYXGoQBA-TyfWRY7LI76n5is3RoKkbKLeSkELjipGiDLQodxlbsFEfhBsyKVKj0sKLXSiPNd2GedCzGcT3DDwxb0fSspFYBWV0Lb6JV5DYj0jrrcjKZ1U1bVDn1gQ4bMdp8WViDpcHEWE8XaAyqAEeqb0rnmlIgg4au8lLLqCPYRxa9",
-              },
-              {
-                name: "COO",
-                img: "https://blogger.googleusercontent.com/img/a/AVvXsEhPcY7OD_gvFPpSHxxFdNsKjh7B0YsN4dDz2DATlkBPxrfHB1s1vJuSY6ivppjiUWBLJgnaHmag-MT1j5dY3ogIZnmk8XUANyMirIM2KFEX0NU7IOem0cxXU3JZz181SdNAfMxSn0UvfmB0B_0binfWdGEjveahWjhfSjJ5COdckX94i6iZxkBBB4akTyyz",
-              },
-              {
-                name: "CMO",
-                img: "https://blogger.googleusercontent.com/img/a/AVvXsEgrwmLkO5Feodxq5QaY_atrGnsO9pqgfFM05kadDK8NB_24j-cIBsML47l20CtYES_Zfa4jUVR24_u4po_QnjcsO4yiRZUlpESCdAb2JVdbzkhp3gaU55kpGn_v-EUQaxkosCtzSR3-0eyjtW4m9gkglNME7wzxffg-A0kX98SqspAZNX1Aep3Wf-OgGpoP",
-              },
-            ].map((leader, i) => (
-              <motion.div
-                key={leader.name}
-                whileHover={{ scale: 1.05, rotateY: 3 }}
-                whileTap={{ scale: 0.97 }}
-                className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 transition-transform duration-300 hover:shadow-2xl"
-              >
-                <motion.img
-                  src={leader.img}
-                  alt={leader.name}
-                  className="w-48 h-48 object-cover rounded-full mx-auto mb-6 border-4 border-gradient-to-r from-[#FF50B3] to-[#8C53FF]"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.2 }}
-                />
-                <h3 className="text-xl font-bold text-gray-800 dark:text-white">
-                  {leader.name}
-                </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Inspiring innovation and excellence.
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-    </>
-  );
-};
+    {/* Leadership Layout */}
+    <div className="flex flex-col lg:flex-row items-center justify-center gap-10">
+      {/* CEO - Large Card */}
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        transition={{ type: "spring", stiffness: 120, damping: 12 }}
+        className="relative p-8 md:p-10 rounded-2xl shadow-2xl text-white overflow-hidden cursor-pointer bg-gradient-to-br from-[#4F46E5] to-[#3B82F6] w-full max-w-sm lg:max-w-md"
+      >
+        <motion.img
+          src="https://blogger.googleusercontent.com/img/a/AVvXsEjNQhD_FqbzJzTQupYXGoQBA-TyfWRY7LI76n5is3RoKkbKLeSkELjipGiDLQodxlbsFEfhBsyKVKj0sKLXSiPNd2GedCzGcT3DDwxb0fSspFYBWV0Lb6JV5DYj0jrrcjKZ1U1bVDn1gQ4bMdp8WViDpcHEWE8XaAyqAEeqb0rnmlIgg4au8lLLqCPYRxa9"
+          alt="CEO"
+          className="w-40 h-40 sm:w-52 sm:h-52 object-cover rounded-full border-4 border-white shadow-xl mx-auto mb-6"
+        />
+        <h3 className="text-2xl font-bold mb-2">Amit Verma</h3>
+        <p className="text-lg opacity-90 mb-4">CEO & Founder</p>
+        <p className="text-sm text-white/80">
+          Leading the vision and strategy to empower students and transform careers.
+        </p>
+      </motion.div>
+
+      {/* COO + CMO smaller stacked cards */}
+      <div className="flex flex-col gap-8 w-full max-w-sm">
+        {/* COO */}
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 120, damping: 12 }}
+          className="relative p-6 rounded-xl shadow-xl text-white bg-gradient-to-br from-[#A855F7] to-[#EC4899] overflow-hidden"
+        >
+          <img
+            src="https://blogger.googleusercontent.com/img/a/AVvXsEhPcY7OD_gvFPpSHxxFdNsKjh7B0YsN4dDz2DATlkBPxrfHB1s1vJuSY6ivppjiUWBLJgnaHmag-MT1j5dY3ogIZnmk8XUANyMirIM2KFEX0NU7IOem0cxXU3JZz181SdNAfMxSn0UvfmB0B_0binfWdGEjveahWjhfSjJ5COdckX94i6iZxkBBB4akTyyz"
+            alt="COO"
+            className="w-28 h-28 object-cover rounded-full border-4 border-white mx-auto mb-4 shadow-lg"
+          />
+          <h4 className="text-xl font-bold mb-1">Priya Sharma</h4>
+          <p className="text-sm opacity-90 mb-2">COO</p>
+          <p className="text-sm text-white/80">
+            Driving operational excellence and seamless execution across all departments.
+          </p>
+        </motion.div>
+
+        {/* CMO */}
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 120, damping: 12 }}
+          className="relative p-6 rounded-xl shadow-xl text-white bg-gradient-to-br from-[#FF9A3C] to-[#FF50B3] overflow-hidden"
+        >
+          <img
+            src="https://blogger.googleusercontent.com/img/a/AVvXsEgrwmLkO5Feodxq5QaY_atrGnsO9pqgfFM05kadDK8NB_24j-cIBsML47l20CtYES_Zfa4jUVR24_u4po_QnjcsO4yiRZUlpESCdAb2JVdbzkhp3gaU55kpGn_v-EUQaxkosCtzSR3-0eyjtW4m9gkglNME7wzxffg-A0kX98SqspAZNX1Aep3Wf-OgGpoP"
+            alt="CMO"
+            className="w-28 h-28 object-cover rounded-full border-4 border-white mx-auto mb-4 shadow-lg"
+          />
+          <h4 className="text-xl font-bold mb-1">Ravi Patel</h4>
+          <p className="text-sm opacity-90 mb-2">CMO</p>
+          <p className="text-sm text-white/80">
+            Crafting powerful marketing strategies and building strong brand identity.
+          </p>
+        </motion.div>
+      </div>
+    </div>
+  </div>
+</section>
