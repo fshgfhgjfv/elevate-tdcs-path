@@ -54,7 +54,7 @@ export const courses: Course[] = [
     title: "Cyber Master's Pro Black Hat",
     description:
       "Advanced program covering exploit dev, malware analysis, red teaming & advanced pentesting.",
-    price: 14999,
+    price: 19,999,
     thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&h=600&fit=crop",
     category: "Live Online",
     duration: "4 months",
