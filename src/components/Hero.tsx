@@ -388,7 +388,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 onMouseLeave={() => { x.set(0); y.set(0); }}
                                 transition={{ type: "spring", stiffness: 100, damping: 10 }}
                             >
-                                <h3 className="text-xl font-bold mb-1 z-10 relative">Anil Sharma</h3>
+                                <h3 className="text-xl font-bold mb-1 z-10 relative">Tushar Bhakta</h3>
                                 <p className="text-sm mb-4 z-10 relative">Chief Marketing Officer</p>
                                 <motion.img
                                     src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh68HDmzQ4YTj9g9soRrkq-eHc9cAfbC03ZOXSClA19NofdsJ2lzm2A29d2qxG3xXSUfuEVl-sGEVnkokdgS6snQn86My-Bekn2MLrF135mZPHpwXfsLg1XxhFaClj1Uebgi6IcxeseCR6rvwc3vg6IgYUm8voolffwjhcy4haMotxomzPVjfJm7ylnHdF/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png"
