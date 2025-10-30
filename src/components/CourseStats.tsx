@@ -14,7 +14,7 @@ export const CourseStats = () => {
           <StatsCounter end={5000} label="STUDENTS PLACED" suffix="+" />
           <StatsCounter end={18} label="HIGHEST SALARY" suffix=" LPA" />
           <StatsCounter end={50} label="PARTNER COMPANIES" suffix="+" />
-          <StatsCounter end={6.5} label="AVERAGE SALARY" suffix=" LPA" />
+          <StatsCounter end={5} label="AVERAGE SALARY" suffix=" LPA" />
         </motion.div>
       </div>
     </section>
