@@ -59,7 +59,7 @@ const About = () => {
                   We specialize in cybersecurity, software development, data analytics, and emerging technologies, providing comprehensive programs that prepare students for real-world challenges.
                 </p>
                 <p>
-                  With 35,000+ successful placements and partnerships with 200+ companies, we've established ourselves as a trusted name in career development.
+                  With 5,000+ successful placements and partnerships with 200+ companies, we've established ourselves as a trusted name in career development.
                 </p>
               </div>
             </CardContent>
