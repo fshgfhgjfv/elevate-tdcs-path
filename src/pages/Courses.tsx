@@ -6,17 +6,19 @@ import { HiringPartners } from "@/components/HiringPartners";
 import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
 
 const Courses = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const categories = ["All", "Live Online", "Offline", "Self-Paced"];
+  const [selectedCategory, setSelectedCategory] = useState<string>("Live Courses");
+  const categories = ["Live Courses", "Recorded Courses", "Offline Courses"];
 
+  // Filter live courses only — recorded/offline will show placeholders
   const filteredCourses =
-    selectedCategory === "All"
-      ? courses
-      : courses.filter((course) => course.category === selectedCategory);
+    selectedCategory === "Live Courses"
+      ? courses.filter((course) => course.category === "Live Online")
+      : [];
 
   return (
     <div className="min-h-screen pt-24 pb-16">
       <div className="container mx-auto px-4">
+        {/* Page Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -26,7 +28,7 @@ const Courses = () => {
             Our Courses
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Choose from our comprehensive cybersecurity programs
+            Explore our expertly curated cybersecurity training programs
           </p>
         </motion.div>
 
@@ -47,20 +49,40 @@ const Courses = () => {
           ))}
         </div>
 
-        {/* Courses Grid */}
+        {/* Courses Grid or Coming Soon */}
         <motion.div
           layout
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {filteredCourses.map((course) => (
-            <CourseCard key={course.id} {...course} />
-          ))}
+          {selectedCategory === "Live Courses" &&
+            filteredCourses.map((course) => <CourseCard key={course.id} {...course} />)}
         </motion.div>
 
-        {filteredCourses.length === 0 && (
+        {/* Coming Soon for Recorded/Offline */}
+        {(selectedCategory === "Recorded Courses" ||
+          selectedCategory === "Offline Courses") && (
+          <div className="text-center py-20">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="space-y-4"
+            >
+              <h2 className="text-3xl font-bold gradient-text">Coming Soon 🚀</h2>
+              <p className="text-lg text-muted-foreground">
+                {selectedCategory === "Recorded Courses"
+                  ? "Our high-quality recorded sessions are being prepared."
+                  : "Offline classroom batches will be launching soon."}
+              </p>
+            </motion.div>
+          </div>
+        )}
+
+        {/* No live courses fallback */}
+        {selectedCategory === "Live Courses" && filteredCourses.length === 0 && (
           <div className="text-center py-20">
             <p className="text-xl text-muted-foreground">
-              No courses found in this category.
+              No live courses available right now.
             </p>
           </div>
         )}
