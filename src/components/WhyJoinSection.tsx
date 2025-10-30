@@ -36,7 +36,7 @@ const reasons = [
     icon: Award,
     title: "Ace Placements & Land Your Dream Tech Job",
     description: "Become industry ready & secure your dream tech role with our comprehensive placement support",
-    rating: "500+",
+    rating: "50+",
     badge: "Companies hiring",
   },
 ];
