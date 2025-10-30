@@ -391,7 +391,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 <h3 className="text-xl font-bold mb-1 z-10 relative">Tushar Bhakta</h3>
                                 <p className="text-sm mb-4 z-10 relative">Chief Marketing Officer</p>
                                 <motion.img
-                                    src="https://blogger.googleusercontent.com/img/a/AVvXsEgrwmLkO5Feodxq5QaY_atrGnsO9pqgfFM05kadDK8NB_24j-cIBsML47l20CtYES_Zfa4jUVR24_u4po_QnjcsO4yiRZUlpESCdAb2JVdbzkhp3gaU55kpGn_v-EUQaxkosCtzSR3-0eyjtW4m9gkglNME7wzxffg-A0kX98SqspAZNX1Aep3Wf-OgGpoP"
+                                    src="https://blogger.googleusercontent.com/img/a/AVvXsEgiDtg5YtmQ7bdvNmeAAMyhwpc5tLm_RNR2Lv4y4u6hsMzTiuqNyxo7O0qU32donmMZoTduoxe-4WgWVdPh29JH9vmYXkqCI7hiyzwaYBxxXgTfKbCsjTST6gyIWQB230kRXgwfQvxV-dqB9V-Xqr3915tuA9d88D1rGY-l9sJy_vhC3HJR0pdEI6F3E8Nr"
                                     alt="CMO"
                                     className="absolute -right-4 -bottom-4 h-24 w-24 object-cover opacity-70 z-0"
                                     style={{ 
