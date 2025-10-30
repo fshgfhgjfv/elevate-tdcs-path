@@ -1,26 +1,25 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Building2, Code2, Users, TrendingUp } from "lucide-react";
 
 const experiences = [
   {
-    icon: Building2,
+    imgSrc: "/images/modern-classroom.jpg",
     title: "Modern Classrooms",
     description: "State-of-the-art classrooms with interactive lectures taught by industry professionals.",
   },
   {
-    icon: Code2,
+    imgSrc: "/images/learn-by-doing.jpg",
     title: "Learn By Doing",
     description: "Environment for intense practical & applied learning that prepare you for real-world challenges.",
   },
   {
-    icon: Users,
+    imgSrc: "/images/student-practice-area.jpg",
     title: "Student Practice Area",
     description: "Go-to zone for practice, collaborations & self-improvement.",
   },
   {
-    icon: TrendingUp,
+    imgSrc: "/images/peer-to-peer-learning.jpg",
     title: "Peer to Peer Learning",
     description: "Collaborative learning that helps you grow with your batchmates.",
   },
@@ -52,8 +51,12 @@ export const LearningExperience = () => {
             >
               <Card className="h-full hover:shadow-glow transition-all duration-300 text-center">
                 <CardContent className="p-6">
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <exp.icon className="w-8 h-8 text-primary" />
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 overflow-hidden">
+                    <img
+                      src={exp.imgSrc}
+                      alt={exp.title}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <p className="text-sm font-bold mb-2">0{index + 1}</p>
                   <h3 className="font-bold mb-2">{exp.title}</h3>
