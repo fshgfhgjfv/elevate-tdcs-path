@@ -81,7 +81,7 @@ export const CoursePricing = ({ onEnroll }: CoursePricingProps) => {
               <img
                 src="https://blogger.googleusercontent.com/img/a/AVvXsEgQBCknDQq2PSSJ5SzQS6ei73FcO8IbRNgjKW3b9r3DtAnmMR_9OClnJXyZn9MEci-jQazc0qSX6nRaRn638FkssY5npovgqEHVu6o2FfNjB1oXXSbuxV9OCu2dArjAC1HOMOJHrP3-TvNgbHqIxfeIEf9H6BeQa2VziRX7w3u4Tx1QigCeDINCHEHPIsnm"
                 alt="NSDC Certificate"
-                className="mx-auto h-24"
+                className="mx-auto h-34"
               />
             </CardContent>
           </Card>
