@@ -192,7 +192,6 @@ export const CourseCurriculum = () => {
 
                 <p className="mt-6 text-sm text-muted-foreground italic">
                   
-                  Unauthorized use of these techniques is illegal and punishable by law.
                 </p>
               </CardContent>
             </Card>
