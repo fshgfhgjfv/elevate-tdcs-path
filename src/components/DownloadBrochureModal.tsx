@@ -1,28 +1,21 @@
-import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { motion, useMotionValue, useTransform, useInView } from "framer-motion";
-import { Download, X } from "lucide-react";
-import type { RefObject } from "react";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Button } from "./ui/button";
+import { Checkbox } from "./ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { Download } from "lucide-react";
 
-const GRADIENT_CLASS =
-  "text-transparent bg-clip-text bg-gradient-to-r from-[#FF9A3C] via-[#FF50B3] to-[#8C53FF]";
-
-interface HeroProps {
-  showOnInnerPages?: boolean;
-}
+const BROCHURE_URL = "https://drive.google.com/file/d/1QyvVIVld5m8ORla6uqNK1NQHZIItwbzJ/view?usp=drivesdk";
 
 interface DownloadBrochureModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const BROCHURE_URL =
-  "https://drive.google.com/file/d/1QyvVIVld5m8ORla6uqNK1NQHZIItwbzJ/view?usp=drivesdk";
-
-const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) => {
-  if (!isOpen) return null;
-
+export const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -30,239 +23,132 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
     course: "",
     consent: false,
   });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
-  const alertMessage = (message: string, type: "success" | "error") => {
-    const alertBox = document.getElementById("global-alert-hero");
-    if (alertBox) {
-      alertBox.textContent = message;
-      alertBox.className = `fixed top-4 right-4 z-[9999] p-4 rounded-lg shadow-xl text-white transition-opacity duration-300 opacity-100 ${
-        type === "success" ? "bg-green-600" : "bg-red-600"
-      }`;
-      setTimeout(() => {
-        alertBox.className = alertBox.className.replace("opacity-100", "opacity-0");
-      }, 3000);
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validation
-    if (!formData.name.trim()) {
-      alertMessage("Please enter your name.", "error");
-      return;
-    }
-
-    if (!/^\d{10}$/.test(formData.phone)) {
-      alertMessage("Please enter a valid 10-digit mobile number.", "error");
-      return;
-    }
-
-    if (!/.+@.+\..+/.test(formData.email)) {
-      alertMessage("Please enter a valid email address.", "error");
-      return;
-    }
-
-    if (!formData.course) {
-      alertMessage("Please select a course of interest.", "error");
-      return;
-    }
-
+    
     if (!formData.consent) {
-      alertMessage("Please agree to receive course updates.", "error");
+      toast({
+        title: "Consent Required",
+        description: "Please agree to receive course updates to continue",
+        variant: "destructive",
+      });
       return;
     }
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      alertMessage("Thank you! Your brochure will open shortly.", "success");
-      window.open(BROCHURE_URL, "_blank");
-      setIsSubmitting(false);
-      onClose();
-      setFormData({
-        name: "",
-        phone: "",
-        email: "",
-        course: "",
-        consent: false,
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Track analytics
+    if (typeof (window as any).gtag !== 'undefined') {
+      (window as any).gtag('event', 'download_brochure_submit', {
+        course: formData.course,
+        source: 'brochure-download'
       });
-    }, 1000);
+    }
+
+    toast({
+      title: "Success!",
+      description: "Thanks! Brochure download starting. A counselor will contact you shortly.",
+    });
+
+    // Open brochure in new tab
+    window.open(BROCHURE_URL, '_blank');
+
+    setIsSubmitting(false);
+    onClose();
+    setFormData({
+      name: "",
+      phone: "",
+      email: "",
+      course: "",
+      consent: false,
+    });
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 transition-opacity duration-300 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex justify-between items-center p-5 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
-            <Download className="w-5 h-5 mr-3 text-indigo-500" />
-            Download Course Brochure
-          </h3>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100 transition p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-            aria-label="Close"
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Fill in your details to get our detailed brochure instantly.
-          </p>
-
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Download className="w-5 h-5 text-primary" />
+            Download Brochure
+          </DialogTitle>
+          <DialogDescription>
+            Fill in your details to download our course brochure
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label
-              htmlFor="modal-name"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Full Name
-            </label>
-            <input
-              type="text"
-              id="modal-name"
-              name="name"
-              required
+            <Label htmlFor="name">Full Name *</Label>
+            <Input
+              id="name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white transition"
-              placeholder="Your full name"
+              required
+              placeholder="Enter your full name"
             />
           </div>
-
           <div>
-            <label
-              htmlFor="modal-phone"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Mobile Number
-            </label>
-            <input
+            <Label htmlFor="phone">Phone *</Label>
+            <Input
+              id="phone"
               type="tel"
-              id="modal-phone"
-              name="phone"
-              required
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              pattern="\d{10}"
-              maxLength={10}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white transition"
-              placeholder="10-digit mobile number"
+              required
+              placeholder="+91 XXXXX XXXXX"
+              pattern="[0-9+\s-]+"
             />
           </div>
-
           <div>
-            <label
-              htmlFor="modal-email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Email
-            </label>
-            <input
+            <Label htmlFor="email">Email *</Label>
+            <Input
+              id="email"
               type="email"
-              id="modal-email"
-              name="email"
-              required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white transition"
+              required
               placeholder="your.email@example.com"
             />
           </div>
-
           <div>
-            <label
-              htmlFor="modal-course"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Course of Interest
-            </label>
-            <select
-              id="modal-course"
-              name="course"
-              required
-              value={formData.course}
-              onChange={(e) => setFormData({ ...formData, course: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white transition"
-            >
-              <option value="">Select a course</option>
-              <option value="cyber-masters-pro-lite">
-                Cyber Master’s Pro Lite
-              </option>
-              <option value="cyber-masters-pro-black-hat">
-                Cyber Master’s Pro Black Hat
-              </option>
-            </select>
+            <Label htmlFor="course">Course of Interest</Label>
+            <Select value={formData.course} onValueChange={(value) => setFormData({ ...formData, course: value })}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a course" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="full-stack">Full Stack Development</SelectItem>
+                <SelectItem value="mern">MERN Stack</SelectItem>
+                <SelectItem value="java">Java Development</SelectItem>
+                <SelectItem value="cyber-security">Cyber Security</SelectItem>
+                <SelectItem value="data-science">Data Science</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-
           <div className="flex items-start space-x-2">
-            <input
-              type="checkbox"
-              id="modal-consent"
+            <Checkbox
+              id="consent"
               checked={formData.consent}
-              onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
-              className="mt-1"
+              onCheckedChange={(checked) => setFormData({ ...formData, consent: checked as boolean })}
             />
             <label
-              htmlFor="modal-consent"
-              className="text-sm text-gray-600 dark:text-gray-400"
+              htmlFor="consent"
+              className="text-sm text-muted-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              I agree to receive course updates and offers from TDCS.
+              I agree to receive course updates and offers from TDCS
             </label>
           </div>
-
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 transition duration-150 ease-in-out"
-          >
-            <Download className="w-5 h-5 mr-2" />
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? "Processing..." : "Download Brochure"}
           </Button>
         </form>
-      </div>
-    </div>
-  );
-};
-
-// ---------------- Hero Section (unchanged except for modal integration) ----------------
-
-export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
-  const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
-  const heroRef = useRef(null);
-  const isInView = useInView(heroRef, { once: true, amount: 0.1 });
-
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-100, 100], [10, -10]);
-  const rotateY = useTransform(x, [-100, 100], [-10, 10]);
-
-  const cardRefCEO: RefObject<HTMLDivElement> = useRef(null);
-  const cardRefCOO: RefObject<HTMLDivElement> = useRef(null);
-  const cardRefCMO: RefObject<HTMLDivElement> = useRef(null);
-
-  // ... rest of Hero component remains same (unchanged content, background, cards, etc.)
-
-  return (
-    <section ref={heroRef} className="relative min-h-[90vh] flex items-center pt-24 pb-16 md:pt-32 lg:pt-40 bg-white dark:bg-gray-900 overflow-hidden">
-      <div id="global-alert-hero" className="fixed top-4 right-4 z-[9999] opacity-0 transition-opacity duration-300 pointer-events-none"></div>
-
-      {/* ... existing hero content ... */}
-
-      {/* Brochure Modal */}
-      <DownloadBrochureModal
-        isOpen={isBrochureModalOpen}
-        onClose={() => setIsBrochureModalOpen(false)}
-      />
-    </section>
+      </DialogContent>
+    </Dialog>
   );
 };
