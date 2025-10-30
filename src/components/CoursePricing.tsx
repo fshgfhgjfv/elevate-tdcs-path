@@ -33,7 +33,7 @@ export const CoursePricing = ({ onEnroll }: CoursePricingProps) => {
 
         <Card className="max-w-3xl mx-auto shadow-glow-lg">
           <CardHeader className="text-center border-b">
-            <CardTitle className="text-2xl mb-2">CLASSROOM PROGRAM - JAVA WITH GEN AI</CardTitle>
+            <CardTitle className="text-2xl mb-2">Cyber Master's Pro Lite</CardTitle>
             <p className="text-muted-foreground">Starts As low as</p>
             <div className="text-4xl font-bold gradient-text my-4">₹5,833/month</div>
             <div className="space-y-2 text-sm text-muted-foreground">
