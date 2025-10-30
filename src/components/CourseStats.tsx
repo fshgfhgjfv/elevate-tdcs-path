@@ -12,7 +12,7 @@ export const CourseStats = () => {
           className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto"
         >
           <StatsCounter end={5000} label="STUDENTS PLACED" suffix="+" />
-          <StatsCounter end={18} label="HIGHEST SALARY" suffix=" LPA" />
+          <StatsCounter end={25} label="HIGHEST SALARY" suffix=" LPA" />
           <StatsCounter end={50} label="PARTNER COMPANIES" suffix="+" />
           <StatsCounter end={5} label="AVERAGE SALARY" suffix=" LPA" />
         </motion.div>
