@@ -191,7 +191,7 @@ export const CourseCurriculum = () => {
                 </div>
 
                 <p className="mt-6 text-sm text-muted-foreground italic">
-                  ⚠️ All tools and activities are for <strong>ethical and educational</strong> purposes only.
+                  
                   Unauthorized use of these techniques is illegal and punishable by law.
                 </p>
               </CardContent>
