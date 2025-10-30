@@ -27,6 +27,9 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 
+// ✅ NEW: Import Hardware Services page
+import HardwareServices from "./pages/HardwareServices";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -60,11 +63,16 @@ const App = () => (
           <Route path="/verify-certificate" element={<VerifyCertificate />} />
           <Route path="/certificate-download" element={<CertificateDownload />} />
 
-          {/* Services & Subcategories */}
+          {/* Services */}
           <Route path="/services" element={<Services />} />
           <Route path="/services/software" element={<Services />} />
-          <Route path="/services/hardware" element={<Services />} />
-          <Route path="/services/legal" element={<AdvocateConstruction />} /> {/* ✅ NEW: Legal route */}
+          
+          {/* ✅ Updated Hardware route */}
+          <Route path="/services/hardware" element={<HardwareServices />} />
+          
+          {/* ✅ Legal / Advocate route */}
+          <Route path="/services/legal" element={<AdvocateConstruction />} />
+          
           <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
           {/* 404 Fallback */}
