@@ -79,7 +79,7 @@ export const CoursePricing = ({ onEnroll }: CoursePricingProps) => {
               <h3 className="font-bold mb-2">Get certified by NSDC</h3>
               <p className="text-sm text-muted-foreground mb-4">Verifiable Certificate of Accomplishment</p>
               <img
-                src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/National_Skill_Development_Corporation_logo.png/220px-National_Skill_Development_Corporation_logo.png"
+                src="https://blogger.googleusercontent.com/img/a/AVvXsEgQBCknDQq2PSSJ5SzQS6ei73FcO8IbRNgjKW3b9r3DtAnmMR_9OClnJXyZn9MEci-jQazc0qSX6nRaRn638FkssY5npovgqEHVu6o2FfNjB1oXXSbuxV9OCu2dArjAC1HOMOJHrP3-TvNgbHqIxfeIEf9H6BeQa2VziRX7w3u4Tx1QigCeDINCHEHPIsnm"
                 alt="NSDC Certificate"
                 className="mx-auto h-24"
               />
