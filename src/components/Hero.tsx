@@ -274,7 +274,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             {/* 2. Book a Demo (New Secondary Solid CTA) */}
                             <Link to="/demo">
                                 <Button size="lg" className="text-lg px-8 py-6 w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow bg-indigo-600 text-white hover:bg-indigo-700">
-                                    Book a Demo 📅
+                                    Book a Demo
                                 </Button>
                             </Link>
                             
