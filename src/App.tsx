@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
@@ -26,6 +27,7 @@ import Gallery from "./pages/Gallery";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
+import Hardware from "./pages/Hardware"; // ✅ New hardware page
 
 const queryClient = new QueryClient();
 
@@ -37,8 +39,9 @@ const App = () => (
       <BrowserRouter>
         <ScrollToTop />
         <Header />
+
         <Routes>
-          {/* Main Pages */}
+          {/* 🏠 Main Pages */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact-us" element={<ContactUs />} />
@@ -46,30 +49,31 @@ const App = () => (
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
 
-          {/* Courses */}
+          {/* 🎓 Courses */}
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:id" element={<CourseDetail />} />
           <Route path="/courses/:id/content" element={<CourseContent />} />
 
-          {/* Auth & Profile */}
+          {/* 👤 Auth & Profile */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/my-profile" element={<MyProfile />} />
 
-          {/* Certificates */}
+          {/* 🪪 Certificates */}
           <Route path="/verify-certificate" element={<VerifyCertificate />} />
           <Route path="/certificate-download" element={<CertificateDownload />} />
 
-          {/* Services & Subcategories */}
+          {/* ⚙️ Services & Subcategories */}
           <Route path="/services" element={<Services />} />
-          <Route path="/services/software" element={<Services />} />
-          <Route path="/services/hardware" element={<Services />} />
-          <Route path="/services/legal" element={<AdvocateConstruction />} /> {/* ✅ NEW: Legal route */}
+          <Route path="/services/software" element={<Services />} /> {/* reuse services page */}
+          <Route path="/services/hardware" element={<Hardware />} /> {/* ✅ new hardware route */}
+          <Route path="/services/legal" element={<AdvocateConstruction />} /> {/* legal subpage */}
           <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
-          {/* 404 Fallback */}
+          {/* 🚫 404 Page */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+
         <Footer />
       </BrowserRouter>
     </TooltipProvider>
