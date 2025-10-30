@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { motion, useMotionValue, useTransform, useInView } from "framer-motion";
 import { Download, X } from "lucide-react"; 
 import type { RefObject } from "react"; // Explicitly import RefObject type for clarity
+import { CalendarCheck } from "lucide-react"; // NEW: Import for Book Demo Modal
 
 // --- Custom CSS to define and apply the new gradient ---
 const GRADIENT_CLASS = "text-transparent bg-clip-text bg-gradient-to-r from-[#FF9A3C] via-[#FF50B3] to-[#8C53FF]";
@@ -14,6 +15,12 @@ interface HeroProps {
 }
 
 interface DownloadBrochureModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
+
+// NEW: Interface for BookDemoModal
+interface BookDemoModalProps {
     isOpen: boolean;
     onClose: () => void;
 }
@@ -46,26 +53,105 @@ const wordItemVariants = {
     },
 };
 
+// Helper function to show a temporary notification (placed outside components for re-use)
+const alertMessage = (message: string, type: 'success' | 'error') => {
+    const alertBox = document.getElementById('global-alert-hero');
+    if (alertBox) {
+        alertBox.textContent = message;
+        alertBox.className = `fixed top-4 right-4 z-[9999] p-4 rounded-lg shadow-xl text-white transition-opacity duration-300 opacity-100 ${
+            type === 'success' ? 'bg-green-600' : 'bg-red-600'
+        }`;
+        setTimeout(() => {
+            // Ensure opacity is properly animated out
+            alertBox.className = alertBox.className.replace('opacity-100', 'opacity-0');
+        }, 3000);
+    }
+};
+
+// --- NEW: BookDemoModal Component ---
+const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
+    if (!isOpen) return null;
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // Simulate demo booking logic
+        console.log("Form Submitted for demo booking.");
+        alertMessage("Demo request received! We'll contact you shortly (simulated).", "success");
+        onClose();
+    };
+
+    return (
+        <div 
+            className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 transition-opacity duration-300 backdrop-blur-sm"
+            onClick={onClose}
+        >
+            <div 
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95"
+                onClick={e => e.stopPropagation()} // Prevent closing when clicking inside modal
+            >
+                <div className="flex justify-between items-center p-5 border-b border-gray-200 dark:border-gray-700">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+                        <CalendarCheck className="w-5 h-5 mr-3 text-red-500" />
+                        Book a Free Demo Session
+                    </h3>
+                    <button 
+                        onClick={onClose} 
+                        className="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100 transition p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                        aria-label="Close"
+                    >
+                        <X className="w-6 h-6" />
+                    </button>
+                </div>
+                
+                <form onSubmit={handleSubmit} className="p-6 space-y-5">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Schedule a quick 15-minute call with our career counselor to discuss your goals.
+                    </p>
+                    
+                    <div>
+                        <label htmlFor="modal-demo-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Name
+                        </label>
+                        <input
+                            type="text"
+                            id="modal-demo-name"
+                            name="name"
+                            required
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white transition"
+                            placeholder="Your full name"
+                        />
+                    </div>
+                    
+                    <div>
+                        <label htmlFor="modal-demo-phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Phone Number
+                        </label>
+                        <input
+                            type="tel"
+                            id="modal-demo-phone"
+                            name="phone"
+                            required
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white transition"
+                            placeholder="+91-XXXXXXXXXX"
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out"
+                    >
+                        <CalendarCheck className="w-5 h-5 mr-2" />
+                        Confirm Demo Time
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+};
 // --- DownloadBrochureModal Component (INTEGRATED) ---
 // FIXED: Added explicit prop typing (DownloadBrochureModalProps)
 const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) => {
     if (!isOpen) return null;
-
-    // Helper function to show a temporary notification instead of alert()
-    const alertMessage = (message: string, type: 'success' | 'error') => {
-        const alertBox = document.getElementById('global-alert-hero');
-        if (alertBox) {
-            alertBox.textContent = message;
-            alertBox.className = `fixed top-4 right-4 z-[9999] p-4 rounded-lg shadow-xl text-white transition-opacity duration-300 opacity-100 ${
-                type === 'success' ? 'bg-green-600' : 'bg-red-600'
-            }`;
-            setTimeout(() => {
-                // Ensure opacity is properly animated out
-                alertBox.className = alertBox.className.replace('opacity-100', 'opacity-0');
-            }, 3000);
-        }
-    };
-
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -146,7 +232,10 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
 
 
 export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
+    // NEW: State for the Book Demo Modal
+    const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
     const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
+
     const heroRef = useRef(null);
     // Use useInView to trigger animations when the component scrolls into view
     const isInView = useInView(heroRef, { once: true, amount: 0.1 });
@@ -200,7 +289,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
 
     return (
         <section ref={heroRef} className="relative min-h-[90vh] flex items-center pt-24 pb-16 md:pt-32 lg:pt-40 bg-white dark:bg-gray-900 overflow-hidden">
-            {/* ALERT PLACEHOLDER: Used by the integrated DownloadBrochureModal for success messages */}
+            {/* ALERT PLACEHOLDER: Used by the integrated DownloadBrochureModal and BookDemoModal for success messages */}
             <div id="global-alert-hero" className="fixed top-4 right-4 z-[9999] opacity-0 transition-opacity duration-300 pointer-events-none"></div>
 
             {/* 2. Animated Background/Overlay (Subtle Glow/Blob) */}
@@ -271,12 +360,14 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 </Button>
                             </Link>
 
-                            {/* 2. Book a Demo (New Secondary Solid CTA) */}
-                            <Link to="/demo">
-                                <Button size="lg" className="text-lg px-8 py-6 w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow bg-indigo-600 text-white hover:bg-indigo-700">
-                                    Book a Demo
-                                </Button>
-                            </Link>
+                            {/* 2. Book a Demo (NEW MODAL CTA) - Replaces the Link to use the modal */}
+                            <Button
+                                size="lg"
+                                className="text-lg px-8 py-6 w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow bg-indigo-600 text-white hover:bg-indigo-700"
+                                onClick={() => setIsDemoModalOpen(true)} // Open the new demo modal
+                            >
+                                Book a Demo
+                            </Button>
                             
                             {/* 3. Download Brochure (Outline Secondary CTA) */}
                             <Button
@@ -362,7 +453,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 <h3 className="text-xl font-bold mb-1 z-10 relative">Shivam Shing</h3>
                                 <p className="text-sm mb-4 z-10 relative">Chief Operating Officer</p>
                                 <motion.img
-                                    src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh68HDmzQ4YTj9g9soRrkq-eHc9cAfbC03ZOXSClA19NofdsJ2lzm2A29d2qxG3xXSUfuEVl-sGEVnkokdgS6snQn86My-Bekn2MLrF135mZPHpwXfsLg1XxhFaClj1Uebgi6IcxeseCR6rvwc3vg6IgYUm8voolffwjQhcY4haMotxomzPVjfJm7ylnHdF/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png"
+                                    src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh68HDmzQ4YTj9g9soRrkq-eHc9cAfbC03ZOXSClA19NofdsJ2lzm2A29d2qxG3xXSUfuEVl-sGEVnkokdgS6snQn86My-Bekn2MLrF135mZPHpwfslg1XxhFaClj1Uebgi6IcxeseCR6rvwc3vg6IgYUm8voolffwjQhcY4haMotxomzPVjfJm7ylnHdF/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png"
                                     alt="COO"
                                     className="absolute -right-4 -bottom-4 h-24 w-24 object-cover opacity-70 z-0"
                                     style={{ 
@@ -405,6 +496,12 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                     </div>
                 </motion.div>
             </div>
+
+            {/* NEW: Book Demo Modal */}
+            <BookDemoModal 
+                isOpen={isDemoModalOpen} 
+                onClose={() => setIsDemoModalOpen(false)} 
+            />
 
             {/* Download Brochure Modal */}
             <DownloadBrochureModal 
