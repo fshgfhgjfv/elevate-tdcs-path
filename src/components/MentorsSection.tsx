@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
-import { Card } from "@/components/ui/card"; // Assuming this is a basic Card container
+import { Card } from "@/components/ui/card";
 
+// (Mentors array remains the same)
 const mentors = [
   {
     name: "Dibyajit Ghosh",
@@ -42,18 +43,18 @@ const mentors = [
   },
 ];
 
-const scrollingMentors = [...mentors, ...mentors]; // for infinite loop
+const scrollingMentors = [...mentors, ...mentors];
 
 export const MentorsSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const [itemWidth, setItemWidth] = useState(0);
-  const [flipped, setFlipped] = useState<{ [key: number]: boolean }>({});
-  const [isPaused, setIsPaused] = useState(false); // New state to control animation pause
+  // State to track which card is currently being hovered/flipped
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null); 
   const controlsRef = useRef<ReturnType<typeof animate> | null>(null);
 
-  // --- Animation Control (Pause/Resume) ---
-
+  // --- Animation Control (Start/Stop) ---
+  
   const startAnimation = useCallback((totalWidth: number) => {
     if (controlsRef.current) controlsRef.current.stop();
 
@@ -61,7 +62,7 @@ export const MentorsSection = () => {
       duration: 60,
       ease: "linear",
       repeat: Infinity,
-      // If the current value of x is already at the end of a loop, reset it
+      // Logic to snap back to 0 when a cycle completes
       onRepeat: () => {
         if (Math.abs(x.get()) >= totalWidth) {
             x.set(0);
@@ -73,13 +74,13 @@ export const MentorsSection = () => {
   const pauseAnimation = useCallback(() => {
     if (controlsRef.current) {
         controlsRef.current.stop();
-        setIsPaused(true);
     }
   }, []);
 
   // --- Main Animation Effect ---
   useEffect(() => {
-    if (!itemWidth || isPaused) return;
+    // Only run animation if we know the item width and no card is hovered
+    if (!itemWidth || hoveredIndex !== null) return;
 
     const totalWidth = mentors.length * itemWidth;
     startAnimation(totalWidth);
@@ -87,55 +88,31 @@ export const MentorsSection = () => {
     return () => {
       if (controlsRef.current) controlsRef.current.stop();
     };
-  }, [itemWidth, isPaused, startAnimation]);
+  }, [itemWidth, hoveredIndex, startAnimation]);
 
   // Measure width of one card for animation distance
   useEffect(() => {
     if (scrollRef.current) {
-      // Find the first card element. The card's width is w-80 (320px) + gap-6 (24px)
-      // For safety, we use the actual measured width + gap.
+      // W-80 (320px) + gap-6 (24px) = 344px
       const firstItem = scrollRef.current.children[0] as HTMLElement;
-      // Get the width of the card element itself (w-80 = 320px)
       const cardWidth = firstItem ? firstItem.offsetWidth : 320; 
-      // Add the gap (gap-6 in TailwindCSS is 1.5rem or 24px)
       const gapWidth = 24; 
 
       if (cardWidth) setItemWidth(cardWidth + gapWidth);
     }
   }, []);
   
-  // --- Interaction Handlers ---
+  // --- Hover Handlers ---
 
-  // Handle mobile tap flip toggle
-  const handleFlip = (index: number) => {
-    setFlipped((prev) => {
-      const isCurrentlyFlipped = !prev[index];
-      
-      // Pause/Resume scrolling based on flip state
-      if (isCurrentlyFlipped) {
-        pauseAnimation();
-      } else if (Object.values(prev).filter(v => v).length === 1) {
-        // Only resume if this was the last flipped card
-        setIsPaused(false);
-      }
-      
-      return { ...prev, [index]: isCurrentlyFlipped };
-    });
-  };
-
-  // Handle desktop mouse enter/leave
-  const handleMouseEnter = () => {
-    pauseAnimation();
+  const handleMouseEnter = (index: number) => {
+    pauseAnimation(); // Pause scroll
+    setHoveredIndex(index); // Trigger flip
   };
 
   const handleMouseLeave = () => {
-    // Only resume if no cards are currently flipped by mobile tap
-    if (Object.values(flipped).every(v => !v)) {
-        setIsPaused(false);
-    }
+    setHoveredIndex(null); // Unflip card
+    // The useEffect hook will detect hoveredIndex is null and restart the animation
   };
-
-  // The CSS in the JSX is updated to fix the backward text and ensure 3D perspective
 
   return (
     <section className="py-20 bg-gradient-to-br from-background to-muted/20 overflow-hidden">
@@ -144,7 +121,7 @@ export const MentorsSection = () => {
           Meet Our Experts 👨‍💻
         </h2>
         <p className="text-lg text-muted-foreground">
-          Learn from industry professionals in **cybersecurity and forensics**
+          **Hover over a card** to see their full profile and stop the scroll.
         </p>
       </div>
 
@@ -154,40 +131,38 @@ export const MentorsSection = () => {
           ref={scrollRef}
           style={{ x }}
           className="flex gap-6 will-change-transform"
-          onMouseEnter={handleMouseEnter} // Pause scroll on hover
-          onMouseLeave={handleMouseLeave} // Resume scroll on unhover
         >
           {scrollingMentors.map((mentor, index) => {
-            const isFlipped = flipped[index];
+            // Determine if the current card is the one being hovered
+            const isFlipped = hoveredIndex === index;
+            
             return (
               <div
                 key={index}
-                // IMPORTANT: The perspective must be on the parent of the flippable element
                 className="flex-shrink-0 w-80 perspective-[1000px]" 
-                // Using onClick for mobile, hover styles for desktop
-                onClick={() => handleFlip(index)} 
+                // Set hover handlers on the wrapper
+                onMouseEnter={() => handleMouseEnter(index)} 
+                onMouseLeave={handleMouseLeave} 
               >
                 <Card
                   className={`
                     relative w-full h-96 border dark:border-gray-700 
                     transition-transform duration-700 [transform-style:preserve-3d]
                     ${isFlipped ? "[transform:rotateY(180deg)]" : ""} 
-                    // New hover class for desktop flip:
-                    group-hover:[transform:rotateY(180deg)] cursor-pointer 
+                    cursor-pointer
                   `}
                 >
                   {/* Front Side */}
                   <div 
                     className="absolute inset-0 [backface-visibility:hidden] flex flex-col items-center justify-center rounded-xl overflow-hidden"
                   >
-                    {/* The image should display correctly as it's a standard URL */}
                     <img
                       src={mentor.image}
                       alt={mentor.name}
-                      className="w-full h-64 object-cover" // Removed rounded-t-xl for full Card size
+                      className="w-full h-64 object-cover"
                       onError={(e) => {
                           e.currentTarget.onerror = null; 
-                          e.currentTarget.src="https://via.placeholder.com/320x256?text=Image+Not+Found"; // Fallback image
+                          e.currentTarget.src="https://via.placeholder.com/320x256?text=Image+Missing"; 
                       }}
                     />
                     <div className="p-4 text-center w-full">
@@ -206,12 +181,10 @@ export const MentorsSection = () => {
                     </div>
                   </div>
 
-                  {/* Back Side */}
+                  {/* Back Side (Description) */}
                   <div 
                     className="absolute inset-0 p-5 text-left bg-background border rounded-xl 
                     [transform:rotateY(180deg)] 
-                    // FIX 1: [backface-visibility:hidden] is already on the front, but we need [transform:rotateY(180deg)]
-                    // FIX 2: Correct the orientation of the text on the back side
                     [backface-visibility:hidden] 
                     flex flex-col justify-center"
                   >
