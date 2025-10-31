@@ -150,7 +150,7 @@ export const hiringDrives = [
     role: "Data Analyst",
     salary: "5-8 LPA",
     location: "Mumbai",
-    logo: "https://ui-avatars.com/api/?name=DS&background=random",
+    logo: "https://lh3.googleusercontent.com/a-/ALV-UjVg9u82-OP6b9tgeYLydpOTyHai-4TKfkDQ6DG5qqItYmHUqro8=w45-h45-p-rp-mo-br100",
   },
   {
     company: "SecureNet Solutions",
