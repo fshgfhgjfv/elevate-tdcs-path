@@ -19,7 +19,7 @@ const AdvocateConstruction = () => {
           className="max-w-4xl mx-auto"
         >
           <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold gradient-text mb-4">Advocate Mallika Manna</h1>
+            <h1 className="text-5xl font-bold gradient-text mb-4">Advocate Sarbari Majumder</h1>
             <h2 className="text-2xl text-muted-foreground mb-6">Legal Counsel | High Court of Calcutta</h2>
             <p className="text-xl italic">"Dedicated to Justice. Committed to Clients."</p>
           </div>
