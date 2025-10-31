@@ -23,7 +23,7 @@ const testimonials = [
   {
     name: "Kabita Mondal",
     role: "Application Developer @Thoughtworks",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
+    image: "https://lh3.googleusercontent.com/a-/ALV-UjWx7rtVhMkq7jEDE-nqQCuUe034ntsl4MZWUCVbudOxEKe9Kzc=w45-h45-p-rp-mo-br100",
     quote: "Despite low CGPA, TDCS helped me land my dream job through practical projects.",
   },
   {
