@@ -16,7 +16,7 @@ interface Testimonial {
 
 const testimonials: Testimonial[] = [
   {
-    posterImg: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80",
+    posterImg: "https://blogger.googleusercontent.com/img/a/AVvXsEiR5vzDDaHMOfP1b-GEtK6ei7hJEusnJCXBjSvIGljLZn3JO2xjGRmXp0yLkyNLPIcfdSGJ3rvwzJQrxswByoWFdnt2NLHhfR9MGYE2Mw8_MuljtoWurnjNQZgLSt-_JDJDa13sA1OEVCLQrMRrYWaRgce8pSOYBVu-5L5vB3bXczlNFDNaGyyYJCYUy1fV",
     quoteTitle: "Exceptional Talent Pipeline",
     quoteText: "We hired rockstar developers from TDCS! The candidates are enjoying high ownership - having sound fundamentals and first principal thinking. The best part is they require minimal on-job training.",
     authorName: "Dibyajit Ghosh",
