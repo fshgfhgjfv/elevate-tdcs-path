@@ -164,6 +164,6 @@ export const hiringDrives = [
     role: "DevOps Engineer",
     salary: "8-15 LPA",
     location: "Pune",
-    logo: "https://ui-avatars.com/api/?name=CT&background=random",
+    logo: "https://lh3.googleusercontent.com/a-/ALV-UjWqB6KP5Lc-T7C1POzxL-r-J-wKad79kZfJjPnI-qjeS6xb7rRR=w45-h45-p-rp-mo-br100",
   },
 ];
