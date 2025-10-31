@@ -143,7 +143,7 @@ export const hiringDrives = [
     role: "Software Developer",
     salary: "6-10 LPA",
     location: "Bangalore",
-    logo: "https://ui-avatars.com/api/?name=TC&background=random",
+    logo: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj9FN4uTOMX_iQKfQBiFzd9zhMWX_i1y3eHsiSUVjGjQVsKvXCv5W6kAX5IOhlo3VrXs85N_UG5bksRyjbNfwQ8f2Zc8IV0DsMkEbiKDdobk5ptQLUqhXjV9EnsQFrrWJ7Ou4ATfz1RwPWk4X90v9k66h28w51YrlOFLk2BuJ30oERB7GJcJ2pmDU8kTZbD/s1280/WhatsApp%20Image%202025-07-14%20at%2014.44.41_500126ec.jpg",
   },
   {
     company: "DataSystems Pro",
