@@ -325,7 +325,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Student avatar" />
                             </div>
                             <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                                35k+ Happy Students
+                                15k+ Happy Students
                             </p>
                         </motion.div>
 
@@ -453,7 +453,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 <h3 className="text-xl font-bold mb-1 z-10 relative">Shivam Shing</h3>
                                 <p className="text-sm mb-4 z-10 relative">Chief Operating Officer</p>
                                 <motion.img
-                                    src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh68HDmzQ4YTj9g9soRrkq-eHc9cAfbC03ZOXSClA19NofdsJ2lzm2A29d2qxG3xXSUfuEVl-sGEVnkokdgS6snQn86My-Bekn2MLrF135mZPHpwfslg1XxhFaClj1Uebgi6IcxeseCR6rvwc3vg6IgYUm8voolffwjQhcY4haMotxomzPVjfJm7ylnHdF/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png"
+                                    src="https://blogger.googleusercontent.com/img/a/AVvXsEgiDtg5YtmQ7bdvNmeAAMyhwpc5tLm_RNR2Lv4y4u6hsMzTiuqNyxo7O0qU32donmMZoTduoxe-4WgWVdPh29JH9vmYXkqCI7hiyzwaYBxxXgTfKbCsjTST6gyIWQB230kRXgwfQvxV-dqB9V-Xqr3915tuA9d88D1rGY-l9sJy_vhC3HJR0pdEI6F3E8Nr"
                                     alt="COO"
                                     className="absolute -right-4 -bottom-4 h-24 w-24 object-cover opacity-70 z-0"
                                     style={{ 
