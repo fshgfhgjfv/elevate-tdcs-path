@@ -5,7 +5,7 @@ const testimonials = [
   {
     name: "Stuti Pandey",
     role: "Software Engineer @Walmart",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
+    image: "https://lh3.googleusercontent.com/a-/ALV-UjWx7rtVhMkq7jEDE-nqQCuUe034ntsl4MZWUCVbudOxEKe9Kzc=w45-h45-p-rp-mo-br100",
     quote: "TDCS transformed my career with their comprehensive training program.",
   },
   {
