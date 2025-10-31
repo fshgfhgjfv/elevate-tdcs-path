@@ -56,7 +56,7 @@ const features = [
     description:
       "Receive personalized career guidance and interview preparation support.",
     image:
-      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&h=400&fit=crop&q=80",
+      "https://blogger.googleusercontent.com/img/a/AVvXsEikLcFJFpMTjlxzZ8arLjiHWYpNabXEXVRBH50gLuvGIW56wJVH0MuRU5MdvxYQzhk2Vs0kqIfXATVEXMogO_zZHNE-WBE_P1eOrax5XiWTARUslqFvkap4Sjp3LYPKMFO3mHxRcq-BDZ8buaRUO4q_mYT7gZBANq03RQZxjsvY3zJ3DiKX1uCt8dDPYETg",
   },
 ];
 
