@@ -110,7 +110,7 @@ const Home = () => {
                     </div>
                     <Button variant="gradient" className="w-full mt-4">
                       <Briefcase className="mr-2 h-4 w-4" />
-                      Apply Now
+                      Enroll Now
                     </Button>
                   </CardContent>
                 </Card>
