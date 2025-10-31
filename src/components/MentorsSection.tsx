@@ -49,7 +49,6 @@ export const MentorsSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const [itemWidth, setItemWidth] = useState(0);
-  // State to track which card is currently being hovered/flipped
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null); 
   const controlsRef = useRef<ReturnType<typeof animate> | null>(null);
 
@@ -59,10 +58,10 @@ export const MentorsSection = () => {
     if (controlsRef.current) controlsRef.current.stop();
 
     controlsRef.current = animate(x, [x.get(), -totalWidth], {
-      duration: 60,
+      // Set duration lower (e.g., 15) for faster scrolling
+      duration: 15, 
       ease: "linear",
       repeat: Infinity,
-      // Logic to snap back to 0 when a cycle completes
       onRepeat: () => {
         if (Math.abs(x.get()) >= totalWidth) {
             x.set(0);
@@ -79,7 +78,6 @@ export const MentorsSection = () => {
 
   // --- Main Animation Effect ---
   useEffect(() => {
-    // Only run animation if we know the item width and no card is hovered
     if (!itemWidth || hoveredIndex !== null) return;
 
     const totalWidth = mentors.length * itemWidth;
@@ -93,7 +91,6 @@ export const MentorsSection = () => {
   // Measure width of one card for animation distance
   useEffect(() => {
     if (scrollRef.current) {
-      // W-80 (320px) + gap-6 (24px) = 344px
       const firstItem = scrollRef.current.children[0] as HTMLElement;
       const cardWidth = firstItem ? firstItem.offsetWidth : 320; 
       const gapWidth = 24; 
@@ -111,7 +108,7 @@ export const MentorsSection = () => {
 
   const handleMouseLeave = () => {
     setHoveredIndex(null); // Unflip card
-    // The useEffect hook will detect hoveredIndex is null and restart the animation
+    // useEffect will automatically restart the animation because hoveredIndex is null
   };
 
   return (
@@ -120,8 +117,9 @@ export const MentorsSection = () => {
         <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-600 mb-4">
           Meet Our Experts 👨‍💻
         </h2>
+        {/* TEXT CHANGE IMPLEMENTED HERE */}
         <p className="text-lg text-muted-foreground">
-          **Hover over a card** to see their full profile and stop the scroll.
+          TDCS TEACHES: Learn from industry professionals in cybersecurity and forensics
         </p>
       </div>
 
@@ -133,14 +131,12 @@ export const MentorsSection = () => {
           className="flex gap-6 will-change-transform"
         >
           {scrollingMentors.map((mentor, index) => {
-            // Determine if the current card is the one being hovered
             const isFlipped = hoveredIndex === index;
             
             return (
               <div
                 key={index}
                 className="flex-shrink-0 w-80 perspective-[1000px]" 
-                // Set hover handlers on the wrapper
                 onMouseEnter={() => handleMouseEnter(index)} 
                 onMouseLeave={handleMouseLeave} 
               >
