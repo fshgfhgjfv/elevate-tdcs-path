@@ -49,77 +49,64 @@ export const MentorsSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const [itemWidth, setItemWidth] = useState(0);
+  // This state is now ONLY for controlling the card flip
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null); 
-  const controlsRef = useRef<ReturnType<typeof animate> | null>(null);
-
-  // --- Animation Control (Start/Stop) ---
   
-  const startAnimation = useCallback((totalWidth: number) => {
-    if (controlsRef.current) controlsRef.current.stop();
+  // controlsRef and animation functions are simplified and consolidated
 
-    controlsRef.current = animate(x, [x.get(), -totalWidth], {
+  // --- Start Continuous Animation (Runs Once) ---
+  useEffect(() => {
+    // Measure width of one card for animation distance
+    if (scrollRef.current) {
+      const firstItem = scrollRef.current.children[0] as HTMLElement;
+      const cardWidth = firstItem ? firstItem.offsetWidth : 320; 
+      const gapWidth = 24; 
+      setItemWidth(cardWidth + gapWidth);
+    }
+  }, []); // Empty dependency array ensures it measures once on mount
+
+  useEffect(() => {
+    if (!itemWidth) return;
+
+    const totalWidth = mentors.length * itemWidth;
+
+    // Start the infinite animation without controlsRef or pause logic
+    const controls = animate(x, [0, -totalWidth], {
       // Set duration lower (e.g., 15) for faster scrolling
       duration: 15, 
       ease: "linear",
       repeat: Infinity,
       onRepeat: () => {
-        if (Math.abs(x.get()) >= totalWidth) {
-            x.set(0);
-        }
+        // Reset X to 0 to create the seamless loop effect
+        x.set(0); 
       },
     });
-  }, [x]);
 
-  const pauseAnimation = useCallback(() => {
-    if (controlsRef.current) {
-        controlsRef.current.stop();
-    }
-  }, []);
+    // Cleanup function to stop animation when component unmounts
+    return () => controls.stop();
+  }, [itemWidth, x]); // itemWidth dependency ensures it starts after width is known
 
-  // --- Main Animation Effect ---
-  useEffect(() => {
-    if (!itemWidth || hoveredIndex !== null) return;
-
-    const totalWidth = mentors.length * itemWidth;
-    startAnimation(totalWidth);
-
-    return () => {
-      if (controlsRef.current) controlsRef.current.stop();
-    };
-  }, [itemWidth, hoveredIndex, startAnimation]);
-
-  // Measure width of one card for animation distance
-  useEffect(() => {
-    if (scrollRef.current) {
-      const firstItem = scrollRef.current.children[0] as HTMLElement;
-      const cardWidth = firstItem ? firstItem.offsetWidth : 320; 
-      const gapWidth = 24; 
-
-      if (cardWidth) setItemWidth(cardWidth + gapWidth);
-    }
-  }, []);
   
-  // --- Hover Handlers ---
+  // --- Hover Handlers (ONLY for Card Flip) ---
 
   const handleMouseEnter = (index: number) => {
-    pauseAnimation(); // Pause scroll
-    setHoveredIndex(index); // Trigger flip
+    // ONLY flips the card, no scroll control
+    setHoveredIndex(index); 
   };
 
   const handleMouseLeave = () => {
-    setHoveredIndex(null); // Unflip card
-    // useEffect will automatically restart the animation because hoveredIndex is null
+    // ONLY unfips the card, no scroll control
+    setHoveredIndex(null); 
   };
 
   return (
     <section className="py-20 bg-gradient-to-br from-background to-muted/20 overflow-hidden">
       <div className="container mx-auto px-4 text-center mb-12">
         <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-600 mb-4">
-          Meet Our Experts
+          Meet Our Experts 👨‍💻
         </h2>
-        {/* TEXT CHANGE IMPLEMENTED HERE */}
         <p className="text-lg text-muted-foreground">
-        Learn from industry professionals in cybersecurity and forensics
+          TDCS TEACHES: Learn from industry professionals in cybersecurity and forensics
         </p>
       </div>
 
@@ -128,6 +115,7 @@ export const MentorsSection = () => {
         <motion.div
           ref={scrollRef}
           style={{ x }}
+          // The scroll container is now focused purely on motion, without hover events
           className="flex gap-6 will-change-transform"
         >
           {scrollingMentors.map((mentor, index) => {
@@ -137,6 +125,7 @@ export const MentorsSection = () => {
               <div
                 key={index}
                 className="flex-shrink-0 w-80 perspective-[1000px]" 
+                // Hover handlers now only manage the 'hoveredIndex' state
                 onMouseEnter={() => handleMouseEnter(index)} 
                 onMouseLeave={handleMouseLeave} 
               >
