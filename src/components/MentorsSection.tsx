@@ -119,7 +119,7 @@ export const MentorsSection = () => {
         </h2>
         {/* TEXT CHANGE IMPLEMENTED HERE */}
         <p className="text-lg text-muted-foreground">
-          TDCS TEACHES: Learn from industry professionals in cybersecurity and forensics
+        Learn from industry professionals in cybersecurity and forensics
         </p>
       </div>
 
