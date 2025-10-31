@@ -115,7 +115,7 @@ export const MentorsSection = () => {
     <section className="py-20 bg-gradient-to-br from-background to-muted/20 overflow-hidden">
       <div className="container mx-auto px-4 text-center mb-12">
         <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-600 mb-4">
-          Meet Our Experts 👨‍💻
+          Meet Our Experts
         </h2>
         {/* TEXT CHANGE IMPLEMENTED HERE */}
         <p className="text-lg text-muted-foreground">
