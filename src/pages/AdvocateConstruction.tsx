@@ -28,7 +28,7 @@ const AdvocateConstruction = () => {
             <Card className="shadow-glow">
               <CardContent className="p-8">
                 <p className="text-lg leading-relaxed">
-                  Advocate Mallika Manna is a distinguished legal practitioner with a focused career in civil and criminal litigation at the Hon'ble High Court of Calcutta. Renowned for her integrity, strategic thinking, and client-focused advocacy, she delivers exceptional legal representation grounded in ethics, precision, and professionalism.
+                  Advocate Sarbari Majumder is a distinguished legal practitioner with a focused career in civil and criminal litigation at the Hon'ble High Court of Calcutta. Renowned for her integrity, strategic thinking, and client-focused advocacy, she delivers exceptional legal representation grounded in ethics, precision, and professionalism.
                 </p>
               </CardContent>
             </Card>
