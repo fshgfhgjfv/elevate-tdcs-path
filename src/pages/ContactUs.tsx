@@ -27,6 +27,14 @@ export default function ContactUs() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Phone validation
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      toast.error("Please enter a valid 10-digit phone number.");
+      return;
+    }
+
     console.log("Contact form:", formData);
     toast.success("Message sent successfully! We'll get back to you soon.");
     setFormData({ name: "", email: "", phone: "", message: "" });
@@ -45,9 +53,8 @@ export default function ContactUs() {
           <h1 className="text-6xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-600 mb-4">
             Get in Touch
           </h1>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Have questions or want to work with us? Drop a message and our team
-            will respond shortly.
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto font-light tracking-wide">
+            We’d love to hear from you — reach out to our team and let’s connect.
           </p>
         </motion.div>
 
@@ -60,73 +67,104 @@ export default function ContactUs() {
             initial="hidden"
             animate="visible"
           >
-            <Card className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl rounded-2xl">
+            <Card className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl">
               <CardHeader>
-                <CardTitle className="text-2xl bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">
+                <CardTitle className="text-2xl font-semibold bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">
                   Send us a Message
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-5">
+                  {/* Name */}
                   <motion.div variants={fadeUp} custom={0.3}>
-                    <Label htmlFor="name">Name</Label>
+                    <Label
+                      htmlFor="name"
+                      className="text-white font-medium tracking-wide"
+                    >
+                      Name
+                    </Label>
                     <Input
                       id="name"
+                      placeholder="Enter your full name"
                       value={formData.name}
                       onChange={(e) =>
                         setFormData({ ...formData, name: e.target.value })
                       }
                       required
-                      className="bg-white/10 border border-white/20 focus:border-purple-500 transition-all"
+                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 focus:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all rounded-xl"
                     />
                   </motion.div>
 
+                  {/* Email */}
                   <motion.div variants={fadeUp} custom={0.4}>
-                    <Label htmlFor="email">Email</Label>
+                    <Label
+                      htmlFor="email"
+                      className="text-white font-medium tracking-wide"
+                    >
+                      Email
+                    </Label>
                     <Input
                       id="email"
                       type="email"
+                      placeholder="Enter your email address"
                       value={formData.email}
                       onChange={(e) =>
                         setFormData({ ...formData, email: e.target.value })
                       }
                       required
-                      className="bg-white/10 border border-white/20 focus:border-purple-500 transition-all"
+                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 focus:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all rounded-xl"
                     />
                   </motion.div>
 
+                  {/* Phone */}
                   <motion.div variants={fadeUp} custom={0.5}>
-                    <Label htmlFor="phone">Phone</Label>
+                    <Label
+                      htmlFor="phone"
+                      className="text-white font-medium tracking-wide"
+                    >
+                      Phone (10 digits)
+                    </Label>
                     <Input
                       id="phone"
                       type="tel"
+                      placeholder="Enter your 10-digit phone number"
                       value={formData.phone}
                       onChange={(e) =>
                         setFormData({ ...formData, phone: e.target.value })
                       }
                       required
-                      className="bg-white/10 border border-white/20 focus:border-purple-500 transition-all"
+                      pattern="[0-9]{10}"
+                      maxLength={10}
+                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 focus:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all rounded-xl"
                     />
                   </motion.div>
 
+                  {/* Message */}
                   <motion.div variants={fadeUp} custom={0.6}>
-                    <Label htmlFor="message">Message</Label>
+                    <Label
+                      htmlFor="message"
+                      className="text-white font-medium tracking-wide"
+                    >
+                      Message
+                    </Label>
                     <Textarea
                       id="message"
                       rows={4}
+                      placeholder="Type your message..."
                       value={formData.message}
                       onChange={(e) =>
                         setFormData({ ...formData, message: e.target.value })
                       }
                       required
-                      className="bg-white/10 border border-white/20 focus:border-purple-500 transition-all"
+                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 focus:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all rounded-xl"
                     />
                   </motion.div>
 
+                  {/* Submit */}
                   <motion.div variants={fadeUp} custom={0.8}>
                     <Button
                       type="submit"
-                      className="w-full py-3 text-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 transition rounded-xl"
+                      className="w-full py-3 text-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 transition rounded-xl shadow-[0_0_25px_rgba(139,92,246,0.4)]"
                     >
                       Send Message
                     </Button>
@@ -177,7 +215,9 @@ export default function ContactUs() {
               >
                 {item.icon}
                 <div>
-                  <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
+                  <h3 className="font-semibold text-lg mb-1 text-white/90">
+                    {item.title}
+                  </h3>
                   {item.link ? (
                     <a
                       href={item.link}
