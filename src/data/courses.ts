@@ -143,7 +143,7 @@ export const hiringDrives = [
     role: "Software Developer",
     salary: "6-10 LPA",
     location: "Bangalore",
-    logo: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj9FN4uTOMX_iQKfQBiFzd9zhMWX_i1y3eHsiSUVjGjQVsKvXCv5W6kAX5IOhlo3VrXs85N_UG5bksRyjbNfwQ8f2Zc8IV0DsMkEbiKDdobk5ptQLUqhXjV9EnsQFrrWJ7Ou4ATfz1RwPWk4X90v9k66h28w51YrlOFLk2BuJ30oERB7GJcJ2pmDU8kTZbD/s1280/WhatsApp%20Image%202025-07-14%20at%2014.44.41_500126ec.jpg",
+    logo: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhO_LzwKyTQyM8z_44Nobdc4Zx0I0ASkuPAwikVbRFs3PIFwywjKyRCmrex5MZJ3K5Rz96DGjSC91HeD9SO40r2lh_2CZt4PzjE9q2zhDTh3-vlN_OTP3YsSexs-NQbXOw2PdtFvOVLCTbu4Ixee_47J2QWVoDicUm0DthmPr8pdMKXyeE-vt6VNP2UTXMH/s600/profile-pic%20(14).png",
   },
   {
     company: "DataSystems Pro",
