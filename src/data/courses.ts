@@ -157,7 +157,7 @@ export const hiringDrives = [
     role: "Security Analyst",
     salary: "7-12 LPA",
     location: "Hyderabad",
-    logo: "https://ui-avatars.com/api/?name=SS&background=random",
+    logo: "https://lh3.googleusercontent.com/a-/ALV-UjWGLJlaotl0Vc251R-dUvjcsyACKq6U5SilOXFOjC3pY6y2_uigbg=w45-h45-p-rp-mo-br100",
   },
   {
     company: "CloudTech Services",
