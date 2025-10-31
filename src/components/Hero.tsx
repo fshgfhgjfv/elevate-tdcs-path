@@ -7,7 +7,7 @@ import { Download, X } from "lucide-react";
 import type { RefObject } from "react"; // Explicitly import RefObject type for clarity
 import { CalendarCheck } from "lucide-react"; // NEW: Import for Book Demo Modal
 
-// --- Custom CSS to define and apply the new gradient ---
+
 const GRADIENT_CLASS = "text-transparent bg-clip-text bg-gradient-to-r from-[#FF9A3C] via-[#FF50B3] to-[#8C53FF]";
 
 interface HeroProps {
