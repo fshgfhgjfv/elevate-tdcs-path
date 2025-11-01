@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Phone } from "lucide-react";
-import { useLeadSubmission } from "@/hooks/useLeadSubmission";
 
 export const CounselorForm = () => {
   const [formData, setFormData] = useState({
@@ -15,26 +14,14 @@ export const CounselorForm = () => {
     state: "",
   });
 
-  const { submitLead, isSubmitting } = useLeadSubmission();
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.phone) {
       toast.error("Please fill in all required fields");
       return;
     }
-
-    const result = await submitLead({
-      name: formData.name,
-      email: '', // Optional field
-      phone: formData.phone,
-      message: `Degree: ${formData.degree}, State: ${formData.state}`,
-      source: 'counselor_callback',
-    });
-
-    if (result.success) {
-      setFormData({ name: "", phone: "", degree: "", state: "" });
-    }
+    toast.success("Request submitted! Our counselor will contact you soon.");
+    setFormData({ name: "", phone: "", degree: "", state: "" });
   };
 
   return (
@@ -93,8 +80,8 @@ export const CounselorForm = () => {
             </SelectContent>
           </Select>
           
-          <Button type="submit" variant="gradient" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? 'Submitting...' : 'Request Callback'}
+          <Button type="submit" variant="gradient" className="w-full">
+            Request Callback
           </Button>
           
           <p className="text-xs text-muted-foreground text-center">

@@ -6,7 +6,6 @@ import { motion, useMotionValue, useTransform, useInView } from "framer-motion";
 import { Download, X } from "lucide-react"; 
 import type { RefObject } from "react"; // Explicitly import RefObject type for clarity
 import { CalendarCheck } from "lucide-react"; // NEW: Import for Book Demo Modal
-import { useLeadSubmission } from "@/hooks/useLeadSubmission";
 
 
 const GRADIENT_CLASS = "text-transparent bg-clip-text bg-gradient-to-r from-[#FF9A3C] via-[#FF50B3] to-[#8C53FF]";
@@ -71,25 +70,14 @@ const alertMessage = (message: string, type: 'success' | 'error') => {
 
 // --- NEW: BookDemoModal Component ---
 const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
-    const { submitLead, isSubmitting } = useLeadSubmission();
-    
     if (!isOpen) return null;
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        
-        const result = await submitLead({
-            name: formData.get('name') as string,
-            email: '',
-            phone: formData.get('phone') as string,
-            message: 'Demo booking request',
-            source: 'demo_booking',
-        });
-
-        if (result.success) {
-            onClose();
-        }
+        // Simulate demo booking logic
+        console.log("Form Submitted for demo booking.");
+        alertMessage("Demo request received! We'll contact you shortly (simulated).", "success");
+        onClose();
     };
 
     return (
@@ -150,11 +138,10 @@ const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
 
                     <button
                         type="submit"
-                        disabled={isSubmitting}
-                        className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out"
                     >
                         <CalendarCheck className="w-5 h-5 mr-2" />
-                        {isSubmitting ? 'Submitting...' : 'Confirm Demo Time'}
+                        Confirm Demo Time
                     </button>
                 </form>
             </div>
@@ -164,25 +151,14 @@ const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
 // --- DownloadBrochureModal Component (INTEGRATED) ---
 // FIXED: Added explicit prop typing (DownloadBrochureModalProps)
 const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) => {
-    const { submitLead, isSubmitting } = useLeadSubmission();
-    
     if (!isOpen) return null;
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        
-        const result = await submitLead({
-            name: formData.get('name') as string,
-            email: formData.get('email') as string,
-            phone: formData.get('phone') as string,
-            message: 'Brochure download request',
-            source: 'brochure_download',
-        });
-
-        if (result.success) {
-            onClose();
-        }
+        // Simulate brochure download logic
+        console.log("Form Submitted for brochure download.");
+        alertMessage("Thank you! Your brochure download link has been sent to your email (simulated).", "success");
+        onClose();
     };
 
     return (
@@ -243,11 +219,10 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
 
                     <button
                         type="submit"
-                        disabled={isSubmitting}
-                        className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
                     >
                         <Download className="w-5 h-5 mr-2" />
-                        {isSubmitting ? 'Submitting...' : 'Download Instantly'}
+                        Download Instantly
                     </button>
                 </form>
             </div>
