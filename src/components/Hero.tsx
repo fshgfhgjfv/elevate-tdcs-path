@@ -46,7 +46,7 @@ const wordItemVariants = {
         y: 0,
         rotateX: 0,
         transition: {
-            type: "spring",
+            type: "spring" as const,
             damping: 12,
             stiffness: 100,
         },

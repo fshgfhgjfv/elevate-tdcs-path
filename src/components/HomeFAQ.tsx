@@ -67,7 +67,6 @@ const faqData = {
     },
     {
       question: "What companies hire from TDCS?",
-      question: "What companies hire from TDCS?",
       answer: "Our hiring partners include Walmart, MakeMyTrip, Thoughtworks, PayGlocal, Innovaccer, Gainsight, and 500+ other leading tech companies.",
     },
     {
@@ -98,9 +97,9 @@ const faqItemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
-      damping: 18, // Reduced damping for a slightly bouncier feel
-      stiffness: 120, // Reduced stiffness for smoother motion
+      type: "spring" as const,
+      damping: 18,
+      stiffness: 120,
     },
   },
 };
@@ -116,10 +115,9 @@ export const HomeFAQ = () => {
 
   // Spring transition for the sidebar for a more advanced feel
   const sidebarTransition = {
-    type: "spring",
+    type: "spring" as const,
     damping: 15,
     stiffness: 100,
-    duration: 0.7,
   };
 
   return (
