@@ -7,23 +7,102 @@
     <meta name="description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
     <meta name="author" content="TDCS Technologies Private Limited" />
 
-    
-    
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS LOGO.png">
-
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS LOGO.png">
     <meta property="og:title" content="TDCS Technologies Private Limited">
-  <meta name="twitter:title" content="TDCS Technologies Private Limited">
-  <meta property="og:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
-  <meta name="twitter:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
-</head>
+    <meta name="twitter:title" content="TDCS Technologies Private Limited">
+    <meta property="og:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
+    <meta name="twitter:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
+
+    <style>
+      /* ✨ Gradient Cursor Glow Effect ✨ */
+      #cursor-glow {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        pointer-events: none;
+        background: radial-gradient(
+          circle,
+          hsla(355, 100%, 69%, 0.4),
+          hsla(277, 45%, 55%, 0.1) 70%
+        );
+        filter: blur(20px);
+        transform: translate(-50%, -50%);
+        transition: width 0.25s ease, height 0.25s ease, opacity 0.3s ease;
+        z-index: 9999;
+        mix-blend-mode: screen;
+      }
+
+      #cursor-glow.hover {
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(
+          circle,
+          hsla(28, 100%, 64%, 0.6),
+          hsla(355, 100%, 69%, 0.3) 60%
+        );
+        filter: blur(25px);
+      }
+
+      /* Optional: smooth fade for page load */
+      body {
+        cursor: none; /* hide system cursor */
+      }
+    </style>
+  </head>
 
   <body>
+    <!-- 💫 Cursor Glow -->
+    <div id="cursor-glow"></div>
+
+    <!-- React App Mount -->
     <div id="root"></div>
+
+    <!-- Razorpay -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- 🧠 Cursor Script -->
+    <script>
+      const cursor = document.getElementById("cursor-glow");
+      let x = 0, y = 0, targetX = 0, targetY = 0;
+
+      if (cursor) {
+        // Animation loop
+        function animate() {
+          x += (targetX - x) * 0.15;
+          y += (targetY - y) * 0.15;
+          cursor.style.transform = `translate(${x}px, ${y}px)`;
+          requestAnimationFrame(animate);
+        }
+
+        // Mouse movement tracking
+        window.addEventListener("mousemove", (e) => {
+          targetX = e.clientX;
+          targetY = e.clientY;
+        });
+
+        // Hover enlarge on buttons/links
+        document.addEventListener("mouseover", (e) => {
+          if (e.target.closest("a, button, .hoverable")) {
+            cursor.classList.add("hover");
+          }
+        });
+
+        document.addEventListener("mouseout", (e) => {
+          if (e.target.closest("a, button, .hoverable")) {
+            cursor.classList.remove("hover");
+          }
+        });
+
+        animate();
+      }
+    </script>
   </body>
 </html>
