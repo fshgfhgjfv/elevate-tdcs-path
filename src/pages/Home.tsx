@@ -108,9 +108,11 @@ const Home = () => {
                       <span className="text-primary font-semibold">{drive.salary}</span>
                       <p className="text-sm text-muted-foreground">{drive.location}</p>
                     </div>
-                    <Button variant="gradient" className="w-full mt-4">
-                      <Briefcase className="mr-2 h-4 w-4" />
-                      Enroll Now
+                    <Button variant="gradient" className="w-full mt-4" asChild>
+                      <Link to="/courses">
+                        <Briefcase className="mr-2 h-4 w-4" />
+                        Enroll Now
+                      </Link>
                     </Button>
                   </CardContent>
                 </Card>
@@ -168,7 +170,26 @@ const Home = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {testimonials.map((testimonial, index) => (
-              <TestimonialCard key={index} {...testimonial} />
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30, rotateX: -10 }}
+                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                viewport={{ once: true }}
+                transition={{ 
+                  delay: index * 0.1,
+                  duration: 0.6,
+                  type: "spring",
+                  stiffness: 100
+                }}
+                whileHover={{
+                  scale: 1.05,
+                  rotateY: 5,
+                  transition: { duration: 0.3 }
+                }}
+                style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
+              >
+                <TestimonialCard {...testimonial} />
+              </motion.div>
             ))}
           </div>
         </div>

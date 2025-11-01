@@ -91,36 +91,42 @@ export const testimonials = [
     before: "Chemical Engineer",
     after: "Software Engineer",
     company: "Innovaccer",
+    image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhO_LzwKyTQyM8z_44Nobdc4Zx0I0ASkuPAwikVbRFs3PIFwywjKyRCmrex5MZJ3K5Rz96DGjSC91HeD9SO40r2lh_2CZt4PzjE9q2zhDTh3-vlN_OTP3YsSexs-NQbXOw2PdtFvOVLCTbu4Ixee_47J2QWVoDicUm0DthmPr8pdMKXyeE-vt6VNP2UTXMH/s600/profile-pic%20(14).png",
   },
   {
     name: "Kabita Mondal",
     before: "M.Sc in CS",
     after: "Application Developer",
     company: "Thoughtworks",
+    image: "https://lh3.googleusercontent.com/a-/ALV-UjVg9u82-OP6b9tgeYLydpOTyHai-4TKfkDQ6DG5qqItYmHUqro8=w45-h45-p-rp-mo-br100",
   },
   {
     name: "Akash Ingoley",
     before: "Gap year",
     after: "Software Developer",
     company: "Pay Glocal",
+    image: "https://lh3.googleusercontent.com/a-/ALV-UjWGLJlaotl0Vc251R-dUvjcsyACKq6U5SilOXFOjC3pY6y2_uigbg=w45-h45-p-rp-mo-br100",
   },
   {
     name: "Pradyot Verma",
     before: "Mechanical Engineer",
     after: "Software Developer",
     company: "MakeMyTrip",
+    image: "https://lh3.googleusercontent.com/a-/ALV-UjWqB6KP5Lc-T7C1POzxL-r-J-wKad79kZfJjPnI-qjeS6xb7rRR=w45-h45-p-rp-mo-br100",
   },
   {
     name: "Stuti Pandey",
     before: "Fresher Graduate",
     after: "Full Stack Developer",
     company: "Zomato",
+    image: "https://blogger.googleusercontent.com/img/a/AVvXsEiR5vzDDaHMOfP1b-GEtK6ei7hJEusnJCXBjSvIGljLZn3JO2xjGRmXp0yLkyNLPIcfdSGJ3rvwzJQrxswByoWFdnt2NLHhfR9MGYE2Mw8_MuljtoWurnjNQZgLSt-_JDJDa13sA1OEVCLQrMRrYWaRgce8pSOYBVu-5L5vB3bXczlNFDNaGyyYJCYUy1fV",
   },
   {
     name: "Lalit K Tiwari",
     before: "Civil Engineer",
     after: "Data Analyst",
     company: "Flipkart",
+    image: "https://lh3.googleusercontent.com/a-/ALV-UjXHjNg8vPzKqCEbF_YLkTpR2D4Nv5mL9oZaWpQHoI9dRxQd8gZ5=w45-h45-p-rp-mo-br100",
   },
 ];
 

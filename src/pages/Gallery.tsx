@@ -22,6 +22,7 @@ import tools2 from "@/assets/gallery/tools2.jpg";
 import tusharImg from "@/assets/founders/tushar-bhakta.jpg";
 import shivamImg from "@/assets/founders/shivam-shing.jpg";
 import dibyajitImg from "@/assets/founders/dibyajit-ghosh.jpg";
+import newGalleryImg from "@/assets/gallery/new-gallery-image.jpg";
 
 const categories = [
   "All",
@@ -54,6 +55,7 @@ const galleryItems = [
   { id: 18, image: tusharImg, category: "Team", title: "Tushar Bhakta - CMO" },
   { id: 19, image: shivamImg, category: "Team", title: "Shivam Shing - COO" },
   { id: 20, image: dibyajitImg, category: "Team", title: "Dibyajit Ghosh - Founder & CEO" },
+  { id: 21, image: newGalleryImg, category: "Offline Center", title: "TDCS Learning Center" },
 ];
 
 export default function Gallery() {
@@ -118,26 +120,41 @@ export default function Gallery() {
               <motion.div
                 key={item.id}
                 layout
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
+                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                exit={{ opacity: 0, scale: 0.8, rotateY: 15 }}
+                transition={{ 
+                  duration: 0.5,
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 15
+                }}
+                whileHover={{ 
+                  scale: 1.05,
+                  rotateY: 5,
+                  transition: { duration: 0.3 }
+                }}
                 className="group relative overflow-hidden rounded-lg shadow-lg cursor-pointer"
                 onClick={() => handleImageClick(item)}
-                style={{ perspective: "1200px" }}
+                style={{ perspective: "1200px", transformStyle: "preserve-3d" }}
               >
-                <div className="relative overflow-hidden transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-glow">
+                <div className="relative overflow-hidden transform transition-all duration-300 group-hover:shadow-glow">
                   <img
                     src={item.image}
                     alt={item.title}
                     className="w-full h-64 object-cover"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute bottom-4 left-4 right-4">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <motion.div 
+                      initial={{ y: 20, opacity: 0 }}
+                      whileHover={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.1 }}
+                      className="absolute bottom-4 left-4 right-4"
+                    >
                       <h3 className="text-white font-semibold text-lg">{item.title}</h3>
                       <p className="text-white/80 text-sm">{item.category}</p>
-                    </div>
+                    </motion.div>
                   </div>
                 </div>
               </motion.div>
