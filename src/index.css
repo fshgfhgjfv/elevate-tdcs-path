@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* TDCS Design System - Vibrant gradient theme */
+/* ===========================================================
+   TDCS Design System — Vibrant Gradient + 3D Interactive Theme
+   =========================================================== */
 
 @layer base {
   :root {
@@ -15,87 +17,66 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 12%;
 
-    /* Primary: Orange gradient start */
+    /* Gradient palette */
     --primary: 28 100% 64%;
     --primary-foreground: 0 0% 100%;
-
-    /* Secondary: Pink gradient middle */
     --secondary: 355 100% 69%;
     --secondary-foreground: 0 0% 100%;
-
-    /* Accent: Purple gradient end */
     --accent: 277 45% 55%;
     --accent-foreground: 0 0% 100%;
 
+    /* Support */
     --muted: 277 45% 95%;
     --muted-foreground: 0 0% 33%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 277 45% 90%;
     --input: 277 45% 95%;
     --ring: 277 45% 55%;
-
     --radius: 0.75rem;
     
     /* Custom gradient colors */
-    --gradient-start: 28 100% 64%; /* #FFB347 */
-    --gradient-middle: 355 100% 69%; /* #FF5F6D */
-    --gradient-end: 277 45% 55%; /* #9B59B6 */
+    --gradient-start: 28 100% 64%;
+    --gradient-middle: 355 100% 69%;
+    --gradient-end: 277 45% 55%;
     
-    /* Light accent colors */
-    --light-pink: 355 100% 76%; /* #FF7E8D */
-    --light-purple: 270 100% 73%; /* #A866FF */
+    /* Accent tones */
+    --light-pink: 355 100% 76%;
+    --light-purple: 270 100% 73%;
     
-    /* Shadow with purple tint */
+    /* Shadow tint */
     --shadow-color: 277 45% 55%;
 
+    /* Sidebar colors */
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
     --background: 277 20% 10%;
     --foreground: 0 0% 98%;
-
     --card: 277 20% 15%;
     --card-foreground: 0 0% 98%;
-
     --popover: 277 20% 15%;
     --popover-foreground: 0 0% 98%;
 
     --primary: 28 100% 64%;
-    --primary-foreground: 0 0% 100%;
-
     --secondary: 355 100% 69%;
-    --secondary-foreground: 0 0% 100%;
-
     --accent: 277 45% 55%;
-    --accent-foreground: 0 0% 100%;
-
     --muted: 277 20% 20%;
     --muted-foreground: 0 0% 65%;
-
     --destructive: 0 62.8% 50%;
-    --destructive-foreground: 0 0% 100%;
-
     --border: 277 20% 25%;
     --input: 277 20% 20%;
     --ring: 277 45% 55%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -119,40 +100,86 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
+    position: relative;
   }
 }
 
+/* ===========================================================
+   UTILITIES — Gradients, Shadows, Depth, Animations
+   =========================================================== */
 @layer utilities {
-  /* Gradient backgrounds */
+  /* ---------- GRADIENTS ---------- */
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(var(--gradient-start)), hsl(var(--gradient-middle)), hsl(var(--gradient-end)));
+    background: linear-gradient(135deg,
+      hsl(var(--gradient-start)),
+      hsl(var(--gradient-middle)),
+      hsl(var(--gradient-end))
+    );
   }
-  
-  .gradient-primary-hover {
-    background: linear-gradient(135deg, hsl(28 100% 60%), hsl(355 100% 65%), hsl(277 45% 50%));
-  }
-  
+
   .gradient-text {
-    background: linear-gradient(135deg, hsl(var(--gradient-start)), hsl(var(--gradient-middle)), hsl(var(--gradient-end)));
+    background: linear-gradient(135deg,
+      hsl(var(--gradient-start)),
+      hsl(var(--gradient-middle)),
+      hsl(var(--gradient-end))
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
-  /* Shadow with purple tint */
+
+  /* ---------- DEPTH / 3D SHADOWS ---------- */
   .shadow-glow {
     box-shadow: 0 10px 40px -10px hsla(var(--shadow-color) / 0.2);
   }
-  
+
   .shadow-glow-lg {
     box-shadow: 0 20px 60px -15px hsla(var(--shadow-color) / 0.3);
   }
-  
-  /* Animated underline */
+
+  .depth-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+
+  .depth-3d:hover {
+    transform: rotateX(6deg) rotateY(-6deg) translateZ(8px);
+    box-shadow: 0 25px 60px -15px hsla(var(--shadow-color) / 0.4);
+  }
+
+  /* ---------- GLASS & NEOMORPHISM ---------- */
+  .glass {
+    backdrop-filter: blur(12px) saturate(150%);
+    background-color: hsla(var(--background) / 0.2);
+    border: 1px solid hsla(var(--border) / 0.3);
+  }
+
+  .neomorphic {
+    background: hsl(var(--card));
+    border-radius: var(--radius);
+    box-shadow:
+      6px 6px 12px hsla(var(--shadow-color) / 0.2),
+      -6px -6px 12px hsla(0 0% 100% / 0.5);
+  }
+
+  /* ---------- GLOW ---------- */
+  .glow {
+    box-shadow: 0 0 25px hsla(var(--accent) / 0.5);
+  }
+
+  .glow-hover:hover {
+    box-shadow: 0 0 40px hsla(var(--gradient-middle) / 0.7),
+                0 0 80px hsla(var(--gradient-end) / 0.4);
+    transform: scale(1.03);
+    transition: all 0.3s ease;
+  }
+
+  /* ---------- LINK UNDERLINE ---------- */
   .link-underline {
     position: relative;
   }
-  
+
   .link-underline::after {
     content: '';
     position: absolute;
@@ -160,56 +187,78 @@
     height: 2px;
     bottom: -2px;
     left: 0;
-    background: linear-gradient(90deg, hsl(var(--gradient-start)), hsl(var(--gradient-middle)), hsl(var(--gradient-end)));
+    background: linear-gradient(90deg,
+      hsl(var(--gradient-start)),
+      hsl(var(--gradient-middle)),
+      hsl(var(--gradient-end))
+    );
     transform: scaleX(0);
     transform-origin: bottom right;
     transition: transform 0.3s ease-out;
   }
-  
+
   .link-underline:hover::after {
     transform: scaleX(1);
     transform-origin: bottom left;
   }
 
-  /* Scrolling animations for testimonials */
+  /* ---------- CURSOR GLOW ---------- */
+  .cursor-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(
+      circle,
+      hsla(var(--gradient-middle) / 0.4),
+      hsla(var(--gradient-end) / 0.1) 70%
+    );
+    filter: blur(20px);
+    transform: translate(-50%, -50%);
+    transition: width 0.25s ease, height 0.25s ease, opacity 0.3s ease;
+    z-index: 9999;
+  }
+
+  .cursor-hover {
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(
+      circle,
+      hsla(var(--gradient-start) / 0.6),
+      hsla(var(--gradient-middle) / 0.3) 60%
+    );
+    filter: blur(25px);
+  }
+
+  /* ---------- FLOATING ANIMATION ---------- */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+
+  /* ---------- SCROLL ANIMATIONS ---------- */
   @keyframes scroll-left {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
-
   @keyframes scroll-right {
-    0% {
-      transform: translateX(-50%);
-    }
-    100% {
-      transform: translateX(0);
-    }
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
   }
-
   .animate-scroll-left {
     animation: scroll-left 60s linear infinite;
   }
-
   .animate-scroll-right {
     animation: scroll-right 60s linear infinite;
   }
-
-  .animate-scroll-left-fast {
-    animation: scroll-left 30s linear infinite;
-  }
-
-  .animate-scroll-right-fast {
-    animation: scroll-right 30s linear infinite;
-  }
-
   .animate-scroll-left:hover,
-  .animate-scroll-right:hover,
-  .animate-scroll-left-fast:hover,
-  .animate-scroll-right-fast:hover {
+  .animate-scroll-right:hover {
     animation-play-state: paused;
   }
 }
