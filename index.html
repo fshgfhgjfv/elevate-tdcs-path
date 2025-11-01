@@ -18,7 +18,7 @@
     <meta name="twitter:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
 
     <style>
-      /* ✨ Gradient Cursor Glow Effect ✨ */
+      /* ✨ Electric Blue Cursor Glow Effect ✨ */
       #cursor-glow {
         position: fixed;
         top: 0;
@@ -29,10 +29,10 @@
         pointer-events: none;
         background: radial-gradient(
           circle,
-          hsla(355, 100%, 69%, 0.4),
-          hsla(277, 45%, 55%, 0.1) 70%
+          hsla(210, 100%, 65%, 0.5),
+          hsla(230, 100%, 55%, 0.15) 70%
         );
-        filter: blur(20px);
+        filter: blur(25px);
         transform: translate(-50%, -50%);
         transition: width 0.25s ease, height 0.25s ease, opacity 0.3s ease;
         z-index: 9999;
@@ -40,19 +40,19 @@
       }
 
       #cursor-glow.hover {
-        width: 80px;
-        height: 80px;
+        width: 90px;
+        height: 90px;
         background: radial-gradient(
           circle,
-          hsla(28, 100%, 64%, 0.6),
-          hsla(355, 100%, 69%, 0.3) 60%
+          hsla(210, 100%, 70%, 0.7),
+          hsla(230, 100%, 60%, 0.3) 60%
         );
-        filter: blur(25px);
+        filter: blur(35px);
       }
 
-      /* Optional: smooth fade for page load */
+      /* Hide default cursor */
       body {
-        cursor: none; /* hide system cursor */
+        cursor: none;
       }
     </style>
   </head>
@@ -74,7 +74,6 @@
       let x = 0, y = 0, targetX = 0, targetY = 0;
 
       if (cursor) {
-        // Animation loop
         function animate() {
           x += (targetX - x) * 0.15;
           y += (targetY - y) * 0.15;
@@ -82,13 +81,11 @@
           requestAnimationFrame(animate);
         }
 
-        // Mouse movement tracking
         window.addEventListener("mousemove", (e) => {
           targetX = e.clientX;
           targetY = e.clientY;
         });
 
-        // Hover enlarge on buttons/links
         document.addEventListener("mouseover", (e) => {
           if (e.target.closest("a, button, .hoverable")) {
             cursor.classList.add("hover");
