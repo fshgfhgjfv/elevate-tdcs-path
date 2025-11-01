@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ===========================================================
-   TDCS Design System — Vibrant Gradient + 3D Interactive Theme
-   =========================================================== */
+/* ===============================
+   TDCS Design System – Vibrant + Blue Glow
+   =============================== */
 
 @layer base {
   :root {
@@ -17,38 +17,38 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 12%;
 
-    /* Gradient palette */
-    --primary: 28 100% 64%;
+    /* Primary: Electric Blue (new theme) */
+    --primary: 210 100% 65%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 355 100% 69%;
-    --secondary-foreground: 0 0% 100%;
-    --accent: 277 45% 55%;
-    --accent-foreground: 0 0% 100%;
 
-    /* Support */
-    --muted: 277 45% 95%;
+    /* Secondary: Deep Indigo */
+    --secondary: 230 100% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Accent: Light Cyan */
+    --accent: 190 100% 75%;
+    --accent-foreground: 0 0% 10%;
+
+    --muted: 210 40% 95%;
     --muted-foreground: 0 0% 33%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 277 45% 90%;
-    --input: 277 45% 95%;
-    --ring: 277 45% 55%;
-    --radius: 0.75rem;
-    
-    /* Custom gradient colors */
-    --gradient-start: 28 100% 64%;
-    --gradient-middle: 355 100% 69%;
-    --gradient-end: 277 45% 55%;
-    
-    /* Accent tones */
-    --light-pink: 355 100% 76%;
-    --light-purple: 270 100% 73%;
-    
-    /* Shadow tint */
-    --shadow-color: 277 45% 55%;
+    --border: 210 40% 90%;
+    --input: 210 40% 95%;
+    --ring: 210 100% 65%;
 
-    /* Sidebar colors */
+    --radius: 0.75rem;
+
+    /* Gradient */
+    --gradient-start: 210 100% 65%;
+    --gradient-middle: 230 100% 55%;
+    --gradient-end: 260 80% 60%;
+
+    /* Glow shadow */
+    --shadow-color: 220 100% 60%;
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -60,31 +60,23 @@
   }
 
   .dark {
-    --background: 277 20% 10%;
+    --background: 220 30% 8%;
     --foreground: 0 0% 98%;
-    --card: 277 20% 15%;
+    --card: 220 30% 12%;
     --card-foreground: 0 0% 98%;
-    --popover: 277 20% 15%;
+    --popover: 220 30% 12%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 28 100% 64%;
-    --secondary: 355 100% 69%;
-    --accent: 277 45% 55%;
-    --muted: 277 20% 20%;
-    --muted-foreground: 0 0% 65%;
-    --destructive: 0 62.8% 50%;
-    --border: 277 20% 25%;
-    --input: 277 20% 20%;
-    --ring: 277 45% 55%;
+    --primary: 210 100% 65%;
+    --secondary: 230 100% 55%;
+    --accent: 190 100% 75%;
+    --muted: 220 25% 18%;
+    --muted-foreground: 0 0% 70%;
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 220 25% 25%;
+    --input: 220 25% 20%;
+    --ring: 210 100% 65%;
+    --shadow-color: 210 100% 65%;
   }
 }
 
@@ -100,18 +92,19 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
-    overflow-x: hidden;
-    position: relative;
+    cursor: none; /* Hide default cursor */
   }
 }
 
-/* ===========================================================
-   UTILITIES — Gradients, Shadows, Depth, Animations
-   =========================================================== */
+/* ===============================
+   Custom Utilities
+   =============================== */
+
 @layer utilities {
-  /* ---------- GRADIENTS ---------- */
+  /* Gradient backgrounds */
   .gradient-primary {
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       hsl(var(--gradient-start)),
       hsl(var(--gradient-middle)),
       hsl(var(--gradient-end))
@@ -119,7 +112,8 @@
   }
 
   .gradient-text {
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       hsl(var(--gradient-start)),
       hsl(var(--gradient-middle)),
       hsl(var(--gradient-end))
@@ -129,53 +123,16 @@
     background-clip: text;
   }
 
-  /* ---------- DEPTH / 3D SHADOWS ---------- */
+  /* Shadows */
   .shadow-glow {
-    box-shadow: 0 10px 40px -10px hsla(var(--shadow-color) / 0.2);
+    box-shadow: 0 10px 40px -10px hsla(var(--shadow-color) / 0.3);
   }
 
   .shadow-glow-lg {
-    box-shadow: 0 20px 60px -15px hsla(var(--shadow-color) / 0.3);
+    box-shadow: 0 20px 60px -15px hsla(var(--shadow-color) / 0.5);
   }
 
-  .depth-3d {
-    transform-style: preserve-3d;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-  }
-
-  .depth-3d:hover {
-    transform: rotateX(6deg) rotateY(-6deg) translateZ(8px);
-    box-shadow: 0 25px 60px -15px hsla(var(--shadow-color) / 0.4);
-  }
-
-  /* ---------- GLASS & NEOMORPHISM ---------- */
-  .glass {
-    backdrop-filter: blur(12px) saturate(150%);
-    background-color: hsla(var(--background) / 0.2);
-    border: 1px solid hsla(var(--border) / 0.3);
-  }
-
-  .neomorphic {
-    background: hsl(var(--card));
-    border-radius: var(--radius);
-    box-shadow:
-      6px 6px 12px hsla(var(--shadow-color) / 0.2),
-      -6px -6px 12px hsla(0 0% 100% / 0.5);
-  }
-
-  /* ---------- GLOW ---------- */
-  .glow {
-    box-shadow: 0 0 25px hsla(var(--accent) / 0.5);
-  }
-
-  .glow-hover:hover {
-    box-shadow: 0 0 40px hsla(var(--gradient-middle) / 0.7),
-                0 0 80px hsla(var(--gradient-end) / 0.4);
-    transform: scale(1.03);
-    transition: all 0.3s ease;
-  }
-
-  /* ---------- LINK UNDERLINE ---------- */
+  /* Underline hover effect */
   .link-underline {
     position: relative;
   }
@@ -187,7 +144,8 @@
     height: 2px;
     bottom: -2px;
     left: 0;
-    background: linear-gradient(90deg,
+    background: linear-gradient(
+      90deg,
       hsl(var(--gradient-start)),
       hsl(var(--gradient-middle)),
       hsl(var(--gradient-end))
@@ -202,7 +160,9 @@
     transform-origin: bottom left;
   }
 
-  /* ---------- CURSOR GLOW ---------- */
+  /* ===============================
+     💫 Electric Blue Cursor Glow
+     =============================== */
   .cursor-glow {
     position: fixed;
     top: 0;
@@ -213,52 +173,66 @@
     pointer-events: none;
     background: radial-gradient(
       circle,
-      hsla(var(--gradient-middle) / 0.4),
-      hsla(var(--gradient-end) / 0.1) 70%
+      hsla(210, 100%, 65%, 0.5),
+      hsla(230, 100%, 55%, 0.1) 70%
     );
-    filter: blur(20px);
+    filter: blur(25px);
     transform: translate(-50%, -50%);
     transition: width 0.25s ease, height 0.25s ease, opacity 0.3s ease;
     z-index: 9999;
+    mix-blend-mode: screen;
   }
 
   .cursor-hover {
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     background: radial-gradient(
       circle,
-      hsla(var(--gradient-start) / 0.6),
-      hsla(var(--gradient-middle) / 0.3) 60%
+      hsla(210, 100%, 70%, 0.7),
+      hsla(230, 100%, 60%, 0.3) 60%
     );
-    filter: blur(25px);
+    filter: blur(35px);
   }
 
-  /* ---------- FLOATING ANIMATION ---------- */
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-  .animate-float {
-    animation: float 4s ease-in-out infinite;
-  }
-
-  /* ---------- SCROLL ANIMATIONS ---------- */
+  /* Smooth scrolling animations */
   @keyframes scroll-left {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
   }
+
   @keyframes scroll-right {
-    0% { transform: translateX(-50%); }
-    100% { transform: translateX(0); }
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
   }
+
   .animate-scroll-left {
     animation: scroll-left 60s linear infinite;
   }
+
   .animate-scroll-right {
     animation: scroll-right 60s linear infinite;
   }
+
+  .animate-scroll-left-fast {
+    animation: scroll-left 30s linear infinite;
+  }
+
+  .animate-scroll-right-fast {
+    animation: scroll-right 30s linear infinite;
+  }
+
   .animate-scroll-left:hover,
-  .animate-scroll-right:hover {
+  .animate-scroll-right:hover,
+  .animate-scroll-left-fast:hover,
+  .animate-scroll-right-fast:hover {
     animation-play-state: paused;
   }
 }
