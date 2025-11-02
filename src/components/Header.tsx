@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+// --- 1. Import useNavigate, useAuth, and supabase ---
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext"; // Adjust path if needed
+import { supabase } from "@/supabaseClient"; // Adjust path if needed
 
 const LOGO_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEh6t9BjBO7igeafdAkeEQW1JNA1TAfi2lIR0Nr857ozJmsC-qPIm9m2BbQi8JkDD3TmGVuyKAyxnIc88lETBh18Xia9FqGTkGdtzD7215GLuqRBIhm9UCh7F4FDB9BsKHg78TKGkSUfCtTHefuZ5LwuXqdGLzO50ulgxWj2b-6gGAZJHE15AEKDUnwStMAm";
 
@@ -10,8 +13,12 @@ export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  
+  // --- 2. Get the user from the AuthContext ---
+  const { user } = useAuth();
+  
   const location = useLocation();
+  const navigate = useNavigate(); // --- 3. Add useNavigate for redirects ---
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -19,22 +26,22 @@ export const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    const userData = localStorage.getItem("tdcs_user");
-    if (userData) setUser(JSON.parse(userData));
-  }, [location]);
+  // --- 4. (REMOVED) The useEffect for localStorage is no longer needed! ---
 
-  const handleLogout = () => {
-    localStorage.removeItem("tdcs_user");
-    setUser(null);
-    window.location.href = "/";
+  // --- 5. Update the logout function ---
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Error logging out:", error.message);
+    } else {
+      navigate("/"); // Navigate to home page after logout
+    }
   };
 
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Courses", path: "/courses" },
     { name: "Gallery", path: "/gallery" },
-    // Services will be handled separately
     { name: "Contact", path: "/contact-us" },
   ];
 
@@ -122,10 +129,14 @@ export const Header = () => {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center gap-4">
+            {/* --- 6. The 'user' now comes from useAuth() --- */}
             {user ? (
               <>
                 <Link to="/my-profile">
-                  <Button variant="ghost">{user.name}</Button>
+                  {/* --- 7. Update how the user's name is displayed --- */}
+                  <Button variant="ghost">
+                    {user.user_metadata?.full_name || user.email}
+                  </Button>
                 </Link>
                 <Button variant="gradient" onClick={handleLogout}>
                   Logout
@@ -197,14 +208,16 @@ export const Header = () => {
                   <>
                     <Link to="/my-profile" onClick={() => setIsMobileMenuOpen(false)}>
                       <Button variant="ghost" className="w-full">
-                        {user.name}
+                        {/* --- 7. Update display name here too --- */}
+                        {user.user_metadata?.full_name || user.email}
                       </Button>
                     </Link>
                     <Button
                       variant="gradient"
                       className="w-full"
-                      onClick={() => {
-                        handleLogout();
+                      onClick={async () => {
+                        // --- 8. Update mobile logout to be async ---
+                        await handleLogout();
                         setIsMobileMenuOpen(false);
                       }}
                     >
