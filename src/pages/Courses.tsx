@@ -16,7 +16,7 @@ const Courses = () => {
       : [];
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
+    <div className="pt-24 pb-16">
       <div className="container mx-auto px-4">
         {/* Page Title */}
         <motion.div
@@ -52,7 +52,7 @@ const Courses = () => {
         {/* Courses Grid or Coming Soon */}
         <motion.div
           layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center"
         >
           {selectedCategory === "Live Courses" &&
             filteredCourses.map((course) => <CourseCard key={course.id} {...course} />)}
@@ -89,10 +89,14 @@ const Courses = () => {
       </div>
 
       {/* Hiring Partners Section */}
-      <HiringPartners />
+      <div className="mt-24">
+        <HiringPartners />
+      </div>
 
       {/* Recruiter Testimonial */}
-      <RecruiterTestimonial />
+      <div className="mt-16">
+        <RecruiterTestimonial />
+      </div>
     </div>
   );
 };
