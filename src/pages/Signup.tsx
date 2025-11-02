@@ -47,7 +47,7 @@ const tools = [
   },
   {
     // <<< NEW: Nmap
-    src: "https://images.contentstack.io/v3/assets/blt28ff6c4a2cf43126/blt2d8822c72b3fa47d/647726fad2aad85beae606cd/NMAP_1_Integrations_Feature_Array_Item_Image.png?auto=webp&disable=upscale&width=3840&quality=75",
+    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
     alt: "Nmap",
     side: "right" as "left" | "right",
     delay: 0.5,
