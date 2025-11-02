@@ -16,8 +16,8 @@ interface CourseCardProps {
 
 const AnimatedCard = ({ id, title, description, price, thumbnail, category, comingSoon }: CourseCardProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
+  const x = useMotionValue(0.5);
+  const y = useMotionValue(0.5);
 
   const rotateX = useTransform(y, [0, 1], [15, -15]);
   const rotateY = useTransform(x, [0, 1], [-15, 15]);
@@ -67,11 +67,11 @@ const AnimatedCard = ({ id, title, description, price, thumbnail, category, comi
           </div>
           <CardHeader>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs px-3 py-1 rounded-full bg-muted gradient-text font-semibold">
+              <span className="text-xs px-3 py-1 rounded-full bg-muted text-primary font-semibold">
                 {category}
               </span>
               {!comingSoon && (
-                <span className="text-xl font-bold gradient-text">₹{price?.toLocaleString()}</span>
+                <span className="text-xl font-bold text-primary">₹{price?.toLocaleString()}</span>
               )}
             </div>
             <h3 className="text-xl font-bold">{title}</h3>
@@ -80,7 +80,7 @@ const AnimatedCard = ({ id, title, description, price, thumbnail, category, comi
             <p className="text-muted-foreground">{description}</p>
           </CardContent>
           <CardFooter>
-            <Button variant="gradient" className="w-full" disabled={comingSoon}>
+            <Button className="w-full bg-gradient-to-r from-indigo-500 to-pink-500 text-white" disabled={comingSoon}>
               {comingSoon ? "Coming Soon" : "View Details"}
             </Button>
           </CardFooter>
@@ -93,8 +93,10 @@ const AnimatedCard = ({ id, title, description, price, thumbnail, category, comi
 export const CourseShowcase = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-background to-muted/40 p-10">
-      <h2 className="text-3xl font-bold mb-10 gradient-text">Explore Our Courses</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 perspective-[1000px]">
+      <h2 className="text-3xl font-bold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-pink-500">
+        Explore Our Courses
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 perspective-1000">
         <AnimatedCard
           id="1"
           title="Ethical Hacking Masterclass"
