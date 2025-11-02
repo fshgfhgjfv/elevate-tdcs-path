@@ -5,33 +5,7 @@ import { motion } from "framer-motion";
 import { HiringPartners } from "@/components/HiringPartners";
 import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
 
-// Extra "Coming Soon" courses (Red/Blue Teaming)
-const comingSoonCourses = [
-  {
-    id: "red-teaming",
-    title: "Red Teaming",
-    description:
-      "Advanced offensive security and adversary emulation — push your hacking skills to the next level.",
-    price: 0,
-    thumbnail:
-      "https://images.unsplash.com/photo-1605902711622-cfb43c4437b8?auto=format&fit=crop&w=800&q=80",
-    category: "Offensive Security",
-    comingSoon: true,
-  },
-  {
-    id: "blue-teaming",
-    title: "Blue Teaming",
-    description:
-      "Master defensive operations, incident response, and threat hunting in enterprise environments.",
-    price: 0,
-    thumbnail:
-      "https://images.unsplash.com/photo-1605902712828-2a1e32bfa9e7?auto=format&fit=crop&w=800&q=80",
-    category: "Defensive Security",
-    comingSoon: true,
-  },
-];
-
-// Data for course perks
+// Data for the new feature/perks sections
 const coursePerks = [
   {
     title: "Exclusive Swag Pack",
@@ -39,15 +13,15 @@ const coursePerks = [
       "Show off your skills with our exclusive kit, including a premium T-shirt, stickers, and other goodies delivered to your doorstep.",
     imageUrl:
       "https://blogger.googleusercontent.com/img/a/AVvXsEhWb4nI8g2Sr24qhD0KUaLd44ByiPtXmBuWFkeJN0nZt4vt1EbaNwoYb_PzOVLbGlEz01uC6e78QdlhR5YQrhAimAX-N3u8SzZajBkIYcIQ3Umwsl1or2rHZJCWMVGlicpGlmncQnyEBS8-TwiVSxEf5q3B8yHex0CSa2fyyaz5IeCGD4HCJxVfXZB4QM75",
-    layout: "text-left",
+    layout: "text-left", // text-left, image-right
   },
   {
     title: "Pro Hacking Toolkit",
     description:
-      "Gain access to a curated toolkit of premium cybersecurity software and platforms used by professionals in the field.",
+      "Gain access to a curated toolkit of premium cybersecurity software and platforms, the same tools used by professionals in the field.",
     imageUrl:
       "https://blogger.googleusercontent.com/img/a/AVvXsEiF0pE9E9cI6SZ0_mC-JOYMKbn5qnp-puKFHtqzuqHA2r3pDTFpqgssYyjvyswgxFuqe1fCYyyXbuUq-i17TRx4ertGqicGG4do7acBIysjZqEZpS4_65C500s9x4iEOhBd0aEGTS2JspYxRORsHozbLPEiXpo-7b4Z9SCP8WOir8Wz9n13kNHP7dKUven9",
-    layout: "text-right",
+    layout: "text-right", // text-right, image-left
   },
   {
     title: "Premium Certification",
@@ -55,7 +29,7 @@ const coursePerks = [
       "Receive an industry-recognized certificate upon completion, validating your new skills and boosting your career prospects.",
     imageUrl:
       "https://blogger.googleusercontent.com/img/a/AVvXsEgQBCknDQq2PSSJ5SzQS6ei73FcO8IbRNgjKW3b9r3DtAnmMR_9OClnJXyZn9MEci-jQazc0qSX6nRaRn638FkssY5npovgqEHVu6o2FfNjB1oXXSbuxV9OCu2dArjAC1HOMOJHrP3-TvNgbHqIxfeIEf9H6BeQa2VziRX7w3u4Tx1QigCeDINCHEHPIsnm",
-    layout: "text-left",
+    layout: "text-left", // text-left, image-right
   },
 ];
 
@@ -63,12 +37,11 @@ const Courses = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("Live Courses");
   const categories = ["Live Courses", "Recorded Courses", "Offline Courses"];
 
-  // Filter live courses
-  const liveCourses = courses.filter((course) => course.category === "Live Online");
-
-  // Merge live + coming soon
+  // Filter live courses only — recorded/offline will show placeholders
   const filteredCourses =
-    selectedCategory === "Live Courses" ? [...liveCourses, ...comingSoonCourses] : [];
+    selectedCategory === "Live Courses"
+      ? courses.filter((course) => course.category === "Live Online")
+      : [];
 
   return (
     <div className="pt-24 pb-16">
@@ -104,35 +77,16 @@ const Courses = () => {
           ))}
         </div>
 
-        {/* Courses Grid */}
+        {/* Courses Grid or Coming Soon */}
         <motion.div
           layout
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center"
         >
           {selectedCategory === "Live Courses" &&
-            filteredCourses.map((course) => (
-              <motion.div
-                key={course.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className={`w-full max-w-sm ${
-                  course.comingSoon ? "opacity-70 blur-[1px]" : ""
-                }`}
-              >
-                <CourseCard {...course} />
-                {course.comingSoon && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm rounded-xl">
-                    <span className="text-white text-lg font-semibold animate-pulse">
-                      Coming Soon 🚀
-                    </span>
-                  </div>
-                )}
-              </motion.div>
-            ))}
+            filteredCourses.map((course) => <CourseCard key={course.id} {...course} />)}
         </motion.div>
 
-        {/* Coming Soon placeholder for other categories */}
+        {/* Coming Soon for Recorded/Offline */}
         {(selectedCategory === "Recorded Courses" ||
           selectedCategory === "Offline Courses") && (
           <div className="text-center py-20">
@@ -151,6 +105,15 @@ const Courses = () => {
             </motion.div>
           </div>
         )}
+
+        {/* No live courses fallback */}
+        {selectedCategory === "Live Courses" && filteredCourses.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-xl text-muted-foreground">
+              No live courses available right now.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* --- NEW SECTION: Course Perks --- */}
@@ -166,31 +129,32 @@ const Courses = () => {
               perk.layout === "text-right" ? "md:flex-row-reverse" : ""
             }`}
           >
-            {/* Text */}
+            {/* Text Content */}
             <div className="flex-1 space-y-4 text-center md:text-left">
               <h2 className="text-3xl md:text-4xl font-bold gradient-text">
                 {perk.title}
               </h2>
-              <p className="text-lg text-muted-foreground max-w-md mx-auto md:mx-0">
+              <p className="text-lg text-muted-foreground max-w-md ${perk.layout === 'text-right' ? 'md:ml-auto' : 'md:mr-auto'}">
                 {perk.description}
               </p>
             </div>
 
-            {/* Image */}
+            {/* Image Content */}
             <div className="flex-1">
               <img
                 src={perk.imageUrl}
                 alt={perk.title}
                 className="rounded-lg shadow-xl w-full h-auto max-w-md mx-auto"
                 loading="lazy"
+                decoding="async"
               />
             </div>
           </motion.div>
         ))}
       </div>
-      {/* --- END --- */}
+      {/* --- END OF NEW SECTION --- */}
 
-      {/* Hiring Partners */}
+      {/* Hiring Partners Section */}
       <div className="mt-24">
         <HiringPartners />
       </div>
