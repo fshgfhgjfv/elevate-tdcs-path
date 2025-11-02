@@ -18,43 +18,63 @@
     <meta name="twitter:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
 
     <style>
-      /* 💙 Cursor visible on white theme */
-      #cursor-glow {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        pointer-events: none;
-        /* --- CHANGE 1: Made the blue darker --- */
-        background: radial-gradient(circle, rgba(0,100,200,0.6), rgba(0,100,200,0.2) 70%);
-        filter: blur(20px);
-        transform: translate(-50%, -50%);
-        z-index: 9999;
-        /* --- CHANGE 2: 'multiply' darkens, 'screen' lightens --- */
-        mix-blend-mode: multiply;
-        transition: width 0.3s ease, height 0.3s ease, filter 0.3s ease;
-      }
-
-      /* Hover State */
-      #cursor-glow.hover {
-        width: 70px;
-        height: 70px;
-        filter: blur(35px);
-        /* --- Also updated hover color --- */
-        background: radial-gradient(circle, rgba(0,120,220,0.7), rgba(0,120,220,0.3) 60%);
-      }
-
       /* Hide default cursor */
       body {
         cursor: none;
+        background-color: #f0f2f5; /* A light grey to make dots visible */
+        min-height: 100vh; /* Ensure body takes full height for cursor to be seen */
+        margin: 0;
+        overflow: hidden; /* Prevent scrollbars from trail elements */
+      }
+
+      /* Main cursor dot */
+      #main-cursor-dot {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background-color: rgba(0, 150, 255, 0.8); /* A solid blue dot */
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 10000;
+        transform: translate(-50%, -50%); /* Center the dot */
+        transition: transform 0.1s ease-out, width 0.1s ease-out, height 0.1s ease-out; /* Smooth follow, quick size change */
+      }
+
+      /* Trail dots */
+      .cursor-trail-dot {
+        position: fixed;
+        background-color: rgba(0, 180, 255, 0.5); /* Lighter, more transparent blue */
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0; /* Start invisible */
+        transform: translate(-50%, -50%) scale(0.5); /* Start smaller */
+        animation: fadeOutTrail 1s forwards ease-out; /* Fade out over 1 second */
+      }
+
+      /* Hover effect for main dot */
+      #main-cursor-dot.hover {
+        width: 15px;
+        height: 15px;
+        background-color: rgba(0, 200, 255, 0.9);
+      }
+
+      /* Keyframe animation for trail dots */
+      @keyframes fadeOutTrail {
+        0% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.1);
+        }
       }
     </style>
   </head>
 
   <body>
-    <div id="cursor-glow"></div>
+    <div id="main-cursor-dot"></div>
 
     <div id="root"></div>
 
@@ -62,38 +82,65 @@
     <script type="module" src="/src/main.tsx"></script>
 
     <script>
-      const cursor = document.getElementById("cursor-glow");
-      let x = 0, y = 0, targetX = 0, targetY = 0;
+      const mainCursorDot = document.getElementById("main-cursor-dot");
+      let mouseX = 0, mouseY = 0;
+      let targetX = 0, targetY = 0;
+      const trailSpawnInterval = 50; // Milliseconds between spawning trail dots
+      let lastTrailSpawnTime = 0;
 
-      if (cursor) {
-        const smoothness = 0.12; // lower = slower / smoother
-
-        function animate() {
-          x += (targetX - x) * smoothness;
-          y += (targetY - y) * smoothness;
-          cursor.style.transform = `translate(${x}px, ${y}px)`;
-          requestAnimationFrame(animate);
-        }
-
+      if (mainCursorDot) {
+        // Update mouse position
         window.addEventListener("mousemove", (e) => {
-          targetX = e.clientX;
-          targetY = e.clientY;
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+
+          // Spawn a trail dot
+          const now = Date.now();
+          if (now - lastTrailSpawnTime > trailSpawnInterval) {
+            createTrailDot(mouseX, mouseY);
+            lastTrailSpawnTime = now;
+          }
         });
+
+        // Smoothly follow mouse
+        function animateMainCursor() {
+          targetX += (mouseX - targetX) * 0.15; // Smoothness factor
+          targetY += (mouseY - targetY) * 0.15;
+          mainCursorDot.style.left = `${targetX}px`;
+          mainCursorDot.style.top = `${targetY}px`;
+          requestAnimationFrame(animateMainCursor);
+        }
+        animateMainCursor();
+
+        function createTrailDot(x, y) {
+          const trailDot = document.createElement("div");
+          trailDot.classList.add("cursor-trail-dot");
+          trailDot.style.left = `${x}px`;
+          trailDot.style.top = `${y}px`;
+          // Randomize size slightly for a more organic look
+          const size = Math.random() * 8 + 4; // Between 4px and 12px
+          trailDot.style.width = `${size}px`;
+          trailDot.style.height = `${size}px`;
+          document.body.appendChild(trailDot);
+
+          // Remove the dot after its animation is complete
+          trailDot.addEventListener("animationend", () => {
+            trailDot.remove();
+          });
+        }
 
         // Add hover effect for clickable elements
         document.addEventListener("mouseover", (e) => {
           if (e.target.closest("a, button, .hoverable")) {
-            cursor.classList.add("hover");
+            mainCursorDot.classList.add("hover");
           }
         });
 
         document.addEventListener("mouseout", (e) => {
           if (e.target.closest("a, button, .hoverable")) {
-            cursor.classList.remove("hover");
+            mainCursorDot.classList.remove("hover");
           }
         });
-
-        animate();
       }
     </script>
   </body>
