@@ -31,6 +31,15 @@ const coursePerks = [
       "https://blogger.googleusercontent.com/img/a/AVvXsEgQBCknDQq2PSSJ5SzQS6ei73FcO8IbRNgjKW3b9r3DtAnmMR_9OClnJXyZn9MEci-jQazc0qSX6nRaRn638FkssY5npovgqEHVu6o2FfNjB1oXXSbuxV9OCu2dArjAC1HOMOJHrP3-TvNgbHqIxfeIEf9H6BeQa2VziRX7w3u4Tx1QigCeDINCHEHPIsnm",
     layout: "text-left", // text-left, image-right
   },
+  // --- NEW PERK ADDED HERE ---
+  {
+    title: "HACKER'S PENDRIVE",
+    description: "Get The Pendrive For Free With TDCS Courses",
+    imageUrl:
+      "https://blogger.googleusercontent.com/img/a/AVvXsEjcQA7l6TaSYW4QYsDfMXN_HqfBECITrE7LktjD2-41QpgpTQ29RL5xPgNs4vDAzPW6k0EM9p-OSdaTR3chzl97ZxiGAFRvfV4O4Im8i6JJZXT4IDK-LM2OIBG8N8tsf4Wwn4wTJaUzqtQJd3sdza1yhMvhj2KRPivVJyCCMzKp2WpX24VksPf3ceiItGl1",
+    layout: "text-right", // text-right, image-left (as requested)
+    glowing: true, // Flag to add the blink/pulse effect
+  },
 ];
 
 const Courses = () => {
@@ -83,7 +92,9 @@ const Courses = () => {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center"
         >
           {selectedCategory === "Live Courses" &&
-            filteredCourses.map((course) => <CourseCard key={course.id} {...course} />)}
+            filteredCourses.map((course) => (
+              <CourseCard key={course.id} {...course} />
+            ))}
         </motion.div>
 
         {/* Coming Soon for Recorded/Offline */}
@@ -131,10 +142,19 @@ const Courses = () => {
           >
             {/* Text Content */}
             <div className="flex-1 space-y-4 text-center md:text-left">
-              <h2 className="text-3xl md:text-4xl font-bold gradient-text">
+              {/* --- MODIFIED H2 TAG --- */}
+              <h2
+                className={`text-3xl md:text-4xl font-bold gradient-text ${
+                  perk.glowing ? "animate-pulse" : "" // Adds pulse effect if glowing is true
+                }`}
+              >
                 {perk.title}
               </h2>
-              <p className="text-lg text-muted-foreground max-w-md ${perk.layout === 'text-right' ? 'md:ml-auto' : 'md:mr-auto'}">
+              <p
+                className={`text-lg text-muted-foreground max-w-md ${
+                  perk.layout === "text-right" ? "md:ml-auto" : "md:mr-auto"
+                }`}
+              >
                 {perk.description}
               </p>
             </div>
