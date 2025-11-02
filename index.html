@@ -8,46 +8,39 @@
     <meta name="author" content="TDCS Technologies Private Limited" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS LOGO.png">
+    <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS%20LOGO.png">
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS LOGO.png">
+    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS%20LOGO.png">
     <meta property="og:title" content="TDCS Technologies Private Limited">
     <meta name="twitter:title" content="TDCS Technologies Private Limited">
     <meta property="og:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
     <meta name="twitter:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
 
     <style>
-      /* ✨ Electric Blue Cursor Glow Effect ✨ */
+      /* 💙 Sleek Electric Blue Cursor */
       #cursor-glow {
         position: fixed;
         top: 0;
         left: 0;
-        width: 40px;
-        height: 40px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         pointer-events: none;
-        background: radial-gradient(
-          circle,
-          hsla(210, 100%, 65%, 0.5),
-          hsla(230, 100%, 55%, 0.15) 70%
-        );
-        filter: blur(25px);
+        background: radial-gradient(circle, rgba(0,136,255,0.5), rgba(0,136,255,0.1) 70%);
+        filter: blur(20px);
         transform: translate(-50%, -50%);
-        transition: width 0.25s ease, height 0.25s ease, opacity 0.3s ease;
         z-index: 9999;
         mix-blend-mode: screen;
+        transition: width 0.3s ease, height 0.3s ease, filter 0.3s ease;
       }
 
+      /* Hover State - expands softly */
       #cursor-glow.hover {
-        width: 90px;
-        height: 90px;
-        background: radial-gradient(
-          circle,
-          hsla(210, 100%, 70%, 0.7),
-          hsla(230, 100%, 60%, 0.3) 60%
-        );
+        width: 70px;
+        height: 70px;
         filter: blur(35px);
+        background: radial-gradient(circle, rgba(0,160,255,0.8), rgba(0,100,255,0.3) 60%);
       }
 
       /* Hide default cursor */
@@ -58,25 +51,27 @@
   </head>
 
   <body>
-    <!-- 💫 Cursor Glow -->
+    <!-- ✨ Blue Cursor -->
     <div id="cursor-glow"></div>
 
-    <!-- React App Mount -->
+    <!-- React Root -->
     <div id="root"></div>
 
     <!-- Razorpay -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- 🧠 Cursor Script -->
+    <!-- 💫 Cursor Motion Script -->
     <script>
       const cursor = document.getElementById("cursor-glow");
       let x = 0, y = 0, targetX = 0, targetY = 0;
 
       if (cursor) {
+        const smoothness = 0.12; // lower = slower / smoother
+
         function animate() {
-          x += (targetX - x) * 0.15;
-          y += (targetY - y) * 0.15;
+          x += (targetX - x) * smoothness;
+          y += (targetY - y) * smoothness;
           cursor.style.transform = `translate(${x}px, ${y}px)`;
           requestAnimationFrame(animate);
         }
@@ -86,6 +81,7 @@
           targetY = e.clientY;
         });
 
+        // Add hover effect for clickable elements
         document.addEventListener("mouseover", (e) => {
           if (e.target.closest("a, button, .hoverable")) {
             cursor.classList.add("hover");
