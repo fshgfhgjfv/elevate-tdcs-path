@@ -12,26 +12,17 @@ interface CourseCardProps {
   category: string;
 }
 
-// 1. Define variants for the card itself
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
-
 export const CourseCard = ({ id, title, description, price, thumbnail, category }: CourseCardProps) => {
   return (
     <motion.div
-      // 2. Use the variants defined above
-      variants={cardVariants}
-      // The `initial` and `animate` props are now inherited
-      // from the parent's <motion.div>
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
       whileHover={{ y: -8 }}
       transition={{ duration: 0.3 }}
-      className="h-full" // Ensure motion div takes full height
     >
       <Link to={`/courses/${id}`} className="block h-full">
         <Card className="h-full shadow-glow hover:shadow-glow-lg transition-all duration-300 overflow-hidden cursor-pointer">
-          {/* ... The rest of your card content is perfect ... */}
           <div className="h-48 overflow-hidden">
             <img
               src={thumbnail}
