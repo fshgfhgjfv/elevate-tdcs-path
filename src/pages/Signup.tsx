@@ -22,24 +22,24 @@ import { Loader2 } from "lucide-react";
 // --- 1. Define Floating Tools & Animations ---
 const tools = [
   {
-    // Kali Linux
-    src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
-    alt: "Kali Linux",
+    // Image 1: Arch Linux (replacing Kali Linux for now, as requested)
+    src: "https://i.imgur.com/eBwG0vN.png", // Direct link to your provided Arch Linux image
+    alt: "Arch Linux",
     side: "left" as "left" | "right",
     delay: 0.2,
     y: 150,
   },
   {
-    // Burp Suite (This is the correct, direct link)
-    src: "https://upload.wikimedia.org/wikipedia/commons/a/a2/Burp_Suite_logo.svg",
+    // Image 3: Burp Suite
+    src: "https://i.imgur.com/L1b5L6c.png", // Direct link to your provided Burp Suite image
     alt: "Burp Suite",
     side: "left" as "left" | "right",
     delay: 0.4,
     y: 350,
   },
   {
-    // Wireshark (This is the correct, direct link)
-    src: "https://upload.wikimedia.org/wikipedia/commons/4/43/Wireshark_Icon.svg",
+    // Image 2: Wireshark
+    src: "https://i.imgur.com/gI0RkKj.png", // Direct link to your provided Wireshark image
     alt: "Wireshark",
     side: "right" as "left" | "right",
     delay: 0.3,
