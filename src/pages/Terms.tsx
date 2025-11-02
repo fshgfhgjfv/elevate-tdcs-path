@@ -1,5 +1,4 @@
 import { motion, Variants } from "framer-motion";
-// <<< IMPORT THE NEW SCROLL COMPONENT
 import { AnimatedSection } from "@/components/ui/AnimatedSection"; 
 
 // --- 1. Animation for H1 (Letter by Letter) ---
@@ -87,7 +86,6 @@ const tools = [
 
 export default function Terms() {
   return (
-    // <<< ADD 'relative' and 'overflow-hidden'
     <div className="min-h-screen pt-24 pb-16 relative overflow-hidden">
       {/* --- ADDED: Floating Tools Background --- */}
       <div
@@ -105,7 +103,7 @@ export default function Terms() {
               ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }),
             }}
             animate={{
-              opacity: 0.08, // <<< Made them very subtle (8% opacity)
+              opacity: 0.08,
               x: 0,
               scale: 1,
               y: [tool.y, tool.y + 20, tool.y],
@@ -136,23 +134,18 @@ export default function Terms() {
             initial="hidden"
             animate="visible"
           >
-            {/* Split title into an array of letters and map them */}
             {title.split("").map((char, index) => (
               <motion.span
                 key={index}
                 variants={letterVariants}
                 className="inline-block"
               >
-                {/* Use non-breaking space for actual spaces */}
                 {char === " " ? "\u00A0" : char}
               </motion.span>
             ))}
           </motion.h1>
 
-          {/* This div now only provides spacing */}
           <div className="space-y-8 text-muted-foreground">
-            {/* --- UPDATED: Each section is wrapped in AnimatedSection --- */}
-            
             <AnimatedSection>
               <AnimatedHeading>Introduction</AnimatedHeading>
               <p>
@@ -256,6 +249,7 @@ export default function Terms() {
                 parties shall not be liable for any failure to perform an
                 obligation under these Terms if performance is prevented or
                 delayed by a force majeure event.
+              </IAmA
               </p>
             </AnimatedSection>
 
@@ -281,6 +275,7 @@ export default function Terms() {
                 <br />
                 Phone: +91 94227 99875
               </p>
+              {/* <<< THE STRAY '_' IS GONE FROM HERE */}
             </AnimatedSection>
           </div>
         </div>
