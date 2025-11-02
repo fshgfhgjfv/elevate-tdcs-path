@@ -16,9 +16,8 @@ export const TestimonialCard = ({
   after,
   company,
 }: TestimonialCardProps) => {
-  // Smoothly rotating through one image at a time
   const hardcodedImages = [
-    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxATEhUSEhAPDxUSFxIQFQ8QDw8PDxAPFRUWFhUVFRUYHSggGBolGxUVITEhJSkrLi4uFx8zODMsNygtLisBCgoKDg0OGhAQFysdHx0tKy0tLSstLS0tKy0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tKy0tNystLS03Lf/AABEIAR4AsAMBIgACEQEDEQH...", // trimmed for brevity
+    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/...", // trimmed for brevity
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFMv3xXUWQ_UymielHwEcjmvimnByuE_ohtw&s",
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTK1p11fwTtISJt4xqyXCp3G2EJAMPH_Mmv5Q&s",
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaYIYZmxH6vEaReF9HAtGQ8IjQX1KM1s8yVQ&s",
@@ -26,11 +25,10 @@ export const TestimonialCard = ({
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Automatically cycle through images
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % hardcodedImages.length);
-    }, 2500); // 2.5s per image
+    }, 2500);
     return () => clearInterval(interval);
   }, [hardcodedImages.length]);
 
@@ -60,15 +58,18 @@ export const TestimonialCard = ({
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.onerror = null;
-                    target.src = "https://placehold.co/64x64/E2E8F0/64748B?text=Error";
+                    target.src =
+                      "https://placehold.co/64x64/E2E8F0/64748B?text=Error";
                   }}
                 />
               </AnimatePresence>
             </div>
           </div>
 
-          {/* --- Text & Arrows --- */}
-          <h3 className="text-xl font-bold text-center mb-4">{name}</h3>
+          {/* --- Name (Uppercase + TDCS STUDENT) --- */}
+          <h3 className="text-xl font-bold text-center mb-4 tracking-wide">
+            {name.toUpperCase()} – TDCS STUDENT
+          </h3>
 
           <div className="space-y-4">
             <div className="flex items-center gap-3">
