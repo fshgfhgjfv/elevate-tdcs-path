@@ -1,3 +1,52 @@
+
+
+Diagnosis
+
+No build log lines were provided — the logs field is empty/invalid, so I cannot isolate the error lines or determine the exact error type from your submission.
+Solution / Next steps
+
+Reproduce locally and capture the failing output
+From the repo root run:
+npm ci
+npm run build
+Copy the full failing output (the lines around the first error and stack trace). If you see a Netlify-specific failure, get the build output from the Netlify Deploy logs (Site → Deploys → click a deploy → "Show deploy log").
+Share the relevant log snippet
+
+Paste the lines around the first error (about ~20 lines before and after). If you want me to point at exact lines, include the log and I will reference lines using the #L<line> link format.
+Common causes and what to check now (try these before re-running or when sharing logs)
+
+Missing dependency / "Cannot find module" or "Module not found":
+Verify the package is listed in package.json dependencies or devDependencies.
+Verify you committed any required files (e.g., local files imported by path).
+If the error is from a third‑party package that needs to be treated as external by your bundler (e.g., Rollup/Vite), first verify the package is present in package.json or the file is committed, then consider adding it to build.rollupOptions.external.
+ESM/CJS / "unexpected token export" or "require is not defined":
+Check whether your project or a dependency expects Node ESM. If so, ensure "type": "module" in package.json or convert imports/exports accordingly.
+Node version mismatch / "unsupported engine" / runtime-specific failures:
+Ensure Netlify is using the correct Node version. You can set it with a file (package.json engines, .nvmrc, or netlify.toml).
+For instructions on changing Node versions on Netlify, see: https://docs.netlify.com/configure-builds/manage-dependencies/#node-js-and-javascript
+Files not committed (build imports a file that exists only locally):
+Make sure the imported file is committed to the repository and paths are correct (watch for case-sensitivity).
+Environment variables missing:
+If the build requires env vars, set them on Netlify (Site → Site settings → Build & deploy → Environment → Environment variables).
+If the error is about bundler externals (Vite/Rollup)
+
+Verify the package is in package.json or the file was committed to the repo.
+Then add the package/file to your Vite config externals as needed. Example (vite.config.js):
+// javascript
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      external: ['some-external-package'] // only after verifying it's in package.json
+    }
+  }
+});
+If you want immediate help: paste the failing deploy log (or attach the output of npm run build). I will:
+isolate the exact error lines,
+identify the error type and root cause,
+provide the minimal, specific change (file edits, package install, or Netlify config) to fix the build.
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -9,44 +58,73 @@
 
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS%20LOGO.png">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS%20LOGO.png">
+    <meta property="og:title" content="TDCS Technologies Private Limited">
+    <meta name="twitter:title" content="TDCS Technologies Private Limited">
+    <meta property="og:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
+    <meta name="twitter:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
+
     <style>
       /* Hide default cursor */
       body {
         cursor: none;
-        background-color: #f0f2f5; 
+        background-color: #f0f2f5; /* A light grey to make dots visible */
         min-height: 100vh; 
         margin: 0;
+        /* --- THIS LINE IS NOW REMOVED --- */
+        /* overflow: hidden; */ 
       }
 
-      /* 🦂 Scorpion Cursor Style */
-      #scorpion-cursor {
+      /* Main cursor dot */
+      #main-cursor-dot {
         position: fixed;
-        width: 40px; 
-        height: 40px; 
-        
-        /* --- I'VE ADDED A WORKING EXAMPLE IMAGE --- */
-        background-image: url('https://pngimg.com/uploads/scorpion/scorpion_PNG4.png');
-        
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        
-        pointer-events: none; /* Lets you click "through" it */
+        width: 10px;
+        height: 10px;
+        background-color: rgba(0, 150, 255, 0.8); /* A solid blue dot */
+        border-radius: 50%;
+        pointer-events: none;
         z-index: 10000;
-        
-        /* Smooth follow transition */
-        transition: transform 0.1s ease-out;
+        transform: translate(-50%, -50%); /* Center the dot */
+        transition: transform 0.1s ease-out, width 0.1s ease-out, height 0.1s ease-out; 
       }
 
-      /* Optional: A hover effect */
-      #scorpion-cursor.hover {
-        transform: scale(1.2); /* Grows slightly */
+      /* Trail dots */
+      .cursor-trail-dot {
+        position: fixed;
+        background-color: rgba(0, 180, 255, 0.5); /* Lighter, more transparent blue */
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0; /* Start invisible */
+        transform: translate(-50%, -50%) scale(0.5); /* Start smaller */
+        animation: fadeOutTrail 1s forwards ease-out; /* Fade out over 1 second */
+      }
+
+      /* Hover effect for main dot */
+      #main-cursor-dot.hover {
+        width: 15px;
+        height: 15px;
+        background-color: rgba(0, 200, 255, 0.9);
+      }
+
+      /* Keyframe animation for trail dots */
+      @keyframes fadeOutTrail {
+        0% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.1);
+        }
       }
     </style>
   </head>
 
   <body>
-    <div id="scorpion-cursor"></div>
+    <div id="main-cursor-dot"></div>
 
     <div id="root"></div>
 
@@ -54,40 +132,63 @@
     <script type="module" src="/src/main.tsx"></script>
 
     <script>
-      const cursor = document.getElementById("scorpion-cursor");
+      const mainCursorDot = document.getElementById("main-cursor-dot");
       let mouseX = 0, mouseY = 0;
       let targetX = 0, targetY = 0;
-      const smoothness = 0.15; // lower = slower / smoother
+      const trailSpawnInterval = 50; // Milliseconds between spawning trail dots
+      let lastTrailSpawnTime = 0;
 
-      if (cursor) {
+      if (mainCursorDot) {
         // Update mouse position
         window.addEventListener("mousemove", (e) => {
           mouseX = e.clientX;
           mouseY = e.clientY;
+
+          // Spawn a trail dot
+          const now = Date.now();
+          if (now - lastTrailSpawnTime > trailSpawnInterval) {
+            createTrailDot(mouseX, mouseY);
+            lastTrailSpawnTime = now;
+          }
         });
 
         // Smoothly follow mouse
-        function animateCursor() {
-          targetX += (mouseX - targetX) * smoothness;
-          targetY += (mouseY - targetY) * smoothness;
-          
-          // Centers the 40x40px div on the pointer
-          cursor.style.transform = `translate(${targetX - 20}px, ${targetY - 20}px)`;
-          
-          requestAnimationFrame(animateCursor);
+        function animateMainCursor() {
+          targetX += (mouseX - targetX) * 0.15; // Smoothness factor
+          targetY += (mouseY - targetY) * 0.15;
+          mainCursorDot.style.left = `${targetX}px`;
+          mainCursorDot.style.top = `${targetY}px`;
+          requestAnimationFrame(animateMainCursor);
         }
-        animateCursor();
+        animateMainCursor();
+
+        function createTrailDot(x, y) {
+          const trailDot = document.createElement("div");
+          trailDot.classList.add("cursor-trail-dot");
+          trailDot.style.left = `${x}px`;
+          trailDot.style.top = `${y}px`;
+          // Randomize size slightly for a more organic look
+          const size = Math.random() * 8 + 4; // Between 4px and 12px
+          trailDot.style.width = `${size}px`;
+          trailDot.style.height = `${size}px`;
+          document.body.appendChild(trailDot);
+
+          // Remove the dot after its animation is complete
+          trailDot.addEventListener("animationend", () => {
+            trailDot.remove();
+          });
+        }
 
         // Add hover effect for clickable elements
         document.addEventListener("mouseover", (e) => {
           if (e.target.closest("a, button, .hoverable")) {
-            cursor.classList.add("hover");
+            mainCursorDot.classList.add("hover");
           }
         });
 
         document.addEventListener("mouseout", (e) => {
           if (e.target.closest("a, button, .hoverable")) {
-            cursor.classList.remove("hover");
+            mainCursorDot.classList.remove("hover");
           }
         });
       }
