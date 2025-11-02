@@ -24,8 +24,9 @@ export const TestimonialCard = ({
       viewport={{ once: true }}
       whileHover={{ scale: 1.05 }}
       transition={{ duration: 0.3 }}
+      className="flex-shrink-0" // <-- UPDATE: Prevents card from shrinking
     >
-      <Card className="shadow-glow hover:shadow-glow-lg transition-all duration-300">
+      <Card className="shadow-glow hover:shadow-glow-lg transition-all duration-300 w-80"> {/* <-- UPDATE: Sets a fixed width */}
         <CardContent className="p-6">
           {/* --- Static Image --- */}
           <div className="flex items-center justify-center mb-4">
