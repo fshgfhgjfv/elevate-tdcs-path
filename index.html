@@ -9,13 +9,11 @@
 
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS%20LOGO.png">
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
     <style>
       /* Hide default cursor */
       body {
         cursor: none;
-        background-color: #f0f2f5; /* Your existing background color */
+        background-color: #f0f2f5; 
         min-height: 100vh; 
         margin: 0;
       }
@@ -23,12 +21,11 @@
       /* 🦂 Scorpion Cursor Style */
       #scorpion-cursor {
         position: fixed;
-        /* --- 1. SET YOUR CURSOR SIZE HERE --- */
         width: 40px; 
         height: 40px; 
         
-        /* --- 2. PASTE YOUR IMAGE URL HERE --- */
-        background-image: url('YOUR_SCORPION_IMAGE_URL.png');
+        /* --- I'VE ADDED A WORKING EXAMPLE IMAGE --- */
+        background-image: url('https://pngimg.com/uploads/scorpion/scorpion_PNG4.png');
         
         background-size: contain;
         background-repeat: no-repeat;
@@ -43,7 +40,7 @@
 
       /* Optional: A hover effect */
       #scorpion-cursor.hover {
-        transform: scale(1.2); /* Grows slightly when hovering links */
+        transform: scale(1.2); /* Grows slightly */
       }
     </style>
   </head>
@@ -74,9 +71,7 @@
           targetX += (mouseX - targetX) * smoothness;
           targetY += (mouseY - targetY) * smoothness;
           
-          /* This centers the image on the pointer.
-             We subtract half the width/height (20px for a 40x40px div)
-          */
+          // Centers the 40x40px div on the pointer
           cursor.style.transform = `translate(${targetX - 20}px, ${targetY - 20}px)`;
           
           requestAnimationFrame(animateCursor);
