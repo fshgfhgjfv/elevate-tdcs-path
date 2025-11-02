@@ -31,7 +31,7 @@ const tools = [
   },
   {
     // Image 3: Burp Suite
-    src: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fdavidjmcclelland.com%2Fburp-suite-for-localhost%2F&psig=AOvVaw306M9SdtuQqCLVPu6aiVMf&ust=1762152148344000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCLj3x7ju0pADFQAAAAAdAAAAABAf", // Direct link to your provided Burp Suite image
+    src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1", // Direct link to your provided Burp Suite image
     alt: "Burp Suite",
     side: "left" as "left" | "right",
     delay: 0.4,
