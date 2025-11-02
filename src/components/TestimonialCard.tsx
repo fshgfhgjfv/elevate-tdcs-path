@@ -4,14 +4,12 @@ import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface TestimonialCardProps {
-  name: string;
   before: string;
   after: string;
   company: string;
 }
 
 export const TestimonialCard = ({
-  name,
   before,
   after,
   company,
@@ -49,7 +47,7 @@ export const TestimonialCard = ({
                 <motion.img
                   key={currentIndex}
                   src={hardcodedImages[currentIndex]}
-                  alt={`${name} avatar ${currentIndex + 1}`}
+                  alt={`TDCS STUDENTS avatar ${currentIndex + 1}`}
                   className="absolute w-16 h-16 rounded-full object-cover border-2 border-background"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -66,9 +64,9 @@ export const TestimonialCard = ({
             </div>
           </div>
 
-          {/* --- Name (Uppercase + TDCS STUDENT) --- */}
+          {/* --- Only TDCS STUDENTS Text --- */}
           <h3 className="text-xl font-bold text-center mb-4 tracking-wide">
-            {name.toUpperCase()} – TDCS STUDENT
+            TDCS STUDENTS
           </h3>
 
           <div className="space-y-4">
