@@ -36,7 +36,7 @@ const tools = [
     y: 350,
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/4/43/Wireshark_Icon.svg",
+    src: "https://www.google.com/url?sa=i&url=https%3A%2F%2Ficonape.com%2Fwireshark-logo-icon-svg-png.html&psig=AOvVaw21JDMN-vYS87lscjsJsZzr&ust=1762151040365000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCJDqharq0pADFQAAAAAdAAAAABB5",
     alt: "Wireshark",
     side: "right" as "left" | "right",
     delay: 0.3,
