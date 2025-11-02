@@ -41,7 +41,6 @@ const coursePerks = [
     glowing: true, // Flag for the title
     features: [
       { text: "125+ Premium Softwares", position: "top-4 right-4" },
-      // --- THIS LINE IS NOW FIXED ---
       { text: "Scripts & Payloads", position: "top-1/3 left-4" },
       { text: "Ebooks & Guides", position: "top-2/3 right-4" },
       { text: "Training Video", position: "bottom-4 left-4" },
@@ -60,168 +59,168 @@ const Courses = () => {
       : [];
 
   return (
-    <div className="pt-24 pb-16">
-      <div className="container mx-auto px-4">
-        {/* Page Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-6xl font-bold gradient-text mb-4">
-            Our Courses
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Explore our expertly curated cybersecurity training programs
-          </p>
-        </motion.div>
+    // --- ADDED RED BOX CONTAINER HERE ---
+    <div className="border-4 border-red-500 p-4 rounded-lg bg-gray-950"> {/* Example red box styling */}
+      <div className="pt-24 pb-16">
+        <div className="container mx-auto px-4">
+          {/* Page Title */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
+          >
+            <h1 className="text-4xl md:text-6xl font-bold gradient-text mb-4">
+              Our Courses
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Explore our expertly curated cybersecurity training programs
+            </p>
+          </motion.div>
 
-        {/* Category Filters */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-2 rounded-full font-medium transition-all ${
-                selectedCategory === category
-                  ? "gradient-primary text-white shadow-glow"
-                  : "bg-muted text-muted-foreground hover:bg-muted/80"
-              }`}
-            >
-              {category}
-            </button>
-          ))}
+          {/* Category Filters */}
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-6 py-2 rounded-full font-medium transition-all ${
+                  selectedCategory === category
+                    ? "gradient-primary text-white shadow-glow"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+
+          {/* Courses Grid or Coming Soon */}
+          <motion.div
+            layout
+            className="grid grid-cols-1 sm:grid-2 lg:grid-cols-3 gap-8 justify-items-center"
+          >
+            {selectedCategory === "Live Courses" &&
+              filteredCourses.map((course) => (
+                <CourseCard key={course.id} {...course} />
+              ))}
+          </motion.div>
+
+          {/* Coming Soon for Recorded/Offline */}
+          {(selectedCategory === "Recorded Courses" ||
+            selectedCategory === "Offline Courses") && (
+            <div className="text-center py-20">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="space-y-4"
+              >
+                <h2 className="text-3xl font-bold gradient-text">Coming Soon 🚀</h2>
+                <p className="text-lg text-muted-foreground">
+                  {selectedCategory === "Recorded Courses"
+                    ? "Our high-quality recorded sessions are being prepared."
+                    : "Offline classroom batches will be launching soon."}
+                </p>
+              </motion.div>
+            </div>
+          )}
+
+          {/* No live courses fallback */}
+          {selectedCategory === "Live Courses" && filteredCourses.length === 0 && (
+            <div className="text-center py-20">
+              <p className="text-xl text-muted-foreground">
+                No live courses available right now.
+              </p>
+            </div>
+          )}
         </div>
 
-        {/* Courses Grid or Coming Soon */}
-        <motion.div
-          layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center"
-        >
-          {selectedCategory === "Live Courses" &&
-            filteredCourses.map((course) => (
-              <CourseCard key={course.id} {...course} />
-            ))}
-        </motion.div>
-
-        {/* Coming Soon for Recorded/Offline */}
-        {(selectedCategory === "Recorded Courses" ||
-          selectedCategory === "Offline Courses") && (
-          <div className="text-center py-20">
+        {/* --- Course Perks Section --- */}
+        <div className="container mx-auto px-4 mt-24 space-y-20">
+          {coursePerks.map((perk, index) => (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="space-y-4"
+              key={index}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6 }}
+              className={`flex flex-col md:flex-row items-center gap-8 md:gap-12 ${
+                perk.layout === "text-right" ? "md:flex-row-reverse" : ""
+              }`}
             >
-              <h2 className="text-3xl font-bold gradient-text">Coming Soon 🚀</h2>
-              <p className="text-lg text-muted-foreground">
-                {selectedCategory === "Recorded Courses"
-                  ? "Our high-quality recorded sessions are being prepared."
-                  : "Offline classroom batches will be launching soon."}
-              </p>
+              {/* Text Content */}
+              <div className="flex-1 space-y-4 text-center md:text-left">
+                <h2
+                  className={`text-3xl md:text-4xl font-bold gradient-text ${
+                    perk.glowing ? "animate-pulse" : ""
+                  }`}
+                >
+                  {perk.title}
+                </h2>
+                <p
+                  className={`text-lg text-muted-foreground max-w-md ${
+                    perk.layout === "text-right" ? "md:ml-auto" : "md:mr-auto"
+                  }`}
+                >
+                  {perk.description}
+                </p>
+              </div>
+
+              {/* Image Content */}
+              <div className="flex-1 relative max-w-md mx-auto w-full">
+                <img
+                  src={perk.imageUrl}
+                  alt={perk.title}
+                  className="rounded-lg shadow-xl w-full h-auto"
+                  loading="lazy"
+                  decoding="async"
+                />
+
+                {/* Conditional overlay for features */}
+                {perk.features && (
+                  <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg p-4">
+                    {perk.features.map((feature, i) => (
+                      <motion.span
+                        key={i}
+                        initial={{ opacity: 0.7, scale: 0.98 }}
+                        animate={{
+                          opacity: [0.7, 1, 0.7],
+                          scale: [0.98, 1.02, 0.98],
+                        }}
+                        transition={{
+                          duration: 1.5,
+                          repeat: Infinity,
+                          delay: i * 0.2,
+                        }}
+                        className={`
+                          absolute p-2 
+                          text-white text-lg md:text-xl font-bold text-center 
+                          drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] 
+                          ${feature.position}
+                        `}
+                      >
+                        {feature.text}
+                      </motion.span>
+                    ))}
+                  </div>
+                )}
+              </div>
             </motion.div>
-          </div>
-        )}
+          ))}
+        </div>
+        {/* --- END OF SECTION --- */}
 
-        {/* No live courses fallback */}
-        {selectedCategory === "Live Courses" && filteredCourses.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-xl text-muted-foreground">
-              No live courses available right now.
-            </p>
-          </div>
-        )}
+        {/* Hiring Partners Section */}
+        <div className="mt-24">
+          <HiringPartners />
+        </div>
+
+        {/* Recruiter Testimonial */}
+        <div className="mt-16">
+          <RecruiterTestimonial />
+        </div>
       </div>
-
-      {/* --- Course Perks Section --- */}
-      <div className="container mx-auto px-4 mt-24 space-y-20">
-        {coursePerks.map((perk, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6 }}
-            className={`flex flex-col md:flex-row items-center gap-8 md:gap-12 ${
-              perk.layout === "text-right" ? "md:flex-row-reverse" : ""
-            }`}
-          >
-            {/* Text Content */}
-            <div className="flex-1 space-y-4 text-center md:text-left">
-              <h2
-                className={`text-3xl md:text-4xl font-bold gradient-text ${
-                  perk.glowing ? "animate-pulse" : ""
-                }`}
-              >
-                {perk.title}
-              </h2>
-              <p
-                className={`text-lg text-muted-foreground max-w-md ${
-                  perk.layout === "text-right" ? "md:ml-auto" : "md:mr-auto"
-                }`}
-              >
-                {perk.description}
-              </p>
-            </div>
-
-            {/* Image Content */}
-            <div className="flex-1 relative max-w-md mx-auto w-full">
-              <img
-                src={perk.imageUrl}
-                alt={perk.title}
-                className="rounded-lg shadow-xl w-full h-auto"
-                loading="lazy"
-                decoding="async"
-              />
-
-              {/* Conditional overlay for features */}
-              {perk.features && (
-                // This div is the container for the absolute positioned text
-                <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg p-4">
-                  {perk.features.map((feature, i) => (
-                    <motion.span
-                      key={i}
-                      // Animation for blinking/glowing/zooming text
-                      initial={{ opacity: 0.7, scale: 0.98 }}
-                      animate={{
-                        opacity: [0.7, 1, 0.7],
-                        scale: [0.98, 1.02, 0.98],
-                      }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        delay: i * 0.2, // Stagger the animation
-                      }}
-                      // --- APPLIED POSITIONING AND GLOW ---
-                      className={`
-                        absolute p-2 
-                        text-white text-lg md:text-xl font-bold text-center 
-                        drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] 
-                        ${feature.position}
-                      `}
-                    >
-                      {feature.text}
-                    </motion.span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </motion.div>
-        ))}
-      </div>
-      {/* --- END OF SECTION --- */}
-
-      {/* Hiring Partners Section */}
-      <div className="mt-24">
-        <HiringPartners />
-      </div>
-
-      {/* Recruiter Testimonial */}
-      <div className="mt-16">
-        <RecruiterTestimonial />
-      </div>
-    </div>
+    </div> // --- CLOSING TAG FOR RED BOX ---
   );
 };
 
