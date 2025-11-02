@@ -31,7 +31,7 @@ const tools = [
   },
   {
     // Image 3: Burp Suite
-    src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/68747470733a2f2f692e6962622e636f2f79534b337048722f65787465726e616c2d636f6e74656e742d6475636b6475636b676f2d636f6d2d72656d6f766562672d707265766965772e706e67.png?raw=true", // Direct link to your provided Burp Suite image
+    src: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fdavidjmcclelland.com%2Fburp-suite-for-localhost%2F&psig=AOvVaw306M9SdtuQqCLVPu6aiVMf&ust=1762152148344000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCLj3x7ju0pADFQAAAAAdAAAAABAf", // Direct link to your provided Burp Suite image
     alt: "Burp Suite",
     side: "left" as "left" | "right",
     delay: 0.4,
