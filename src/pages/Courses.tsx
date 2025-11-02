@@ -39,10 +39,10 @@ const coursePerks = [
       "https://blogger.googleusercontent.com/img/a/AVvXsEjcQA7l6TaSYW4QYsDfMXN_HqfBECITrE7LktjD2-41QpgpTQ29RL5xPgNs4vDAzPW6k0EM9p-OSdaTR3chzl97ZxiGAFRvfV4O4Im8i6JJZXT4IDK-LM2OIBG8N8tsf4Wwn4wTJaUzqtQJd3sdza1yhMvhj2KRPivVJyCCMzKp2WpX24VksPf3ceiItGl1",
     layout: "text-right", // text-right, image-left
     glowing: true, // Flag for the title
-    // --- UPDATED POSITIONS FOR RESPONSIVENESS ---
+    // --- UPDATED TEXT HERE ---
     features: [
-      { text: "125+ Premium Softwares", position: "top-[10%] right-[5%]" },
-      { text: "Scripts & Payloads", position: "top-[33%] left-[5%]" },
+      { text: "100+ Premium Tools", position: "top-[10%] right-[5%]" },
+      { text: "WiFi Hacking Tool", position: "top-[33%] left-[5%]" },
       { text: "Ebooks & Guides", position: "top-[66%] right-[5%]" },
       { text: "Training Video", position: "bottom-[10%] left-[5%]" },
     ],
@@ -135,7 +135,6 @@ const Courses = () => {
       </div>
 
       {/* --- Course Perks Section --- */}
-      {/* --- REDUCED SPACE FROM space-y-20 to space-y-16 --- */}
       <div className="container mx-auto px-4 mt-24 space-y-16">
         {coursePerks.map((perk, index) => (
           <motion.div
@@ -201,7 +200,6 @@ const Courses = () => {
                         repeat: Infinity,
                         delay: i * 0.2,
                       }}
-                      // --- UPDATED FOR RESPONSIVENESS ---
                       className={`
                         absolute 
                         px-3 py-1 md:px-4 md:py-2
