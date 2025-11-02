@@ -3,20 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TDCS Technologies Private Limited</title>
-    <meta name="description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
-    <meta name="author" content="TDCS Technologies Private Limited" />
-
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS%20LOGO.png">
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS%20LOGO.png">
-    <meta property="og:title" content="TDCS Technologies Private Limited">
-    <meta name="twitter:title" content="TDCS Technologies Private Limited">
-    <meta property="og:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
-    <meta name="twitter:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
-
+    <title>TEST CURSOR</title>
     <style>
       /* 💙 Sleek Electric Blue Cursor */
       #cursor-glow {
@@ -34,18 +21,23 @@
         mix-blend-mode: screen;
         transition: width 0.3s ease, height 0.3s ease, filter 0.3s ease;
       }
-
-      /* Hover State - expands softly */
       #cursor-glow.hover {
         width: 70px;
         height: 70px;
         filter: blur(35px);
         background: radial-gradient(circle, rgba(0,160,255,0.8), rgba(0,100,255,0.3) 60%);
       }
-
-      /* Hide default cursor */
       body {
         cursor: none;
+        /* Added a background and height to make it easy to see */
+        background-color: #222;
+        min-height: 100vh;
+      }
+      /* Added a test button */
+      .hoverable {
+        padding: 20px 40px;
+        font-size: 2rem;
+        margin: 100px;
       }
     </style>
   </head>
@@ -53,43 +45,33 @@
   <body>
     <div id="cursor-glow"></div>
 
-    <div id="root"></div>
-
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script type="module" src="/src/main.tsx"></script>
+    <button class="hoverable">Hover Me</button>
 
     <script>
       const cursor = document.getElementById("cursor-glow");
       let x = 0, y = 0, targetX = 0, targetY = 0;
-
       if (cursor) {
-        const smoothness = 0.12; // lower = slower / smoother
-
+        const smoothness = 0.12;
         function animate() {
           x += (targetX - x) * smoothness;
           y += (targetY - y) * smoothness;
           cursor.style.transform = `translate(${x}px, ${y}px)`;
           requestAnimationFrame(animate);
         }
-
         window.addEventListener("mousemove", (e) => {
           targetX = e.clientX;
           targetY = e.clientY;
         });
-
-        // Add hover effect for clickable elements
         document.addEventListener("mouseover", (e) => {
           if (e.target.closest("a, button, .hoverable")) {
             cursor.classList.add("hover");
           }
         });
-
         document.addEventListener("mouseout", (e) => {
           if (e.target.closest("a, button, .hoverable")) {
             cursor.classList.remove("hover");
           }
         });
-
         animate();
       }
     </script>
