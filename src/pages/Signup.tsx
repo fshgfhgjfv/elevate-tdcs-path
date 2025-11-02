@@ -39,7 +39,7 @@ const tools = [
   },
   {
     // Image 2: Wireshark
-    src: "https://i.imgur.com/gI0RkKj.png", // Direct link to your provided Wireshark image
+    src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true", // Direct link to your provided Wireshark image
     alt: "Wireshark",
     side: "right" as "left" | "right",
     delay: 0.3,
