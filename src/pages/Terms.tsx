@@ -116,7 +116,7 @@ export default function Terms() {
               <p className="font-semibold text-foreground">
                 TDCS Technologies Private Limited<br />
                 Email: info@tdcs.tech<br />
-                Phone: +91 123 456 7890
+                Phone: +91 94227 99875
               </p>
             </section>
           </div>
