@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 interface CourseCardProps {
   id: string;
@@ -13,17 +14,48 @@ interface CourseCardProps {
 }
 
 export const CourseCard = ({ id, title, description, price, thumbnail, category }: CourseCardProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Motion values for mouse tracking
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Smooth rotation mapping
+  const rotateX = useTransform(y, [0, 1], [15, -15]);
+  const rotateY = useTransform(x, [0, 1], [-15, 15]);
+
+  // Handle mouse movement for 3D effect
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    const xPos = (e.clientX - rect.left) / rect.width;
+    const yPos = (e.clientY - rect.top) / rect.height;
+    x.set(xPos);
+    y.set(yPos);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0.5);
+    y.set(0.5);
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen"> {/* Center wrapper */}
+    <div className="flex items-center justify-center min-h-screen perspective-[1000px]">
       <motion.div
+        ref={ref}
+        style={{ rotateX, rotateY }}
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        whileHover={{ y: -8 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.4, type: "spring" }}
+        whileHover={{ scale: 1.05 }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="transform-gpu"
       >
         <Link to={`/courses/${id}`} className="block h-full">
-          <Card className="h-full shadow-glow hover:shadow-glow-lg transition-all duration-300 overflow-hidden cursor-pointer">
+          <Card className="h-full shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer rounded-2xl bg-background/80 backdrop-blur-md border border-white/10">
             <div className="h-48 overflow-hidden">
               <img
                 src={thumbnail}
