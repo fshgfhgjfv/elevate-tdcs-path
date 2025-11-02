@@ -1,42 +1,42 @@
 import { motion, Variants } from "framer-motion";
+// <<< IMPORT THE NEW SCROLL COMPONENT
+import { AnimatedSection } from "@/components/ui/AnimatedSection"; 
 
-// --- Animation Variants ---
+// --- 1. Animation for H1 (Letter by Letter) ---
+const title = "Terms and Conditions";
 
-// 1. For the main container (to stagger the children)
-const containerVariants: Variants = {
-  hidden: {}, // No initial state needed for the container itself
+// Variants for the H1 container
+const titleVariants: Variants = {
+  hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.15, // Each section animates 0.15s after the last
+      staggerChildren: 0.03, // Stagger each letter by 0.03s
     },
   },
 };
 
-// 2. For each individual section
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
+// Variants for each letter
+const letterVariants: Variants = {
+  hidden: { opacity: 0, y: 50, rotate: 10 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      type: "spring", // A nice bouncy effect
-      stiffness: 100,
-    },
+    rotate: 0,
+    transition: { type: "spring", stiffness: 150, damping: 15 },
   },
 };
 
-// 3. A helper component for the interactive heading
+// --- 2. Interactive Heading Component (Unchanged) ---
 const AnimatedHeading = ({ children }: { children: React.ReactNode }) => (
   <motion.h2
-    className="text-2xl font-semibold text-foreground mb-4 font-heading w-fit" // Use 'font-heading'
+    className="text-2xl font-semibold text-foreground mb-4 font-heading w-fit"
     initial="rest"
     whileHover="hover"
     animate="rest"
   >
     {children}
-    {/* This is the animated underline */}
     <motion.div
-      className="h-0.5 bg-primary" // Use your primary/gradient color
+      className="h-0.5 bg-primary"
       variants={{
         rest: { width: 0 },
         hover: { width: "100%" },
@@ -46,29 +46,114 @@ const AnimatedHeading = ({ children }: { children: React.ReactNode }) => (
   </motion.h2>
 );
 
+// --- 3. Floating Background Icons (from Signup) ---
+const tools = [
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
+    alt: "Kali Linux",
+    side: "left" as "left" | "right",
+    delay: 0.2,
+    y: 150,
+  },
+  {
+    src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1",
+    alt: "Burp Suite",
+    side: "left" as "left" | "right",
+    delay: 0.4,
+    y: 350,
+  },
+  {
+    src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true",
+    alt: "Wireshark",
+    side: "right" as "left" | "right",
+    delay: 0.3,
+    y: 120,
+  },
+  {
+    src: "https://images.contentstack.io/v3/assets/blt28ff6c4a2cf43126/blt2d8822c72b3fa47d/647726fad2aad85beae606cd/NMAP_1_Integrations_Feature_Array_Item_Image.png?auto=webp&disable=upscale&width=3840&quality=75",
+    alt: "Nmap",
+    side: "right" as "left" | "right",
+    delay: 0.5,
+    y: 320,
+  },
+  {
+    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
+    alt: "Metasploit",
+    side: "left" as "left" | "right",
+    delay: 0.6,
+    y: 500,
+  },
+];
+
 export default function Terms() {
   return (
-    <div className="min-h-screen pt-24 pb-16">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="prose prose-lg dark:prose-invert max-w-none"
-        >
-          {/* Apply the new heading font */}
-          <h1 className="text-4xl font-bold mb-8 gradient-text font-heading">
-            Terms and Conditions
-          </h1>
+    // <<< ADD 'relative' and 'overflow-hidden'
+    <div className="min-h-screen pt-24 pb-16 relative overflow-hidden">
+      {/* --- ADDED: Floating Tools Background --- */}
+      <div
+        className="absolute inset-0 -z-10 overflow-hidden"
+        aria-hidden="true"
+      >
+        {tools.map((tool) => (
+          <motion.img
+            key={tool.alt}
+            src={tool.src}
+            alt={tool.alt}
+            className="absolute h-16 w-16 md:h-24 md:w-24"
+            style={{
+              top: tool.y,
+              ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }),
+            }}
+            animate={{
+              opacity: 0.08, // <<< Made them very subtle (8% opacity)
+              x: 0,
+              scale: 1,
+              y: [tool.y, tool.y + 20, tool.y],
+              transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 10,
+                delay: tool.delay,
+                y: {
+                  duration: 2 + Math.random() * 1,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut",
+                },
+              },
+            }}
+          />
+        ))}
+      </div>
+      {/* --- End Floating Tools --- */}
 
-          {/* This is now the animation container */}
-          <motion.div
-            className="space-y-6 text-muted-foreground"
-            variants={containerVariants}
+      <div className="container mx-auto px-4 max-w-4xl">
+        <div className="prose prose-lg dark:prose-invert max-w-none">
+          {/* --- UPDATED: H1 Letter-by-Letter Animation --- */}
+          <motion.h1
+            className="text-4xl font-bold mb-8 gradient-text font-heading"
+            variants={titleVariants}
             initial="hidden"
-            animate="visible" // Animate on load
+            animate="visible"
           >
-            {/* Each section is now a motion item */}
-            <motion.section variants={itemVariants}>
+            {/* Split title into an array of letters and map them */}
+            {title.split("").map((char, index) => (
+              <motion.span
+                key={index}
+                variants={letterVariants}
+                className="inline-block"
+              >
+                {/* Use non-breaking space for actual spaces */}
+                {char === " " ? "\u00A0" : char}
+              </motion.span>
+            ))}
+          </motion.h1>
+
+          {/* This div now only provides spacing */}
+          <div className="space-y-8 text-muted-foreground">
+            {/* --- UPDATED: Each section is wrapped in AnimatedSection --- */}
+            
+            <AnimatedSection>
               <AnimatedHeading>Introduction</AnimatedHeading>
               <p>
                 Your use of the Platform and services and tools are governed by
@@ -84,9 +169,9 @@ export default function Terms() {
                 policies constitute Your binding obligations, with Platform
                 Owner.
               </p>
-            </motion.section>
+            </AnimatedSection>
 
-            <motion.section variants={itemVariants}>
+            <AnimatedSection>
               <AnimatedHeading>Agreement to Terms</AnimatedHeading>
               <p className="font-semibold text-foreground">
                 ACCESSING, BROWSING OR OTHERWISE USING THE PLATFORM INDICATES
@@ -102,18 +187,18 @@ export default function Terms() {
                 expressly rejected by the Platform Owner and shall be of no
                 force or effect.
               </p>
-            </motion.section>
+            </AnimatedSection>
 
-            <motion.section variants={itemVariants}>
+            <AnimatedSection>
               <AnimatedHeading>Modifications</AnimatedHeading>
               <p>
                 These Terms of Use can be modified at any time without assigning
                 any reason. It is your responsibility to periodically review
                 these Terms of Use to stay informed of updates.
               </p>
-            </motion.section>
+            </AnimatedSection>
 
-            <motion.section variants={itemVariants}>
+            <AnimatedSection>
               <AnimatedHeading>User Obligations</AnimatedHeading>
               <p>
                 The use of Platform and/or availing of our Services is subject to
@@ -138,18 +223,18 @@ export default function Terms() {
                   policy and such other policies of such third party websites.
                 </li>
               </ul>
-            </motion.section>
+            </AnimatedSection>
 
-            <motion.section variants={itemVariants}>
+            <AnimatedSection>
               <AnimatedHeading>Transactions</AnimatedHeading>
               <p>
                 You understand that upon initiating a transaction for availing
                 the Services you are entering into a legally binding and
                 enforceable contract with the Platform Owner for the Services.
               </p>
-            </motion.section>
+            </AnimatedSection>
 
-            <motion.section variants={itemVariants}>
+            <AnimatedSection>
               <AnimatedHeading>Indemnification</AnimatedHeading>
               <p>
                 You shall indemnify and hold harmless Platform Owner, its
@@ -162,9 +247,9 @@ export default function Terms() {
                 (including infringement of intellectual property rights) of a
                 third party.
               </p>
-            </motion.section>
+            </AnimatedSection>
 
-            <motion.section variants={itemVariants}>
+            <AnimatedSection>
               <AnimatedHeading>Force Majeure</AnimatedHeading>
               <p>
                 Notwithstanding anything contained in these Terms of Use, the
@@ -172,18 +257,18 @@ export default function Terms() {
                 obligation under these Terms if performance is prevented or
                 delayed by a force majeure event.
               </p>
-            </motion.section>
+            </AnimatedSection>
 
-            <motion.section variants={itemVariants}>
+            <AnimatedSection>
               <AnimatedHeading>Governing Law</AnimatedHeading>
               <p>
                 These Terms and any dispute or claim relating to it, or its
                 enforceability, shall be governed by and construed in accordance
                 with the laws of India.
               </p>
-            </motion.section>
+            </AnimatedSection>
 
-            <motion.section variants={itemVariants}>
+            <AnimatedSection>
               <AnimatedHeading>Contact Information</AnimatedHeading>
               <p>
                 For any questions or concerns regarding these Terms of Use,
@@ -195,10 +280,10 @@ export default function Terms() {
                 Email: info@tdcs.tech
                 <br />
                 Phone: +91 94227 99875
-              </p>_
-            </motion.section>
-          </motion.div>
-        </motion.div>
+              </p>
+            </AnimatedSection>
+          </div>
+        </div>
       </div>
     </div>
   );
