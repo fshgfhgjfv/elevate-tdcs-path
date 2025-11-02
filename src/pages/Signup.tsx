@@ -23,7 +23,7 @@ import { Loader2 } from "lucide-react";
 const tools = [
   {
     // Image 1: Arch Linux (replacing Kali Linux for now, as requested)
-    src: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.shoplinuxonline.com%2Farch.html&psig=AOvVaw1O3XBrbwFLl--c6uJS7mS7&ust=1762152029454000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCOj57__t0pADFQAAAAAdAAAAABAf", // Direct link to your provided Arch Linux image
+    src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg", // Direct link to your provided Arch Linux image
     alt: "Arch Linux",
     side: "left" as "left" | "right",
     delay: 0.2,
