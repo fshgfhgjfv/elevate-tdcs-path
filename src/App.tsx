@@ -7,9 +7,6 @@ import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
 
-// --- ✅ 1. Import your new AuthProvider ---
-import { AuthProvider } from "./contexts/AuthContext";
-
 // --- Pages ---
 import Home from "./pages/Home";
 import Courses from "./pages/Courses";
@@ -40,55 +37,49 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      {/* --- ✅ 2. Wrap your app with the provider --- */}
-      <AuthProvider>
-        <BrowserRouter>
-          <ScrollToTop />
-          <Header />
-          <Routes>
-            {/* Main Pages */}
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact-us" element={<ContactUs />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
+      <BrowserRouter>
+        <ScrollToTop />
+        <Header />
+        <Routes>
+          {/* Main Pages */}
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
 
-            {/* Courses */}
-            <Route path="/courses" element={<Courses />} />
-            <Route path="/courses/:id" element={<CourseDetail />} />
-            <Route path="/courses/:id/content" element={<CourseContent />} />
+          {/* Courses */}
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/:id" element={<CourseDetail />} />
+          <Route path="/courses/:id/content" element={<CourseContent />} />
 
-            {/* Auth & Profile */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/my-profile" element={<MyProfile />} />
+          {/* Auth & Profile */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/my-profile" element={<MyProfile />} />
 
-            {/* Certificates */}
-            <Route path="/verify-certificate" element={<VerifyCertificate />} />
-            <Route
-              path="/certificate-download"
-              element={<CertificateDownload />}
-            />
+          {/* Certificates */}
+          <Route path="/verify-certificate" element={<VerifyCertificate />} />
+          <Route path="/certificate-download" element={<CertificateDownload />} />
 
-            {/* Services */}
-            <Route path="/services" element={<Services />} />
-            <Route path="/services/software" element={<Services />} />
+          {/* Services */}
+          <Route path="/services" element={<Services />} />
+          <Route path="/services/software" element={<Services />} />
+          
+          {/* ✅ Updated Hardware route */}
+          <Route path="/services/hardware" element={<HardwareServices />} />
+          
+          {/* ✅ Legal / Advocate route */}
+          <Route path="/services/legal" element={<AdvocateConstruction />} />
+          
+          <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
-            {/* ✅ Updated Hardware route */}
-            <Route path="/services/hardware" element={<HardwareServices />} />
-
-            {/* ✅ Legal / Advocate route */}
-            <Route path="/services/legal" element={<AdvocateConstruction />} />
-
-            <Route path="/services/:serviceId" element={<ServiceDetail />} />
-
-            {/* 404 Fallback */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Footer />
-        </BrowserRouter>
-      </AuthProvider>
+          {/* 404 Fallback */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Footer />
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );

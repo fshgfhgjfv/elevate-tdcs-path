@@ -6,114 +6,59 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-// --- 1. Import Supabase, AuthContext, and icons ---
-import { Loader2, Github } from "lucide-react";
-import { supabase } from "@/supabaseClient";
-import { useAuth } from "@/contexts/AuthContext";
-
-// --- 2. Add GoogleIcon helper component ---
-const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    {...props}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 48 48"
-  >
-    <path
-      fill="#FFC107"
-      d="M43.611,20.083H42V20H24v8h11.303c-1.659,4.696-6.142,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
-    />
-    <path
-      fill="#FF3D00"
-      d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
-    />
-    <path
-      fill="#4CAF50"
-      d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.16,0-9.658-3.302-11.303-7.918l-6.522,5.023C9.505,41.246,16.227,44,24,44z"
-    />
-    <path
-      fill="#1976D2"
-      d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C41.383,34.463,44,29.625,44,24C44,22.659,43.862,21.35,43.611,20.083z"
-    />
-  </svg>
-);
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [formData, setFormData] = useState({ emailOrNumber: "", password: "" });
-  // --- 3. Add isLoading state and get user from context ---
-  const [isLoading, setIsLoading] = useState(false);
-  const { user } = useAuth();
 
-  // --- 4. Update useEffect to use context ---
   useEffect(() => {
-    // If user is already logged in, redirect them
+    const user = localStorage.getItem("tdcs_user");
     if (user) {
-      const from = (location.state as any)?.from || "/";
-      navigate(from, { replace: true });
+      navigate("/");
     }
-  }, [user, navigate, location.state]);
+  }, [navigate]);
 
-  // --- 5. Add social login handler ---
-  const handleSocialSignup = async (provider: 'google' | 'github') => {
-    setIsLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: provider,
-    });
-    if (error) {
-      toast.error(error.message);
-      setIsLoading(false);
-    }
-    // No need to setIsLoading(false) on success, user is redirected
-  };
-
-  // --- 6. Update handleSubmit to be async and use Supabase ---
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
     const { emailOrNumber, password } = formData;
 
     if (!emailOrNumber || !password) {
       toast.error("Please fill in all fields");
-      setIsLoading(false);
       return;
     }
 
-    // --- We keep your smart logic to check for email vs. phone ---
-    let authData;
+    const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
+
+    // Detect if input is an email or a phone number
+    let user;
     if (emailOrNumber.includes("@")) {
-      // It's an email
-      authData = await supabase.auth.signInWithPassword({
-        email: emailOrNumber,
-        password: password,
-      });
+      user = users.find(
+        (u: any) => u.email === emailOrNumber && u.password === password
+      );
     } else {
-      // It's a phone number
-      const normalizedNumber = emailOrNumber.replace(/\D/g, "");
+      // For number, allow 10-digit input or +91XXXXXXXXXX format
+      const normalizedNumber = emailOrNumber.replace(/\D/g, ""); // only digits
       if (normalizedNumber.length !== 10) {
         toast.error("Please enter a valid 10-digit number");
-        setIsLoading(false);
         return;
       }
       const formattedNumber = `+91${normalizedNumber}`;
-      
-      authData = await supabase.auth.signInWithPassword({
-        phone: formattedNumber,
-        password: password,
-      });
+      user = users.find(
+        (u: any) => u.number === formattedNumber && u.password === password
+      );
     }
 
-    // --- Check the result from Supabase ---
-    if (authData.error) {
-      toast.error(authData.error.message || "Invalid credentials");
-    } else {
+    if (user) {
+      const { password: _, ...userWithoutPassword } = user;
+      localStorage.setItem("tdcs_user", JSON.stringify(userWithoutPassword));
       toast.success("Login successful!");
       const from = (location.state as any)?.from || "/";
-      navigate(from, { replace: true });
+      navigate(from);
+    } else {
+      toast.error("Invalid credentials");
     }
-
-    setIsLoading(false);
   };
 
   return (
@@ -155,63 +100,17 @@ const Login = () => {
             </CardHeader>
 
             <CardContent>
-              {/* --- 7. Add Social Login buttons --- */}
-              <motion.div
-                className="space-y-3 flex flex-col sm:flex-row sm:space-y-0 sm:space-x-3"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => handleSocialSignup("google")}
-                  type="button"
-                  disabled={isLoading}
-                >
-                  <GoogleIcon className="mr-2 h-4 w-4" />
-                  Sign in with Google
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => handleSocialSignup("github")}
-                  type="button"
-                  disabled={isLoading}
-                >
-                  <Github className="mr-2 h-4 w-4" />
-                  Sign in with GitHub
-                </Button>
-              </motion.div>
-
-              {/* --- 8. Add Divider --- */}
-              <motion.div
-                className="relative my-6"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-              >
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">
-                    Or sign in with email/phone
-                  </span>
-                </div>
-              </motion.div>
-
               <motion.form
                 onSubmit={handleSubmit}
                 className="space-y-6"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.3 }}
               >
                 <div>
                   <Label htmlFor="emailOrNumber">Email or Phone Number</Label>
                   <div className="flex items-center">
-                    {/* Your smart +91 prefix logic - this is great! */}
+                    {/* +91 Prefix — only visible if typing a number */}
                     {formData.emailOrNumber && !formData.emailOrNumber.includes("@") && (
                       <span className="px-3 py-2 bg-muted rounded-l-md border border-r-0 border-input text-sm text-muted-foreground">
                         +91
@@ -224,6 +123,7 @@ const Login = () => {
                       value={formData.emailOrNumber}
                       onChange={(e) => {
                         const value = e.target.value;
+                        // If number, allow only digits up to 10
                         if (!value.includes("@")) {
                           const digitsOnly = value.replace(/\D/g, "");
                           if (digitsOnly.length <= 10) {
@@ -239,7 +139,6 @@ const Login = () => {
                           : ""
                       }
                       required
-                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -255,7 +154,6 @@ const Login = () => {
                       setFormData({ ...formData, password: e.target.value })
                     }
                     required
-                    disabled={isLoading}
                   />
                 </div>
 
@@ -264,13 +162,8 @@ const Login = () => {
                     type="submit"
                     variant="gradient"
                     className="w-full text-lg py-6 font-semibold shadow-lg"
-                    disabled={isLoading} // --- 9. Disable button on load ---
                   >
-                    {/* --- 10. Show loader --- */}
-                    {isLoading && (
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    )}
-                    {isLoading ? "Logging In..." : "Login"}
+                    Login
                   </Button>
                 </motion.div>
               </motion.form>
@@ -279,7 +172,7 @@ const Login = () => {
                 className="mt-6 text-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
+                transition={{ delay: 0.5 }}
               >
                 <p className="text-sm text-muted-foreground">
                   Don’t have an account?{" "}
