@@ -22,9 +22,10 @@
       body {
         cursor: none;
         background-color: #f0f2f5; /* A light grey to make dots visible */
-        min-height: 100vh; /* Ensure body takes full height for cursor to be seen */
+        min-height: 100vh; 
         margin: 0;
-        overflow: hidden; /* Prevent scrollbars from trail elements */
+        /* --- THIS LINE IS NOW REMOVED --- */
+        /* overflow: hidden; */ 
       }
 
       /* Main cursor dot */
@@ -37,7 +38,7 @@
         pointer-events: none;
         z-index: 10000;
         transform: translate(-50%, -50%); /* Center the dot */
-        transition: transform 0.1s ease-out, width 0.1s ease-out, height 0.1s ease-out; /* Smooth follow, quick size change */
+        transition: transform 0.1s ease-out, width 0.1s ease-out, height 0.1s ease-out; 
       }
 
       /* Trail dots */
