@@ -39,11 +39,12 @@ const coursePerks = [
       "https://blogger.googleusercontent.com/img/a/AVvXsEjcQA7l6TaSYW4QYsDfMXN_HqfBECITrE7LktjD2-41QpgpTQ29RL5xPgNs4vDAzPW6k0EM9p-OSdaTR3chzl97ZxiGAFRvfV4O4Im8i6JJZXT4IDK-LM2OIBG8N8tsf4Wwn4wTJaUzqtQJd3sdza1yhMvhj2KRPivVJyCCMzKp2WpX24VksPf3ceiItGl1",
     layout: "text-right", // text-right, image-left
     glowing: true, // Flag for the title
+    // --- UPDATED POSITIONS FOR RESPONSIVENESS ---
     features: [
-      { text: "125+ Premium Softwares", position: "top-4 right-4" },
-      { text: "Scripts & Payloads", position: "top-1/3 left-4" },
-      { text: "Ebooks & Guides", position: "top-2/3 right-4" },
-      { text: "Training Video", position: "bottom-4 left-4" },
+      { text: "125+ Premium Softwares", position: "top-[10%] right-[5%]" },
+      { text: "Scripts & Payloads", position: "top-[33%] left-[5%]" },
+      { text: "Ebooks & Guides", position: "top-[66%] right-[5%]" },
+      { text: "Training Video", position: "bottom-[10%] left-[5%]" },
     ],
   },
 ];
@@ -134,8 +135,8 @@ const Courses = () => {
       </div>
 
       {/* --- Course Perks Section --- */}
-      {/* Removed the outer border-pulse container */}
-      <div className="container mx-auto px-4 mt-24 space-y-20">
+      {/* --- REDUCED SPACE FROM space-y-20 to space-y-16 --- */}
+      <div className="container mx-auto px-4 mt-24 space-y-16">
         {coursePerks.map((perk, index) => (
           <motion.div
             key={index}
@@ -177,37 +178,35 @@ const Courses = () => {
 
               {/* Conditional overlay for features */}
               {perk.features && (
-                // This div is just a container, the black overlay is removed
                 <div className="absolute inset-0 p-4">
                   {perk.features.map((feature, i) => (
-                    // --- THIS IS THE MODIFIED ELEMENT ---
                     <motion.span
                       key={i}
-                      // Animation for blinking/glowing/zooming red badge
                       initial={{
                         opacity: 0.7,
                         scale: 0.98,
-                        boxShadow: "0 0 10px rgba(239, 68, 68, 0.5)", // Fainter red glow (red-500)
+                        boxShadow: "0 0 10px rgba(239, 68, 68, 0.5)",
                       }}
                       animate={{
                         opacity: [0.7, 1, 0.7],
                         scale: [0.98, 1.02, 0.98],
                         boxShadow: [
                           "0 0 10px rgba(239, 68, 68, 0.5)",
-                          "0 0 20px rgba(239, 68, 68, 1)", // Brighter red glow
+                          "0 0 20px rgba(239, 68, 68, 1)",
                           "0 0 10px rgba(239, 68, 68, 0.5)",
                         ],
                       }}
                       transition={{
                         duration: 1.5,
                         repeat: Infinity,
-                        delay: i * 0.2, // Stagger the animation
+                        delay: i * 0.2,
                       }}
-                      // --- APPLIED RED BADGE STYLING ---
+                      // --- UPDATED FOR RESPONSIVENESS ---
                       className={`
-                        absolute px-4 py-2 
+                        absolute 
+                        px-3 py-1 md:px-4 md:py-2
                         bg-red-600 
-                        text-white text-base md:text-lg font-bold text-center 
+                        text-white text-[10px] sm:text-xs md:text-base font-bold text-center 
                         rounded-full 
                         whitespace-nowrap
                         ${feature.position}
