@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react"; // Added useRef
 import { CourseCard } from "@/components/CourseCard";
 import { courses } from "@/data/courses";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion"; // Added useScroll and useTransform
 import { HiringPartners } from "@/components/HiringPartners";
 import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
 
-// Data for the new feature/perks sections
+// Data for the course perks sections
 const coursePerks = [
   {
     title: "Exclusive Swag Pack",
@@ -39,7 +39,6 @@ const coursePerks = [
       "https://blogger.googleusercontent.com/img/a/AVvXsEjcQA7l6TaSYW4QYsDfMXN_HqfBECITrE7LktjD2-41QpgpTQ29RL5xPgNs4vDAzPW6k0EM9p-OSdaTR3chzl97ZxiGAFRvfV4O4Im8i6JJZXT4IDK-LM2OIBG8N8tsf4Wwn4wTJaUzqtQJd3sdza1yhMvhj2KRPivVJyCCMzKp2WpX24VksPf3ceiItGl1",
     layout: "text-right", // text-right, image-left
     glowing: true, // Flag for the title
-    // --- UPDATED TEXT HERE ---
     features: [
       { text: "100+ Premium Tools", position: "top-[10%] right-[5%]" },
       { text: "WiFi Hacking Tool", position: "top-[33%] left-[5%]" },
@@ -47,6 +46,15 @@ const coursePerks = [
       { text: "Training Video", position: "bottom-[10%] left-[5%]" },
     ],
   },
+];
+
+// --- NEW DATA FOR SWAG SECTION ---
+const swagImages = [
+  "https://raw.githubusercontent.com/fshgfhgjfv/IMG_TDCS/refs/heads/main/IMG-20251026-WA0019.jpg",
+  "https://blogger.googleusercontent.com/img/a/AVvXsEic40445rZ18ET__N-4NqwuZd0-1w5Vw-kqSKIkar2F1kttL0-ac45ybU42Bw9Sp68D8oPPNKXuzELpsUSePwFntbwm9Q6VQ05l18qYEtKBSfYS9aR1JWnIuAQA_WtW_9lnPHIYcYp85uH1KDbqOJsbyTqMIKobvEMfFcIHzm1eU_i18YuBVkqrg2ysIfDh",
+  "https://raw.githubusercontent.com/fshgfhgjfv/IMG_TDCS/23685c834910e11076a6c0fa7a4a1d7625d61f18/IMG-20251026-WA0022.jpg",
+  "https://raw.githubusercontent.com/fshgfhgjfv/IMG_TDCS/23685c834910e11076a6c0fa7a4a1d7625d61f18/IMG-20251026-WA0029.jpg",
+  "https://blogger.googleusercontent.com/img/a/AVvXsEgUsXyjOoRJO2etN49T47IEJzrCgbYoFgOYD-2U9zKLCZVzaRZlRjq7KjqEVTgCE7dWv2plBB-9WXuhMK40DD69K3NPavYbEOcJQgcKRZvREPUiavpcT3DItN9AAiitopPK11wq5U0FNhBP269HCi8lpQSvr9dD_pKjLiK5A-aOzKXtuT0pIT-ueixGgRdd",
 ];
 
 const Courses = () => {
@@ -59,9 +67,20 @@ const Courses = () => {
       ? courses.filter((course) => course.category === "Live Online")
       : [];
 
+  // --- HOOKS FOR HORIZONTAL SCROLL ---
+  const scrollRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: scrollRef,
+    offset: ["start end", "end start"], // Animate while section is in view
+  });
+  // This transform maps vertical scroll (0 to 1) to horizontal movement
+  // Adjust "-80%" to control how much it scrolls. More negative = scrolls more.
+  const x = useTransform(scrollYProgress, [0.1, 0.9], ["5%", "-80%"]);
+
   return (
     <div className="pt-24 pb-16">
       <div className="container mx-auto px-4">
+        {/* ... (Page Title, Filters, Courses Grid, Coming Soon sections) ... */}
         {/* Page Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -220,6 +239,45 @@ const Courses = () => {
         ))}
       </div>
       {/* --- END OF Course Perks Section --- */}
+
+      {/* --- NEW SWAG & TOOLS SECTION --- */}
+      <div className="mt-24">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold gradient-text text-center mb-12">
+            Free Swags and Tools Get
+          </h2>
+        </div>
+
+        {/* Horizontal Scroll Container */}
+        <div
+          ref={scrollRef}
+          className="relative w-full overflow-x-hidden pb-16"
+        >
+          <motion.div
+            className="flex w-max gap-6 sm:gap-8 px-4" // w-max forces it to be wide
+            style={{ x }} // Apply the horizontal scroll transform
+          >
+            {swagImages.map((src, index) => (
+              <motion.div
+                key={index}
+                className="flex-shrink-0 w-72 md:w-96 rounded-lg shadow-xl overflow-hidden"
+                style={{ perspective: "1000px" }} // For 3D effect
+                whileHover={{ scale: 1.05, translateZ: "20px" }} // 3D pop effect
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                <img
+                  src={src}
+                  alt={`Swag item ${index + 1}`}
+                  className="w-full h-auto object-cover rounded-lg"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+      {/* --- END OF NEW SECTION --- */}
 
       {/* Hiring Partners Section */}
       <div className="mt-24">
