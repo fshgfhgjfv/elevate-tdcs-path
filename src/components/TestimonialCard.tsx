@@ -7,7 +7,7 @@ interface TestimonialCardProps {
   before: string;
   after: string;
   company: string;
-  image?: string; // This prop will hold the direct link to the image
+  // 'images' prop has been removed as requested
 }
 
 export const TestimonialCard = ({
@@ -15,8 +15,18 @@ export const TestimonialCard = ({
   before,
   after,
   company,
-  image, // Make sure to destructure the image prop here
-}: TestimonialCardProps) => {
+}: // 'images' prop has been removed as requested
+TestimonialCardProps) => {
+  // Image links are now hardcoded as requested.
+  // Base64 images have been replaced with placeholders.
+  const hardcodedImages = [
+    "https://placehold.co/64x64/E2E8F0/64748B?text=Img1", // Placeholder for first base64 image
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTK1p11fwTtISJt4xqyXCp3G2EJAMPH_Mmv5Q&s",
+    "https://placehold.co/64x64/E2E8F0/64748B?text=Img2", // Placeholder for second base64 image
+    "https://placehold.co/64x64/E2E8F0/64748B?text=Img3", // Placeholder for third base64 image
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaYIYZmxH6vEaReF9HAtGQ8IjQX1KM1s8yVQ&s",
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -27,19 +37,25 @@ export const TestimonialCard = ({
     >
       <Card className="shadow-glow hover:shadow-glow-lg transition-all duration-300">
         <CardContent className="p-6">
-          <div className="flex items-center justify-center mb-4">
+          <div className="flex items-center justify-center mb-4 min-h-[64px]">
             {/* --- MODIFICATION START --- */}
-            {image ? (
-              <img
-                src={image}
-                alt={name}
-                className="w-16 h-16 rounded-full object-cover" // object-cover ensures the image fills the circle
-              />
-            ) : (
-              <div className="w-16 h-16 rounded-full gradient-primary flex items-center justify-center text-white text-2xl font-bold">
-                {name.charAt(0)}
-              </div>
-            )}
+            {/* Images are now hardcoded */}
+            <div className="flex -space-x-4 overflow-hidden">
+              {hardcodedImages.map((imgUrl, index) => (
+                <img
+                  key={index}
+                  src={imgUrl}
+                  alt={`${name} avatar ${index + 1}`}
+                  className="w-16 h-16 rounded-full object-cover border-2 border-background"
+                  // Add an onerror fallback for the external URLs
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null; // Prevent infinite loop
+                    target.src = `https://placehold.co/64x64/E2E8F0/64748B?text=Error`;
+                  }}
+                />
+              ))}
+            </div>
             {/* --- MODIFICATION END --- */}
           </div>
           <h3 className="text-xl font-bold text-center mb-4">{name}</h3>
@@ -77,3 +93,4 @@ export const TestimonialCard = ({
     </motion.div>
   );
 };
+
