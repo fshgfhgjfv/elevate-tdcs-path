@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 // Import advanced hooks for 3D/parallax effects
 import { motion, useMotionValue, useTransform, useInView } from "framer-motion";
 import { Download, X } from "lucide-react"; 
-import type { RefObject } from "react"; // Explicitly import RefObject type for clarity
+import type { RefObject } from "react"; 
 import { CalendarCheck } from "lucide-react"; // NEW: Import for Book Demo Modal
 
 
