@@ -31,14 +31,22 @@ const coursePerks = [
       "https://blogger.googleusercontent.com/img/a/AVvXsEgQBCknDQq2PSSJ5SzQS6ei73FcO8IbRNgjKW3b9r3DtAnmMR_9OClnJXyZn9MEci-jQazc0qSX6nRaRn638FkssY5npovgqEHVu6o2FfNjB1oXXSbuxV9OCu2dArjAC1HOMOJHrP3-TvNgbHqIxfeIEf9H6BeQa2VziRX7w3u4Tx1QigCeDINCHEHPIsnm",
     layout: "text-left", // text-left, image-right
   },
-  // --- NEW PERK ADDED HERE ---
+  // --- MODIFIED PERK SECTION ---
   {
     title: "HACKER'S PENDRIVE",
-    description: "Get The Pendrive For Free With TDCS Courses",
+    description:
+      "Get The Pendrive For Free With TDCS Courses. It comes pre-loaded with everything you need.",
     imageUrl:
       "https://blogger.googleusercontent.com/img/a/AVvXsEjcQA7l6TaSYW4QYsDfMXN_HqfBECITrE7LktjD2-41QpgpTQ29RL5xPgNs4vDAzPW6k0EM9p-OSdaTR3chzl97ZxiGAFRvfV4O4Im8i6JJZXT4IDK-LM2OIBG8N8tsf4Wwn4wTJaUzqtQJd3sdza1yhMvhj2KRPivVJyCCMzKp2WpX24VksPf3ceiItGl1",
-    layout: "text-right", // text-right, image-left (as requested)
-    glowing: true, // Flag to add the blink/pulse effect
+    layout: "text-right", // text-right, image-left
+    glowing: true, // Flag for the title
+    // New array to hold the features to display on the image
+    features: [
+      "125+ Premium Softwares",
+      "Scripts & Payloads",
+      "Ebooks & Guides",
+      "Training Video",
+    ],
   },
 ];
 
@@ -142,10 +150,9 @@ const Courses = () => {
           >
             {/* Text Content */}
             <div className="flex-1 space-y-4 text-center md:text-left">
-              {/* --- MODIFIED H2 TAG --- */}
               <h2
                 className={`text-3xl md:text-4xl font-bold gradient-text ${
-                  perk.glowing ? "animate-pulse" : "" // Adds pulse effect if glowing is true
+                  perk.glowing ? "animate-pulse" : ""
                 }`}
               >
                 {perk.title}
@@ -159,15 +166,39 @@ const Courses = () => {
               </p>
             </div>
 
-            {/* Image Content */}
-            <div className="flex-1">
+            {/* --- MODIFIED Image Content --- */}
+            {/* Added 'relative' to allow for overlay */}
+            <div className="flex-1 relative max-w-md mx-auto w-full">
               <img
                 src={perk.imageUrl}
                 alt={perk.title}
-                className="rounded-lg shadow-xl w-full h-auto max-w-md mx-auto"
+                className="rounded-lg shadow-xl w-full h-auto"
                 loading="lazy"
                 decoding="async"
               />
+              
+              {/* Conditional overlay for features */}
+              {perk.features && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center space-y-2 bg-black bg-opacity-40 rounded-lg p-4">
+                  {perk.features.map((feature, i) => (
+                    <motion.span
+                      key={i}
+                      // Animation for blinking/glowing text
+                      initial={{ opacity: 0.7, scale: 0.98 }}
+                      animate={{ opacity: [0.7, 1, 0.7], scale: [0.98, 1.02, 0.98] }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        delay: i * 0.2, // Stagger the animation
+                      }}
+                      className="text-white text-lg md:text-xl font-bold text-center"
+                      style={{ textShadow: "0 0 10px #fff, 0 0 20px #fff" }} // Glow effect
+                    >
+                      {feature}
+                    </motion.span>
+                  ))}
+                </div>
+              )}
             </div>
           </motion.div>
         ))}
