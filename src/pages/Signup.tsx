@@ -29,7 +29,7 @@ const tools = [
     y: 150,
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/a/a2/Burp_Suite_logo.svg",
+    src: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.linkedin.com%2Fpulse%2Fburp-suite-anand-vijayan-r2pvf&psig=AOvVaw1QFfSkxoXJocPfb8FG7HlV&ust=1762151095271000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCLjq-8Lq0pADFQAAAAAdAAAAABBj",
     alt: "Burp Suite",
     side: "left" as "left" | "right",
     delay: 0.4,
