@@ -15,7 +15,7 @@ export const TestimonialCard = ({
 }: TestimonialCardProps) => {
   // Use only one static image instead of blinking/changing
   const image =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTK1p11fwTtISJt4xqyXCp3G2EJAMPH_Mmv5Q&s";
+    "https://blogger.googleusercontent.com/img/a/AVvXsEh6t9BjBO7igeafdAkeEQW1JNA1TAfi2lIR0Nr857ozJmsC-qPIm9m2BbQi8JkDD3TmGVuyKAyxnIc88lETBh18Xia9FqGTkGdtzD7215GLuqRBIhm9UCh7F4FDB9BsKHg78TKGkSUfCtTHefuZ5LwuXqdGLzO50ulgxWj2b-6gGAZJHE15AEKDUnwStMAm";
 
   return (
     <motion.div
