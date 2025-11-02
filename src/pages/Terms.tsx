@@ -1,5 +1,6 @@
 import { motion, Variants } from "framer-motion";
-import { AnimatedSection } from "@/components/ui/AnimatedSection"; 
+// <<< FIXED: Changed this to a relative path
+import { AnimatedSection } from "../components/ui/AnimatedSection"; 
 
 // --- 1. Animation for H1 (Letter by Letter) ---
 const title = "Terms and Conditions";
@@ -169,7 +170,7 @@ export default function Terms() {
               <p className="font-semibold text-foreground">
                 ACCESSING, BROWSING OR OTHERWISE USING THE PLATFORM INDICATES
                 YOUR AGREEMENT TO ALL THE TERMS AND CONDITIONS UNDER THESE TERMS
-                OF USE, SO PLEASE READ THE TERMS OF USE CAREFULLY BEFORE
+                OF USE, SO PLEASE READ THE TERMS OF USE CAREFU-LLY BEFORE
                 PROCEEDING.
               </p>
               <p>
@@ -216,7 +217,7 @@ export default function Terms() {
                   policy and such other policies of such third party websites.
                 </li>
               </ul>
-            </AnimatedSection>
+            </SAnimatedSection>
 
             <AnimatedSection>
               <AnimatedHeading>Transactions</AnimatedHeading>
@@ -249,7 +250,6 @@ export default function Terms() {
                 parties shall not be liable for any failure to perform an
                 obligation under these Terms if performance is prevented or
                 delayed by a force majeure event.
-              </IAmA
               </p>
             </AnimatedSection>
 
@@ -275,7 +275,6 @@ export default function Terms() {
                 <br />
                 Phone: +91 94227 99875
               </p>
-              {/* <<< THE STRAY '_' IS GONE FROM HERE */}
             </AnimatedSection>
           </div>
         </div>
