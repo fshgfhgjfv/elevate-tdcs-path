@@ -40,12 +40,12 @@ const coursePerks = [
       "https://blogger.googleusercontent.com/img/a/AVvXsEjcQA7l6TaSYW4QYsDfMXN_HqfBECITrE7LktjD2-41QpgpTQ29RL5xPgNs4vDAzPW6k0EM9p-OSdaTR3chzl97ZxiGAFRvfV4O4Im8i6JJZXT4IDK-LM2OIBG8N8tsf4Wwn4wTJaUzqtQJd3sdza1yhMvhj2KRPivVJyCCMzKp2WpX24VksPf3ceiItGl1",
     layout: "text-right", // text-right, image-left
     glowing: true, // Flag for the title
-    // New array to hold the features to display on the image
+    // --- UPDATED FEATURES to include positioning ---
     features: [
-      "125+ Premium Softwares",
-      "Scripts & Payloads",
-      "Ebooks & Guides",
-      "Training Video",
+      { text: "125+ Premium Softwares", position: "top-4 right-4" },
+      { text: "Scripts & Payloads", position:, "top-1/3 left-4" },
+      { text: "Ebooks & Guides", position: "top-2/3 right-4" },
+      { text: "Training Video", position: "bottom-4 left-4" },
     ],
   },
 ];
@@ -135,7 +135,7 @@ const Courses = () => {
         )}
       </div>
 
-      {/* --- NEW SECTION: Course Perks --- */}
+      {/* --- Course Perks Section --- */}
       <div className="container mx-auto px-4 mt-24 space-y-20">
         {coursePerks.map((perk, index) => (
           <motion.div
@@ -167,7 +167,6 @@ const Courses = () => {
             </div>
 
             {/* --- MODIFIED Image Content --- */}
-            {/* Added 'relative' to allow for overlay */}
             <div className="flex-1 relative max-w-md mx-auto w-full">
               <img
                 src={perk.imageUrl}
@@ -176,14 +175,15 @@ const Courses = () => {
                 loading="lazy"
                 decoding="async"
               />
-              
+
               {/* Conditional overlay for features */}
               {perk.features && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center space-y-2 bg-black bg-opacity-40 rounded-lg p-4">
+                // This div is the container for the absolute positioned text
+                <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg p-4">
                   {perk.features.map((feature, i) => (
                     <motion.span
                       key={i}
-                      // Animation for blinking/glowing text
+                      // Animation for blinking/glowing/zooming text
                       initial={{ opacity: 0.7, scale: 0.98 }}
                       animate={{ opacity: [0.7, 1, 0.7], scale: [0.98, 1.02, 0.98] }}
                       transition={{
@@ -191,10 +191,15 @@ const Courses = () => {
                         repeat: Infinity,
                         delay: i * 0.2, // Stagger the animation
                       }}
-                      className="text-white text-lg md:text-xl font-bold text-center"
-                      style={{ textShadow: "0 0 10px #fff, 0 0 20px #fff" }} // Glow effect
+                      // --- APPLIED POSITIONING AND GLOW ---
+                      className={`
+                        absolute p-2 
+                        text-white text-lg md:text-xl font-bold text-center 
+                        drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] 
+                        ${feature.position}
+                      `}
                     >
-                      {feature}
+                      {feature.text}
                     </motion.span>
                   ))}
                 </div>
@@ -203,7 +208,7 @@ const Courses = () => {
           </motion.div>
         ))}
       </div>
-      {/* --- END OF NEW SECTION --- */}
+      {/* --- END OF SECTION --- */}
 
       {/* Hiring Partners Section */}
       <div className="mt-24">
