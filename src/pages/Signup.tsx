@@ -22,21 +22,24 @@ import { Loader2 } from "lucide-react";
 // --- 1. Define Floating Tools & Animations ---
 const tools = [
   {
+    // Kali Linux
     src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
     alt: "Kali Linux",
-    side: "left" as "left" | "right", // Type assertion for 'custom' prop
+    side: "left" as "left" | "right",
     delay: 0.2,
     y: 150,
   },
   {
-    src: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.linkedin.com%2Fpulse%2Fburp-suite-anand-vijayan-r2pvf&psig=AOvVaw1QFfSkxoXJocPfb8FG7HlV&ust=1762151095271000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCLjq-8Lq0pADFQAAAAAdAAAAABBj",
+    // Burp Suite (This is the correct, direct link)
+    src: "https://upload.wikimedia.org/wikipedia/commons/a/a2/Burp_Suite_logo.svg",
     alt: "Burp Suite",
     side: "left" as "left" | "right",
     delay: 0.4,
     y: 350,
   },
   {
-    src: "https://www.google.com/url?sa=i&url=https%3A%2F%2Ficonape.com%2Fwireshark-logo-icon-svg-png.html&psig=AOvVaw21JDMN-vYS87lscjsJsZzr&ust=1762151040365000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCJDqharq0pADFQAAAAAdAAAAABB5",
+    // Wireshark (This is the correct, direct link)
+    src: "https://upload.wikimedia.org/wikipedia/commons/4/43/Wireshark_Icon.svg",
     alt: "Wireshark",
     side: "right" as "left" | "right",
     delay: 0.3,
@@ -51,9 +54,7 @@ const iconVariants = {
     x: side === "left" ? -100 : 100, // Come from off-screen
     scale: 0.5,
   }),
-  // The 'visible' and 'bobbing' states are handled by the 'animate' prop directly
 };
-
 // --- End Floating Tools ---
 
 const Signup = () => {
@@ -79,15 +80,30 @@ const Signup = () => {
     e.preventDefault();
     setIsLoading(true);
 
+    const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
     const { name, email, number, password, confirmPassword } = formData;
 
-    // ... (All your validation logic) ...
+    // Client-side validation
     if (!name || !email || !number || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
       setIsLoading(false);
       return;
     }
-    // ... (other validations) ...
+    if (!email.includes("@")) {
+      toast.error("Please enter a valid email");
+      setIsLoading(false);
+      return;
+    }
+    if (!/^[0-9]{10}$/.test(number)) {
+      toast.error("Please enter a valid 10-digit phone number");
+      setIsLoading(false);
+      return;
+    }
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      setIsLoading(false);
+      return;
+    }
     if (password !== confirmPassword) {
       toast.error("Passwords don't match");
       setIsLoading(false);
@@ -101,8 +117,7 @@ const Signup = () => {
 
     // Simulate API delay for animation
     setTimeout(() => {
-      // ... (User creation logic) ...
-      const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
+      // Create new user
       const newUser = {
         id: Date.now().toString(),
         name,
@@ -172,7 +187,6 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
-      
       {/* --- 2. Add Floating Tools JSX Here --- */}
       <div
         className="absolute inset-0 -z-10 overflow-hidden"
