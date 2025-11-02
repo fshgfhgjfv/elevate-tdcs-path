@@ -4,10 +4,6 @@ import { courses } from "@/data/courses";
 import { motion } from "framer-motion";
 import { HiringPartners } from "@/components/HiringPartners";
 import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
-import { MentorsSection } from "@/components/MentorsSection";
-import { DownloadBrochureModal } from "@/components/DownloadBrochureModal";
-import { CourseSkillsTools } from "@/components/CourseSkillsTools";
-import { ScrollingTestimonials } from "@/components/ScrollingTestimonials";
 
 // Data for the new feature/perks sections
 const coursePerks = [
@@ -35,18 +31,10 @@ const coursePerks = [
       "https://blogger.googleusercontent.com/img/a/AVvXsEgQBCknDQq2PSSJ5SzQS6ei73FcO8IbRNgjKW3b9r3DtAnmMR_9OClnJXyZn9MEci-jQazc0qSX6nRaRn638FkssY5npovgqEHVu6o2FfNjB1oXXSbuxV9OCu2dArjAC1HOMOJHrP3-TvNgbHqIxfeIEf9H6BeQa2VziRX7w3u4Tx1QigCeDINCHEHPIsnm",
     layout: "text-left", // text-left, image-right
   },
-  {
-    title: "Live Classes & Doubt Clearing",
-    description:
-      "Engage in 15 hours of live, interactive classes per week, supplemented with dedicated doubt-clearing sections to ensure you never get stuck.",
-    imageUrl: "https://i.imgur.com/v81zC9f.png", // Placeholder image for live classes
-    layout: "text-right", // text-right, image-left
-  },
 ];
 
 const Courses = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("Live Courses");
-  const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
   const categories = ["Live Courses", "Recorded Courses", "Offline Courses"];
 
   // Filter live courses only — recorded/offline will show placeholders
@@ -56,158 +44,126 @@ const Courses = () => {
       : [];
 
   return (
-    <>
-      <div className="pt-24 pb-16">
-        <div className="container mx-auto px-4">
-          {/* Page Title */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
-          >
-            <h1 className="text-4xl md:text-6xl font-bold gradient-text mb-4">
-              Our Courses
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Explore our expertly curated cybersecurity training programs
-            </p>
-          </motion.div>
+    <div className="pt-24 pb-16">
+      <div className="container mx-auto px-4">
+        {/* Page Title */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-4xl md:text-6xl font-bold gradient-text mb-4">
+            Our Courses
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Explore our expertly curated cybersecurity training programs
+          </p>
+        </motion.div>
 
-          {/* Category Filters */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-full font-medium transition-all ${
-                  selectedCategory === category
-                    ? "gradient-primary text-white shadow-glow"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-          
-          {/* --- NEW: Download Brochure Button --- */}
-          <div className="text-center mb-12">
+        {/* Category Filters */}
+        <div className="flex flex-wrap justify-center gap-4 mb-12">
+          {categories.map((category) => (
             <button
-              onClick={() => setIsBrochureModalOpen(true)}
-              className="px-8 py-3 rounded-full font-semibold transition-all gradient-primary text-white shadow-glow hover:shadow-glow-lg"
-            >
-              Download Brochure
-            </button>
-          </div>
-
-          {/* Courses Grid or Coming Soon */}
-          <motion.div
-            layout
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center"
-          >
-            {selectedCategory === "Live Courses" &&
-              filteredCourses.map((course) => <CourseCard key={course.id} {...course} />)}
-          </motion.div>
-
-          {/* Coming Soon for Recorded/Offline */}
-          {(selectedCategory === "Recorded Courses" ||
-            selectedCategory === "Offline Courses") && (
-            <div className="text-center py-20">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-4"
-              >
-                <h2 className="text-3xl font-bold gradient-text">Coming Soon 🚀</h2>
-                <p className="text-lg text-muted-foreground">
-                  {selectedCategory === "Recorded Courses"
-                    ? "Our high-quality recorded sessions are being prepared."
-                    : "Offline classroom batches will be launching soon."}
-                </p>
-              </motion.div>
-            </div>
-          )}
-
-          {/* No live courses fallback */}
-          {selectedCategory === "Live Courses" && filteredCourses.length === 0 && (
-            <div className="text-center py-20">
-              <p className="text-xl text-muted-foreground">
-                No live courses available right now.
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Course Perks Section */}
-        <div className="container mx-auto px-4 mt-24 space-y-20">
-          {coursePerks.map((perk, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.6 }}
-              className={`flex flex-col md:flex-row items-center gap-8 md:gap-12 ${
-                perk.layout === "text-right" ? "md:flex-row-reverse" : ""
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-6 py-2 rounded-full font-medium transition-all ${
+                selectedCategory === category
+                  ? "gradient-primary text-white shadow-glow"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
               }`}
             >
-              {/* Text Content */}
-              <div className="flex-1 space-y-4 text-center md:text-left">
-                <h2 className="text-3xl md:text-4xl font-bold gradient-text">
-                  {perk.title}
-                </h2>
-                <p className={`text-lg text-muted-foreground max-w-md ${perk.layout === 'text-right' ? 'md:ml-auto' : 'md:mr-auto'}`}>
-                  {perk.description}
-                </p>
-              </div>
-
-              {/* Image Content */}
-              <div className="flex-1">
-                <img
-                  src={perk.imageUrl}
-                  alt={perk.title}
-                  className="rounded-lg shadow-xl w-full h-auto max-w-md mx-auto"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-            </motion.div>
+              {category}
+            </button>
           ))}
         </div>
 
-        {/* --- NEW: Course Skills & Tools --- */}
-        <div className="mt-24">
-          <CourseSkillsTools />
-        </div>
+        {/* Courses Grid or Coming Soon */}
+        <motion.div
+          layout
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center"
+        >
+          {selectedCategory === "Live Courses" &&
+            filteredCourses.map((course) => <CourseCard key={course.id} {...course} />)}
+        </motion.div>
 
-        {/* Hiring Partners Section */}
-        <div className="mt-24">
-          <HiringPartners />
-        </div>
+        {/* Coming Soon for Recorded/Offline */}
+        {(selectedCategory === "Recorded Courses" ||
+          selectedCategory === "Offline Courses") && (
+          <div className="text-center py-20">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="space-y-4"
+            >
+              <h2 className="text-3xl font-bold gradient-text">Coming Soon 🚀</h2>
+              <p className="text-lg text-muted-foreground">
+                {selectedCategory === "Recorded Courses"
+                  ? "Our high-quality recorded sessions are being prepared."
+                  : "Offline classroom batches will be launching soon."}
+              </p>
+            </motion.div>
+          </div>
+        )}
 
-        {/* --- NEW: Mentors Section --- */}
-        <div className="mt-24">
-          <MentorsSection />
-        </div>
-
-        {/* Recruiter Testimonial */}
-        <div className="mt-16">
-          <RecruiterTestimonial />
-        </div>
-
-        {/* --- NEW: Scrolling Testimonials --- */}
-        <div className="mt-16">
-          <ScrollingTestimonials />
-        </div>
+        {/* No live courses fallback */}
+        {selectedCategory === "Live Courses" && filteredCourses.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-xl text-muted-foreground">
+              No live courses available right now.
+            </p>
+          </div>
+        )}
       </div>
-      
-      {/* --- NEW: Brochure Modal Component --- */}
-      <DownloadBrochureModal
-        isOpen={isBrochureModalOpen}
-        onClose={() => setIsBrochureModalOpen(false)}
-      />
-    </>
+
+      {/* --- NEW SECTION: Course Perks --- */}
+      <div className="container mx-auto px-4 mt-24 space-y-20">
+        {coursePerks.map((perk, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
+            className={`flex flex-col md:flex-row items-center gap-8 md:gap-12 ${
+              perk.layout === "text-right" ? "md:flex-row-reverse" : ""
+            }`}
+          >
+            {/* Text Content */}
+            <div className="flex-1 space-y-4 text-center md:text-left">
+              <h2 className="text-3xl md:text-4xl font-bold gradient-text">
+                {perk.title}
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-md ${perk.layout === 'text-right' ? 'md:ml-auto' : 'md:mr-auto'}">
+                {perk.description}
+              </p>
+            </div>
+
+            {/* Image Content */}
+            <div className="flex-1">
+              <img
+                src={perk.imageUrl}
+                alt={perk.title}
+                className="rounded-lg shadow-xl w-full h-auto max-w-md mx-auto"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+      {/* --- END OF NEW SECTION --- */}
+
+      {/* Hiring Partners Section */}
+      <div className="mt-24">
+        <HiringPartners />
+      </div>
+
+      {/* Recruiter Testimonial */}
+      <div className="mt-16">
+        <RecruiterTestimonial />
+      </div>
+    </div>
   );
 };
 
