@@ -5,6 +5,34 @@ import { motion } from "framer-motion";
 import { HiringPartners } from "@/components/HiringPartners";
 import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
 
+// Data for the new feature/perks sections
+const coursePerks = [
+  {
+    title: "Exclusive Swag Pack",
+    description:
+      "Show off your skills with our exclusive kit, including a premium T-shirt, stickers, and other goodies delivered to your doorstep.",
+    imageUrl:
+      "https://blogger.googleusercontent.com/img/a/AVvXsEhWb4nI8g2Sr24qhD0KUaLd44ByiPtXmBuWFkeJN0nZt4vt1EbaNwoYb_PzOVLbGlEz01uC6e78QdlhR5YQrhAimAX-N3u8SzZajBkIYcIQ3Umwsl1or2rHZJCWMVGlicpGlmncQnyEBS8-TwiVSxEf5q3B8yHex0CSa2fyyaz5IeCGD4HCJxVfXZB4QM75",
+    layout: "text-left", // text-left, image-right
+  },
+  {
+    title: "Pro Hacking Toolkit",
+    description:
+      "Gain access to a curated toolkit of premium cybersecurity software and platforms, the same tools used by professionals in the field.",
+    imageUrl:
+      "https://blogger.googleusercontent.com/img/a/AVvXsEiF0pE9E9cI6SZ0_mC-JOYMKbn5qnp-puKFHtqzuqHA2r3pDTFpqgssYyjvyswgxFuqe1fCYyyXbuUq-i17TRx4ertGqicGG4do7acBIysjZqEZpS4_65C500s9x4iEOhBd0aEGTS2JspYxRORsHozbLPEiXpo-7b4Z9SCP8WOir8Wz9n13kNHP7dKUven9",
+    layout: "text-right", // text-right, image-left
+  },
+  {
+    title: "Premium Certification",
+    description:
+      "Receive an industry-recognized certificate upon completion, validating your new skills and boosting your career prospects.",
+    imageUrl:
+      "https://blogger.googleusercontent.com/img/a/AVvXsEgQBCknDQq2PSSJ5SzQS6ei73FcO8IbRNgjKW3b9r3DtAnmMR_9OClnJXyZn9MEci-jQazc0qSX6nRaRn638FkssY5npovgqEHVu6o2FfNjB1oXXSbuxV9OCu2dArjAC1HOMOJHrP3-TvNgbHqIxfeIEf9H6BeQa2VziRX7w3u4Tx1QigCeDINCHEHPIsnm",
+    layout: "text-left", // text-left, image-right
+  },
+];
+
 const Courses = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("Live Courses");
   const categories = ["Live Courses", "Recorded Courses", "Offline Courses"];
@@ -87,6 +115,44 @@ const Courses = () => {
           </div>
         )}
       </div>
+
+      {/* --- NEW SECTION: Course Perks --- */}
+      <div className="container mx-auto px-4 mt-24 space-y-20">
+        {coursePerks.map((perk, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
+            className={`flex flex-col md:flex-row items-center gap-8 md:gap-12 ${
+              perk.layout === "text-right" ? "md:flex-row-reverse" : ""
+            }`}
+          >
+            {/* Text Content */}
+            <div className="flex-1 space-y-4 text-center md:text-left">
+              <h2 className="text-3xl md:text-4xl font-bold gradient-text">
+                {perk.title}
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-md ${perk.layout === 'text-right' ? 'md:ml-auto' : 'md:mr-auto'}">
+                {perk.description}
+              </p>
+            </div>
+
+            {/* Image Content */}
+            <div className="flex-1">
+              <img
+                src={perk.imageUrl}
+                alt={perk.title}
+                className="rounded-lg shadow-xl w-full h-auto max-w-md mx-auto"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+      {/* --- END OF NEW SECTION --- */}
 
       {/* Hiring Partners Section */}
       <div className="mt-24">
