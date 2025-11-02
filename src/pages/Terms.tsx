@@ -194,7 +194,7 @@ export default function Terms() {
                 <br />
                 Email: info@tdcs.tech
                 <br />
-                Phone: +91 123 456 7890
+                Phone: +91 94227 99875
               </p>_
             </motion.section>
           </motion.div>
