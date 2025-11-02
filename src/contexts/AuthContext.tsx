@@ -1,7 +1,7 @@
-// src/contexts/AuthContext.tsx
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/supabaseClient'; // Your client
-import { Session, User } in '@supabase/supabase-js';
+// 1. Fixed: 'in' changed to 'from'
+import { Session, User } from '@supabase/supabase-js';
 
 // Define the shape of the context
 interface AuthContextType {
@@ -25,7 +25,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     // 2. Listen for any auth changes (LOGIN, LOGOUT, etc.)
-    const { data: authListener }ax = supabase.auth.onAuthStateChange(
+    // 2. Fixed: Removed the stray 'ax'
+    const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
