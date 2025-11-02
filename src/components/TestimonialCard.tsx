@@ -1,13 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface TestimonialCardProps {
   name: string;
   before: string;
   after: string;
   company: string;
-  // 'images' prop has been removed as requested
 }
 
 export const TestimonialCard = ({
@@ -15,17 +15,24 @@ export const TestimonialCard = ({
   before,
   after,
   company,
-}: // 'images' prop has been removed as requested
-TestimonialCardProps) => {
-  // Image links are now hardcoded as requested.
-  // Base64 images have been replaced with placeholders.
+}: TestimonialCardProps) => {
+  // Smoothly rotating through one image at a time
   const hardcodedImages = [
-    "https://placehold.co/64x64/E2E8F0/64748B?text=Img1", // Placeholder for first base64 image
+    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxATEhUSEhAPDxUSFxIQFQ8QDw8PDxAPFRUWFhUVFRUYHSggGBolGxUVITEhJSkrLi4uFx8zODMsNygtLisBCgoKDg0OGhAQFysdHx0tKy0tLSstLS0tKy0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tKy0tNystLS03Lf/AABEIAR4AsAMBIgACEQEDEQH...", // trimmed for brevity
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFMv3xXUWQ_UymielHwEcjmvimnByuE_ohtw&s",
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTK1p11fwTtISJt4xqyXCp3G2EJAMPH_Mmv5Q&s",
-    "https://placehold.co/64x64/E2E8F0/64748B?text=Img2", // Placeholder for second base64 image
-    "https://placehold.co/64x64/E2E8F0/64748B?text=Img3", // Placeholder for third base64 image
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaYIYZmxH6vEaReF9HAtGQ8IjQX1KM1s8yVQ&s",
   ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Automatically cycle through images
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % hardcodedImages.length);
+    }, 2500); // 2.5s per image
+    return () => clearInterval(interval);
+  }, [hardcodedImages.length]);
 
   return (
     <motion.div
@@ -37,27 +44,30 @@ TestimonialCardProps) => {
     >
       <Card className="shadow-glow hover:shadow-glow-lg transition-all duration-300">
         <CardContent className="p-6">
-          <div className="flex items-center justify-center mb-4 min-h-[64px]">
-            {/* --- MODIFICATION START --- */}
-            {/* Images are now hardcoded */}
-            <div className="flex -space-x-4 overflow-hidden">
-              {hardcodedImages.map((imgUrl, index) => (
-                <img
-                  key={index}
-                  src={imgUrl}
-                  alt={`${name} avatar ${index + 1}`}
-                  className="w-16 h-16 rounded-full object-cover border-2 border-background"
-                  // Add an onerror fallback for the external URLs
+          {/* --- Single Smoothly Changing Image --- */}
+          <div className="flex items-center justify-center mb-4 min-h-[64px] relative">
+            <div className="relative w-16 h-16">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={currentIndex}
+                  src={hardcodedImages[currentIndex]}
+                  alt={`${name} avatar ${currentIndex + 1}`}
+                  className="absolute w-16 h-16 rounded-full object-cover border-2 border-background"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.8 }}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.onerror = null; // Prevent infinite loop
-                    target.src = `https://placehold.co/64x64/E2E8F0/64748B?text=Error`;
+                    target.onerror = null;
+                    target.src = "https://placehold.co/64x64/E2E8F0/64748B?text=Error";
                   }}
                 />
-              ))}
+              </AnimatePresence>
             </div>
-            {/* --- MODIFICATION END --- */}
           </div>
+
+          {/* --- Text & Arrows --- */}
           <h3 className="text-xl font-bold text-center mb-4">{name}</h3>
 
           <div className="space-y-4">
@@ -93,4 +103,3 @@ TestimonialCardProps) => {
     </motion.div>
   );
 };
-
