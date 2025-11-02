@@ -22,28 +22,44 @@ import { Loader2 } from "lucide-react";
 // --- 1. Define Floating Tools & Animations ---
 const tools = [
   {
-    // Image 1: Arch Linux (replacing Kali Linux for now, as requested)
-    src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg", // Direct link to your provided Arch Linux image
-    alt: "Arch Linux",
+    // Kali Linux (from previous version)
+    src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
+    alt: "Kali Linux",
     side: "left" as "left" | "right",
     delay: 0.2,
     y: 150,
   },
   {
-    // Image 3: Burp Suite
-    src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1", // Direct link to your provided Burp Suite image
+    // Burp Suite (from previous version)
+    src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1",
     alt: "Burp Suite",
     side: "left" as "left" | "right",
     delay: 0.4,
     y: 350,
   },
   {
-    // Image 2: Wireshark
-    src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true", // Direct link to your provided Wireshark image
+    // Wireshark (from previous version)
+    src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true",
     alt: "Wireshark",
     side: "right" as "left" | "right",
     delay: 0.3,
-    y: 250,
+    y: 120, // Adjusted position
+  },
+  {
+    // <<< NEW: Nmap
+    src: "https://images.contentstack.io/v3/assets/blt28ff6c4a2cf43126/blt2d8822c72b3fa47d/647726fad2aad85beae606cd/NMAP_1_Integrations_Feature_Array_Item_Image.png?auto=webp&disable=upscale&width=3840&quality=75",
+    alt: "Nmap",
+    side: "right" as "left" | "right",
+    delay: 0.5,
+    y: 320,
+  },
+  {
+    // <<< NEW: Metasploit
+    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
+    alt: "Metasploit",
+    side: "left" as "left" | "right",
+    delay: 0.6,
+    y: 500,
   },
 ];
 
@@ -197,7 +213,7 @@ const Signup = () => {
             key={tool.alt}
             src={tool.src}
             alt={tool.alt}
-            className="absolute h-16 w-16 md:h-24 md:w-24"
+            className="absolute h-16 w-16 md:h-24 md:w-24" // You can adjust size here
             style={{
               top: tool.y,
               ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }),
