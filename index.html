@@ -11,71 +11,45 @@
     <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS%20LOGO.png">
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS%20LOGO.png">
-    <meta property="og:title" content="TDCS Technologies Private Limited">
-    <meta name="twitter:title" content="TDCS Technologies Private Limited">
-    <meta property="og:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
-    <meta name="twitter:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
-
     <style>
       /* Hide default cursor */
       body {
         cursor: none;
-        background-color: #f0f2f5; /* A light grey to make dots visible */
+        background-color: #f0f2f5; /* Your existing background color */
         min-height: 100vh; 
         margin: 0;
-        /* --- THIS LINE IS NOW REMOVED --- */
-        /* overflow: hidden; */ 
       }
 
-      /* Main cursor dot */
-      #main-cursor-dot {
+      /* 🦂 Scorpion Cursor Style */
+      #scorpion-cursor {
         position: fixed;
-        width: 10px;
-        height: 10px;
-        background-color: rgba(0, 150, 255, 0.8); /* A solid blue dot */
-        border-radius: 50%;
-        pointer-events: none;
+        /* --- 1. SET YOUR CURSOR SIZE HERE --- */
+        width: 40px; 
+        height: 40px; 
+        
+        /* --- 2. PASTE YOUR IMAGE URL HERE --- */
+        background-image: url('YOUR_SCORPION_IMAGE_URL.png');
+        
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        
+        pointer-events: none; /* Lets you click "through" it */
         z-index: 10000;
-        transform: translate(-50%, -50%); /* Center the dot */
-        transition: transform 0.1s ease-out, width 0.1s ease-out, height 0.1s ease-out; 
+        
+        /* Smooth follow transition */
+        transition: transform 0.1s ease-out;
       }
 
-      /* Trail dots */
-      .cursor-trail-dot {
-        position: fixed;
-        background-color: rgba(0, 180, 255, 0.5); /* Lighter, more transparent blue */
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9999;
-        opacity: 0; /* Start invisible */
-        transform: translate(-50%, -50%) scale(0.5); /* Start smaller */
-        animation: fadeOutTrail 1s forwards ease-out; /* Fade out over 1 second */
-      }
-
-      /* Hover effect for main dot */
-      #main-cursor-dot.hover {
-        width: 15px;
-        height: 15px;
-        background-color: rgba(0, 200, 255, 0.9);
-      }
-
-      /* Keyframe animation for trail dots */
-      @keyframes fadeOutTrail {
-        0% {
-          opacity: 1;
-          transform: translate(-50%, -50%) scale(1);
-        }
-        100% {
-          opacity: 0;
-          transform: translate(-50%, -50%) scale(0.1);
-        }
+      /* Optional: A hover effect */
+      #scorpion-cursor.hover {
+        transform: scale(1.2); /* Grows slightly when hovering links */
       }
     </style>
   </head>
 
   <body>
-    <div id="main-cursor-dot"></div>
+    <div id="scorpion-cursor"></div>
 
     <div id="root"></div>
 
@@ -83,63 +57,42 @@
     <script type="module" src="/src/main.tsx"></script>
 
     <script>
-      const mainCursorDot = document.getElementById("main-cursor-dot");
+      const cursor = document.getElementById("scorpion-cursor");
       let mouseX = 0, mouseY = 0;
       let targetX = 0, targetY = 0;
-      const trailSpawnInterval = 50; // Milliseconds between spawning trail dots
-      let lastTrailSpawnTime = 0;
+      const smoothness = 0.15; // lower = slower / smoother
 
-      if (mainCursorDot) {
+      if (cursor) {
         // Update mouse position
         window.addEventListener("mousemove", (e) => {
           mouseX = e.clientX;
           mouseY = e.clientY;
-
-          // Spawn a trail dot
-          const now = Date.now();
-          if (now - lastTrailSpawnTime > trailSpawnInterval) {
-            createTrailDot(mouseX, mouseY);
-            lastTrailSpawnTime = now;
-          }
         });
 
         // Smoothly follow mouse
-        function animateMainCursor() {
-          targetX += (mouseX - targetX) * 0.15; // Smoothness factor
-          targetY += (mouseY - targetY) * 0.15;
-          mainCursorDot.style.left = `${targetX}px`;
-          mainCursorDot.style.top = `${targetY}px`;
-          requestAnimationFrame(animateMainCursor);
+        function animateCursor() {
+          targetX += (mouseX - targetX) * smoothness;
+          targetY += (mouseY - targetY) * smoothness;
+          
+          /* This centers the image on the pointer.
+             We subtract half the width/height (20px for a 40x40px div)
+          */
+          cursor.style.transform = `translate(${targetX - 20}px, ${targetY - 20}px)`;
+          
+          requestAnimationFrame(animateCursor);
         }
-        animateMainCursor();
-
-        function createTrailDot(x, y) {
-          const trailDot = document.createElement("div");
-          trailDot.classList.add("cursor-trail-dot");
-          trailDot.style.left = `${x}px`;
-          trailDot.style.top = `${y}px`;
-          // Randomize size slightly for a more organic look
-          const size = Math.random() * 8 + 4; // Between 4px and 12px
-          trailDot.style.width = `${size}px`;
-          trailDot.style.height = `${size}px`;
-          document.body.appendChild(trailDot);
-
-          // Remove the dot after its animation is complete
-          trailDot.addEventListener("animationend", () => {
-            trailDot.remove();
-          });
-        }
+        animateCursor();
 
         // Add hover effect for clickable elements
         document.addEventListener("mouseover", (e) => {
           if (e.target.closest("a, button, .hoverable")) {
-            mainCursorDot.classList.add("hover");
+            cursor.classList.add("hover");
           }
         });
 
         document.addEventListener("mouseout", (e) => {
           if (e.target.closest("a, button, .hoverable")) {
-            mainCursorDot.classList.remove("hover");
+            cursor.classList.remove("hover");
           }
         });
       }
