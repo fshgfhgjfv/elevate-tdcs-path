@@ -133,35 +133,9 @@ const Courses = () => {
         )}
       </div>
 
-      {/* --- Course Perks Section with Pulsating Red Box --- */}
-      {/* NOTE: For the 'animate-border-pulse' to work, you'll need to add it 
-        to your tailwind.config.js under the 'extend.animation' and 'extend.keyframes' sections.
-        Example tailwind.config.js snippet:
-
-        module.exports = {
-          theme: {
-            extend: {
-              keyframes: {
-                'border-pulse': {
-                  '0%, 100%': { 
-                    'border-color': 'rgba(239, 68, 68, 0.7)', // red-500 with opacity
-                    'box-shadow': '0 0 0px rgba(239, 68, 68, 0.4)' 
-                  },
-                  '50%': { 
-                    'border-color': 'rgba(239, 68, 68, 1)', // full red
-                    'box-shadow': '0 0 20px rgba(239, 68, 68, 0.8)' 
-                  },
-                }
-              },
-              animation: {
-                'border-pulse': 'border-pulse 2s infinite ease-in-out',
-              }
-            },
-          },
-          plugins: [],
-        }
-      */}
-      <div className="container mx-auto px-4 mt-24 space-y-20 p-6 border-4 border-red-500 rounded-lg animate-border-pulse">
+      {/* --- Course Perks Section --- */}
+      {/* Removed the outer border-pulse container */}
+      <div className="container mx-auto px-4 mt-24 space-y-20">
         {coursePerks.map((perk, index) => (
           <motion.div
             key={index}
@@ -203,24 +177,39 @@ const Courses = () => {
 
               {/* Conditional overlay for features */}
               {perk.features && (
-                <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg p-4">
+                // This div is just a container, the black overlay is removed
+                <div className="absolute inset-0 p-4">
                   {perk.features.map((feature, i) => (
+                    // --- THIS IS THE MODIFIED ELEMENT ---
                     <motion.span
                       key={i}
-                      initial={{ opacity: 0.7, scale: 0.98 }}
+                      // Animation for blinking/glowing/zooming red badge
+                      initial={{
+                        opacity: 0.7,
+                        scale: 0.98,
+                        boxShadow: "0 0 10px rgba(239, 68, 68, 0.5)", // Fainter red glow (red-500)
+                      }}
                       animate={{
                         opacity: [0.7, 1, 0.7],
                         scale: [0.98, 1.02, 0.98],
+                        boxShadow: [
+                          "0 0 10px rgba(239, 68, 68, 0.5)",
+                          "0 0 20px rgba(239, 68, 68, 1)", // Brighter red glow
+                          "0 0 10px rgba(239, 68, 68, 0.5)",
+                        ],
                       }}
                       transition={{
                         duration: 1.5,
                         repeat: Infinity,
-                        delay: i * 0.2,
+                        delay: i * 0.2, // Stagger the animation
                       }}
+                      // --- APPLIED RED BADGE STYLING ---
                       className={`
-                        absolute p-2 
-                        text-white text-lg md:text-xl font-bold text-center 
-                        drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] 
+                        absolute px-4 py-2 
+                        bg-red-600 
+                        text-white text-base md:text-lg font-bold text-center 
+                        rounded-full 
+                        whitespace-nowrap
                         ${feature.position}
                       `}
                     >
