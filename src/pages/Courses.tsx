@@ -31,7 +31,6 @@ const coursePerks = [
       "https://blogger.googleusercontent.com/img/a/AVvXsEgQBCknDQq2PSSJ5SzQS6ei73FcO8IbRNgjKW3b9r3DtAnmMR_9OClnJXyZn9MEci-jQazc0qSX6nRaRn638FkssY5npovgqEHVu6o2FfNjB1oXXSbuxV9OCu2dArjAC1HOMOJHrP3-TvNgbHqIxfeIEf9H6BeQa2VziRX7w3u4Tx1QigCeDINCHEHPIsnm",
     layout: "text-left", // text-left, image-right
   },
-  // --- MODIFIED PERK SECTION ---
   {
     title: "HACKER'S PENDRIVE",
     description:
@@ -40,10 +39,10 @@ const coursePerks = [
       "https://blogger.googleusercontent.com/img/a/AVvXsEjcQA7l6TaSYW4QYsDfMXN_HqfBECITrE7LktjD2-41QpgpTQ29RL5xPgNs4vDAzPW6k0EM9p-OSdaTR3chzl97ZxiGAFRvfV4O4Im8i6JJZXT4IDK-LM2OIBG8N8tsf4Wwn4wTJaUzqtQJd3sdza1yhMvhj2KRPivVJyCCMzKp2WpX24VksPf3ceiItGl1",
     layout: "text-right", // text-right, image-left
     glowing: true, // Flag for the title
-    // --- UPDATED FEATURES to include positioning ---
     features: [
       { text: "125+ Premium Softwares", position: "top-4 right-4" },
-      { text: "Scripts & Payloads", position:, "top-1/3 left-4" },
+      // --- THIS LINE IS NOW FIXED ---
+      { text: "Scripts & Payloads", position: "top-1/3 left-4" },
       { text: "Ebooks & Guides", position: "top-2/3 right-4" },
       { text: "Training Video", position: "bottom-4 left-4" },
     ],
@@ -166,7 +165,7 @@ const Courses = () => {
               </p>
             </div>
 
-            {/* --- MODIFIED Image Content --- */}
+            {/* Image Content */}
             <div className="flex-1 relative max-w-md mx-auto w-full">
               <img
                 src={perk.imageUrl}
@@ -185,7 +184,10 @@ const Courses = () => {
                       key={i}
                       // Animation for blinking/glowing/zooming text
                       initial={{ opacity: 0.7, scale: 0.98 }}
-                      animate={{ opacity: [0.7, 1, 0.7], scale: [0.98, 1.02, 0.98] }}
+                      animate={{
+                        opacity: [0.7, 1, 0.7],
+                        scale: [0.98, 1.02, 0.98],
+                      }}
                       transition={{
                         duration: 1.5,
                         repeat: Infinity,
