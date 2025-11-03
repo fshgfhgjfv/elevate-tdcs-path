@@ -1,32 +1,35 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Linkedin, Globe } from "lucide-react";
-import dibyajitImage from "@/assets/founders/dibyajit-ghosh.jpg";
-import tusharImage from "@/assets/founders/tushar-bhakta.jpg";
-import shivamImage from "@/assets/founders/shivam-shing.jpg";
+// Removed local image imports, as we'll use URLs directly
 
 const founders = [
   {
     name: "Dibyajit Ghosh",
     role: "Founder & CEO / Forensic Investor Director",
-    image: dibyajitImage,
+    // Updated image URL from Hero.jsx
+    image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhQ9heh07dWNTxnm6dhyphenhyphen2rzfxjmA_xS3UXPh3sBCY_B2ywNCfyr8QXWKLsur3PJKzLo-pUsoGmIfTmGl8m7cGmUezdk_RvStMnzxjIstX1S-V6gc2PrG8WkudchJv_c0LuVu0xbO7mUnWh5mWZHMe9THz3dwqCLTN0-2bAoI0k_rynUr6vk2xDdSKi0bM-/s539/WhatsApp_Image_2025-10-26_at_15.56.54_d2e7dc94-removebg-preview.png",
     bio: "Leading TDCS with a vision to transform technical education and placement services.",
     linkedin: "https://linkedin.com",
     website: "https://tdcs.tech",
   },
-  {
-    name: "Tushar Bhakta",
-    role: "Chief Marketing Officer (CMO)",
-    image: tusharImage,
-    bio: "Driving growth and brand strategy at TDCS.",
-    linkedin: "https://linkedin.com",
-    website: "https://tdcs.tech",
-  },
+  // RE-ORDERED: Shivam (COO) is now second
   {
     name: "Shivam Shing",
     role: "Chief Operating Officer (COO)",
-    image: shivamImage,
+    // Updated image URL from Hero.jsx
+    image: "https://blogger.googleusercontent.com/img/a/AVvXsEgiDtg5YtmQ7bdvNmeAAMyhwpc5tLm_RNR2Lv4y4u6hsMzTiuqNyxo7O0qU32donmMZoTduoxe-4WgWVdPh29JH9vmYXkqCI7hiyzwaYBxxXgTfKbCsjTST6gyIWQB230kRXgwfQvxV-dqB9V-Xqr3915tuA9d88D1rGY-l9sJy_vhC3HJR0pdEI6F3E8Nr",
     bio: "Ensuring operational excellence and student success.",
+    linkedin: "https://linkedin.com",
+    website: "https://tdcs.tech",
+  },
+  // RE-ORDERED: Tushar (CMO) is now third
+  {
+    name: "Tushar Bhakta",
+    role: "Chief Marketing Officer (CMO)",
+    // Updated image URL from Hero.jsx
+    image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh68HDmzQ4YTj9g9soRrkq-eHc9cAfbC03ZOXSClA19NofdsJ2lzm2A29d2qxG3xXSUfuEVl-sGEVnkokdgS6snQn86My-Bekn2MLrF135mZPHpwXfsLg1XxhFaClj1Uebgi6IcxeseCR6rvwc3vg6IgYUm8voolffwjQhcY4haMotxomzPVjfJm7ylnHdF/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png",
+    bio: "Driving growth and brand strategy at TDCS.",
     linkedin: "https://linkedin.com",
     website: "https://tdcs.tech",
   },
