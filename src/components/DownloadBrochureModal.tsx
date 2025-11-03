@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { useToast } from "@/hooks/use-toast";
 import { Download } from "lucide-react";
 
+// This URL is kept from your original code
 const BROCHURE_URL = "https://drive.google.com/file/d/1QyvVIVld5m8ORla6uqNK1NQHZIItwbzJ/view?usp=drivesdk";
 
 interface DownloadBrochureModalProps {
@@ -56,11 +57,12 @@ export const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModal
       description: "Thanks! Brochure download starting. A counselor will contact you shortly.",
     });
 
-    // Open brochure in new tab
+    // Open brochure in new tab (as requested)
     window.open(BROCHURE_URL, '_blank');
 
     setIsSubmitting(false);
     onClose();
+    // Reset form
     setFormData({
       name: "",
       phone: "",
@@ -94,15 +96,16 @@ export const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModal
             />
           </div>
           <div>
-            <Label htmlFor="phone">Phone *</Label>
+            <Label htmlFor="phone">Phone * (10-digit Indian number)</Label>
             <Input
               id="phone"
               type="tel"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               required
-              placeholder="+91 XXXXX XXXXX"
-              pattern="[0-9+\s-]+"
+              placeholder="98XXXXXX00"
+              pattern="[6-9]\d{9}" 
+              title="Please enter a valid 10-digit Indian mobile number"
             />
           </div>
           <div>
@@ -117,17 +120,18 @@ export const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModal
             />
           </div>
           <div>
-            <Label htmlFor="course">Course of Interest</Label>
-            <Select value={formData.course} onValueChange={(value) => setFormData({ ...formData, course: value })}>
+            <Label htmlFor="course">Course of Interest *</Label>
+            <Select 
+              value={formData.course} 
+              onValueChange={(value) => setFormData({ ...formData, course: value })}
+              required 
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select a course" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="full-stack">Full Stack Development</SelectItem>
-                <SelectItem value="mern">MERN Stack</SelectItem>
-                <SelectItem value="java">Java Development</SelectItem>
-                <SelectItem value="cyber-security">Cyber Security</SelectItem>
-                <SelectItem value="data-science">Data Science</SelectItem>
+                <SelectItem value="cyber-master-pro-lite">Cyber Master Pro Lite</SelectItem>
+                <SelectItem value="cyber-master-pro">Cyber Master Pro</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -141,12 +145,19 @@ export const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModal
               htmlFor="consent"
               className="text-sm text-muted-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              I agree to receive course updates and offers from TDCS
+              I agree to receive course updates and offers (required)
             </label>
           </div>
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          
+          {/* --- THIS IS THE UPDATED LINE --- */}
+          <Button 
+            type="submit" 
+            className="w-full transition-all hover:shadow-lg hover:shadow-primary/50" 
+            disabled={isSubmitting}
+          >
             {isSubmitting ? "Processing..." : "Download Brochure"}
           </Button>
+          
         </form>
       </DialogContent>
     </Dialog>
