@@ -17,55 +17,68 @@ import {
   useSpring,
 } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, Github } from "lucide-react";
+import { Loader2, Github } from "lucide-react"; // <<< 1. IMPORT GITHUB ICON
 
-// --- Firebase Imports ---
-import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  GithubAuthProvider,
-  onAuthStateChanged,
-  signInAnonymously,
-  signInWithCustomToken,
-} from "firebase/auth";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+// --- 1. Define Floating Tools & Animations ---
+const tools = [
+  {
+    // Kali Linux (from previous version)
+    src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
+    alt: "Kali Linux",
+    side: "left" as "left" | "right",
+    delay: 0.2,
+    y: 150,
+  },
+  {
+    // Burp Suite (from previous version)
+    src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1",
+    alt: "Burp Suite",
+    side: "left" as "left" | "right",
+    delay: 0.4,
+    y: 350,
+  },
+  {
+    // Wireshark (from previous version)
+    src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true",
+    alt: "Wireshark",
+    side: "right" as "left" | "right",
+    delay: 0.3,
+    y: 120, // Adjusted position
+  },
+  {
+    // <<< NEW: Nmap
+    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
+    alt: "Nmap",
+    side: "right" as "left" | "right",
+    delay: 0.5,
+    y: 320,
+  },
+  {
+    // <<< NEW: Metasploit
+    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
+    alt: "Metasploit",
+    side: "left" as "left" | "right",
+    delay: 0.6,
+    y: 500,
+  },
+];
 
-// --- Firebase Config ---
-// These global variables are provided by the environment.
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-let firebaseConfig;
-try {
-  firebaseConfig = JSON.parse(__firebase_config);
-} catch (e) {
-  console.error("Firebase config is not valid JSON:", __firebase_config);
-  firebaseConfig = {}; // Set empty config to avoid crash
-}
-const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : undefined;
+// Variants for the initial slide-in
+const iconVariants = {
+  hidden: (side: "left" | "right") => ({
+    opacity: 0,
+    x: side === "left" ? -100 : 100, // Come from off-screen
+    scale: 0.5,
+  }),
+};
+// --- End Floating Tools ---
 
-// --- Initialize Firebase ---
-let app, auth, db;
-if (firebaseConfig && firebaseConfig.apiKey) {
-  try {
-    app = initializeApp(firebaseConfig);
-    auth = getAuth(app);
-    db = getFirestore(app);
-  } catch (e) {
-    console.error("Error initializing Firebase:", e);
-    toast.error("Firebase initialization failed. Please check console.");
-  }
-} else {
-  console.warn("Firebase config not found. Using mocks or app will fail.");
-}
-
-// --- Google Icon Helper ---
-const GoogleIcon = (props) => (
+// --- 2. ADD GOOGLE ICON HELPER ---
+const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 48"
+    viewBox="0 0 48 48"
   >
     <path
       fill="#FFC107"
@@ -87,14 +100,9 @@ const GoogleIcon = (props) => (
 );
 // --- End Google Icon ---
 
-// --- Social Providers ---
-const googleProvider = new GoogleAuthProvider();
-const githubProvider = new GithubAuthProvider();
-
 const Signup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [isFirebaseReady, setIsFirebaseReady] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -103,94 +111,29 @@ const Signup = () => {
     confirmPassword: "",
   });
 
-  // --- Firebase Auth Effect ---
   useEffect(() => {
-    if (!auth) {
-      if (firebaseConfig && firebaseConfig.apiKey) {
-        toast.error("Firebase initialized but auth is not. Please refresh.");
-      } else {
-        toast.error("Firebase config is missing. App cannot authenticate.");
-      }
-      setIsFirebaseReady(false);
-      return;
+    // Redirect if already logged in
+    const user = localStorage.getItem("tdcs_user");
+    if (user) {
+      navigate("/dashboard");
     }
-
-    const signIn = async () => {
-      try {
-        if (initialAuthToken) {
-          await signInWithCustomToken(auth, initialAuthToken);
-        } else {
-          await signInAnonymously(auth);
-        }
-      } catch (error) {
-        console.error("Anonymous sign-in failed:", error);
-        toast.error("Authentication failed. Please refresh.");
-      }
-    };
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in.
-        if (!user.isAnonymous) {
-          // If they are not anonymous, they are logged in. Redirect them.
-          navigate("/dashboard");
-        } else {
-          // User is signed in anonymously, allow them to see the signup page
-        }
-      } else {
-        // User is not signed in.
-        // Attempt to sign in anonymously.
-        signIn();
-      }
-      setIsFirebaseReady(true);
-    });
-
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
   }, [navigate]);
 
-  // --- Helper to save user data to Firestore ---
-  const saveUserProfile = async (user, additionalData = {}) => {
-    if (!db) {
-      console.error("Firestore (db) is not initialized.");
-      return;
-    }
-    const userId = user.uid;
-    // Private user data path
-    const userDocRef = doc(db, "artifacts", appId, "users", userId, "profile", "data");
-    
-    const profileData = {
-      uid: user.uid,
-      email: user.email,
-      name: user.displayName || additionalData.name,
-      number: additionalData.number || "", // Save number if provided
-      provider: user.providerData[0]?.providerId || "email",
-      createdAt: new Date().toISOString(),
-    };
-
-    try {
-      // Use setDoc to create or overwrite the user's profile
-      await setDoc(userDocRef, profileData, { merge: true });
-    } catch (error) {
-      console.error("Error saving user profile:", error);
-      toast.error("Error saving profile. Please try again.");
-    }
-  };
-
-  // --- Email/Password Signup Handler ---
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!auth) {
-      toast.error("Firebase is not ready. Please refresh.");
-      return;
-    }
-
     setIsLoading(true);
+
+    const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
     const { name, email, number, password, confirmPassword } = formData;
 
     // Client-side validation
     if (!name || !email || !number || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
+      setIsLoading(false);
+      return;
+    }
+    if (!email.includes("@")) {
+      toast.error("Please enter a valid email");
       setIsLoading(false);
       return;
     }
@@ -209,66 +152,69 @@ const Signup = () => {
       setIsLoading(false);
       return;
     }
-
-    try {
-      // Create user with email and password
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-
-      // Save additional user info to Firestore
-      await saveUserProfile(user, { name, number: `+91${number}` });
-
-      toast.success("Account created successfully!");
+    if (users.find((u: any) => u.email === email)) {
+      toast.error("User with this email already exists");
       setIsLoading(false);
-      navigate("/dashboard"); // Redirect on success
-    } catch (error) {
-      console.error("Firebase signup error:", error.code, error.message);
-      if (error.code === "auth/email-already-in-use") {
-        toast.error("This email is already registered. Please login.");
-      } else {
-        toast.error(error.message);
-      }
-      setIsLoading(false);
-    }
-  };
-
-  // --- Social Signup Handler ---
-  const handleSocialSignup = async (provider) => {
-    if (!auth) {
-      toast.error("Firebase is not ready. Please refresh.");
       return;
     }
 
-    const authProvider = provider === "google" ? googleProvider : githubProvider;
-    
-    try {
-      const result = await signInWithPopup(auth, authProvider);
-      const user = result.user;
-      
-      // Save their profile info to Firestore
-      // `merge: true` ensures we don't overwrite data if they already exist
-      await saveUserProfile(user); 
+    // Simulate API delay for animation
+    setTimeout(() => {
+      // Create new user
+      const newUser = {
+        id: Date.now().toString(),
+        name,
+        email,
+        number: `+91${number}`,
+        password,
+      };
+      users.push(newUser);
+      localStorage.setItem("tdcs_users", JSON.stringify(users));
+      const { password: _, ...userWithoutPassword } = newUser;
+      localStorage.setItem("tdcs_user", JSON.stringify(userWithoutPassword));
 
-      toast.success(`Signed up with ${provider}!`);
-      navigate("/dashboard"); // Redirect on success
-    } catch (error) {
-      console.error("Social signup error:", error.code, error.message);
-      if (error.code === 'auth/account-exists-with-different-credential') {
-        toast.error("An account already exists with this email. Please login with the original method.");
-      } else {
-        toast.error(`Error with ${provider} sign up. Please try again.`);
-      }
-    }
+      toast.success("Account created successfully!");
+      setIsLoading(false);
+      navigate("/dashboard");
+    }, 1000);
   };
 
-  // --- 3D Card Tilt Animation (Removed - Simpler version) ---
-  // Using a simpler motion.div for consistency with Login page
-  // const cardRef = useRef(null);
-  // ... (tilt logic removed)
+  // --- 3. ADD SOCIAL SIGNUP HANDLER ---
+  const handleSocialSignup = (provider: string) => {
+    toast.info(`Sign up with ${provider} is not implemented in this demo.`);
+  };
+
+  // --- 3D Card Tilt Animation ---
+  const cardRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+  const rotateX = useTransform(
+    mouseYSpring,
+    [-0.5, 0.5],
+    ["10deg", "-10deg"]
+  );
+  const rotateY = useTransform(
+    mouseXSpring,
+    [-0.5, 0.5],
+    ["-10deg", "10deg"]
+  );
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const xPct = (e.clientX - rect.left) / width - 0.5;
+    const yPct = (e.clientY - rect.top) / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+  // --- End 3D Card ---
 
   // --- Staggered Form Animation ---
   const formVariants = {
@@ -287,41 +233,80 @@ const Signup = () => {
   };
   // --- End Staggered ---
 
-  // Disable form while Firebase is loading
-  const isFormDisabled = isLoading || !isFirebaseReady;
-
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden pt-24 pb-16">
-      
-      {/* --- ADDED: Animated gradient background (from Login) --- */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-indigo-500/10 to-blue-500/10 blur-3xl -z-10"
-        animate={{
-          backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
-      {/* --- REMOVED: Floating Tools --- */}
+    <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
+      {/* --- 2. Add Floating Tools JSX Here --- */}
+      <div
+        className="absolute inset-0 -z-10 overflow-hidden"
+        aria-hidden="true"
+      >
+        {tools.map((tool) => (
+          <motion.img
+            key={tool.alt}
+            src={tool.src}
+            alt={tool.alt}
+            className="absolute h-16 w-16 md:h-24 md:w-24" // You can adjust size here
+            style={{
+              top: tool.y,
+              ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }),
+            }}
+            // --- Animation Props ---
+            variants={iconVariants}
+            initial="hidden"
+            custom={tool.side} // Pass "left" or "right" to variants
+            // Animate to visible state AND start bobbing
+            animate={{
+              opacity: 0.1, // Make them subtle
+              x: 0,
+              scale: 1,
+              y: [tool.y, tool.y + 20, tool.y], // Bob up and down
+              transition: {
+                // For the slide-in
+                type: "spring",
+                stiffness: 100,
+                damping: 10,
+                delay: tool.delay,
+                // For the bobbing
+                y: {
+                  duration: 2 + Math.random() * 1, // Random duration
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut",
+                },
+              },
+            }}
+          />
+        ))}
+      </div>
+      {/* --- End Floating Tools --- */}
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4">
         <motion.div
-          // Replaced 3D tilt with simpler fade-in from Login page
-          initial={{ opacity: 0, y: 30 }}
+          ref={cardRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{
+            transformStyle: "preserve-3d",
+            rotateX,
+            rotateY,
+          }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.5 }}
           className="max-w-md mx-auto"
         >
-          {/* Using the same Card style as Login page */}
-          <Card className="shadow-xl backdrop-blur-lg bg-white/10 dark:bg-gray-900/50 border border-white/10">
+          <Card
+            className="shadow-glow-lg"
+            style={{
+              transform: "translateZ(75px)",
+              transformStyle: "preserve-3d",
+            }}
+          >
             <CardHeader>
               <CardTitle className="text-3xl gradient-text">
                 Create Account
               </CardTitle>
-              <CardDescription className="text-gray-500 dark:text-gray-400">
+              <CardDescription>
                 Sign up to start your learning journey
               </CardDescription>
             </CardHeader>
@@ -333,7 +318,7 @@ const Signup = () => {
                 initial="hidden"
                 animate="visible"
               >
-                {/* --- Social Logins --- */}
+                {/* --- 4. ADD SOCIAL LOGINS --- */}
                 <motion.div
                   variants={itemVariants}
                   className="flex flex-col sm:flex-row gap-3"
@@ -341,9 +326,8 @@ const Signup = () => {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => handleSocialSignup("google")}
+                    onClick={() => handleSocialSignup("Google")}
                     type="button"
-                    disabled={isFormDisabled}
                   >
                     <GoogleIcon className="mr-2 h-4 w-4" />
                     Sign up with Google
@@ -351,16 +335,15 @@ const Signup = () => {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => handleSocialSignup("github")}
+                    onClick={() => handleSocialSignup("GitHub")}
                     type="button"
-                    disabled={isFormDisabled}
                   >
                     <Github className="mr-2 h-4 w-4" />
                     Sign up with GitHub
                   </Button>
                 </motion.div>
 
-                {/* --- Divider --- */}
+                {/* --- 5. ADD DIVIDER --- */}
                 <motion.div variants={itemVariants} className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
@@ -384,7 +367,6 @@ const Signup = () => {
                       setFormData({ ...formData, name: e.target.value })
                     }
                     required
-                    disabled={isFormDisabled}
                   />
                 </motion.div>
 
@@ -399,7 +381,6 @@ const Signup = () => {
                       setFormData({ ...formData, email: e.target.value })
                     }
                     required
-                    disabled={isFormDisabled}
                   />
                 </motion.div>
 
@@ -422,7 +403,6 @@ const Signup = () => {
                       }}
                       className="rounded-l-none"
                       required
-                      disabled={isFormDisabled}
                     />
                   </div>
                 </motion.div>
@@ -438,7 +418,6 @@ const Signup = () => {
                       setFormData({ ...formData, password: e.target.value })
                     }
                     required
-                    disabled={isFormDisabled}
                   />
                 </motion.div>
 
@@ -456,7 +435,6 @@ const Signup = () => {
                       })
                     }
                     required
-                    disabled={isFormDisabled}
                   />
                 </motion.div>
 
@@ -469,16 +447,12 @@ const Signup = () => {
                     type="submit"
                     variant="gradient"
                     className="w-full"
-                    disabled={isFormDisabled}
+                    disabled={isLoading}
                   >
                     {isLoading && (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     )}
-                    {isLoading
-                      ? "Signing Up..."
-                      : !isFirebaseReady
-                      ? "Connecting..."
-                      : "Sign Up"}
+                    {isLoading ? "Signing Up..." : "Sign Up"}
                   </Button>
                 </motion.div>
               </motion.form>
