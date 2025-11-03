@@ -247,7 +247,7 @@ export const ApplyBatchesSection = () => {
             {/* Left Side Graphic */}
             <div className="relative hidden md:block">
               <img
-                src="https://blogger.googleusercontent.com/img/a/AVvXsEiTEKhg-l2pOBrzsPHoSFlijpEmqo-N6N_hZh9mlI4m5DpBbmK7bhTBCOcZnHXE-0CXLt8nOTozaBCOvF1QV7Q-NAwqA8j-dSUIrD24394faJ62dysyjwX4tplIATnkAw-40DFkjc4Ad2gx_XtURio9OH9NBLTHpEoa_9QM28Cllw9w-ZQtqcmi3aPr1-0m"
+                src="https://images.unsplash.com/photo-1557862921-3e16092bb49c?q=80&w=1770&auto=format&fit=crop"
                 alt="Support Advisor"
                 className="object-cover w-full h-full"
               />
