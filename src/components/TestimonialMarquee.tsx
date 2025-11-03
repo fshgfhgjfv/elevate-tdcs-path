@@ -25,27 +25,20 @@ export const TestimonialMarquee = ({
   direction = "left",
   className = "",
 }: TestimonialMarqueeProps) => {
-  // Determine animation variants based on direction
-  const marqueeVariants = {
-    animate: {
-      x: direction === "left" ? ["0%", "-100%"] : ["-100%", "0%"],
-      transition: {
-        x: {
-          repeat: Infinity,
-          repeatType: "loop",
-          duration: duration,
-          ease: "linear",
-        },
-      },
-    },
-  };
+  // Determine x values based on direction
+  const xValues = direction === "left" ? ["0%", "-100%"] : ["-100%", "0%"];
 
   return (
     <div className="w-full overflow-hidden">
       <motion.div
-        className={`flex ${className}`} // Apply flex and spacing
-        variants={marqueeVariants}
-        animate="animate"
+        className={`flex ${className}`}
+        animate={{ x: xValues }}
+        transition={{
+          repeat: Infinity,
+          repeatType: "loop" as const,
+          duration: duration,
+          ease: "linear",
+        }}
       >
         {/* Render children twice for the seamless loop */}
         <span className={`flex ${className}`}>{children}</span>

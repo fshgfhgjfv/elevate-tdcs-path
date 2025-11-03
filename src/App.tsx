@@ -14,6 +14,7 @@ import CourseDetail from "./pages/CourseDetail";
 import CourseContent from "./pages/CourseContent";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
 import MyProfile from "./pages/MyProfile";
 import VerifyCertificate from "./pages/VerifyCertificate";
 import CertificateDownload from "./pages/CertificateDownload";
@@ -57,6 +58,8 @@ const App = () => (
           {/* Auth & Profile */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/my-profile" element={<MyProfile />} />
 
           {/* Certificates */}

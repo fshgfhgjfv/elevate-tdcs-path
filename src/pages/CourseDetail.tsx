@@ -188,7 +188,7 @@ const CourseDetail = () => {
               STRUCTURED, INDUSTRY ORIENTED COURSE
             </h2>
             <h3 className="text-2xl font-bold mb-4 text-center">
-              Learn Full Stack Development
+              Learn Ethical Hacking & Cybersecurity
             </h3>
             <p className="text-center text-muted-foreground mb-8">
               Curated by top tech professionals
@@ -196,13 +196,13 @@ const CourseDetail = () => {
 
             <div className="bg-muted/20 rounded-2xl p-8 border-2 border-primary/20">
               <div className="flex items-center justify-between mb-4">
-                <h4 className="text-xl font-bold">CLASSROOM PROGRAM - JAVA</h4>
+                <h4 className="text-xl font-bold">CLASSROOM PROGRAM - CYBER MASTER</h4>
                 <span className="px-4 py-1 rounded-full bg-primary/10 text-primary font-semibold text-sm">
                   Scholarships Available
                 </span>
               </div>
               <p className="text-muted-foreground mb-6">
-                Up skill on - Data Structures, Algorithms, Java, Java Script, Spring & Spring Boot.
+                Master Ethical Hacking, Penetration Testing, Network Security, Web Security, and Advanced Cybersecurity Tools.
               </p>
               <div className="grid md:grid-cols-3 gap-4 mb-6">
                 <div>

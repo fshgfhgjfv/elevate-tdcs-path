@@ -124,7 +124,7 @@ export const Header = () => {
           <div className="hidden md:flex items-center gap-4">
             {user ? (
               <>
-                <Link to="/my-profile">
+                <Link to="/dashboard">
                   <Button variant="ghost">{user.name}</Button>
                 </Link>
                 <Button variant="gradient" onClick={handleLogout}>
@@ -195,7 +195,7 @@ export const Header = () => {
               <div className="flex flex-col gap-3 pt-4 border-t">
                 {user ? (
                   <>
-                    <Link to="/my-profile" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
                       <Button variant="ghost" className="w-full">
                         {user.name}
                       </Button>

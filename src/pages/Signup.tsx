@@ -115,7 +115,7 @@ const Signup = () => {
     // Redirect if already logged in
     const user = localStorage.getItem("tdcs_user");
     if (user) {
-      navigate("/");
+      navigate("/dashboard");
     }
   }, [navigate]);
 
@@ -175,7 +175,7 @@ const Signup = () => {
 
       toast.success("Account created successfully!");
       setIsLoading(false);
-      navigate("/");
+      navigate("/dashboard");
     }, 1000);
   };
 

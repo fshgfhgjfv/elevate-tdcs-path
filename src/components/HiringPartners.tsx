@@ -51,16 +51,15 @@ export const HiringPartners = () => {
           }}
         >
           <motion.div
-            className="flex gap-10" // Use gap for spacing between logos
+            className="flex gap-10"
             animate={{
               x: ["0%", "-50%"],
-              transition: {
-                ease: "linear",
-                duration: 30, // Adjust duration for scroll speed
-                repeat: Infinity,
-              },
             }}
-            whileHover={{ paused: true }} // Pauses animation on hover
+            transition={{
+              ease: "linear",
+              duration: 30,
+              repeat: Infinity,
+            }}
           >
             {/* We map over the DUPLICATED list.
               'flex-shrink-0' is important to prevent logos from squishing.

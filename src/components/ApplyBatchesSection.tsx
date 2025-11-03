@@ -335,17 +335,17 @@ export const ApplyBatchesSection = () => {
                         <SelectValue placeholder="Select a course" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="full-stack-java">
-                          Full Stack Development (Java)
+                        <SelectItem value="cyber-master-pro-lite">
+                          Cyber Master Pro Lite
                         </SelectItem>
-                        <SelectItem value="full-stack-mern">
-                          Full Stack Development (MERN)
+                        <SelectItem value="cyber-master-pro">
+                          Cyber Master Pro
                         </SelectItem>
-                        <SelectItem value="data-science">
-                          Data Science & Analytics
+                        <SelectItem value="cyber-master-blackhat">
+                          Cyber Master Pro Black Hat
                         </SelectItem>
-                        <SelectItem value="ai-ml">
-                          AI & Machine Learning
+                        <SelectItem value="ethical-hacking">
+                          Ethical Hacking & Penetration Testing
                         </SelectItem>
                         <SelectItem value="not-sure">
                           Not sure yet

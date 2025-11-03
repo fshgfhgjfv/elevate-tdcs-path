@@ -15,7 +15,7 @@ const Login = () => {
   useEffect(() => {
     const user = localStorage.getItem("tdcs_user");
     if (user) {
-      navigate("/");
+      navigate("/dashboard");
     }
   }, [navigate]);
 
@@ -54,7 +54,7 @@ const Login = () => {
       const { password: _, ...userWithoutPassword } = user;
       localStorage.setItem("tdcs_user", JSON.stringify(userWithoutPassword));
       toast.success("Login successful!");
-      const from = (location.state as any)?.from || "/";
+      const from = (location.state as any)?.from || "/dashboard";
       navigate(from);
     } else {
       toast.error("Invalid credentials");
