@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const LOGO_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEh6t9BjBO7igeafdAkeEQW1JNA1TAfi2lIR0Nr857ozJmsC-qPIm9m2BbQi8JkDD3TmGVuyKAyxnIc88lETBh18Xia9FqGTkGdtzD7215GLuqRBIhm9UCh7F4FDB9BsKHg78TKGkSUfCtTHefuZ5LwuXqdGLzO50ulgxWj2b-6gGAZJHE15AEKDUnwStMAm";
@@ -12,6 +12,7 @@ export const Header = () => {
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -26,8 +27,13 @@ export const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("tdcs_user");
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith("tdcs_purchased_")) {
+        localStorage.removeItem(key);
+      }
+    });
     setUser(null);
-    window.location.href = "/";
+    navigate("/");
   };
 
   const navLinks = [
@@ -125,19 +131,23 @@ export const Header = () => {
             {user ? (
               <>
                 <Link to="/dashboard">
-                  <Button variant="ghost">{user.name}</Button>
+                  <Button variant="outline" className="gap-2">
+                    <User className="w-4 h-4" />
+                    Dashboard
+                  </Button>
                 </Link>
-                <Button variant="gradient" onClick={handleLogout}>
+                <Button variant="destructive" onClick={handleLogout} className="gap-2">
+                  <LogOut className="w-4 h-4" />
                   Logout
                 </Button>
               </>
             ) : (
               <>
                 <Link to="/login">
-                  <Button variant="ghost">Login</Button>
+                  <Button variant="outline">Login</Button>
                 </Link>
                 <Link to="/signup">
-                  <Button variant="gradient">Sign Up</Button>
+                  <Button variant="default" className="gradient-primary">Sign Up</Button>
                 </Link>
               </>
             )}
@@ -195,31 +205,33 @@ export const Header = () => {
               <div className="flex flex-col gap-3 pt-4 border-t">
                 {user ? (
                   <>
-                    <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Button variant="ghost" className="w-full">
-                        {user.name}
+                    <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
+                      <Button variant="outline" className="w-full gap-2">
+                        <User className="w-4 h-4" />
+                        Dashboard
                       </Button>
                     </Link>
                     <Button
-                      variant="gradient"
-                      className="w-full"
+                      variant="destructive"
+                      className="w-full gap-2"
                       onClick={() => {
                         handleLogout();
                         setIsMobileMenuOpen(false);
                       }}
                     >
+                      <LogOut className="w-4 h-4" />
                       Logout
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Button variant="ghost" className="w-full">
+                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
+                      <Button variant="outline" className="w-full">
                         Login
                       </Button>
                     </Link>
-                    <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Button variant="gradient" className="w-full">
+                    <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
+                      <Button variant="default" className="w-full gradient-primary">
                         Sign Up
                       </Button>
                     </Link>

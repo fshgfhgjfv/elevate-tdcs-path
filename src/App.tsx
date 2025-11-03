@@ -16,6 +16,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import MyProfile from "./pages/MyProfile";
+import ForgotPassword from "./pages/ForgotPassword";
 import VerifyCertificate from "./pages/VerifyCertificate";
 import CertificateDownload from "./pages/CertificateDownload";
 import AdvocateConstruction from "./pages/AdvocateConstruction";
@@ -58,7 +59,7 @@ const App = () => (
           {/* Auth & Profile */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/my-profile" element={<MyProfile />} />
 

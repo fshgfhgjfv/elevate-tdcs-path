@@ -169,13 +169,16 @@ const Login = () => {
               </motion.form>
 
               <motion.div
-                className="mt-6 text-center"
+                className="mt-6 text-center space-y-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
               >
+                <Link to="/forgot-password" className="block text-sm text-primary hover:underline">
+                  Forgot your password?
+                </Link>
                 <p className="text-sm text-muted-foreground">
-                  Don’t have an account?{" "}
+                  Don't have an account?{" "}
                   <Link
                     to="/signup"
                     className="text-primary hover:underline font-semibold"

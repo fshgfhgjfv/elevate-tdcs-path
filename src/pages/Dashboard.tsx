@@ -1,31 +1,26 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate, Routes, Route, Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
   BookOpen, 
   Trophy, 
   Award, 
-  TrendingUp, 
   Settings, 
   HelpCircle,
-  ChevronRight,
-  Play
+  Menu,
+  X
 } from "lucide-react";
-import { courses } from "@/data/courses";
-
-interface EnrolledCourse {
-  courseId: string;
-  date: string;
-  paymentId: string;
-  progress?: number;
-}
+import DashboardMyCourses from "./dashboard/DashboardMyCourses";
+import DashboardLeaderboard from "./dashboard/DashboardLeaderboard";
+import DashboardCertificates from "./dashboard/DashboardCertificates";
+import DashboardAccountSettings from "./dashboard/DashboardAccountSettings";
+import DashboardSupport from "./dashboard/DashboardSupport";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
-  const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const userData = localStorage.getItem("tdcs_user");
@@ -34,46 +29,58 @@ const Dashboard = () => {
       return;
     }
     setUser(JSON.parse(userData));
-
-    // Get all enrolled courses
-    const enrolled: EnrolledCourse[] = [];
-    Object.keys(localStorage).forEach((key) => {
-      if (key.startsWith("tdcs_purchased_")) {
-        const courseId = key.replace("tdcs_purchased_", "");
-        const data = JSON.parse(localStorage.getItem(key) || "{}");
-        enrolled.push({ ...data, courseId, progress: Math.floor(Math.random() * 100) });
-      }
-    });
-    setEnrolledCourses(enrolled);
   }, [navigate]);
 
   const sidebarItems = [
-    { icon: Trophy, label: "Leaderboard", path: "/dashboard/leaderboard" },
+    { icon: BookOpen, label: "My Courses", path: "/dashboard" },
+    { icon: Trophy, label: "Student Leaderboard", path: "/dashboard/leaderboard" },
     { icon: Award, label: "Certificates", path: "/dashboard/certificates" },
-    { icon: TrendingUp, label: "Progress", path: "/dashboard/progress" },
-    { icon: Settings, label: "Settings", path: "/my-profile" },
-    { icon: HelpCircle, label: "Support", path: "/contact-us" },
+    { icon: Settings, label: "Account Settings", path: "/dashboard/settings" },
+    { icon: HelpCircle, label: "Support / Help", path: "/dashboard/support" },
   ];
+
+  const isActive = (path: string) => {
+    if (path === "/dashboard") {
+      return location.pathname === "/dashboard";
+    }
+    return location.pathname.startsWith(path);
+  };
 
   if (!user) return null;
 
   return (
     <div className="min-h-screen pt-20 bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="flex">
+      <div className="flex relative">
+        {/* Mobile Menu Button */}
+        <Button
+          variant="outline"
+          size="icon"
+          className="lg:hidden fixed top-24 left-4 z-50"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+        >
+          {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </Button>
+
         {/* Sidebar */}
-        <motion.aside
-          initial={{ x: -300 }}
-          animate={{ x: 0 }}
-          className="hidden lg:flex flex-col w-64 bg-card border-r min-h-screen sticky top-20"
+        <aside
+          className={`
+            fixed lg:sticky top-20 left-0 h-[calc(100vh-5rem)] w-64 
+            bg-card border-r z-40 transition-transform duration-300
+            ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          `}
         >
           <div className="p-6">
-            <h2 className="text-xl font-bold gradient-text mb-6">Dashboard</h2>
+            <h2 className="text-2xl font-bold gradient-text mb-6">Dashboard</h2>
             <nav className="space-y-2">
               {sidebarItems.map((item) => (
-                <Link key={item.path} to={item.path}>
+                <Link key={item.path} to={item.path} onClick={() => setSidebarOpen(false)}>
                   <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-3 hover:bg-primary/10"
+                    variant={isActive(item.path) ? "default" : "ghost"}
+                    className={`w-full justify-start gap-3 ${
+                      isActive(item.path) 
+                        ? "gradient-primary text-white hover:opacity-90" 
+                        : "hover:bg-primary/10"
+                    }`}
                   >
                     <item.icon className="w-5 h-5" />
                     {item.label}
@@ -82,164 +89,25 @@ const Dashboard = () => {
               ))}
             </nav>
           </div>
-        </motion.aside>
+        </aside>
+
+        {/* Overlay for mobile */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
 
         {/* Main Content */}
         <main className="flex-1 p-4 md:p-8">
-          <div className="max-w-6xl mx-auto space-y-8">
-            {/* Welcome Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <h1 className="text-4xl font-bold mb-2">
-                Welcome back, {user.name}! 👋
-              </h1>
-              <p className="text-muted-foreground">
-                Continue your learning journey
-              </p>
-            </motion.div>
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="hover:shadow-glow transition-all">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Enrolled Courses</p>
-                      <p className="text-3xl font-bold">{enrolledCourses.length}</p>
-                    </div>
-                    <BookOpen className="w-8 h-8 text-primary" />
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="hover:shadow-glow transition-all">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Certificates</p>
-                      <p className="text-3xl font-bold">0</p>
-                    </div>
-                    <Award className="w-8 h-8 text-primary" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-glow transition-all">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Ranking</p>
-                      <p className="text-3xl font-bold">-</p>
-                    </div>
-                    <Trophy className="w-8 h-8 text-primary" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Enrolled Courses */}
-            <Card>
-              <CardHeader>
-                <CardTitle>My Courses</CardTitle>
-                <CardDescription>
-                  Continue learning where you left off
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {enrolledCourses.length === 0 ? (
-                  <div className="text-center py-12">
-                    <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                    <h3 className="text-xl font-semibold mb-2">No courses enrolled yet</h3>
-                    <p className="text-muted-foreground mb-6">
-                      Start your learning journey by enrolling in a course
-                    </p>
-                    <Link to="/courses">
-                      <Button variant="gradient">
-                        Browse Courses
-                      </Button>
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="grid gap-4">
-                    {enrolledCourses.map((enrolled) => {
-                      const course = courses.find((c) => c.id === enrolled.courseId);
-                      if (!course) return null;
-
-                      return (
-                        <motion.div
-                          key={enrolled.courseId}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          whileHover={{ scale: 1.02 }}
-                          className="group"
-                        >
-                          <Card className="hover:shadow-glow transition-all">
-                            <CardContent className="p-6">
-                              <div className="flex items-center gap-6">
-                                <img
-                                  src={course.thumbnail}
-                                  alt={course.title}
-                                  className="w-24 h-24 rounded-lg object-cover"
-                                />
-                                <div className="flex-1">
-                                  <h3 className="text-xl font-bold mb-1">{course.title}</h3>
-                                  <p className="text-sm text-muted-foreground mb-3">
-                                    {course.description}
-                                  </p>
-                                  <div className="flex items-center gap-4">
-                                    <div className="flex-1 bg-muted rounded-full h-2">
-                                      <div
-                                        className="bg-gradient-to-r from-primary to-secondary h-2 rounded-full transition-all"
-                                        style={{ width: `${enrolled.progress || 0}%` }}
-                                      />
-                                    </div>
-                                    <span className="text-sm font-medium">
-                                      {enrolled.progress || 0}%
-                                    </span>
-                                  </div>
-                                </div>
-                                <Link to={`/courses/${course.id}/content`}>
-                                  <Button variant="gradient" className="gap-2">
-                                    <Play className="w-4 h-4" />
-                                    Continue
-                                    <ChevronRight className="w-4 h-4" />
-                                  </Button>
-                                </Link>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Mobile Sidebar Links */}
-            <Card className="lg:hidden">
-              <CardHeader>
-                <CardTitle>Quick Links</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-3">
-                  {sidebarItems.map((item) => (
-                    <Link key={item.path} to={item.path}>
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start gap-3"
-                      >
-                        <item.icon className="w-5 h-5" />
-                        {item.label}
-                      </Button>
-                    </Link>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <Routes>
+            <Route path="/" element={<DashboardMyCourses user={user} />} />
+            <Route path="/leaderboard" element={<DashboardLeaderboard />} />
+            <Route path="/certificates" element={<DashboardCertificates />} />
+            <Route path="/settings" element={<DashboardAccountSettings user={user} setUser={setUser} />} />
+            <Route path="/support" element={<DashboardSupport />} />
+          </Routes>
         </main>
       </div>
     </div>
