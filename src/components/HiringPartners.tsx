@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 
+// The partner list remains the same
 const partners = [
   { name: "Google", logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" },
   { name: "Microsoft", logo: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31" },
@@ -11,63 +12,11 @@ const partners = [
   { name: "Adobe", logo: "https://www.adobe.com/content/dam/cc/icons/Adobe_Corporate_Horizontal_Red_HEX.svg" },
   { name: "Salesforce", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg" },
   { name: "IBM", logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" },
-  { name:V "Oracle", logo: "https://upload.wikimedia.org/wikipedia/commons/5/50/Oracle_logo.svg" },
+  { name: "Oracle", logo: "https://upload.wikimedia.org/wikipedia/commons/5/50/Oracle_logo.svg" },
 ];
 
-// --- NEW: Split array and duplicate for two rows ---
-const rowOnePartners = partners.slice(0, 5);
-const rowTwoPartners = partners.slice(5, 10);
-
-const duplicatedRowOne = [...rowOnePartners, ...rowOnePartners];
-const duplicatedRowTwo = [...rowTwoPartners, ...rowTwoPartners];
-
-const MarqueeRow = ({ partners, direction, duration = 20 }: {
-  partners: { name: string; logo: string }[];
-  direction: "left" | "right";
-  duration?: number;
-}) => {
-  const animation =
-    direction === "right"
-      ? { x: ["-50%", "0%"] } // Left-to-Right
-      : { x: ["0%", "-50%"] }; // Right-to-Left
-
-  return (
-    <div
-      className="relative w-full overflow-hidden"
-      style={{
-        maskImage:
-          "linear-gradient(to right, transparent, white 10%, white 90%, transparent)",
-      }}
-    >
-      <motion.div
-        className="flex gap-6" // Use gap for spacing
-        animate={animation}
-        transition={{
-          ease: "linear",
-          duration: duration,
-          repeat: Infinity,
-        }}
-        whileHover={{ paused: true }} // Pauses animation on hover
-      >
-        {partners.map((partner, index) => (
-          <div key={index} className="flex-shrink-0" style={{ width: "200px" }}>
-            <Card className="hover:shadow-glow transition-all duration-300 group h-full">
-              <CardContent className="p-6 flex items-center justify-center min-h-[120px]">
-                <img
-                  src={partner.logo}
-                  alt={partner.name}
-                  className="max-w-full max-h-16 w-auto h-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
-                  loading="lazy"
-                />
-              </CardContent>
-            </Card>
-          </div>
-        ))}
-      </motion.div>
-    </div>
-  );
-};
-
+// We duplicate the partners array to create a seamless loop
+const duplicatedPartners = [...partners, ...partners];
 
 export const HiringPartners = () => {
   return (
@@ -87,24 +36,53 @@ export const HiringPartners = () => {
           </p>
         </motion.div>
 
-        {/* --- NEW: Two-row marquee setup --- */}
-        <div className="flex flex-col gap-6">
-          {/* Row 1: Scrolls Left-to-Right */}
-          <MarqueeRow 
-            partners={duplicatedRowOne} 
-            direction="right" 
-            duration={22} // Slightly different speeds
-          />
-
-          {/* Row 2: Scrolls Right-to-Left */}
-          <MarqueeRow 
-            partners={duplicatedRowTwo} 
-            direction="left" 
-            duration={20} 
-          />
+        {/* This is the new "unique" part:
+          1.  'overflow-hidden' container clips the scrolling items.
+          2.  '[mask-image:linear-gradient(...)]' adds a soft fade to the left and right edges.
+          3.  'motion.div' is the scrolling track. It uses 'flex' to lay out items in a row.
+          4.  'animate' creates the infinite loop by moving the track -50% (the width of the original list).
+          5.  'whileHover={{ paused: true }}' conveniently pauses the scroll when the user's mouse is over it.
+        */}
+        <div
+          className="relative w-full overflow-hidden"
+          style={{
+            maskImage:
+              "linear-gradient(to right, transparent, white 10%, white 90%, transparent)",
+          }}
+        >
+          <motion.div
+            className="flex gap-10" // Use gap for spacing between logos
+            animate={{
+              x: ["0%", "-50%"],
+              transition: {
+                ease: "linear",
+                duration: 30, // Adjust duration for scroll speed
+                repeat: Infinity,
+              },
+            }}
+            whileHover={{ paused: true }} // Pauses animation on hover
+          >
+            {/* We map over the DUPLICATED list.
+              'flex-shrink-0' is important to prevent logos from squishing.
+            */}
+            {duplicatedPartners.map((partner, index) => (
+              <div key={index} className="flex-shrink-0" style={{ width: "220px" }}> 
+                <Card className="hover:shadow-glow transition-all duration-300 group h-full">
+                  <CardContent className="p-6 flex items-center justify-center min-h-[120px]">
+                    <img
+                      src={partner.logo}
+                      alt={partner.name}
+                      className="max-w-full max-h-16 w-auto h-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
+                      loading="lazy"
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+          </motion.div>
         </div>
 
-        <div className="text-center mt-10">
+        <div className="text-center mt-8">
           <p className="text-muted-foreground italic">
             ...and 50+ more companies
           </p>
