@@ -51,7 +51,7 @@ const coursePerks = [
 // --- NEW DATA FOR SWAG SECTION ---
 const swagImages = [
   "https://raw.githubusercontent.com/fshgfhgjfv/IMG_TDCS/refs/heads/main/IMG-20251026-WA0019.jpg",
-  "https://blogger.googleusercontent.com/img/a/AVvXsEic40445rZ18ET__N-4NqwuZd0-1w5Vw-kqSKIkar2F1kttL0-ac45ybU42Bw9Sp68D8oPPNKXuzELpsUSePwFntbwm9Q6VQ05l18qYEtKBSfYS9aR1JWnIuAQA_WtW_9lnPHIYcYp85uH1KDbqOJsbyTqMIKobvEMfFcIHzm1eU_i18YuBVkqrg2ysIfDh",
+  "https://blogger.googleusercontent.com/img/a/AVvXsEil9mJhJ3oPSOFn9MIYAJAzPKo8VlwNHCOBOhBjvYN6jQR-46Os1F1T9lyEG4je_R4_8aSgkiZ4Hepms5n3GRha0j8gFFP9xuU8H6mB7ksYKwCLMcEy4-l97j2dPaaYQLa8wjHX3uQUodD_OccAtOwFLF7eW_1R7JarpbXPOnt3MqrU8pL3sKmTvx6HxVf0",
   "https://raw.githubusercontent.com/fshgfhgjfv/IMG_TDCS/23685c834910e11076a6c0fa7a4a1d7625d61f18/IMG-20251026-WA0022.jpg",
   "https://raw.githubusercontent.com/fshgfhgjfv/IMG_TDCS/23685c834910e11076a6c0fa7a4a1d7625d61f18/IMG-20251026-WA0029.jpg",
   "https://blogger.googleusercontent.com/img/a/AVvXsEgUsXyjOoRJO2etN49T47IEJzrCgbYoFgOYD-2U9zKLCZVzaRZlRjq7KjqEVTgCE7dWv2plBB-9WXuhMK40DD69K3NPavYbEOcJQgcKRZvREPUiavpcT3DItN9AAiitopPK11wq5U0FNhBP269HCi8lpQSvr9dD_pKjLiK5A-aOzKXtuT0pIT-ueixGgRdd",
