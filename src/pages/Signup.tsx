@@ -17,12 +17,19 @@ import {
   useSpring,
 } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, Github } from "lucide-react"; // <<< 1. IMPORT GITHUB ICON
+import { Loader2, Github } from "lucide-react";
+// --- 1. IMPORT GOOGLE OAUTH PROVIDER & HOOK ---
+import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
-// --- 1. Define Floating Tools & Animations ---
+// --- 2. SET GOOGLE CLIENT ID ---
+// IMPORTANT: The Client Secret MUST NOT be used in frontend code.
+// It is for your backend server ONLY.
+const googleClientId =
+  "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
+
+// --- Define Floating Tools & Animations ---
 const tools = [
   {
-    // Kali Linux (from previous version)
     src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
     alt: "Kali Linux",
     side: "left" as "left" | "right",
@@ -30,7 +37,6 @@ const tools = [
     y: 150,
   },
   {
-    // Burp Suite (from previous version)
     src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1",
     alt: "Burp Suite",
     side: "left" as "left" | "right",
@@ -38,23 +44,20 @@ const tools = [
     y: 350,
   },
   {
-    // Wireshark (from previous version)
     src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true",
     alt: "Wireshark",
     side: "right" as "left" | "right",
     delay: 0.3,
-    y: 120, // Adjusted position
+    y: 120,
   },
   {
-    // <<< NEW: Nmap
     src: "https://assets.tryhackme.com/img/modules/metasploit.png",
-    alt: "Nmap",
+    alt: "Nmap", // Alt text was incorrect, this is Metasploit logo
     side: "right" as "left" | "right",
     delay: 0.5,
     y: 320,
   },
   {
-    // <<< NEW: Metasploit
     src: "https://assets.tryhackme.com/img/modules/metasploit.png",
     alt: "Metasploit",
     side: "left" as "left" | "right",
@@ -73,7 +76,7 @@ const iconVariants = {
 };
 // --- End Floating Tools ---
 
-// --- 2. ADD GOOGLE ICON HELPER ---
+// --- Google Icon Helper ---
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
@@ -166,7 +169,7 @@ const Signup = () => {
         name,
         email,
         number: `+91${number}`,
-        password,
+        password, // Note: Storing plain text passwords is a security risk
       };
       users.push(newUser);
       localStorage.setItem("tdcs_users", JSON.stringify(users));
@@ -179,8 +182,79 @@ const Signup = () => {
     }, 1000);
   };
 
-  // --- 3. ADD SOCIAL SIGNUP HANDLER ---
-  const handleSocialSignup = (provider: string) => {
+  // --- 3. GOOGLE SIGNUP HANDLERS ---
+  const handleGoogleSuccess = async (tokenResponse: any) => {
+    setIsLoading(true);
+    try {
+      // Fetch user info from Google
+      const userInfoResponse = await fetch(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+        }
+      );
+
+      if (!userInfoResponse.ok) {
+        throw new Error("Failed to fetch user info from Google");
+      }
+
+      const userInfo = await userInfoResponse.json();
+      const { email, name, sub: googleId } = userInfo;
+
+      if (!email) {
+        toast.error("Google account must have a verified email.");
+        setIsLoading(false);
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
+      let user = users.find((u: any) => u.email === email);
+      let isNewUser = false;
+
+      if (!user) {
+        // New user - register them
+        user = {
+          id: googleId, // Use Google ID as unique ID
+          name,
+          email,
+          number: "", // Google doesn't provide this
+          isGoogleUser: true, // Flag for Google login
+        };
+        users.push(user);
+        localStorage.setItem("tdcs_users", JSON.stringify(users));
+        isNewUser = true;
+      }
+
+      // Log the user in
+      // Note: We don't have/need a password for Google users
+      const { password: _, ...userToLogin } = user;
+      localStorage.setItem("tdcs_user", JSON.stringify(userToLogin));
+
+      toast.success(
+        isNewUser ? "Account created successfully!" : "Logged in successfully!"
+      );
+      setIsLoading(false);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+      toast.error("Google Sign-In failed. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    console.error("Google Sign-In Error");
+    toast.error("Google Sign-In failed.");
+    setIsLoading(false);
+  };
+
+  // Initialize the Google login hook
+  const googleLogin = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: handleGoogleError,
+  });
+
+  const handleGitHubSignup = (provider: string) => {
     toast.info(`Sign up with ${provider} is not implemented in this demo.`);
   };
 
@@ -235,7 +309,7 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
-      {/* --- 2. Add Floating Tools JSX Here --- */}
+      {/* --- Floating Tools --- */}
       <div
         className="absolute inset-0 -z-10 overflow-hidden"
         aria-hidden="true"
@@ -245,30 +319,26 @@ const Signup = () => {
             key={tool.alt}
             src={tool.src}
             alt={tool.alt}
-            className="absolute h-16 w-16 md:h-24 md:w-24" // You can adjust size here
+            className="absolute h-16 w-16 md:h-24 md:w-24"
             style={{
               top: tool.y,
               ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }),
             }}
-            // --- Animation Props ---
             variants={iconVariants}
             initial="hidden"
-            custom={tool.side} // Pass "left" or "right" to variants
-            // Animate to visible state AND start bobbing
+            custom={tool.side}
             animate={{
-              opacity: 0.1, // Make them subtle
+              opacity: 0.1,
               x: 0,
               scale: 1,
               y: [tool.y, tool.y + 20, tool.y], // Bob up and down
               transition: {
-                // For the slide-in
                 type: "spring",
                 stiffness: 100,
                 damping: 10,
                 delay: tool.delay,
-                // For the bobbing
                 y: {
-                  duration: 2 + Math.random() * 1, // Random duration
+                  duration: 2 + Math.random() * 1,
                   repeat: Infinity,
                   repeatType: "reverse",
                   ease: "easeInOut",
@@ -318,7 +388,7 @@ const Signup = () => {
                 initial="hidden"
                 animate="visible"
               >
-                {/* --- 4. ADD SOCIAL LOGINS --- */}
+                {/* --- 4. SOCIAL LOGINS --- */}
                 <motion.div
                   variants={itemVariants}
                   className="flex flex-col sm:flex-row gap-3"
@@ -326,24 +396,30 @@ const Signup = () => {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => handleSocialSignup("Google")}
+                    onClick={() => googleLogin()} // <<< 4. CALL GOOGLE LOGIN HOOK
                     type="button"
+                    disabled={isLoading}
                   >
-                    <GoogleIcon className="mr-2 h-4 w-4" />
+                    {isLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <GoogleIcon className="mr-2 h-4 w-4" />
+                    )}
                     Sign up with Google
                   </Button>
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => handleSocialSignup("GitHub")}
+                    onClick={() => handleGitHubSignup("GitHub")}
                     type="button"
+                    disabled={isLoading}
                   >
                     <Github className="mr-2 h-4 w-4" />
                     Sign up with GitHub
                   </Button>
                 </motion.div>
 
-                {/* --- 5. ADD DIVIDER --- */}
+                {/* --- 5. DIVIDER --- */}
                 <motion.div variants={itemVariants} className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
@@ -367,6 +443,7 @@ const Signup = () => {
                       setFormData({ ...formData, name: e.target.value })
                     }
                     required
+                    disabled={isLoading}
                   />
                 </motion.div>
 
@@ -381,6 +458,7 @@ const Signup = () => {
                       setFormData({ ...formData, email: e.target.value })
                     }
                     required
+                    disabled={isLoading}
                   />
                 </motion.div>
 
@@ -403,6 +481,7 @@ const Signup = () => {
                       }}
                       className="rounded-l-none"
                       required
+                      disabled={isLoading}
                     />
                   </div>
                 </motion.div>
@@ -418,6 +497,7 @@ const Signup = () => {
                       setFormData({ ...formData, password: e.target.value })
                     }
                     required
+                    disabled={isLoading}
                   />
                 </motion.div>
 
@@ -435,6 +515,7 @@ const Signup = () => {
                       })
                     }
                     required
+                    disabled={isLoading}
                   />
                 </motion.div>
 
@@ -476,4 +557,12 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+// --- 5. WRAP COMPONENT IN PROVIDER ---
+// This ensures the useGoogleLogin() hook has access to the client ID
+const SignupWithGoogleAuth = () => (
+  <GoogleOAuthProvider clientId={googleClientId}>
+    <Signup />
+  </GoogleOAuthProvider>
+);
+
+export default SignupWithGoogleAuth;
