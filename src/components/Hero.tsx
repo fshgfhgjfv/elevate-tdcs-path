@@ -138,8 +138,7 @@ const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
 
                     <button
                         type="submit"
-                        // --- UPDATED THIS LINE ---
-                        className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-150 ease-in-out hover:shadow-xl hover:shadow-red-500/50"
+                        className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out"
                     >
                         <CalendarCheck className="w-5 h-5 mr-2" />
                         Confirm Demo Time
@@ -220,8 +219,7 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
 
                     <button
                         type="submit"
-                        // --- UPDATED THIS LINE ---
-                        className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-150 ease-in-out hover:shadow-xl hover:shadow-indigo-500/50"
+                        className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
                     >
                         <Download className="w-5 h-5 mr-2" />
                         Download Instantly
@@ -502,7 +500,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                     transformStyle: "preserve-3d"
                                 }}
                                 onMouseMove={(e) => handleMouseMove(e, cardRefCMO)}
-                                onMouseLeave={() => { x.set(0); y.locs(0); }}
+                                onMouseLeave={() => { x.set(0); y.set(0); }}
                                 onClick={() => setExpandedCard(expandedCard === 'cmo' ? null : 'cmo')} // Toggle expand
                                 transition={{ type: "spring", stiffness: 100, damping: 10 }}
                             >
@@ -542,3 +540,4 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         </section>
     );
 };
+
