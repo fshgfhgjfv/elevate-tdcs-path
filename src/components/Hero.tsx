@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-// Import advanced hooks for 3D/parallax effects
-import { motion, useMotionValue, useTransform, useInView } from "framer-motion";
-import { Download, X } from "lucide-react"; 
-import type { RefObject } from "react"; 
+// Import advanced hooks for 3D/parallax effects, adding AnimatePresence
+import { motion, useMotionValue, useTransform, useInView, AnimatePresence } from "framer-motion";
+import { Download, X } from "lucide-react";
+import type { RefObject } from "react";
 import { CalendarCheck } from "lucide-react"; // NEW: Import for Book Demo Modal
 
 
@@ -81,11 +81,11 @@ const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
     };
 
     return (
-        <div 
+        <div
             className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 transition-opacity duration-300 backdrop-blur-sm"
             onClick={onClose}
         >
-            <div 
+            <div
                 className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95"
                 onClick={e => e.stopPropagation()} // Prevent closing when clicking inside modal
             >
@@ -94,8 +94,8 @@ const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
                         <CalendarCheck className="w-5 h-5 mr-3 text-red-500" />
                         Book a Free Demo Session
                     </h3>
-                    <button 
-                        onClick={onClose} 
+                    <button
+                        onClick={onClose}
                         className="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100 transition p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
                         aria-label="Close"
                     >
@@ -162,11 +162,11 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
     };
 
     return (
-        <div 
+        <div
             className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 transition-opacity duration-300 backdrop-blur-sm"
             onClick={onClose}
         >
-            <div 
+            <div
                 className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95"
                 onClick={e => e.stopPropagation()} // Prevent closing when clicking inside modal
             >
@@ -175,8 +175,8 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
                         <Download className="w-5 h-5 mr-3 text-indigo-500" />
                         Request Our Full Brochure
                     </h3>
-                    <button 
-                        onClick={onClose} 
+                    <button
+                        onClick={onClose}
                         className="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100 transition p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
                         aria-label="Close"
                     >
@@ -235,6 +235,9 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     // NEW: State for the Book Demo Modal
     const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
     const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
+    
+    // NEW: State to track which card is expanded
+    const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
     const heroRef = useRef(null);
     // Use useInView to trigger animations when the component scrolls into view
@@ -329,8 +332,8 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             </p>
                         </motion.div>
 
-                        <motion.h1 
-                            variants={wordContainerVariants} 
+                        <motion.h1
+                            variants={wordContainerVariants}
                             animate={isInView ? "visible" : "hidden"}
                             className="text-4xl md:text-6xl font-extrabold leading-tight text-gray-900 dark:text-white"
                         >
@@ -382,7 +385,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                         </motion.div>
 
                         {/* Recognition Badges */}
-                        <motion.div 
+                        <motion.div
                             variants={itemVariants}
                             className="flex flex-wrap gap-4 md:gap-8 items-center pt-4"
                         >
@@ -395,39 +398,53 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                     {/* Right Column: Tiered Leadership Cards */}
                     <div className="lg:col-span-1 space-y-4 flex flex-col items-center lg:items-end">
                         
-                        {/* 1. CEO Card (Larger, Blue Gradient, Centered on mobile) - MODIFIED: Removed LinkedIn Button */}
+                        {/* 1. CEO Card (Larger, Blue Gradient, Centered on mobile) - NOW CLICKABLE */}
                         <motion.div
                             ref={cardRefCEO}
                             variants={itemVariants}
-                            className="relative p-8 md:p-10 w-full rounded-2xl shadow-2xl text-white overflow-hidden cursor-pointer will-change-transform" 
-                            style={{ 
+                            layout // Add layout for smooth height animation on click
+                            className="relative p-8 md:p-10 w-full rounded-2xl shadow-2xl text-white overflow-hidden cursor-pointer will-change-transform"
+                            style={{
                                 background: 'linear-gradient(135deg, #1D4ED8, #3B82F6)', // Strong blue gradient
                                 rotateX,
                                 rotateY,
-                                transformStyle: "preserve-3d" 
+                                transformStyle: "preserve-3d"
                             }}
                             onMouseMove={(e) => handleMouseMove(e, cardRefCEO)}
                             onMouseLeave={() => { x.set(0); y.set(0); }}
+                            onClick={() => setExpandedCard(expandedCard === 'ceo' ? null : 'ceo')} // Toggle expand
                             transition={{ type: "spring", stiffness: 100, damping: 10 }}
                         >
-                            <h3 className="text-3xl font-extrabold mb-2 z-10 relative">Dibyajit Ghosh </h3>
-                            <p className="text-lg mb-6 z-10 relative">Founder & CEO (Director of TDCS)</p>
-                            {/* Removed: Connect on LinkedIn button */}
-                            <p className="text-sm font-semibold opacity-80 z-10 relative">
-                                Visionary leader driving future talent.
+                            <h3 className="text-3xl font-extrabold mb-2 z-10 relative">Dibyajit Ghosh</h3>
+                            <p className={`text-lg z-10 relative transition-all ${expandedCard === 'ceo' ? 'mb-2' : 'mb-6'}`}>
+                                {expandedCard === 'ceo' ? 'Founder & CEO (Director of TDCS)' : 'Founder & CEO'}
                             </p>
+                            
+                            {/* NEW: Animate description visibility */}
+                            <AnimatePresence>
+                                {expandedCard === 'ceo' && (
+                                    <motion.p
+                                        className="text-sm font-semibold opacity-80 z-10 relative mb-6"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0, transition: { duration: 0.3 } }}
+                                        exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+                                    >
+                                        Visionary leader driving future talent.
+                                    </motion.p>
+                                )}
+                            </AnimatePresence>
                             
                             {/* CEO Image - Larger and positioned for impact */}
                             <motion.img
                                 // Placeholder image for CEO
-                                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhQ9heh07dWNTxnm6dhyphenhyphen2rzfxjmA_xS3UXPh3sBCY_B2ywNCfyr8QXWKLsur3PJKzLo-pUsoGmIfTmGl8m7cGmUezdk_RvStMnzxjIstX1S-V6gc2PrG8WkudchJv_c0LuVu0xbO7mUnWh5mWZHMe9THz3dwqCLTN0-2bAoI0k_rynUr6vk2xDdSKi0bM-/s539/WhatsApp_Image_2025-10-26_at_15.56.54_d2e7dc94-removebg-preview.png" 
+                                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhQ9heh07dWNTxnm6dhyphenhyphen2rzfxjmA_xS3UXPh3sBCY_B2ywNCfyr8QXWKLsur3PJKzLo-pUsoGmIfTmGl8m7cGmUezdk_RvStMnzxjIstX1S-V6gc2PrG8WkudchJv_c0LuVu0xbO7mUnWh5mWZHMe9THz3dwqCLTN0-2bAoI0k_rynUr6vk2xDdSKi0bM-/s539/WhatsApp_Image_2025-10-26_at_15.56.54_d2e7dc94-removebg-preview.png"
                                 alt="Dibyajit Ghosh"
-                                // Ensure image styles match the updated variable usage
-                                className="absolute -right-4 -bottom-3 h-46 w-51 md:h-21 md:w-52 object-cover opacity-80 z-0"
-                                style={{ 
-                                    x: useTransform(x, [-100, 100], [10, -10]), 
-                                    y: useTransform(y, [-100, 100], [10, -10]), 
-                                    transformStyle: "preserve-3d" 
+                                // NEW: Standardized and responsive Tailwind classes
+                                className="absolute -right-4 -bottom-3 w-40 h-40 md:w-48 md:h-48 object-cover opacity-80 z-0"
+                                style={{
+                                    x: useTransform(x, [-100, 100], [10, -10]),
+                                    y: useTransform(y, [-100, 100], [10, -10]),
+                                    transformStyle: "preserve-3d"
                                 }}
                             />
                         </motion.div>
@@ -435,60 +452,72 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                         {/* 2. COO & CMO Cards (Smaller, Side-by-Side on wide screens, Stacked on mobile) */}
                         <div className="flex flex-col sm:flex-row gap-4 w-full">
                             
-                            {/* COO Card */}
+                            {/* COO Card - NOW CLICKABLE */}
                             <motion.div
                                 ref={cardRefCOO}
                                 variants={itemVariants}
+                                layout // Add layout for smooth height animation
                                 className="relative p-5 md:p-6 flex-1 min-w-0 rounded-xl shadow-lg text-white overflow-hidden cursor-pointer will-change-transform"
-                                style={{ 
+                                style={{
                                     background: 'linear-gradient(135deg, #059669, #34D399)', // Green gradient
                                     rotateX: useTransform(y, [-100, 100], [5, -5]), // Subtle rotation
                                     rotateY: useTransform(x, [-100, 100], [-5, 5]),
-                                    transformStyle: "preserve-3d" 
+                                    transformStyle: "preserve-3d"
                                 }}
                                 onMouseMove={(e) => handleMouseMove(e, cardRefCOO)}
                                 onMouseLeave={() => { x.set(0); y.set(0); }}
+                                onClick={() => setExpandedCard(expandedCard === 'coo' ? null : 'coo')} // Toggle expand
                                 transition={{ type: "spring", stiffness: 100, damping: 10 }}
                             >
                                 <h3 className="text-xl font-bold mb-1 z-10 relative">Shivam Shing</h3>
-                                <p className="text-sm mb-4 z-10 relative">Chief Operating Officer</p>
+                                <p className="text-sm mb-4 z-10 relative">
+                                    {/* NEW: Conditional title */}
+                                    {expandedCard === 'coo' ? 'Chief Operating Officer' : 'COO'}
+                                </p>
                                 <motion.img
                                     src="https://blogger.googleusercontent.com/img/a/AVvXsEgiDtg5YtmQ7bdvNmeAAMyhwpc5tLm_RNR2Lv4y4u6hsMzTiuqNyxo7O0qU32donmMZoTduoxe-4WgWVdPh29JH9vmYXkqCI7hiyzwaYBxxXgTfKbCsjTST6gyIWQB230kRXgwfQvxV-dqB9V-Xqr3915tuA9d88D1rGY-l9sJy_vhC3HJR0pdEI6F3E8Nr"
                                     alt="COO"
-                                    className="absolute -right-4 -bottom-4 h-24 w-24 object-cover opacity-70 z-0"
-                                    style={{ 
-                                        x: useTransform(x, [-100, 100], [5, -5]), 
-                                        y: useTransform(y, [-100, 100], [5, -5]), 
-                                        transformStyle: "preserve-3d" 
+                                    // NEW: Standardized and responsive Tailwind classes
+                                    className="absolute -right-4 -bottom-4 w-24 h-24 md:w-28 md:h-28 object-cover opacity-70 z-0"
+                                    style={{
+                                        x: useTransform(x, [-100, 100], [5, -5]),
+                                        y: useTransform(y, [-100, 100], [5, -5]),
+                                        transformStyle: "preserve-3d"
                                     }}
                                 />
                             </motion.div>
 
-                            {/* CMO Card */}
+                            {/* CMO Card - NOW CLICKABLE */}
                             <motion.div
                                 ref={cardRefCMO}
                                 variants={itemVariants}
+                                layout // Add layout for smooth height animation
                                 className="relative p-5 md:p-6 flex-1 min-w-0 rounded-xl shadow-lg text-white overflow-hidden cursor-pointer will-change-transform"
-                                style={{ 
+                                style={{
                                     background: 'linear-gradient(135deg, #DC2626, #F87171)', // Red gradient
                                     rotateX: useTransform(y, [-100, 100], [5, -5]), // Subtle rotation
                                     rotateY: useTransform(x, [-100, 100], [-5, 5]),
-                                    transformStyle: "preserve-3d" 
+                                    transformStyle: "preserve-3d"
                                 }}
                                 onMouseMove={(e) => handleMouseMove(e, cardRefCMO)}
                                 onMouseLeave={() => { x.set(0); y.set(0); }}
+                                onClick={() => setExpandedCard(expandedCard === 'cmo' ? null : 'cmo')} // Toggle expand
                                 transition={{ type: "spring", stiffness: 100, damping: 10 }}
                             >
                                 <h3 className="text-xl font-bold mb-1 z-10 relative">Tushar Bhakta</h3>
-                                <p className="text-sm mb-4 z-10 relative">Chief Marketing Officer</p>
+                                <p className="text-sm mb-4 z-10 relative">
+                                    {/* NEW: Conditional title */}
+                                    {expandedCard === 'cmo' ? 'Chief Marketing Officer' : 'CMO'}
+                                </p>
                                 <motion.img
                                     src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh68HDmzQ4YTj9g9soRrkq-eHc9cAfbC03ZOXSClA19NofdsJ2lzm2A29d2qxG3xXSUfuEVl-sGEVnkokdgS6snQn86My-Bekn2MLrF135mZPHpwXfsLg1XxhFaClj1Uebgi6IcxeseCR6rvwc3vg6IgYUm8voolffwjQhcY4haMotxomzPVjfJm7ylnHdF/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png"
                                     alt="CMO"
-                                    className="absolute -right-4 -bottom-4 h-24 w-24 object-cover opacity-70 z-0"
-                                    style={{ 
-                                        x: useTransform(x, [-100, 100], [5, -5]), 
-                                        y: useTransform(y, [-100, 100], [5, -5]), 
-                                        transformStyle: "preserve-3d" 
+                                    // NEW: Standardized and responsive Tailwind classes
+                                    className="absolute -right-4 -bottom-4 w-24 h-24 md:w-28 md:h-28 object-cover opacity-70 z-0"
+                                    style={{
+                                        x: useTransform(x, [-100, 100], [5, -5]),
+                                        y: useTransform(y, [-100, 100], [5, -5]),
+                                        transformStyle: "preserve-3d"
                                     }}
                                 />
                             </motion.div>
@@ -498,15 +527,15 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
             </div>
 
             {/* NEW: Book Demo Modal */}
-            <BookDemoModal 
-                isOpen={isDemoModalOpen} 
-                onClose={() => setIsDemoModalOpen(false)} 
+            <BookDemoModal
+                isOpen={isDemoModalOpen}
+                onClose={() => setIsDemoModalOpen(false)}
             />
 
             {/* Download Brochure Modal */}
-            <DownloadBrochureModal 
-                isOpen={isBrochureModalOpen} 
-                onClose={() => setIsBrochureModalOpen(false)} 
+            <DownloadBrochureModal
+                isOpen={isBrochureModalOpen}
+                onClose={() => setIsBrochureModalOpen(false)}
             />
         </section>
     );
