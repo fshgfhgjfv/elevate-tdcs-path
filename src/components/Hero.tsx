@@ -324,8 +324,8 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             {/* Avatars */}
                             <div className="flex -space-x-2 overflow-hidden">
                                 <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://i.pinimg.com/736x/9c/2a/81/9c2a81633cffd91adf5354958f50f3be.jpg" alt="Student avatar" />
-                                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Student avatar" />
-                                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Student avatar" />
+                                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit:facearea&facepad=2&w=256&h=256&q=80" alt="Student avatar" />
+                                <img className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit:facearea&facepad=2&w=256&h=256&q=80" alt="Student avatar" />
                             </div>
                             <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">
                                 15k+ Happy Students
@@ -439,8 +439,8 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 // Placeholder image for CEO
                                 src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhQ9heh07dWNTxnm6dhyphenhyphen2rzfxjmA_xS3UXPh3sBCY_B2ywNCfyr8QXWKLsur3PJKzLo-pUsoGmIfTmGl8m7cGmUezdk_RvStMnzxjIstX1S-V6gc2PrG8WkudchJv_c0LuVu0xbO7mUnWh5mWZHMe9THz3dwqCLTN0-2bAoI0k_rynUr6vk2xDdSKi0bM-/s539/WhatsApp_Image_2025-10-26_at_15.56.54_d2e7dc94-removebg-preview.png"
                                 alt="Dibyajit Ghosh"
-                                // NEW: Standardized and responsive Tailwind classes
-                                className="absolute -right-4 -bottom-3 w-40 h-40 md:w-48 md:h-48 object-cover opacity-80 z-0"
+                                // EDITED: Changed w-40 h-40 md:w-48 md:h-48 to be slightly smaller
+                                className="absolute -right-4 -bottom-3 w-36 h-36 md:w-44 md:h-44 object-cover opacity-80 z-0"
                                 style={{
                                     x: useTransform(x, [-100, 100], [10, -10]),
                                     y: useTransform(y, [-100, 100], [10, -10]),
@@ -540,3 +540,4 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         </section>
     );
 };
+
