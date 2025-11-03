@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 
+// The partner list remains the same
 const partners = [
   { name: "Google", logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" },
   { name: "Microsoft", logo: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31" },
@@ -13,6 +14,9 @@ const partners = [
   { name: "IBM", logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" },
   { name: "Oracle", logo: "https://upload.wikimedia.org/wikipedia/commons/5/50/Oracle_logo.svg" },
 ];
+
+// We duplicate the partners array to create a seamless loop
+const duplicatedPartners = [...partners, ...partners];
 
 export const HiringPartners = () => {
   return (
@@ -32,31 +36,56 @@ export const HiringPartners = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {partners.map((partner, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.05 }}
-            >
-              <Card className="hover:shadow-glow transition-all duration-300 group">
-                <CardContent className="p-6 flex items-center justify-center min-h-[120px]">
-                  <img
-                    src={partner.logo}
-                    alt={partner.name}
-                    className="max-w-full max-h-16 w-auto h-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
-                    loading="lazy"
-                  />
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+        {/* This is the new "unique" part:
+          1.  'overflow-hidden' container clips the scrolling items.
+          2.  '[mask-image:linear-gradient(...)]' adds a soft fade to the left and right edges.
+          3.  'motion.div' is the scrolling track. It uses 'flex' to lay out items in a row.
+          4.  'animate' creates the infinite loop by moving the track -50% (the width of the original list).
+          5.  'whileHover={{ paused: true }}' conveniently pauses the scroll when the user's mouse is over it.
+        */}
+        <div
+          className="relative w-full overflow-hidden"
+          style={{
+            maskImage:
+              "linear-gradient(to right, transparent, white 10%, white 90%, transparent)",
+          }}
+        >
+          <motion.div
+            className="flex gap-10" // Use gap for spacing between logos
+            animate={{
+              x: ["0%", "-50%"],
+              transition: {
+                ease: "linear",
+                duration: 30, // Adjust duration for scroll speed
+                repeat: Infinity,
+              },
+            }}
+            whileHover={{ paused: true }} // Pauses animation on hover
+          >
+            {/* We map over the DUPLICATED list.
+              'flex-shrink-0' is important to prevent logos from squishing.
+            */}
+            {duplicatedPartners.map((partner, index) => (
+              <div key={index} className="flex-shrink-0" style={{ width: "220px" }}> 
+                <Card className="hover:shadow-glow transition-all duration-300 group h-full">
+                  <CardContent className="p-6 flex items-center justify-center min-h-[120px]">
+                    <img
+                      src={partner.logo}
+                      alt={partner.name}
+                      className="max-w-full max-h-16 w-auto h-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
+                      loading="lazy"
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+          </motion.div>
         </div>
 
         <div className="text-center mt-8">
-          <p className="text-muted-foreground italic">...and 50+ more companies</p>
+          <p className="text-muted-foreground italic">
+            ...and 50+ more companies
+          </p>
         </div>
       </div>
     </section>
