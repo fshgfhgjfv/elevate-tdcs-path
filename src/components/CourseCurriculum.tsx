@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, Download, ShieldCheck, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+// --- UPDATED CURRICULUM ARRAY ---
+
 const cyberSecurityCurriculum = [
   {
     unit: "Module 1",
@@ -67,7 +69,104 @@ const cyberSecurityCurriculum = [
       },
     ],
   },
+  {
+    unit: "Module 3",
+    title: "Defensive Security & System Hardening (Blue Team)",
+    topics: [
+      {
+        title: "Firewalls, IDS & IPS Systems",
+        details:
+          "Learn to configure and manage firewalls, Intrusion Detection Systems (IDS), and Intrusion Prevention Systems (IPS) to protect network perimeters.",
+      },
+      {
+        title: "SIEM & Log Analysis",
+        details:
+          "Understand how Security Information and Event Management (SIEM) tools aggregate and analyze log data to detect suspicious activity and manage security incidents.",
+      },
+      {
+        title: "Operating System Hardening",
+        details:
+          "Secure configurations for Windows and Linux servers, including user access controls, patching, and disabling unnecessary services.",
+      },
+      {
+        title: "Endpoint Protection (EDR)",
+        details:
+          "Explore modern antivirus, Endpoint Detection and Response (EDR) solutions, and host-based security strategies to protect individual devices.",
+      },
+      {
+        title: "Cryptography Basics & PKI",
+        details:
+          "Grasp the fundamentals of encryption (symmetric/asymmetric), hashing, digital signatures, and how Public Key Infrastructure (PKI) is used to secure communications.",
+      },
+    ],
+  },
+  {
+    unit: "Module 4",
+    title: "Web Application Penetration Testing",
+    topics: [
+      {
+        title: "The OWASP Top 10",
+        details:
+          "A deep dive into the 10 most critical web application security risks, such as SQL Injection, Cross-Site Scripting, and Broken Access Control.",
+      },
+      // 
+      {
+        title: "SQL Injection (SQLi) Deep Dive",
+        details:
+          "Hands-on labs to find and exploit SQL injection vulnerabilities to bypass logins, exfiltrate database information, and (in a lab) gain shell access.",
+      },
+      {
+        title: "Cross-Site Scripting (XSS)",
+        details:
+          "Learn the difference between Stored, Reflected, and DOM-based XSS and how to execute scripts in a victim's browser to steal session cookies.",
+      },
+      {
+        title: "Using Burp Suite Professional",
+        details:
+          "Master Burp Suite, the industry-standard tool for intercepting, modifying, and analyzing web traffic to find complex vulnerabilities.",
+      },
+      {
+        title: "API Security Testing (OWASP API Top 10)",
+        details:
+          "Focus on vulnerabilities specific to REST and GraphQL APIs, including improper authentication, excessive data exposure, and broken object-level authorization.",
+      },
+    ],
+  },
+  {
+    unit: "Module 5",
+    title: "Digital Forensics & Incident Response",
+    topics: [
+      {
+        title: "The Incident Response Lifecycle",
+        details:
+          "Study the 6 phases of incident response: Preparation, Identification, Containment, Eradication, Recovery, and Lessons Learned.",
+      },
+      // 
+      {
+        title: "File System Forensics (FAT, NTFS, ext4)",
+        details:
+          "Learn to analyze file systems to recover deleted data, track user activity, and find hidden evidence on disk drives using tools like Autopsy.",
+      },
+      {
+        title: "Memory Forensics with Volatility",
+        details:
+          "Capture and analyze system RAM to find running processes, network connections, and malware artifacts that don't exist on disk.",
+      },
+      {
+        title: "Malware Analysis Fundamentals",
+        details:
+          "Safely analyze malware samples (static and dynamic analysis) in a sandbox to understand their behavior, purpose, and indicators of compromise (IoCs).",
+      },
+      {
+        title: "Creating a Forensic Report",
+        details:
+          "Learn how to properly document findings, maintain the chain of custody, and write a professional report for technical and non-technical stakeholders.",
+      },
+    ],
+  },
 ];
+
+// --- THE REST OF YOUR COMPONENT REMAINS THE SAME ---
 
 export const CourseCurriculum = () => {
   const [selectedCyberUnit, setSelectedCyberUnit] = useState(0);
@@ -101,7 +200,8 @@ export const CourseCurriculum = () => {
             Cyber Security Curriculum
           </h2>
           <p className="text-lg text-muted-foreground">
-            Learn Ethical Hacking, Network Defense, and Real-World Cyber Security with Hands-on Labs
+            Learn Ethical Hacking, Network Defense, and Real-World Cyber
+            Security with Hands-on Labs
           </p>
         </motion.div>
 
@@ -128,7 +228,9 @@ export const CourseCurriculum = () => {
                   }}
                 >
                   <CardContent className="p-4">
-                    <p className="text-sm text-muted-foreground mb-1">{unit.unit}</p>
+                    <p className="text-sm text-muted-foreground mb-1">
+                      {unit.unit}
+                    </p>
                     <p className="font-semibold text-sm">{unit.title}</p>
                   </CardContent>
                 </Card>
@@ -164,7 +266,9 @@ export const CourseCurriculum = () => {
                               expandedTopic === index ? "rotate-90" : ""
                             }`}
                           />
-                          <span className="font-medium">{`Topic ${index + 1}: ${topic.title}`}</span>
+                          <span className="font-medium">{`Topic ${index + 1}: ${
+                            topic.title
+                          }`}</span>
                         </div>
                         <ChevronDown
                           className={`transition-transform ${
@@ -190,9 +294,7 @@ export const CourseCurriculum = () => {
                   ))}
                 </div>
 
-                <p className="mt-6 text-sm text-muted-foreground italic">
-                  
-                </p>
+                <p className="mt-6 text-sm text-muted-foreground italic"></p>
               </CardContent>
             </Card>
           </motion.div>
