@@ -68,53 +68,59 @@ if (firebaseConfig && firebaseConfig.apiKey) {
 // --- 1. Define Floating Tools & Animations ---
 const tools = [
   {
+    // Kali Linux (from previous version)
     src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
     alt: "Kali Linux",
-    side: "left" as "left" | "right",
+    side: "left",
     delay: 0.2,
     y: 150,
   },
   {
+    // Burp Suite (from previous version)
     src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1",
     alt: "Burp Suite",
-    side: "left" as "left" | "right",
+    side: "left",
     delay: 0.4,
     y: 350,
   },
   {
+    // Wireshark (from previous version)
     src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true",
     alt: "Wireshark",
-    side: "right" as "left" | "right",
+    side: "right",
     delay: 0.3,
-    y: 120,
+    y: 120, // Adjusted position
   },
   {
+    // <<< NEW: Nmap
     src: "https://assets.tryhackme.com/img/modules/metasploit.png",
     alt: "Nmap",
-    side: "right" as "left" | "right",
+    side: "right",
     delay: 0.5,
     y: 320,
   },
   {
+    // <<< NEW: Metasploit
     src: "https://assets.tryhackme.com/img/modules/metasploit.png",
     alt: "Metasploit",
-    side: "left" as "left" | "right",
+    side: "left",
     delay: 0.6,
     y: 500,
   },
 ];
 
+// Variants for the initial slide-in
 const iconVariants = {
   hidden: (side: "left" | "right") => ({
     opacity: 0,
-    x: side === "left" ? -100 : 100,
+    x: side === "left" ? -100 : 100, // Come from off-screen
     scale: 0.5,
   }),
 };
 // --- End Floating Tools ---
 
 // --- 2. ADD GOOGLE ICON HELPER ---
-const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
+const GoogleIcon = (props) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -232,7 +238,7 @@ const Signup = () => {
   };
 
   // --- Email/Password Signup Handler ---
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!auth) {
       toast.error("Firebase is not ready. Please refresh.");
@@ -291,7 +297,7 @@ const Signup = () => {
   };
 
   // --- Social Signup Handler ---
-  const handleSocialSignup = async (provider: "google" | "github") => {
+  const handleSocialSignup = async (provider) => {
     if (!auth) {
       toast.error("Firebase is not ready. Please refresh.");
       return;
@@ -320,7 +326,7 @@ const Signup = () => {
   };
 
   // --- 3D Card Tilt Animation ---
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseXSpring = useSpring(x);
@@ -335,7 +341,7 @@ const Signup = () => {
     [-0.5, 0.5],
     ["-10deg", "10deg"]
   );
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = (e) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const width = rect.width;
@@ -622,4 +628,5 @@ const Signup = () => {
 };
 
 export default Signup;
+
 
