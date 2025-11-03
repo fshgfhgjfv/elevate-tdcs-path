@@ -10,11 +10,18 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  useSpring,
+} from "framer-motion";
 import { toast } from "sonner";
 import { Loader2, Github } from "lucide-react";
+import { GoogleLogin } from "@react-oauth/google";
+import jwtDecode from "jwt-decode";
 
-// Floating tools animation (you can keep your original list)
+// --- Floating Tool Icons ---
 const tools = [
   {
     src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
@@ -37,19 +44,29 @@ const tools = [
     delay: 0.3,
     y: 120,
   },
+  {
+    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
+    alt: "Nmap",
+    side: "right" as "left" | "right",
+    delay: 0.5,
+    y: 320,
+  },
+  {
+    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
+    alt: "Metasploit",
+    side: "left" as "left" | "right",
+    delay: 0.6,
+    y: 500,
+  },
 ];
 
-// Simple Google Icon
-const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-    <path
-      fill="#FFC107"
-      d="M43.611,20.083H42V20H24v8h11.303c-1.659,4.696-6.142,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12
-      c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20
-      c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
-    />
-  </svg>
-);
+const iconVariants = {
+  hidden: (side: "left" | "right") => ({
+    opacity: 0,
+    x: side === "left" ? -100 : 100,
+    scale: 0.5,
+  }),
+};
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -62,21 +79,20 @@ const Signup = () => {
     confirmPassword: "",
   });
 
-  // Auto-redirect if user is already signed in
   useEffect(() => {
     const user = localStorage.getItem("tdcs_user");
-    if (user) navigate("/dashboard");
+    if (user) {
+      navigate("/dashboard");
+    }
   }, [navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("✅ Sign Up button clicked");
     setIsLoading(true);
 
     const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
     const { name, email, number, password, confirmPassword } = formData;
 
-    // --- VALIDATION ---
     if (!name || !email || !number || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
       setIsLoading(false);
@@ -108,7 +124,6 @@ const Signup = () => {
       return;
     }
 
-    // --- SUCCESS ---
     setTimeout(() => {
       const newUser = {
         id: Date.now().toString(),
@@ -122,28 +137,30 @@ const Signup = () => {
       const { password: _, ...userWithoutPassword } = newUser;
       localStorage.setItem("tdcs_user", JSON.stringify(userWithoutPassword));
 
-      toast.success("🎉 Account created successfully!");
+      toast.success("Account created successfully!");
       setIsLoading(false);
       navigate("/dashboard");
     }, 1000);
   };
 
-  // --- Card 3D Animation ---
+  // 3D card motion
   const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const rotateX = useTransform(useSpring(y), [-0.5, 0.5], ["10deg", "-10deg"]);
-  const rotateY = useTransform(useSpring(x), [-0.5, 0.5], ["-10deg", "10deg"]);
-
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
-    const xPct = (e.clientX - rect.left) / rect.width - 0.5;
-    const yPct = (e.clientY - rect.top) / rect.height - 0.5;
+    const width = rect.width;
+    const height = rect.height;
+    const xPct = (e.clientX - rect.left) / width - 0.5;
+    const yPct = (e.clientY - rect.top) / height - 0.5;
     x.set(xPct);
     y.set(yPct);
   };
-
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
@@ -151,8 +168,8 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
-      {/* Background floating icons */}
-      <div className="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      {/* Floating icons */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
         {tools.map((tool) => (
           <motion.img
             key={tool.alt}
@@ -163,13 +180,25 @@ const Signup = () => {
               top: tool.y,
               ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }),
             }}
+            variants={iconVariants}
+            initial="hidden"
+            custom={tool.side}
             animate={{
+              opacity: 0.1,
+              x: 0,
+              scale: 1,
               y: [tool.y, tool.y + 20, tool.y],
               transition: {
-                duration: 2 + Math.random() * 1,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
+                type: "spring",
+                stiffness: 100,
+                damping: 10,
+                delay: tool.delay,
+                y: {
+                  duration: 2 + Math.random() * 1,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut",
+                },
               },
             }}
           />
@@ -191,44 +220,54 @@ const Signup = () => {
           transition={{ duration: 0.5 }}
           className="max-w-md mx-auto"
         >
-          <Card className="shadow-glow-lg" style={{ transform: "translateZ(75px)" }}>
+          <Card className="shadow-glow-lg">
             <CardHeader>
-              <CardTitle className="text-3xl gradient-text">Create Account</CardTitle>
-              <CardDescription>Sign up to start your learning journey</CardDescription>
+              <CardTitle className="text-3xl gradient-text">
+                Create Account
+              </CardTitle>
+              <CardDescription>
+                Sign up to start your learning journey
+              </CardDescription>
             </CardHeader>
+
             <CardContent>
-              {/* ✅ REGULAR FORM (no motion.form) */}
+              {/* Google Sign up */}
+              <div className="flex flex-col sm:flex-row gap-3 mb-4">
+                <GoogleLogin
+                  onSuccess={(credentialResponse) => {
+                    const token = credentialResponse.credential;
+                    if (token) {
+                      const decoded: any = jwtDecode(token);
+                      const user = {
+                        name: decoded.name,
+                        email: decoded.email,
+                        picture: decoded.picture,
+                      };
+                      localStorage.setItem(
+                        "tdcs_user",
+                        JSON.stringify(user)
+                      );
+                      toast.success(`Welcome ${user.name}!`);
+                      navigate("/dashboard");
+                    }
+                  }}
+                  onError={() => {
+                    toast.error("Google Sign Up Failed");
+                  }}
+                />
+
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() =>
+                    toast.info("GitHub sign up not implemented yet.")
+                  }
+                >
+                  <Github className="mr-2 h-4 w-4" /> Sign up with GitHub
+                </Button>
+              </div>
+
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => toast.info("Google Sign-up not implemented")}
-                  >
-                    <GoogleIcon className="mr-2 h-4 w-4" /> Sign up with Google
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => toast.info("GitHub Sign-up not implemented")}
-                  >
-                    <Github className="mr-2 h-4 w-4" /> Sign up with GitHub
-                  </Button>
-                </div>
-
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-muted-foreground">
-                      Or sign up with email
-                    </span>
-                  </div>
-                </div>
-
                 <div>
                   <Label htmlFor="name">Full Name</Label>
                   <Input
@@ -236,7 +275,10 @@ const Signup = () => {
                     type="text"
                     placeholder="John Doe"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    required
                   />
                 </div>
 
@@ -247,7 +289,10 @@ const Signup = () => {
                     type="email"
                     placeholder="your@email.com"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    required
                   />
                 </div>
 
@@ -264,10 +309,12 @@ const Signup = () => {
                       value={formData.number}
                       onChange={(e) => {
                         const value = e.target.value.replace(/\D/g, "");
-                        if (value.length <= 10)
+                        if (value.length <= 10) {
                           setFormData({ ...formData, number: value });
+                        }
                       }}
                       className="rounded-l-none"
+                      required
                     />
                   </div>
                 </div>
@@ -279,7 +326,10 @@ const Signup = () => {
                     type="password"
                     placeholder="••••••••"
                     value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                    required
                   />
                 </div>
 
@@ -291,17 +341,24 @@ const Signup = () => {
                     placeholder="••••••••"
                     value={formData.confirmPassword}
                     onChange={(e) =>
-                      setFormData({ ...formData, confirmPassword: e.target.value })
+                      setFormData({
+                        ...formData,
+                        confirmPassword: e.target.value,
+                      })
                     }
+                    required
                   />
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:opacity-90"
+                  variant="gradient"
+                  className="w-full"
                   disabled={isLoading}
                 >
-                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isLoading && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   {isLoading ? "Signing Up..." : "Sign Up"}
                 </Button>
               </form>
