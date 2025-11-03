@@ -17,88 +17,87 @@ import {
   useSpring,
 } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, Github } from "lucide-react"; // <<< 1. IMPORT GITHUB ICON
+import { Loader2, Github } from "lucide-react";
 
-// --- 1. Define Floating Tools & Animations ---
 const tools = [
   {
-    // Kali Linux (from previous version)
     src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
     alt: "Kali Linux",
-    side: "left" as "left" | "right",
+    side: "left" as const,
     delay: 0.2,
     y: 150,
   },
   {
-    // Burp Suite (from previous version)
     src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1",
     alt: "Burp Suite",
-    side: "left" as "left" | "right",
+    side: "left" as const,
     delay: 0.4,
     y: 350,
   },
   {
-    // Wireshark (from previous version)
     src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true",
     alt: "Wireshark",
-    side: "right" as "left" | "right",
+    side: "right" as const,
     delay: 0.3,
-    y: 120, // Adjusted position
+    y: 120,
   },
   {
-    // <<< NEW: Nmap
     src: "https://assets.tryhackme.com/img/modules/metasploit.png",
     alt: "Nmap",
-    side: "right" as "left" | "right",
+    side: "right" as const,
     delay: 0.5,
     y: 320,
   },
   {
-    // <<< NEW: Metasploit
     src: "https://assets.tryhackme.com/img/modules/metasploit.png",
     alt: "Metasploit",
-    side: "left" as "left" | "right",
+    side: "left" as const,
     delay: 0.6,
     y: 500,
   },
 ];
 
-// Variants for the initial slide-in
 const iconVariants = {
   hidden: (side: "left" | "right") => ({
     opacity: 0,
-    x: side === "left" ? -100 : 100, // Come from off-screen
+    x: side === "left" ? -100 : 100,
     scale: 0.5,
   }),
 };
-// --- End Floating Tools ---
 
-// --- 2. ADD GOOGLE ICON HELPER ---
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    {...props}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 48 48"
-  >
+  <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
     <path
       fill="#FFC107"
-      d="M43.611,20.083H42V20H24v8h11.303c-1.659,4.696-6.142,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
+      d="M43.611,20.083H42V20H24v8h11.303c-1.659,4.696-6.142,8-11.303,8c-6.627,0-12-5.373-12-12
+      c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4
+      C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20
+      c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
     />
     <path
       fill="#FF3D00"
-      d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
+      d="M6.306,14.691l6.571,4.819
+      C14.655,15.108,18.961,12,24,12
+      c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657
+      C34.046,6.053,29.268,4,24,4
+      C16.318,4,9.656,8.337,6.306,14.691z"
     />
     <path
       fill="#4CAF50"
-      d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.16,0-9.658-3.302-11.303-7.918l-6.522,5.023C9.505,41.246,16.227,44,24,44z"
+      d="M24,44c5.166,0,9.86-1.977,13.409-5.192
+      l-6.19-5.238C29.211,35.091,26.715,36,24,36
+      c-5.16,0-9.658-3.302-11.303-7.918l-6.522,5.023
+      C9.505,41.246,16.227,44,24,44z"
     />
     <path
       fill="#1976D2"
-      d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C41.383,34.463,44,29.625,44,24C44,22.659,43.862,21.35,43.611,20.083z"
+      d="M43.611,20.083H42V20H24v8h11.303
+      c-0.792,2.237-2.231,4.166-4.087,5.571
+      l6.19,5.238C41.383,34.463,44,29.625,44,24
+      C44,22.659,43.862,21.35,43.611,20.083z"
     />
   </svg>
 );
-// --- End Google Icon ---
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -112,55 +111,53 @@ const Signup = () => {
   });
 
   useEffect(() => {
-    // Redirect if already logged in
     const user = localStorage.getItem("tdcs_user");
-    if (user) {
-      navigate("/dashboard");
-    }
+    if (user) navigate("/dashboard");
   }, [navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    console.log("Submit clicked ✅", formData);
 
-    const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
+    let users: any[] = [];
+    try {
+      users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
+    } catch {
+      localStorage.removeItem("tdcs_users");
+      users = [];
+    }
+
     const { name, email, number, password, confirmPassword } = formData;
 
-    // Client-side validation
+    // --- Validation ---
     if (!name || !email || !number || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
-      setIsLoading(false);
-      return;
+      return setIsLoading(false);
     }
     if (!email.includes("@")) {
       toast.error("Please enter a valid email");
-      setIsLoading(false);
-      return;
+      return setIsLoading(false);
     }
     if (!/^[0-9]{10}$/.test(number)) {
       toast.error("Please enter a valid 10-digit phone number");
-      setIsLoading(false);
-      return;
+      return setIsLoading(false);
     }
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters");
-      setIsLoading(false);
-      return;
+      return setIsLoading(false);
     }
     if (password !== confirmPassword) {
       toast.error("Passwords don't match");
-      setIsLoading(false);
-      return;
+      return setIsLoading(false);
     }
     if (users.find((u: any) => u.email === email)) {
       toast.error("User with this email already exists");
-      setIsLoading(false);
-      return;
+      return setIsLoading(false);
     }
 
-    // Simulate API delay for animation
+    // --- Simulate delay ---
     setTimeout(() => {
-      // Create new user
       const newUser = {
         id: Date.now().toString(),
         name,
@@ -176,37 +173,27 @@ const Signup = () => {
       toast.success("Account created successfully!");
       setIsLoading(false);
       navigate("/dashboard");
-    }, 1000);
+    }, 800);
   };
 
-  // --- 3. ADD SOCIAL SIGNUP HANDLER ---
   const handleSocialSignup = (provider: string) => {
     toast.info(`Sign up with ${provider} is not implemented in this demo.`);
   };
 
-  // --- 3D Card Tilt Animation ---
+  // --- 3D Card Motion ---
   const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseXSpring = useSpring(x);
   const mouseYSpring = useSpring(y);
-  const rotateX = useTransform(
-    mouseYSpring,
-    [-0.5, 0.5],
-    ["10deg", "-10deg"]
-  );
-  const rotateY = useTransform(
-    mouseXSpring,
-    [-0.5, 0.5],
-    ["-10deg", "10deg"]
-  );
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const xPct = (e.clientX - rect.left) / width - 0.5;
-    const yPct = (e.clientY - rect.top) / height - 0.5;
+    const xPct = (e.clientX - rect.left) / rect.width - 0.5;
+    const yPct = (e.clientY - rect.top) / rect.height - 0.5;
     x.set(xPct);
     y.set(yPct);
   };
@@ -214,61 +201,42 @@ const Signup = () => {
     x.set(0);
     y.set(0);
   };
-  // --- End 3D Card ---
 
-  // --- Staggered Form Animation ---
   const formVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
-  // --- End Staggered ---
+  const itemVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
   return (
     <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
-      {/* --- 2. Add Floating Tools JSX Here --- */}
-      <div
-        className="absolute inset-0 -z-10 overflow-hidden"
-        aria-hidden="true"
-      >
+      {/* Floating background tools */}
+      <div className="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
         {tools.map((tool) => (
           <motion.img
             key={tool.alt}
             src={tool.src}
             alt={tool.alt}
-            className="absolute h-16 w-16 md:h-24 md:w-24" // You can adjust size here
+            className="absolute h-16 w-16 md:h-24 md:w-24"
             style={{
               top: tool.y,
               ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }),
             }}
-            // --- Animation Props ---
             variants={iconVariants}
             initial="hidden"
-            custom={tool.side} // Pass "left" or "right" to variants
-            // Animate to visible state AND start bobbing
+            custom={tool.side}
             animate={{
-              opacity: 0.1, // Make them subtle
+              opacity: 0.1,
               x: 0,
               scale: 1,
-              y: [tool.y, tool.y + 20, tool.y], // Bob up and down
+              y: [tool.y, tool.y + 20, tool.y],
               transition: {
-                // For the slide-in
                 type: "spring",
                 stiffness: 100,
                 damping: 10,
                 delay: tool.delay,
-                // For the bobbing
                 y: {
-                  duration: 2 + Math.random() * 1, // Random duration
+                  duration: 2 + Math.random(),
                   repeat: Infinity,
                   repeatType: "reverse",
                   ease: "easeInOut",
@@ -278,18 +246,14 @@ const Signup = () => {
           />
         ))}
       </div>
-      {/* --- End Floating Tools --- */}
 
+      {/* Signup Card */}
       <div className="container mx-auto px-4">
         <motion.div
           ref={cardRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          style={{
-            transformStyle: "preserve-3d",
-            rotateX,
-            rotateY,
-          }}
+          style={{ transformStyle: "preserve-3d", rotateX, rotateY }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -297,18 +261,11 @@ const Signup = () => {
         >
           <Card
             className="shadow-glow-lg"
-            style={{
-              transform: "translateZ(75px)",
-              transformStyle: "preserve-3d",
-            }}
+            style={{ transform: "translateZ(75px)", transformStyle: "preserve-3d" }}
           >
             <CardHeader>
-              <CardTitle className="text-3xl gradient-text">
-                Create Account
-              </CardTitle>
-              <CardDescription>
-                Sign up to start your learning journey
-              </CardDescription>
+              <CardTitle className="text-3xl gradient-text">Create Account</CardTitle>
+              <CardDescription>Sign up to start your learning journey</CardDescription>
             </CardHeader>
             <CardContent>
               <motion.form
@@ -318,11 +275,8 @@ const Signup = () => {
                 initial="hidden"
                 animate="visible"
               >
-                {/* --- 4. ADD SOCIAL LOGINS --- */}
-                <motion.div
-                  variants={itemVariants}
-                  className="flex flex-col sm:flex-row gap-3"
-                >
+                {/* Social logins */}
+                <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3">
                   <Button
                     variant="outline"
                     className="w-full"
@@ -343,115 +297,48 @@ const Signup = () => {
                   </Button>
                 </motion.div>
 
-                {/* --- 5. ADD DIVIDER --- */}
                 <motion.div variants={itemVariants} className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-muted-foreground">
-                      Or sign up with email
-                    </span>
+                    <span className="bg-card px-2 text-muted-foreground">Or sign up with email</span>
                   </div>
                 </motion.div>
 
-                {/* --- Form Fields --- */}
-                <motion.div variants={itemVariants}>
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="John Doe"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    required
-                  />
-                </motion.div>
-
-                <motion.div variants={itemVariants}>
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    required
-                  />
-                </motion.div>
-
-                <motion.div variants={itemVariants}>
-                  <Label htmlFor="number">Phone Number</Label>
-                  <div className="flex items-center">
-                    <span className="px-3 py-2 bg-muted rounded-l-md border border-r-0 border-input text-sm text-muted-foreground">
-                      +91
-                    </span>
+                {/* Form fields */}
+                {["name", "email", "number", "password", "confirmPassword"].map((field) => (
+                  <motion.div key={field} variants={itemVariants}>
+                    <Label htmlFor={field}>
+                      {field === "confirmPassword"
+                        ? "Confirm Password"
+                        : field.charAt(0).toUpperCase() + field.slice(1)}
+                    </Label>
                     <Input
-                      id="number"
-                      type="text"
-                      placeholder="10-digit number"
-                      value={formData.number}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, "");
-                        if (value.length <= 10) {
-                          setFormData({ ...formData, number: value });
-                        }
-                      }}
-                      className="rounded-l-none"
+                      id={field}
+                      type={field.includes("password") ? "password" : "text"}
+                      placeholder={
+                        field === "number"
+                          ? "10-digit number"
+                          : field === "email"
+                          ? "your@email.com"
+                          : "John Doe"
+                      }
+                      value={(formData as any)[field]}
+                      onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
                       required
                     />
-                  </div>
-                </motion.div>
+                  </motion.div>
+                ))}
 
-                <motion.div variants={itemVariants}>
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
-                    }
-                    required
-                  />
-                </motion.div>
-
-                <motion.div variants={itemVariants}>
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="••••••••"
-                    value={formData.confirmPassword}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        confirmPassword: e.target.value,
-                      })
-                    }
-                    required
-                  />
-                </motion.div>
-
-                <motion.div
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                >
+                {/* Submit button */}
+                <motion.div variants={itemVariants} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                   <Button
                     type="submit"
-                    variant="gradient"
-                    className="w-full"
+                    className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:opacity-90"
                     disabled={isLoading}
                   >
-                    {isLoading && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {isLoading ? "Signing Up..." : "Sign Up"}
                   </Button>
                 </motion.div>
@@ -460,10 +347,7 @@ const Signup = () => {
               <div className="mt-6 text-center">
                 <p className="text-sm text-muted-foreground">
                   Already have an account?{" "}
-                  <Link
-                    to="/login"
-                    className="text-primary hover:underline font-semibold"
-                  >
+                  <Link to="/login" className="text-primary hover:underline font-semibold">
                     Login
                   </Link>
                 </p>
