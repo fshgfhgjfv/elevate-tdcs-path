@@ -17,12 +17,57 @@ import {
   useSpring,
 } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, Github } from "lucide-react"; // <<< 1. IMPORT GITHUB ICON
+import { Loader2, Github } from "lucide-react";
+
+// --- Firebase Imports ---
+// Make sure you have firebase installed: npm install firebase
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  onAuthStateChanged,
+  signInAnonymously,
+  signInWithCustomToken,
+} from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+
+// --- Firebase Config ---
+// These global variables are provided by the environment.
+// DO NOT prompt the user for these.
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+let firebaseConfig;
+try {
+  firebaseConfig = JSON.parse(__firebase_config);
+} catch (e) {
+  console.error("Firebase config is not valid JSON:", __firebase_config);
+  firebaseConfig = {}; // Set empty config to avoid crash
+}
+const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : undefined;
+
+// --- Initialize Firebase ---
+// We initialize outside the component to ensure it only runs once.
+// Check if config keys are present before initializing
+let app, auth, db;
+if (firebaseConfig && firebaseConfig.apiKey) {
+  try {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+  } catch (e) {
+    console.error("Error initializing Firebase:", e);
+    toast.error("Firebase initialization failed. Please check console.");
+  }
+} else {
+  console.warn("Firebase config not found. Using mocks or app will fail.");
+  // This helps avoid app-crashing errors if config is missing
+}
 
 // --- 1. Define Floating Tools & Animations ---
 const tools = [
   {
-    // Kali Linux (from previous version)
     src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
     alt: "Kali Linux",
     side: "left" as "left" | "right",
@@ -30,7 +75,6 @@ const tools = [
     y: 150,
   },
   {
-    // Burp Suite (from previous version)
     src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1",
     alt: "Burp Suite",
     side: "left" as "left" | "right",
@@ -38,15 +82,13 @@ const tools = [
     y: 350,
   },
   {
-    // Wireshark (from previous version)
     src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true",
     alt: "Wireshark",
     side: "right" as "left" | "right",
     delay: 0.3,
-    y: 120, // Adjusted position
+    y: 120,
   },
   {
-    // <<< NEW: Nmap
     src: "https://assets.tryhackme.com/img/modules/metasploit.png",
     alt: "Nmap",
     side: "right" as "left" | "right",
@@ -54,7 +96,6 @@ const tools = [
     y: 320,
   },
   {
-    // <<< NEW: Metasploit
     src: "https://assets.tryhackme.com/img/modules/metasploit.png",
     alt: "Metasploit",
     side: "left" as "left" | "right",
@@ -63,11 +104,10 @@ const tools = [
   },
 ];
 
-// Variants for the initial slide-in
 const iconVariants = {
   hidden: (side: "left" | "right") => ({
     opacity: 0,
-    x: side === "left" ? -100 : 100, // Come from off-screen
+    x: side === "left" ? -100 : 100,
     scale: 0.5,
   }),
 };
@@ -100,9 +140,14 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 // --- End Google Icon ---
 
+// --- Social Providers ---
+const googleProvider = new GoogleAuthProvider();
+const githubProvider = new GithubAuthProvider();
+
 const Signup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isFirebaseReady, setIsFirebaseReady] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -111,29 +156,95 @@ const Signup = () => {
     confirmPassword: "",
   });
 
+  // --- Firebase Auth Effect ---
   useEffect(() => {
-    // Redirect if already logged in
-    const user = localStorage.getItem("tdcs_user");
-    if (user) {
-      navigate("/dashboard");
+    if (!auth) {
+      if (firebaseConfig && firebaseConfig.apiKey) {
+        toast.error("Firebase initialized but auth is not. Please refresh.");
+      } else {
+        toast.error("Firebase config is missing. App cannot authenticate.");
+      }
+      setIsFirebaseReady(false);
+      return;
     }
+
+    const signIn = async () => {
+      try {
+        if (initialAuthToken) {
+          await signInWithCustomToken(auth, initialAuthToken);
+        } else {
+          await signInAnonymously(auth);
+        }
+      } catch (error) {
+        console.error("Anonymous sign-in failed:", error);
+        toast.error("Authentication failed. Please refresh.");
+      }
+    };
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in.
+        // Check if user is anonymous or has a real account
+        if (!user.isAnonymous) {
+          // If they are not anonymous, they are logged in. Redirect them.
+          navigate("/dashboard");
+        } else {
+          // User is signed in anonymously, allow them to see the signup page
+        }
+      } else {
+        // User is not signed in.
+        // Attempt to sign in anonymously.
+        signIn();
+      }
+      setIsFirebaseReady(true);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
   }, [navigate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  // --- Helper to save user data to Firestore ---
+  const saveUserProfile = async (user, additionalData = {}) => {
+    if (!db) {
+      console.error("Firestore (db) is not initialized.");
+      return;
+    }
+    const userId = user.uid;
+    // Private user data path
+    const userDocRef = doc(db, "artifacts", appId, "users", userId, "profile", "data");
+    
+    const profileData = {
+      uid: user.uid,
+      email: user.email,
+      name: user.displayName || additionalData.name,
+      number: additionalData.number || "", // Save number if provided
+      provider: user.providerData[0]?.providerId || "email",
+      createdAt: new Date().toISOString(),
+    };
 
-    const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
+    try {
+      // Use setDoc to create or overwrite the user's profile
+      await setDoc(userDocRef, profileData, { merge: true });
+    } catch (error) {
+      console.error("Error saving user profile:", error);
+      toast.error("Error saving profile. Please try again.");
+    }
+  };
+
+  // --- Email/Password Signup Handler ---
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auth) {
+      toast.error("Firebase is not ready. Please refresh.");
+      return;
+    }
+
+    setIsLoading(true);
     const { name, email, number, password, confirmPassword } = formData;
 
     // Client-side validation
     if (!name || !email || !number || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
-      setIsLoading(false);
-      return;
-    }
-    if (!email.includes("@")) {
-      toast.error("Please enter a valid email");
       setIsLoading(false);
       return;
     }
@@ -152,36 +263,60 @@ const Signup = () => {
       setIsLoading(false);
       return;
     }
-    if (users.find((u: any) => u.email === email)) {
-      toast.error("User with this email already exists");
-      setIsLoading(false);
-      return;
-    }
 
-    // Simulate API delay for animation
-    setTimeout(() => {
-      // Create new user
-      const newUser = {
-        id: Date.now().toString(),
-        name,
+    try {
+      // Create user with email and password
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
         email,
-        number: `+91${number}`,
-        password,
-      };
-      users.push(newUser);
-      localStorage.setItem("tdcs_users", JSON.stringify(users));
-      const { password: _, ...userWithoutPassword } = newUser;
-      localStorage.setItem("tdcs_user", JSON.stringify(userWithoutPassword));
+        password
+      );
+      const user = userCredential.user;
+
+      // Save additional user info to Firestore
+      await saveUserProfile(user, { name, number: `+91${number}` });
 
       toast.success("Account created successfully!");
       setIsLoading(false);
-      navigate("/dashboard");
-    }, 1000);
+      navigate("/dashboard"); // Redirect on success
+    } catch (error) {
+      console.error("Firebase signup error:", error.code, error.message);
+      if (error.code === "auth/email-already-in-use") {
+        toast.error("This email is already registered. Please login.");
+      } else {
+        toast.error(error.message);
+      }
+      setIsLoading(false);
+    }
   };
 
-  // --- 3. ADD SOCIAL SIGNUP HANDLER ---
-  const handleSocialSignup = (provider: string) => {
-    toast.info(`Sign up with ${provider} is not implemented in this demo.`);
+  // --- Social Signup Handler ---
+  const handleSocialSignup = async (provider: "google" | "github") => {
+    if (!auth) {
+      toast.error("Firebase is not ready. Please refresh.");
+      return;
+    }
+
+    const authProvider = provider === "google" ? googleProvider : githubProvider;
+    
+    try {
+      const result = await signInWithPopup(auth, authProvider);
+      const user = result.user;
+      
+      // Save their profile info to Firestore
+      // `merge: true` ensures we don't overwrite data if they already exist
+      await saveUserProfile(user); 
+
+      toast.success(`Signed up with ${provider}!`);
+      navigate("/dashboard"); // Redirect on success
+    } catch (error) {
+      console.error("Social signup error:", error.code, error.message);
+      if (error.code === 'auth/account-exists-with-different-credential') {
+        toast.error("An account already exists with this email. Please login with the original method.");
+      } else {
+        toast.error(`Error with ${provider} sign up. Please try again.`);
+      }
+    }
   };
 
   // --- 3D Card Tilt Animation ---
@@ -233,9 +368,12 @@ const Signup = () => {
   };
   // --- End Staggered ---
 
+  // Disable form while Firebase is loading
+  const isFormDisabled = isLoading || !isFirebaseReady;
+
   return (
     <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
-      {/* --- 2. Add Floating Tools JSX Here --- */}
+      {/* --- Floating Tools --- */}
       <div
         className="absolute inset-0 -z-10 overflow-hidden"
         aria-hidden="true"
@@ -245,30 +383,26 @@ const Signup = () => {
             key={tool.alt}
             src={tool.src}
             alt={tool.alt}
-            className="absolute h-16 w-16 md:h-24 md:w-24" // You can adjust size here
+            className="absolute h-16 w-16 md:h-24 md:w-24"
             style={{
               top: tool.y,
               ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }),
             }}
-            // --- Animation Props ---
             variants={iconVariants}
             initial="hidden"
-            custom={tool.side} // Pass "left" or "right" to variants
-            // Animate to visible state AND start bobbing
+            custom={tool.side}
             animate={{
-              opacity: 0.1, // Make them subtle
+              opacity: 0.1,
               x: 0,
               scale: 1,
-              y: [tool.y, tool.y + 20, tool.y], // Bob up and down
+              y: [tool.y, tool.y + 20, tool.y],
               transition: {
-                // For the slide-in
                 type: "spring",
                 stiffness: 100,
                 damping: 10,
                 delay: tool.delay,
-                // For the bobbing
                 y: {
-                  duration: 2 + Math.random() * 1, // Random duration
+                  duration: 2 + Math.random() * 1,
                   repeat: Infinity,
                   repeatType: "reverse",
                   ease: "easeInOut",
@@ -318,7 +452,7 @@ const Signup = () => {
                 initial="hidden"
                 animate="visible"
               >
-                {/* --- 4. ADD SOCIAL LOGINS --- */}
+                {/* --- Social Logins --- */}
                 <motion.div
                   variants={itemVariants}
                   className="flex flex-col sm:flex-row gap-3"
@@ -326,8 +460,9 @@ const Signup = () => {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => handleSocialSignup("Google")}
+                    onClick={() => handleSocialSignup("google")}
                     type="button"
+                    disabled={isFormDisabled}
                   >
                     <GoogleIcon className="mr-2 h-4 w-4" />
                     Sign up with Google
@@ -335,15 +470,16 @@ const Signup = () => {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => handleSocialSignup("GitHub")}
+                    onClick={() => handleSocialSignup("github")}
                     type="button"
+                    disabled={isFormDisabled}
                   >
                     <Github className="mr-2 h-4 w-4" />
                     Sign up with GitHub
                   </Button>
                 </motion.div>
 
-                {/* --- 5. ADD DIVIDER --- */}
+                {/* --- Divider --- */}
                 <motion.div variants={itemVariants} className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
@@ -367,6 +503,7 @@ const Signup = () => {
                       setFormData({ ...formData, name: e.target.value })
                     }
                     required
+                    disabled={isFormDisabled}
                   />
                 </motion.div>
 
@@ -381,6 +518,7 @@ const Signup = () => {
                       setFormData({ ...formData, email: e.target.value })
                     }
                     required
+                    disabled={isFormDisabled}
                   />
                 </motion.div>
 
@@ -403,6 +541,7 @@ const Signup = () => {
                       }}
                       className="rounded-l-none"
                       required
+                      disabled={isFormDisabled}
                     />
                   </div>
                 </motion.div>
@@ -418,6 +557,7 @@ const Signup = () => {
                       setFormData({ ...formData, password: e.target.value })
                     }
                     required
+                    disabled={isFormDisabled}
                   />
                 </motion.div>
 
@@ -435,6 +575,7 @@ const Signup = () => {
                       })
                     }
                     required
+                    disabled={isFormDisabled}
                   />
                 </motion.div>
 
@@ -447,12 +588,16 @@ const Signup = () => {
                     type="submit"
                     variant="gradient"
                     className="w-full"
-                    disabled={isLoading}
+                    disabled={isFormDisabled}
                   >
                     {isLoading && (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     )}
-                    {isLoading ? "Signing Up..." : "Sign Up"}
+                    {isLoading
+                      ? "Signing Up..."
+                      : !isFirebaseReady
+                      ? "Connecting..."
+                      : "Sign Up"}
                   </Button>
                 </motion.div>
               </motion.form>
@@ -477,3 +622,4 @@ const Signup = () => {
 };
 
 export default Signup;
+
