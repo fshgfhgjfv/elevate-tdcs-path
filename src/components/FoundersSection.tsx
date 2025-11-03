@@ -7,8 +7,8 @@ const founders = [
   {
     name: "Dibyajit Ghosh",
     role: "Founder & CEO / Forensic Investor Director",
-    // Updated image URL from Hero.jsx
-    image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhQ9heh07dWNTxnm6dhyphenhyphen2rzfxjmA_xS3UXPh3sBCY_B2ywNCfyr8QXWKLsur3PJKzLo-pUsoGmIfTmGl8m7cGmUezdk_RvStMnzxjIstX1S-V6gc2PrG8WkudchJv_c0LuVu0xbO7mUnWh5mWZHMe9THz3dwqCLTN0-2bAoI0k_rynUr6vk2xDdSKi0bM-/s539/WhatsApp_Image_2025-10-26_at_15.56.54_d2e7dc94-removebg-preview.png",
+    // NEW: Updated CEO image URL
+    image: "https://blogger.googleusercontent.com/img/a/AVvXsEjNQhD_FqbzJzTQupYXGoQBA-TyfWRY7LI76n5is3RoKkbKLeSkELjipGiDLQodxlbsFEfhBsyKVKj0sKLXSiPNd2GedCzGcT3DDwxb0fSspFYBWV0Lb6JV5DYj0jrrcjKZ1U1bVDn1gQ4bMdp8WViDpcHEWE8XaAyqAEeqb0rnmlIgg4au8lLLqCPYRxa9",
     bio: "Leading TDCS with a vision to transform technical education and placement services.",
     linkedin: "https://linkedin.com",
     website: "https://tdcs.tech",
@@ -17,8 +17,8 @@ const founders = [
   {
     name: "Shivam Shing",
     role: "Chief Operating Officer (COO)",
-    // Updated image URL from Hero.jsx
-    image: "https://blogger.googleusercontent.com/img/a/AVvXsEgiDtg5YtmQ7bdvNmeAAMyhwpc5tLm_RNR2Lv4y4u6hsMzTiuqNyxo7O0qU32donmMZoTduoxe-4WgWVdPh29JH9vmYXkqCI7hiyzwaYBxxXgTfKbCsjTST6gyIWQB230kRXgwfQvxV-dqB9V-Xqr3915tuA9d88D1rGY-l9sJy_vhC3HJR0pdEI6F3E8Nr",
+    // NEW: Updated COO image URL
+    image: "https://blogger.googleusercontent.com/img/a/AVvXsEgrwmLkO5Feodxq5QaY_atrGnsO9pqgfFM05kadDK8NB_24j-cIBsML47l20CtYES_Zfa4jUVR24_u4po_QnjcsO4yiRZUlpESCdAb2JVdbzkhp3gaU55kpGn_v-EUQaxkosCtzSR3-0eyjtW4m9gkglNME7wzxffg-A0kX98SqspAZNX1Aep3Wf-OgGpoP",
     bio: "Ensuring operational excellence and student success.",
     linkedin: "https://linkedin.com",
     website: "https://tdcs.tech",
@@ -27,8 +27,8 @@ const founders = [
   {
     name: "Tushar Bhakta",
     role: "Chief Marketing Officer (CMO)",
-    // Updated image URL from Hero.jsx
-    image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh68HDmzQ4YTj9g9soRrkq-eHc9cAfbC03ZOXSClA19NofdsJ2lzm2A29d2qxG3xXSUfuEVl-sGEVnkokdgS6snQn86My-Bekn2MLrF135mZPHpwXfsLg1XxhFaClj1Uebgi6IcxeseCR6rvwc3vg6IgYUm8voolffwjQhcY4haMotxomzPVjfJm7ylnHdF/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png",
+    // NEW: Updated CMO image URL
+    image: "https://blogger.googleusercontent.com/img/a/AVvXsEhPcY7OD_gvFPpSHxxFdNsKjh7B0YsN4dDz2DATlkBPxrfHB1s1vJuSY6ivppjiUWBLJgnaHmag-MT1j5dY3ogIZnmk8XUANyMirIM2KFEX0NU7IOem0cxXU3JZz181SdNAfMxSn0UvfmB0B_0binfWdGEjveahWjhfSjJ5COdckX94i6iZxkBBB4akTyyz",
     bio: "Driving growth and brand strategy at TDCS.",
     linkedin: "https://linkedin.com",
     website: "https://tdcs.tech",
@@ -76,32 +76,37 @@ export const FoundersSection = () => {
                     animate={{ scale: hoveredIndex === index ? 1.05 : 1 }}
                     transition={{ duration: 0.3 }}
                   />
+                  {/* Default text overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                     <h3 className="text-2xl font-bold mb-1">{founder.name}</h3>
                     <p className="text-sm text-white/90">{founder.role}</p>
                   </div>
+
+                  {/* NEW: Hover overlay slides up from bottom with glassmorphism */}
+                  <motion.div
+                    // Animate Y from 100% (bottom) to 0% (in place)
+                    initial={{ y: "100%" }}
+                    animate={{ y: hoveredIndex === index ? "0%" : "100%" }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    // Added backdrop-blur-md for glass effect
+                    className="absolute inset-0 bg-black/70 backdrop-blur-md p-6 flex flex-col justify-center"
+                  >
+                    <h3 className="text-2xl font-bold mb-2 text-white">{founder.name}</h3>
+                    <p className="text-sm text-white/90 mb-4">{founder.role}</p>
+                    <p className="text-white/80 text-sm mb-6">{founder.bio}</p>
+                    <div className="flex gap-4">
+                      <a href={founder.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white hover:text-white/80">
+                        <Linkedin size={20} />
+                        <span className="text-sm">LinkedIn</span>
+                      </a>
+                      <a href={founder.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white hover:text-white/80">
+                        <Globe size={20} />
+                        <span className="text-sm">Website</span>
+                      </a>
+                    </div>
+                  </motion.div>
                 </div>
-                <motion.div
-                  initial={{ x: "100%" }}
-                  animate={{ x: hoveredIndex === index ? "0%" : "100%" }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute inset-0 bg-gradient-to-br from-primary/95 to-primary-dark/95 p-6 flex flex-col justify-center"
-                >
-                  <h3 className="text-2xl font-bold mb-2 text-white">{founder.name}</h3>
-                  <p className="text-sm text-white/90 mb-4">{founder.role}</p>
-                  <p className="text-white/80 text-sm mb-6">{founder.bio}</p>
-                  <div className="flex gap-4">
-                    <a href={founder.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white hover:text-white/80">
-                      <Linkedin size={20} />
-                      <span className="text-sm">LinkedIn</span>
-                    </a>
-                    <a href={founder.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white hover:text-white/80">
-                      <Globe size={20} />
-                      <span className="text-sm">Website</span>
-                    </a>
-                  </div>
-                </motion.div>
               </div>
             </motion.div>
           ))}
@@ -110,3 +115,4 @@ export const FoundersSection = () => {
     </section>
   );
 };
+
