@@ -20,7 +20,6 @@ import { toast } from "sonner";
 import { Loader2, Github } from "lucide-react";
 
 // --- Firebase Imports ---
-// Make sure you have firebase installed: npm install firebase
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -36,7 +35,6 @@ import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 // --- Firebase Config ---
 // These global variables are provided by the environment.
-// DO NOT prompt the user for these.
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 let firebaseConfig;
 try {
@@ -48,8 +46,6 @@ try {
 const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : undefined;
 
 // --- Initialize Firebase ---
-// We initialize outside the component to ensure it only runs once.
-// Check if config keys are present before initializing
 let app, auth, db;
 if (firebaseConfig && firebaseConfig.apiKey) {
   try {
@@ -62,69 +58,14 @@ if (firebaseConfig && firebaseConfig.apiKey) {
   }
 } else {
   console.warn("Firebase config not found. Using mocks or app will fail.");
-  // This helps avoid app-crashing errors if config is missing
 }
 
-// --- 1. Define Floating Tools & Animations ---
-const tools = [
-  {
-    // Kali Linux (from previous version)
-    src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
-    alt: "Kali Linux",
-    side: "left",
-    delay: 0.2,
-    y: 150,
-  },
-  {
-    // Burp Suite (from previous version)
-    src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1",
-    alt: "Burp Suite",
-    side: "left",
-    delay: 0.4,
-    y: 350,
-  },
-  {
-    // Wireshark (from previous version)
-    src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true",
-    alt: "Wireshark",
-    side: "right",
-    delay: 0.3,
-    y: 120, // Adjusted position
-  },
-  {
-    // <<< NEW: Nmap
-    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
-    alt: "Nmap",
-    side: "right",
-    delay: 0.5,
-    y: 320,
-  },
-  {
-    // <<< NEW: Metasploit
-    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
-    alt: "Metasploit",
-    side: "left",
-    delay: 0.6,
-    y: 500,
-  },
-];
-
-// Variants for the initial slide-in
-const iconVariants = {
-  hidden: (side: "left" | "right") => ({
-    opacity: 0,
-    x: side === "left" ? -100 : 100, // Come from off-screen
-    scale: 0.5,
-  }),
-};
-// --- End Floating Tools ---
-
-// --- 2. ADD GOOGLE ICON HELPER ---
+// --- Google Icon Helper ---
 const GoogleIcon = (props) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 48 48"
+    viewBox="0 0 48"
   >
     <path
       fill="#FFC107"
@@ -190,7 +131,6 @@ const Signup = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is signed in.
-        // Check if user is anonymous or has a real account
         if (!user.isAnonymous) {
           // If they are not anonymous, they are logged in. Redirect them.
           navigate("/dashboard");
@@ -325,37 +265,10 @@ const Signup = () => {
     }
   };
 
-  // --- 3D Card Tilt Animation ---
-  const cardRef = useRef(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const mouseXSpring = useSpring(x);
-  const mouseYSpring = useSpring(y);
-  const rotateX = useTransform(
-    mouseYSpring,
-    [-0.5, 0.5],
-    ["10deg", "-10deg"]
-  );
-  const rotateY = useTransform(
-    mouseXSpring,
-    [-0.5, 0.5],
-    ["-10deg", "10deg"]
-  );
-  const handleMouseMove = (e) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const xPct = (e.clientX - rect.left) / width - 0.5;
-    const yPct = (e.clientY - rect.top) / height - 0.5;
-    x.set(xPct);
-    y.set(yPct);
-  };
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-  // --- End 3D Card ---
+  // --- 3D Card Tilt Animation (Removed - Simpler version) ---
+  // Using a simpler motion.div for consistency with Login page
+  // const cardRef = useRef(null);
+  // ... (tilt logic removed)
 
   // --- Staggered Form Animation ---
   const formVariants = {
@@ -378,75 +291,37 @@ const Signup = () => {
   const isFormDisabled = isLoading || !isFirebaseReady;
 
   return (
-    <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
-      {/* --- Floating Tools --- */}
-      <div
-        className="absolute inset-0 -z-10 overflow-hidden"
-        aria-hidden="true"
-      >
-        {tools.map((tool) => (
-          <motion.img
-            key={tool.alt}
-            src={tool.src}
-            alt={tool.alt}
-            className="absolute h-16 w-16 md:h-24 md:w-24"
-            style={{
-              top: tool.y,
-              ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }),
-            }}
-            variants={iconVariants}
-            initial="hidden"
-            custom={tool.side}
-            animate={{
-              opacity: 0.1,
-              x: 0,
-              scale: 1,
-              y: [tool.y, tool.y + 20, tool.y],
-              transition: {
-                type: "spring",
-                stiffness: 100,
-                damping: 10,
-                delay: tool.delay,
-                y: {
-                  duration: 2 + Math.random() * 1,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  ease: "easeInOut",
-                },
-              },
-            }}
-          />
-        ))}
-      </div>
-      {/* --- End Floating Tools --- */}
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden pt-24 pb-16">
+      
+      {/* --- ADDED: Animated gradient background (from Login) --- */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-indigo-500/10 to-blue-500/10 blur-3xl -z-10"
+        animate={{
+          backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+      />
+      {/* --- REMOVED: Floating Tools --- */}
 
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div
-          ref={cardRef}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-          style={{
-            transformStyle: "preserve-3d",
-            rotateX,
-            rotateY,
-          }}
-          initial={{ opacity: 0, y: 20 }}
+          // Replaced 3D tilt with simpler fade-in from Login page
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           className="max-w-md mx-auto"
         >
-          <Card
-            className="shadow-glow-lg"
-            style={{
-              transform: "translateZ(75px)",
-              transformStyle: "preserve-3d",
-            }}
-          >
+          {/* Using the same Card style as Login page */}
+          <Card className="shadow-xl backdrop-blur-lg bg-white/10 dark:bg-gray-900/50 border border-white/10">
             <CardHeader>
               <CardTitle className="text-3xl gradient-text">
                 Create Account
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-500 dark:text-gray-400">
                 Sign up to start your learning journey
               </CardDescription>
             </CardHeader>
@@ -628,5 +503,3 @@ const Signup = () => {
 };
 
 export default Signup;
-
-
