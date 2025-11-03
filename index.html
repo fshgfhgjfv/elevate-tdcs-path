@@ -6,61 +6,53 @@
     <title>TDCS Technologies Private Limited</title>
     <meta name="description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
     <meta name="author" content="TDCS Technologies Private Limited" />
-
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS%20LOGO.png">
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/zEKyTHxGzrTvxrimmCaVYBt59eJ2/social-images/social-1761064158707-TDCS%20LOGO.png">
-    <meta property="og:title" content="TDCS Technologies Private Limited">
-    <meta name="twitter:title" content="TDCS Technologies Private Limited">
-    <meta property="og:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
-    <meta name="twitter:description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
-
     <style>
-      /* Hide default cursor */
-      body {
-        cursor: none;
-        background-color: #f0f2f5; /* A light grey to make dots visible */
-        min-height: 100vh; 
-        margin: 0;
-        /* --- THIS LINE IS NOW REMOVED --- */
-        /* overflow: hidden; */ 
+      /* --- UPDATE: Check for reduced motion preference --- */
+      @media (prefers-reduced-motion: no-preference) {
+        body {
+          cursor: none;
+        }
       }
-
-      /* Main cursor dot */
+      
+      /* Hide the custom cursor by default if motion is not preferred */
       #main-cursor-dot {
-        position: fixed;
-        width: 10px;
-        height: 10px;
-        background-color: rgba(0, 150, 255, 0.8); /* A solid blue dot */
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 10000;
-        transform: translate(-50%, -50%); /* Center the dot */
-        transition: transform 0.1s ease-out, width 0.1s ease-out, height 0.1s ease-out; 
+        display: none; 
       }
 
-      /* Trail dots */
+      /* --- UPDATE: Only display custom cursor if motion is preferred --- */
+      @media (prefers-reduced-motion: no-preference) {
+        #main-cursor-dot {
+          display: block; /* Show the dot */
+          position: fixed;
+          width: 10px;
+          height: 10px;
+          background-color: rgba(0, 150, 255, 0.8);
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 10000;
+          transform: translate(-50%, -50%);
+          transition: transform 0.1s ease-out, width 0.1s ease-out, height 0.1s ease-out;
+        }
+      }
+
       .cursor-trail-dot {
         position: fixed;
-        background-color: rgba(0, 180, 255, 0.5); /* Lighter, more transparent blue */
+        background-color: rgba(0, 180, 255, 0.5);
         border-radius: 50%;
         pointer-events: none;
         z-index: 9999;
-        opacity: 0; /* Start invisible */
-        transform: translate(-50%, -50%) scale(0.5); /* Start smaller */
-        animation: fadeOutTrail 1s forwards ease-out; /* Fade out over 1 second */
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+        /* Animation will only run if dots are created by the script */
+        animation: fadeOutTrail 1s forwards ease-out;
       }
 
-      /* Hover effect for main dot */
       #main-cursor-dot.hover {
         width: 15px;
         height: 15px;
         background-color: rgba(0, 200, 255, 0.9);
       }
 
-      /* Keyframe animation for trail dots */
       @keyframes fadeOutTrail {
         0% {
           opacity: 1;
@@ -71,31 +63,41 @@
           transform: translate(-50%, -50%) scale(0.1);
         }
       }
+
+      /* Fallback for the body cursor (redundant but safe) */
+      body {
+        background-color: #f0f2f5;
+        min-height: 100vh;
+        margin: 0;
+      }
     </style>
   </head>
 
   <body>
     <div id="main-cursor-dot"></div>
-
     <div id="root"></div>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script type="module" src="/src/main.tsx"></script>
 
     <script>
+      // --- UPDATE: Check for reduced motion preference ---
+      const motionQuery = window.matchMedia("(prefers-reduced-motion: no-preference)");
+      
       const mainCursorDot = document.getElementById("main-cursor-dot");
       let mouseX = 0, mouseY = 0;
       let targetX = 0, targetY = 0;
-      const trailSpawnInterval = 50; // Milliseconds between spawning trail dots
+      const trailSpawnInterval = 50; 
       let lastTrailSpawnTime = 0;
 
-      if (mainCursorDot) {
+      // --- UPDATE: Only run the script if the user wants motion ---
+      if (mainCursorDot && motionQuery.matches) {
+        
         // Update mouse position
         window.addEventListener("mousemove", (e) => {
           mouseX = e.clientX;
           mouseY = e.clientY;
 
-          // Spawn a trail dot
           const now = Date.now();
           if (now - lastTrailSpawnTime > trailSpawnInterval) {
             createTrailDot(mouseX, mouseY);
@@ -105,26 +107,24 @@
 
         // Smoothly follow mouse
         function animateMainCursor() {
-          targetX += (mouseX - targetX) * 0.15; // Smoothness factor
+          targetX += (mouseX - targetX) * 0.15;
           targetY += (mouseY - targetY) * 0.15;
           mainCursorDot.style.left = `${targetX}px`;
           mainCursorDot.style.top = `${targetY}px`;
           requestAnimationFrame(animateMainCursor);
         }
-        animateMainCursor();
+        animateMainCursor(); // Start the animation loop
 
         function createTrailDot(x, y) {
           const trailDot = document.createElement("div");
           trailDot.classList.add("cursor-trail-dot");
           trailDot.style.left = `${x}px`;
           trailDot.style.top = `${y}px`;
-          // Randomize size slightly for a more organic look
-          const size = Math.random() * 8 + 4; // Between 4px and 12px
+          const size = Math.random() * 8 + 4;
           trailDot.style.width = `${size}px`;
           trailDot.style.height = `${size}px`;
           document.body.appendChild(trailDot);
 
-          // Remove the dot after its animation is complete
           trailDot.addEventListener("animationend", () => {
             trailDot.remove();
           });
