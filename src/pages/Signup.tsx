@@ -17,13 +17,12 @@ import {
   useSpring,
 } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, Github } from "lucide-react";
-import { GoogleLogin } from "@react-oauth/google";
-import jwtDecode from "jwt-decode";
+import { Loader2, Github } from "lucide-react"; // <<< 1. IMPORT GITHUB ICON
 
-// --- Floating Tool Icons ---
+// --- 1. Define Floating Tools & Animations ---
 const tools = [
   {
+    // Kali Linux (from previous version)
     src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
     alt: "Kali Linux",
     side: "left" as "left" | "right",
@@ -31,6 +30,7 @@ const tools = [
     y: 150,
   },
   {
+    // Burp Suite (from previous version)
     src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1",
     alt: "Burp Suite",
     side: "left" as "left" | "right",
@@ -38,13 +38,15 @@ const tools = [
     y: 350,
   },
   {
+    // Wireshark (from previous version)
     src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true",
     alt: "Wireshark",
     side: "right" as "left" | "right",
     delay: 0.3,
-    y: 120,
+    y: 120, // Adjusted position
   },
   {
+    // <<< NEW: Nmap
     src: "https://assets.tryhackme.com/img/modules/metasploit.png",
     alt: "Nmap",
     side: "right" as "left" | "right",
@@ -52,6 +54,7 @@ const tools = [
     y: 320,
   },
   {
+    // <<< NEW: Metasploit
     src: "https://assets.tryhackme.com/img/modules/metasploit.png",
     alt: "Metasploit",
     side: "left" as "left" | "right",
@@ -60,13 +63,42 @@ const tools = [
   },
 ];
 
+// Variants for the initial slide-in
 const iconVariants = {
   hidden: (side: "left" | "right") => ({
     opacity: 0,
-    x: side === "left" ? -100 : 100,
+    x: side === "left" ? -100 : 100, // Come from off-screen
     scale: 0.5,
   }),
 };
+// --- End Floating Tools ---
+
+// --- 2. ADD GOOGLE ICON HELPER ---
+const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    {...props}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 48 48"
+  >
+    <path
+      fill="#FFC107"
+      d="M43.611,20.083H42V20H24v8h11.303c-1.659,4.696-6.142,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
+    />
+    <path
+      fill="#FF3D00"
+      d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
+    />
+    <path
+      fill="#4CAF50"
+      d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.16,0-9.658-3.302-11.303-7.918l-6.522,5.023C9.505,41.246,16.227,44,24,44z"
+    />
+    <path
+      fill="#1976D2"
+      d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C41.383,34.463,44,29.625,44,24C44,22.659,43.862,21.35,43.611,20.083z"
+    />
+  </svg>
+);
+// --- End Google Icon ---
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -80,6 +112,7 @@ const Signup = () => {
   });
 
   useEffect(() => {
+    // Redirect if already logged in
     const user = localStorage.getItem("tdcs_user");
     if (user) {
       navigate("/dashboard");
@@ -93,6 +126,7 @@ const Signup = () => {
     const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
     const { name, email, number, password, confirmPassword } = formData;
 
+    // Client-side validation
     if (!name || !email || !number || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
       setIsLoading(false);
@@ -124,7 +158,9 @@ const Signup = () => {
       return;
     }
 
+    // Simulate API delay for animation
     setTimeout(() => {
+      // Create new user
       const newUser = {
         id: Date.now().toString(),
         name,
@@ -143,14 +179,27 @@ const Signup = () => {
     }, 1000);
   };
 
-  // 3D card motion
+  // --- 3. ADD SOCIAL SIGNUP HANDLER ---
+  const handleSocialSignup = (provider: string) => {
+    toast.info(`Sign up with ${provider} is not implemented in this demo.`);
+  };
+
+  // --- 3D Card Tilt Animation ---
   const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseXSpring = useSpring(x);
   const mouseYSpring = useSpring(y);
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+  const rotateX = useTransform(
+    mouseYSpring,
+    [-0.5, 0.5],
+    ["10deg", "-10deg"]
+  );
+  const rotateY = useTransform(
+    mouseXSpring,
+    [-0.5, 0.5],
+    ["-10deg", "10deg"]
+  );
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
@@ -165,36 +214,61 @@ const Signup = () => {
     x.set(0);
     y.set(0);
   };
+  // --- End 3D Card ---
+
+  // --- Staggered Form Animation ---
+  const formVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+  // --- End Staggered ---
 
   return (
     <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
-      {/* Floating icons */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
+      {/* --- 2. Add Floating Tools JSX Here --- */}
+      <div
+        className="absolute inset-0 -z-10 overflow-hidden"
+        aria-hidden="true"
+      >
         {tools.map((tool) => (
           <motion.img
             key={tool.alt}
             src={tool.src}
             alt={tool.alt}
-            className="absolute h-16 w-16 md:h-24 md:w-24 opacity-10"
+            className="absolute h-16 w-16 md:h-24 md:w-24" // You can adjust size here
             style={{
               top: tool.y,
               ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }),
             }}
+            // --- Animation Props ---
             variants={iconVariants}
             initial="hidden"
-            custom={tool.side}
+            custom={tool.side} // Pass "left" or "right" to variants
+            // Animate to visible state AND start bobbing
             animate={{
-              opacity: 0.1,
+              opacity: 0.1, // Make them subtle
               x: 0,
               scale: 1,
-              y: [tool.y, tool.y + 20, tool.y],
+              y: [tool.y, tool.y + 20, tool.y], // Bob up and down
               transition: {
+                // For the slide-in
                 type: "spring",
                 stiffness: 100,
                 damping: 10,
                 delay: tool.delay,
+                // For the bobbing
                 y: {
-                  duration: 2 + Math.random() * 1,
+                  duration: 2 + Math.random() * 1, // Random duration
                   repeat: Infinity,
                   repeatType: "reverse",
                   ease: "easeInOut",
@@ -204,6 +278,7 @@ const Signup = () => {
           />
         ))}
       </div>
+      {/* --- End Floating Tools --- */}
 
       <div className="container mx-auto px-4">
         <motion.div
@@ -220,7 +295,13 @@ const Signup = () => {
           transition={{ duration: 0.5 }}
           className="max-w-md mx-auto"
         >
-          <Card className="shadow-glow-lg">
+          <Card
+            className="shadow-glow-lg"
+            style={{
+              transform: "translateZ(75px)",
+              transformStyle: "preserve-3d",
+            }}
+          >
             <CardHeader>
               <CardTitle className="text-3xl gradient-text">
                 Create Account
@@ -229,46 +310,53 @@ const Signup = () => {
                 Sign up to start your learning journey
               </CardDescription>
             </CardHeader>
-
             <CardContent>
-              {/* Google Sign up */}
-              <div className="flex flex-col sm:flex-row gap-3 mb-4">
-                <GoogleLogin
-                  onSuccess={(credentialResponse) => {
-                    const token = credentialResponse.credential;
-                    if (token) {
-                      const decoded: any = jwtDecode(token);
-                      const user = {
-                        name: decoded.name,
-                        email: decoded.email,
-                        picture: decoded.picture,
-                      };
-                      localStorage.setItem(
-                        "tdcs_user",
-                        JSON.stringify(user)
-                      );
-                      toast.success(`Welcome ${user.name}!`);
-                      navigate("/dashboard");
-                    }
-                  }}
-                  onError={() => {
-                    toast.error("Google Sign Up Failed");
-                  }}
-                />
-
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() =>
-                    toast.info("GitHub sign up not implemented yet.")
-                  }
+              <motion.form
+                onSubmit={handleSubmit}
+                className="space-y-4"
+                variants={formVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                {/* --- 4. ADD SOCIAL LOGINS --- */}
+                <motion.div
+                  variants={itemVariants}
+                  className="flex flex-col sm:flex-row gap-3"
                 >
-                  <Github className="mr-2 h-4 w-4" /> Sign up with GitHub
-                </Button>
-              </div>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => handleSocialSignup("Google")}
+                    type="button"
+                  >
+                    <GoogleIcon className="mr-2 h-4 w-4" />
+                    Sign up with Google
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => handleSocialSignup("GitHub")}
+                    type="button"
+                  >
+                    <Github className="mr-2 h-4 w-4" />
+                    Sign up with GitHub
+                  </Button>
+                </motion.div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
+                {/* --- 5. ADD DIVIDER --- */}
+                <motion.div variants={itemVariants} className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">
+                      Or sign up with email
+                    </span>
+                  </div>
+                </motion.div>
+
+                {/* --- Form Fields --- */}
+                <motion.div variants={itemVariants}>
                   <Label htmlFor="name">Full Name</Label>
                   <Input
                     id="name"
@@ -280,9 +368,9 @@ const Signup = () => {
                     }
                     required
                   />
-                </div>
+                </motion.div>
 
-                <div>
+                <motion.div variants={itemVariants}>
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
@@ -294,9 +382,9 @@ const Signup = () => {
                     }
                     required
                   />
-                </div>
+                </motion.div>
 
-                <div>
+                <motion.div variants={itemVariants}>
                   <Label htmlFor="number">Phone Number</Label>
                   <div className="flex items-center">
                     <span className="px-3 py-2 bg-muted rounded-l-md border border-r-0 border-input text-sm text-muted-foreground">
@@ -317,9 +405,9 @@ const Signup = () => {
                       required
                     />
                   </div>
-                </div>
+                </motion.div>
 
-                <div>
+                <motion.div variants={itemVariants}>
                   <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
@@ -331,9 +419,9 @@ const Signup = () => {
                     }
                     required
                   />
-                </div>
+                </motion.div>
 
-                <div>
+                <motion.div variants={itemVariants}>
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <Input
                     id="confirmPassword"
@@ -348,20 +436,26 @@ const Signup = () => {
                     }
                     required
                   />
-                </div>
+                </motion.div>
 
-                <Button
-                  type="submit"
-                  variant="gradient"
-                  className="w-full"
-                  disabled={isLoading}
+                <motion.div
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  {isLoading && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
-                  {isLoading ? "Signing Up..." : "Sign Up"}
-                </Button>
-              </form>
+                  <Button
+                    type="submit"
+                    variant="gradient"
+                    className="w-full"
+                    disabled={isLoading}
+                  >
+                    {isLoading && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    {isLoading ? "Signing Up..." : "Sign Up"}
+                  </Button>
+                </motion.div>
+              </motion.form>
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-muted-foreground">
