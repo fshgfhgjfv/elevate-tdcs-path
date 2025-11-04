@@ -18,9 +18,12 @@ import {
 } from "framer-motion";
 import { toast } from "sonner";
 import { Loader2, Github } from "lucide-react";
-// --- 1. REMOVED @react-oauth/google IMPORT ---
+// --- 1. IMPORT GOOGLE OAUTH PROVIDER & HOOK ---
+import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
 // --- 2. SET GOOGLE CLIENT ID ---
+// IMPORTANT: The Client Secret MUST NOT be used in frontend code.
+// It is for your backend server ONLY.
 const googleClientId =
   "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
 
@@ -63,6 +66,7 @@ const tools = [
   },
 ];
 
+// Variants for the initial slide-in
 const iconVariants = {
   hidden: (side: "left" | "right") => ({
     opacity: 0,
@@ -72,6 +76,7 @@ const iconVariants = {
 };
 // --- End Floating Tools ---
 
+// --- Google Icon Helper ---
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
@@ -109,127 +114,12 @@ const Signup = () => {
     confirmPassword: "",
   });
 
-  // --- 3. GOOGLE SIGN-IN LOGIC REWRITE ---
-
-  // This function will handle logging in or registering the user
-  // after Google returns their information.
-  const logInOrRegisterGoogleUser = (email: string, name: string, googleId: string) => {
-    setIsLoading(true);
-    try {
-      const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
-      let user = users.find((u: any) => u.email === email);
-      let isNewUser = false;
-
-      if (!user) {
-        // New user - register them
-        user = {
-          id: googleId, // Use Google ID as unique ID
-          name,
-          email,
-          number: "", // Google doesn't provide this
-          isGoogleUser: true, // Flag for Google login
-        };
-        users.push(user);
-        localStorage.setItem("tdcs_users", JSON.stringify(users));
-        isNewUser = true;
-      }
-
-      // Log the user in
-      // Note: We don't have/need a password for Google users
-      const { password: _, ...userToLogin } = user;
-      localStorage.setItem("tdcs_user", JSON.stringify(userToLogin));
-
-      toast.success(
-        isNewUser ? "Account created successfully!" : "Logged in successfully!"
-      );
-      setIsLoading(false);
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Google Sign-In Error:", error);
-      toast.error("Google Sign-In failed. Please try again.");
-      setIsLoading(false);
-    }
-  };
-
-  // This is the callback function that Google's script will call
-  const handleGoogleCredentialResponse = (response: any) => {
-    if (response.credential) {
-      try {
-        // Decode the JWT (ID Token) to get user info
-        const payload = JSON.parse(atob(response.credential.split(".")[1]));
-        const { email, name, sub: googleId } = payload;
-
-        if (!email) {
-          toast.error("Google account must have a verified email.");
-          return;
-        }
-
-        logInOrRegisterGoogleUser(email, name, googleId);
-
-      } catch (error) {
-        console.error("Error decoding Google credential:", error);
-        toast.error("Google Sign-In failed. Please try again.");
-      }
-    } else {
-      console.error("Google Sign-In Error: No credential in response");
-      toast.error("Google Sign-In failed.");
-    }
-  };
-
-
   useEffect(() => {
     // Redirect if already logged in
     const user = localStorage.getItem("tdcs_user");
     if (user) {
       navigate("/dashboard");
     }
-
-    // --- Load Google GSI Script ---
-    const script = document.createElement("script");
-    script.src = "https://accounts.google.com/gsi/client";
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      // Script is loaded, now initialize Google Identity Services
-      // @ts-ignore
-      if (window.google) {
-        // @ts-ignore
-        window.google.accounts.id.initialize({
-          client_id: googleClientId,
-          callback: handleGoogleCredentialResponse,
-        });
-
-        // Render the Google Sign-In button
-        // @ts-ignore
-        window.google.accounts.id.renderButton(
-          document.getElementById("google-signin-button"),
-          { 
-            theme: "outline", 
-            size: "large",
-            type: "standard",
-            text: "signup_with",
-            shape: "rectangular",
-            width: "100%", // This might not be exact, but we'll use w-full on parent
-          }
-        );
-      } else {
-        console.error("Google script loaded but window.google is not available.");
-        toast.error("Could not load Google Sign-In.");
-      }
-    };
-    script.onerror = () => {
-      console.error("Failed to load Google GSI script.");
-      toast.error("Could not load Google Sign-In.");
-    }
-
-    document.head.appendChild(script);
-
-    // Cleanup script on component unmount
-    return () => {
-      document.head.removeChild(script);
-    };
-    // We only want this effect to run once on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -291,6 +181,78 @@ const Signup = () => {
       navigate("/dashboard");
     }, 1000);
   };
+
+  // --- 3. GOOGLE SIGNUP HANDLERS ---
+  const handleGoogleSuccess = async (tokenResponse: any) => {
+    setIsLoading(true);
+    try {
+      // Fetch user info from Google
+      const userInfoResponse = await fetch(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+        }
+      );
+
+      if (!userInfoResponse.ok) {
+        throw new Error("Failed to fetch user info from Google");
+      }
+
+      const userInfo = await userInfoResponse.json();
+      const { email, name, sub: googleId } = userInfo;
+
+      if (!email) {
+        toast.error("Google account must have a verified email.");
+        setIsLoading(false);
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
+      let user = users.find((u: any) => u.email === email);
+      let isNewUser = false;
+
+      if (!user) {
+        // New user - register them
+        user = {
+          id: googleId, // Use Google ID as unique ID
+          name,
+          email,
+          number: "", // Google doesn't provide this
+          isGoogleUser: true, // Flag for Google login
+        };
+        users.push(user);
+        localStorage.setItem("tdcs_users", JSON.stringify(users));
+        isNewUser = true;
+      }
+
+      // Log the user in
+      // Note: We don't have/need a password for Google users
+      const { password: _, ...userToLogin } = user;
+      localStorage.setItem("tdcs_user", JSON.stringify(userToLogin));
+
+      toast.success(
+        isNewUser ? "Account created successfully!" : "Logged in successfully!"
+      );
+      setIsLoading(false);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+      toast.error("Google Sign-In failed. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    console.error("Google Sign-In Error");
+    toast.error("Google Sign-In failed.");
+    setIsLoading(false);
+  };
+
+  // Initialize the Google login hook
+  const googleLogin = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: handleGoogleError,
+  });
 
   const handleGitHubSignup = (provider: string) => {
     toast.info(`Sign up with ${provider} is not implemented in this demo.`);
@@ -431,9 +393,20 @@ const Signup = () => {
                   variants={itemVariants}
                   className="flex flex-col sm:flex-row gap-3"
                 >
-                  {/* --- This div will be populated by the Google script --- */}
-                  <div id="google-signin-button" className="w-full" />
-                  
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => googleLogin()} // <<< 4. CALL GOOGLE LOGIN HOOK
+                    type="button"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <GoogleIcon className="mr-2 h-4 w-4" />
+                    )}
+                    Sign up with Google
+                  </Button>
                   <Button
                     variant="outline"
                     className="w-full"
@@ -584,6 +557,12 @@ const Signup = () => {
   );
 };
 
-// --- 5. REMOVED WRAPPER, EXPORT DEFAULT SIGNUP ---
-export default Signup;
+// --- 5. WRAP COMPONENT IN PROVIDER ---
+// This ensures the useGoogleLogin() hook has access to the client ID
+const SignupWithGoogleAuth = () => (
+  <GoogleOAuthProvider clientId={googleClientId}>
+    <Signup />
+  </GoogleOAuthProvider>
+);
 
+export default SignupWithGoogleAuth;
