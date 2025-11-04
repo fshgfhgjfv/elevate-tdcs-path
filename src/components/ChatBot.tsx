@@ -162,26 +162,14 @@ export const ChatBot = () => {
     <>
       {/* Floating Chat Button */}
       <motion.div
-        initial={{ scale: 0, y: 0 }} // CHANGED
-        animate={{ scale: 1, y: [0, -8, 0] }} // CHANGED
-        transition={{ // CHANGED
-          y: {
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-            repeatDelay: 0.5
-          },
-          scale: {
-            duration: 0.4,
-            ease: "easeOut"
-          }
-        }}
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
         className="fixed bottom-6 right-6 z-50"
       >
         <Button
           onClick={() => setIsOpen(!isOpen)}
-          // size="lg" // REMOVED
-          className="rounded-full h-14 w-14 shadow-2xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700" // CHANGED
+          size="lg"
+          className="rounded-full h-16 w-16 shadow-2xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
         >
           {isOpen ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
         </Button>
@@ -194,7 +182,7 @@ export const ChatBot = () => {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-22 right-6 z-50 w-96 max-w-[calc(100vw-3rem)]" // CHANGED
+            className="fixed bottom-24 right-6 z-50 w-96 max-w-[calc(100vw-3rem)]"
           >
             <Card className="shadow-2xl backdrop-blur-lg bg-background/95 border-2">
               {/* Header */}
