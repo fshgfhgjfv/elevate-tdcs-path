@@ -22,12 +22,11 @@ import { Loader2, Github } from "lucide-react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
 // --- 2. SET GOOGLE CLIENT ID ---
-// IMPORTANT: The Client Secret MUST NOT be used in frontend code.
-// It is for your backend server ONLY.
 const googleClientId =
   "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
 
 // --- Define Floating Tools & Animations ---
+// (This is now restored from your original code)
 const tools = [
   {
     src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
@@ -77,6 +76,7 @@ const iconVariants = {
 // --- End Floating Tools ---
 
 // --- Google Icon Helper ---
+// (This is now restored from your original code)
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
@@ -106,6 +106,7 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 const Signup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isExiting, setIsExiting] = useState(false); // <<< 1. ADD EXIT STATE
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -122,6 +123,14 @@ const Signup = () => {
     }
   }, [navigate]);
 
+  // --- 2. CREATE EXIT & NAVIGATE FUNCTION ---
+  const exitToDashboard = () => {
+    setIsExiting(true); // Trigger exit animations
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 500); // Wait 500ms for animations
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -129,7 +138,7 @@ const Signup = () => {
     const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
     const { name, email, number, password, confirmPassword } = formData;
 
-    // Client-side validation
+    // ... (All validations are unchanged)
     if (!name || !email || !number || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
       setIsLoading(false);
@@ -160,6 +169,7 @@ const Signup = () => {
       setIsLoading(false);
       return;
     }
+    // ... (End validations)
 
     // Simulate API delay for animation
     setTimeout(() => {
@@ -178,11 +188,11 @@ const Signup = () => {
 
       toast.success("Account created successfully!");
       setIsLoading(false);
-      navigate("/dashboard");
+      exitToDashboard(); // <<< 3. USE THE NEW FUNCTION
     }, 1000);
   };
 
-  // --- 3. GOOGLE SIGNUP HANDLERS ---
+  // --- GOOGLE SIGNUP HANDLERS ---
   const handleGoogleSuccess = async (tokenResponse: any) => {
     setIsLoading(true);
     try {
@@ -226,7 +236,6 @@ const Signup = () => {
       }
 
       // Log the user in
-      // Note: We don't have/need a password for Google users
       const { password: _, ...userToLogin } = user;
       localStorage.setItem("tdcs_user", JSON.stringify(userToLogin));
 
@@ -234,7 +243,7 @@ const Signup = () => {
         isNewUser ? "Account created successfully!" : "Logged in successfully!"
       );
       setIsLoading(false);
-      navigate("/dashboard");
+      exitToDashboard(); // <<< 3. USE THE NEW FUNCTION
     } catch (error) {
       console.error("Google Sign-In Error:", error);
       toast.error("Google Sign-In failed. Please try again.");
@@ -275,7 +284,8 @@ const Signup = () => {
     ["-10deg", "10deg"]
   );
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!cardRef.current) return;
+    // <<< 4. ADD isExiting CHECK
+    if (!cardRef.current || isExiting) return;
     const rect = cardRef.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
@@ -327,24 +337,34 @@ const Signup = () => {
             variants={iconVariants}
             initial="hidden"
             custom={tool.side}
-            animate={{
-              opacity: 0.1,
-              x: 0,
-              scale: 1,
-              y: [tool.y, tool.y + 20, tool.y], // Bob up and down
-              transition: {
-                type: "spring",
-                stiffness: 100,
-                damping: 10,
-                delay: tool.delay,
-                y: {
-                  duration: 2 + Math.random() * 1,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  ease: "easeInOut",
-                },
-              },
-            }}
+            // <<< 5. MAKE ANIMATE PROP CONDITIONAL ---
+            animate={
+              isExiting
+                ? { // Exit Animation
+                    opacity: 0,
+                    x: tool.side === "left" ? -150 : 150,
+                    scale: 0.3,
+                    transition: { duration: 0.4, ease: "easeIn" },
+                  }
+                : { // Original "Coming" Animation
+                    opacity: 0.1,
+                    x: 0,
+                    scale: 1,
+                    y: [tool.y, tool.y + 20, tool.y],
+                    transition: {
+                      type: "spring",
+                      stiffness: 100,
+                      damping: 10,
+                      delay: tool.delay,
+                      y: {
+                        duration: 2 + Math.random() * 1,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        ease: "easeInOut",
+                      },
+                    },
+                  }
+            }
           />
         ))}
       </div>
@@ -360,9 +380,19 @@ const Signup = () => {
             rotateX,
             rotateY,
           }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          // <<< 6. UPDATE ANIMATION PROPS ---
+          initial={{ opacity: 0, y: 20, scale: 1 }}
+          animate={
+            isExiting
+              ? { opacity: 0, y: -20, scale: 0.95 } // Exit
+              : { opacity: 1, y: 0, scale: 1 }      // Enter
+          }
+          transition={
+            isExiting
+              ? { duration: 0.4, ease: "easeIn" }
+              : { duration: 0.5 }
+          }
+          // ---
           className="max-w-md mx-auto"
         >
           <Card
@@ -452,7 +482,7 @@ const Signup = () => {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="exam@email.com"
+                    placeholder="example@email.com"
                     value={formData.email}
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
@@ -558,7 +588,7 @@ const Signup = () => {
 };
 
 // --- 5. WRAP COMPONENT IN PROVIDER ---
-// This ensures the useGoogleLogin() hook has access to the client ID
+// (This is now restored from your original code)
 const SignupWithGoogleAuth = () => (
   <GoogleOAuthProvider clientId={googleClientId}>
     <Signup />
