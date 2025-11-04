@@ -11,7 +11,7 @@ export const WhatsAppButton = () => {
       initial={{ scale: 0, y: 0 }}
       animate={{ 
         scale: 1,
-        y: [0, -10, 0]
+        y: [0, -8, 0] // Reduced bounce for smaller size
       }}
       transition={{
         y: {
@@ -24,9 +24,9 @@ export const WhatsAppButton = () => {
       whileTap={{ scale: 0.95 }}
     >
       <div className="relative group">
-        <div className="absolute inset-0 bg-green-500 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
-        <div className="relative h-16 w-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full shadow-2xl flex items-center justify-center">
-          <MessageCircle className="h-8 w-8 text-white" fill="currentColor" />
+        <div className="absolute inset-0 bg-green-500 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity" /> {/* Reduced blur */}
+        <div className="relative h-12 w-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full shadow-2xl flex items-center justify-center">
+          <MessageCircle className="h-6 w-6 text-white" fill="currentColor" />
         </div>
       </div>
     </motion.a>
