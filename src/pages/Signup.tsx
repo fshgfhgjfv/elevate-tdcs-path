@@ -258,22 +258,38 @@ const Signup = () => {
     toast.info(`Sign up with ${provider} is not implemented in this demo.`);
   };
 
-  // --- 3D Card Tilt Animation ---
+  // --- 1. UPDATE: 3D Card Tilt Animation Hooks ---
   const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const mouseXSpring = useSpring(x);
-  const mouseYSpring = useSpring(y);
+
+  // Spring-ify the mouse values for smoother movement
+  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
+  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
+
+  // Increased tilt angle (from 10deg to 20deg)
   const rotateX = useTransform(
     mouseYSpring,
     [-0.5, 0.5],
-    ["10deg", "-10deg"]
+    ["20deg", "-20deg"] // More dramatic tilt
   );
   const rotateY = useTransform(
     mouseXSpring,
     [-0.5, 0.5],
-    ["-10deg", "10deg"]
+    ["-20deg", "20deg"] // More dramatic tilt
   );
+
+  // NEW: Glare Effect Hooks
+  const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ["0%", "100%"]);
+  const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ["0%", "100%"]);
+  const glareOpacity = useMotionValue(0);
+  const glareOpacitySpring = useSpring(glareOpacity, {
+    stiffness: 400,
+    damping: 30,
+  });
+  // --- End 3D Card ---
+
+  // --- 2. UPDATE: Mouse Handlers ---
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
@@ -283,12 +299,14 @@ const Signup = () => {
     const yPct = (e.clientY - rect.top) / height - 0.5;
     x.set(xPct);
     y.set(yPct);
+    glareOpacity.set(0.15); // Show glare on move
   };
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
+    glareOpacity.set(0); // Hide glare on leave
   };
-  // --- End 3D Card ---
+  // --- End Mouse Handlers ---
 
   // --- Staggered Form Animation ---
   const formVariants = {
@@ -365,14 +383,35 @@ const Signup = () => {
           transition={{ duration: 0.5 }}
           className="max-w-md mx-auto"
         >
+          {/* --- 3. UPDATE: Card JSX --- */}
           <Card
             className="shadow-glow-lg"
             style={{
-              transform: "translateZ(75px)",
+              transform: "translateZ(100px)", // Increased depth
               transformStyle: "preserve-3d",
+              // This ensures the children (glare, header, content) stack correctly
+              position: "relative",
             }}
           >
-            <CardHeader>
+            {/* --- NEW: GLARE ELEMENT --- */}
+            {/* This div sits on top of the card's background but below the content */}
+            <motion.div
+              className="pointer-events-none absolute inset-0 rounded-[inherit]"
+              style={{
+                opacity: glareOpacitySpring,
+                background: useTransform(
+                  [glareX, glareY],
+                  ([latestX, latestY]) =>
+                    `radial-gradient(800px circle at ${latestX} ${latestY}, rgba(255, 255, 255, 0.2), transparent 80%)`
+                ),
+                zIndex: 1, // Sit above card bg (0) but below content (2)
+              }}
+            />
+
+            {/* --- UPDATE CARD SECTIONS --- */}
+            <CardHeader
+              style={{ position: "relative", zIndex: 2 }} // Ensure content is above glare
+            >
               <CardTitle className="text-3xl gradient-text">
                 Create Account
               </CardTitle>
@@ -380,7 +419,9 @@ const Signup = () => {
                 Sign up to start your learning journey
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent
+              style={{ position: "relative", zIndex: 2 }} // Ensure content is above glare
+            >
               <motion.form
                 onSubmit={handleSubmit}
                 className="space-y-4"
@@ -480,6 +521,7 @@ const Signup = () => {
                         }
                       }}
                       className="rounded-l-none"
+      
                       required
                       disabled={isLoading}
                     />
