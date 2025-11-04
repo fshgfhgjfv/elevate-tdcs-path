@@ -7,7 +7,6 @@ import { Download, X } from "lucide-react";
 import type { RefObject } from "react";
 import { CalendarCheck } from "lucide-react"; // NEW: Import for Book Demo Modal
 
-
 const GRADIENT_CLASS = "text-transparent bg-clip-text bg-gradient-to-r from-[#FF9A3C] via-[#FF50B3] to-[#8C53FF]";
 
 interface HeroProps {
@@ -71,7 +70,6 @@ const alertMessage = (message: string, type: 'success' | 'error') => {
 // --- NEW: BookDemoModal Component ---
 const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
     if (!isOpen) return null;
-
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // Simulate demo booking logic
@@ -79,7 +77,6 @@ const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
         alertMessage("Demo request received! We'll contact you shortly (simulated).", "success");
         onClose();
     };
-
     return (
         <div
             className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 transition-opacity duration-300 backdrop-blur-sm"
@@ -135,7 +132,6 @@ const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
                             placeholder="+91-XXXXXXXXXX"
                         />
                     </div>
-
                     <button
                         type="submit"
                         className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out"
@@ -148,11 +144,11 @@ const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
         </div>
     );
 };
+
 // --- DownloadBrochureModal Component (INTEGRATED) ---
 // FIXED: Added explicit prop typing (DownloadBrochureModalProps)
 const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) => {
     if (!isOpen) return null;
-
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // Simulate brochure download logic
@@ -160,7 +156,6 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
         alertMessage("Thank you! Your brochure download link has been sent to your email (simulated).", "success");
         onClose();
     };
-
     return (
         <div
             className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 transition-opacity duration-300 backdrop-blur-sm"
@@ -216,7 +211,6 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
                             placeholder="email@company.com"
                         />
                     </div>
-
                     <button
                         type="submit"
                         className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
@@ -230,7 +224,6 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
     );
 };
 
-
 export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     // NEW: State for the Book Demo Modal
     const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
@@ -238,7 +231,6 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     
     // NEW: State to track which card is expanded
     const [expandedCard, setExpandedCard] = useState<string | null>(null);
-
     const heroRef = useRef(null);
     // Use useInView to trigger animations when the component scrolls into view
     const isInView = useInView(heroRef, { once: true, amount: 0.1 });
@@ -248,7 +240,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     const y = useMotionValue(0);
     const rotateX = useTransform(y, [-100, 100], [10, -10]); // Map y movement to X rotation
     const rotateY = useTransform(x, [-100, 100], [-10, 10]); // Map x movement to Y rotation
-
+    
     // Card refs for 3D effect
     const cardRefCEO: RefObject<HTMLDivElement> = useRef(null);
     const cardRefCOO: RefObject<HTMLDivElement> = useRef(null);
@@ -276,6 +268,71 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         },
     };
 
+    // --- NEW: Card Animation Variants ---
+    const ceoCardVariants = {
+        hidden: { opacity: 0, y: 50, scale: 0.8 }, // Start lower, smaller, and invisible
+        visible: {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 10,
+                duration: 0.8,
+                delay: 0.2 // Slight delay to come after text
+            },
+        },
+    };
+
+    const cooCardVariants = {
+        hidden: { opacity: 0, x: -100 }, // Start off-screen left
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 12,
+                duration: 0.7,
+                delay: 0.4 // Delay to come after CEO
+            },
+        },
+    };
+
+    const cmoCardVariants = {
+        hidden: { opacity: 0, x: 100 }, // Start off-screen right
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 12,
+                duration: 0.7,
+                delay: 0.5 // Delay to come after COO
+            },
+        },
+    };
+
+    // --- NEW: Glass Sweep Animation Variant ---
+    const sweepVariants = {
+        hidden: { 
+            x: "-150%", // Start fully off-screen to the left
+            skewX: "-30deg" // Add a skew to the highlight
+        },
+        visible: { 
+            x: "150%", // End fully off-screen to the right
+            skewX: "-30deg",
+            transition: { 
+                duration: 1.2, 
+                delay: 0.8, // Start this animation 0.8s after 'visible' is triggered (0.2s card delay + 0.6s)
+                ease: [0.6, 0.01, -0.05, 0.9] // A custom ease for a nice sweep
+            } 
+        }
+    };
+
+
     // Card mouse move handler for 3D effect
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, cardRef: RefObject<HTMLDivElement>) => {
         if (!cardRef.current) return;
@@ -284,7 +341,6 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         const centerY = rect.top + rect.height / 2;
         const offsetX = e.clientX - centerX; // Mouse X offset from center
         const offsetY = e.clientY - centerY; // Mouse Y offset from center
-
         // Set motion values scaled down for a subtle effect
         x.set(offsetX * 0.2);
         y.set(offsetY * 0.2);
@@ -362,7 +418,6 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                     View Courses
                                 </Button>
                             </Link>
-
                             {/* 2. Book a Demo (NEW MODAL CTA) - Replaces the Link to use the modal */}
                             <Button
                                 size="lg"
@@ -401,9 +456,10 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                         {/* 1. CEO Card (Larger, Blue Gradient, Centered on mobile) - NOW CLICKABLE */}
                         <motion.div
                             ref={cardRefCEO}
-                            variants={itemVariants}
+                            // EDITED: Apply ceoCardVariants
+                            variants={ceoCardVariants}
                             layout // Add layout for smooth height animation on click
-                            className="relative p-8 md:p-10 w-full rounded-2xl shadow-2xl text-white overflow-hidden cursor-pointer will-change-transform"
+                            className="relative p-8 md:p-10 w-full rounded-2xl shadow-2xl text-white overflow-hidden cursor-pointer will-change-transform" // <-- overflow-hidden is CRITICAL
                             style={{
                                 background: 'linear-gradient(135deg, #1D4ED8, #3B82F6)', // Strong blue gradient
                                 rotateX,
@@ -415,6 +471,17 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             onClick={() => setExpandedCard(expandedCard === 'ceo' ? null : 'ceo')} // Toggle expand
                             transition={{ type: "spring", stiffness: 100, damping: 10 }}
                         >
+                            {/* --- NEW: Glass Sweep Overlay --- */}
+                            {/* This element will inherit "hidden" and "visible" states from its parent grid container */}
+                            <motion.div
+                                className="absolute inset-0 w-full h-full z-5" // z-5 is between image (z-0) and text (z-10)
+                                style={{
+                                    background: "linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%)",
+                                }}
+                                variants={sweepVariants}
+                            />
+                            {/* ---------------------------------- */}
+
                             <h3 className="text-3xl font-extrabold mb-2 z-10 relative">Dibyajit Ghosh</h3>
                             <p className={`text-lg z-10 relative transition-all ${expandedCard === 'ceo' ? 'mb-2' : 'mb-6'}`}>
                                 {expandedCard === 'ceo' ? 'Founder & CEO (Director of TDCS)' : 'Founder & CEO'}
@@ -455,7 +522,8 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             {/* COO Card - NOW CLICKABLE */}
                             <motion.div
                                 ref={cardRefCOO}
-                                variants={itemVariants}
+                                // EDITED: Apply cooCardVariants
+                                variants={cooCardVariants}
                                 layout // Add layout for smooth height animation
                                 className="relative p-5 md:p-6 flex-1 min-w-0 rounded-xl shadow-lg text-white overflow-hidden cursor-pointer will-change-transform"
                                 style={{
@@ -490,7 +558,8 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             {/* CMO Card - NOW CLICKABLE */}
                             <motion.div
                                 ref={cardRefCMO}
-                                variants={itemVariants}
+                                // EDITED: Apply cmoCardVariants
+                                variants={cmoCardVariants}
                                 layout // Add layout for smooth height animation
                                 className="relative p-5 md:p-6 flex-1 min-w-0 rounded-xl shadow-lg text-white overflow-hidden cursor-pointer will-change-transform"
                                 style={{
@@ -540,4 +609,3 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         </section>
     );
 };
-
