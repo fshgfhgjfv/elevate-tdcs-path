@@ -315,6 +315,23 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         },
     };
 
+    // --- NEW: Glass Sweep Animation Variant ---
+    const sweepVariants = {
+        hidden: { 
+            x: "-150%", // Start fully off-screen to the left
+            skewX: "-30deg" // Add a skew to the highlight
+        },
+        visible: { 
+            x: "150%", // End fully off-screen to the right
+            skewX: "-30deg",
+            transition: { 
+                duration: 1.2, 
+                delay: 0.8, // Start this animation 0.8s after 'visible' is triggered (0.2s card delay + 0.6s)
+                ease: [0.6, 0.01, -0.05, 0.9] // A custom ease for a nice sweep
+            } 
+        }
+    };
+
 
     // Card mouse move handler for 3D effect
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, cardRef: RefObject<HTMLDivElement>) => {
@@ -442,7 +459,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             // EDITED: Apply ceoCardVariants
                             variants={ceoCardVariants}
                             layout // Add layout for smooth height animation on click
-                            className="relative p-8 md:p-10 w-full rounded-2xl shadow-2xl text-white overflow-hidden cursor-pointer will-change-transform"
+                            className="relative p-8 md:p-10 w-full rounded-2xl shadow-2xl text-white overflow-hidden cursor-pointer will-change-transform" // <-- overflow-hidden is CRITICAL
                             style={{
                                 background: 'linear-gradient(135deg, #1D4ED8, #3B82F6)', // Strong blue gradient
                                 rotateX,
@@ -454,6 +471,17 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             onClick={() => setExpandedCard(expandedCard === 'ceo' ? null : 'ceo')} // Toggle expand
                             transition={{ type: "spring", stiffness: 100, damping: 10 }}
                         >
+                            {/* --- NEW: Glass Sweep Overlay --- */}
+                            {/* This element will inherit "hidden" and "visible" states from its parent grid container */}
+                            <motion.div
+                                className="absolute inset-0 w-full h-full z-5" // z-5 is between image (z-0) and text (z-10)
+                                style={{
+                                    background: "linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%)",
+                                }}
+                                variants={sweepVariants}
+                            />
+                            {/* ---------------------------------- */}
+
                             <h3 className="text-3xl font-extrabold mb-2 z-10 relative">Dibyajit Ghosh</h3>
                             <p className={`text-lg z-10 relative transition-all ${expandedCard === 'ceo' ? 'mb-2' : 'mb-6'}`}>
                                 {expandedCard === 'ceo' ? 'Founder & CEO (Director of TDCS)' : 'Founder & CEO'}
