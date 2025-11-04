@@ -7,10 +7,20 @@ export const WhatsAppButton = () => {
       href="https://api.whatsapp.com/send/?phone=919564730432&text&type=phone_number&app_absent=0"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed left-6 bottom-6 z-50"
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      whileHover={{ scale: 1.1 }}
+      className="fixed right-6 bottom-32 z-50"
+      initial={{ scale: 0, y: 0 }}
+      animate={{ 
+        scale: 1,
+        y: [0, -10, 0]
+      }}
+      transition={{
+        y: {
+          duration: 2,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }
+      }}
+      whileHover={{ scale: 1.1, y: -5 }}
       whileTap={{ scale: 0.95 }}
     >
       <div className="relative group">
