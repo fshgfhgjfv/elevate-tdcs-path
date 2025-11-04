@@ -83,6 +83,44 @@ export const courses: Course[] = [
       { name: "Malware Analysis Toolkit", url: "#" },
     ],
   },
+  {
+    id: "bug-hunting-pentest",
+    title: "Bug Hunting & Penetration Testing",
+    description:
+      "Specialized course covering bug bounty hunting, web security, API testing & professional pentesting.",
+    price: 6999,
+    thumbnail: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=600&fit=crop",
+    category: "Live Online",
+    duration: "3 months",
+    modules: [
+      "Bug Bounty Hunting Fundamentals",
+      "Advanced Web Application Security",
+      "API Security Testing",
+      "Mobile Application Security",
+      "OWASP Top 10 Exploitation",
+      "Professional Penetration Testing Methodology",
+      "Report Writing & Documentation",
+      "Automation with Python & Bash",
+    ],
+    overview:
+      "Master the art of bug hunting and professional penetration testing. This intermediate-level course covers real-world bug bounty techniques, advanced web vulnerabilities, API security, and professional penetration testing methodologies used by industry experts.",
+    includes: [
+      "Dedicated bug bounty practice environment",
+      "Live bug bounty platform access",
+      "Video lessons with lifetime access",
+      "Professional penetration testing toolkit",
+      "Industry-recognized certificate",
+      "Bug bounty tips and tricks",
+      "Career guidance for bug hunters",
+      "Community support and mentorship",
+    ],
+    demoVideo: "https://drive.google.com/file/d/1aSj5YmuMg7RZ_Cc37h2x-p0pE3ZD1TNY/view?usp=drive_link",
+    resources: [
+      { name: "Bug Hunting Checklist", url: "#" },
+      { name: "Pentest Methodology Guide", url: "#" },
+      { name: "Report Templates", url: "#" },
+    ],
+  },
 ];
 
 export const testimonials = [

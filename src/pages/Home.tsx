@@ -11,6 +11,8 @@ import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
 import { ApplyBatchesSection } from "@/components/ApplyBatchesSection";
 import { CertificatesSection } from "@/components/CertificatesSection";
 import { RecognizedBy } from "@/components/RecognizedBy";
+import { ChatBot } from "@/components/ChatBot";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
@@ -221,6 +223,12 @@ const Home = () => {
 
       {/* Apply for Upcoming Batches */}
       <ApplyBatchesSection />
+
+      {/* AI Chatbot */}
+      <ChatBot />
+
+      {/* WhatsApp Button */}
+      <WhatsAppButton />
     </div>
   );
 };
