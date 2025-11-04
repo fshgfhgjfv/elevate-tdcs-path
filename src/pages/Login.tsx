@@ -1,42 +1,94 @@
-/*
-  --- 🚀 IMPORTANT SETUP ---
-  To make this Google Sign-In work, you need to do two things:
-
-  1. Install the Google OAuth library:
-     npm install @react-oauth/google
-
-  2. Wrap your main <App /> component (in your main.tsx or index.tsx file)
-     with the GoogleOAuthProvider and add your Client ID:
-
-     import { GoogleOAuthProvider } from '@react-oauth/google';
-
-     ReactDOM.createRoot(document.getElementById('root')!).render(
-       <React.StrictMode>
-         <GoogleOAuthProvider clientId="736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com">
-           <App />
-         </GoogleOAuthProvider>
-       </React.StrictMode>,
-     )
-*/
-
-import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button"; // Assuming shadcn/ui
-import { Input } from "@/components/ui/input"; // Assuming shadcn/ui
-import { Label } from "@/components/ui/label"; // Assuming shadcn/ui
+import React, { useState, useEffect } from "react";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card"; // Assuming shadcn/ui
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
+import {
+  GoogleOAuthProvider,
+  useGoogleLogin,
+} from "@react-oauth/google";
 import { motion } from "framer-motion";
-import { toast } from "sonner"; // Assuming sonner for toasts
+import { toast, Toaster } from "sonner"; // Assuming sonner for toasts
 import { Github } from "lucide-react";
-import { useGoogleLogin } from "@react-oauth/google"; // --- [NEW] Import Google hook
 
-// SVG for Google icon (unchanged)
+// --- Mock shadcn/ui components ---
+// Since these are imported from "@/components/ui/...",
+// here are simple mocks to make this file runnable.
+// In your real app, you'd remove these and use your actual component library.
+
+const Button = ({
+  className,
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+  <button
+    className={`px-4 py-2 rounded-md border ${className}`}
+    {...props}
+  >
+    {children}
+  </button>
+);
+
+const Input = ({
+  className,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement>) => (
+  <input
+    className={`px-3 py-2 rounded-md border border-gray-300 ${className}`}
+    {...props}
+  />
+);
+
+const Label = ({
+  className,
+  ...props
+}: React.LabelHTMLAttributes<HTMLLabelElement>) => (
+  <label className={`block text-sm font-medium ${className}`} {...props} />
+);
+
+const Card = ({
+  className,
+  children,
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={`border rounded-lg shadow-md ${className}`}>{children}</div>
+);
+
+const CardHeader = ({
+  className,
+  children,
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={`p-6 ${className}`}>{children}</div>
+);
+
+const CardTitle = ({
+  className,
+  children,
+}: React.HTMLAttributes<HTMLHeadingElement>) => (
+  <h2 className={`text-2xl font-bold ${className}`}>{children}</h2>
+);
+
+const CardDescription = ({
+  className,
+  children,
+}: React.HTMLAttributes<HTMLParagraphElement>) => (
+  <p className={`text-sm text-gray-500 ${className}`}>{children}</p>
+);
+
+const CardContent = ({
+  className,
+  children,
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={`p-6 pt-0 ${className}`}>{children}</div>
+);
+
+// --- End of Mock Components ---
+
+// SVG for Google icon
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
     <path
@@ -58,6 +110,8 @@ const GoogleIcon = () => (
   </svg>
 );
 
+// --- Your Login Component ---
+// (No changes needed, it now exists inside the Provider's context)
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -112,8 +166,7 @@ const Login = () => {
     }
   };
 
-  // --- [NEW] Google Sign-In Handler ---
-  // This function is called when the Google login is successful
+  // Google Sign-In Handler
   const handleGoogleLoginSuccess = async (tokenResponse: any) => {
     try {
       // Fetch user profile from Google
@@ -155,7 +208,6 @@ const Login = () => {
       }
 
       // Log the user in by setting the 'tdcs_user' item
-      // We save the user object (without any password)
       const { password: _, ...userToSave } = user;
       localStorage.setItem("tdcs_user", JSON.stringify(userToSave));
 
@@ -168,7 +220,7 @@ const Login = () => {
     }
   };
 
-  // --- [NEW] Initialize the Google Login hook ---
+  // Initialize the Google Login hook
   const googleLogin = useGoogleLogin({
     onSuccess: handleGoogleLoginSuccess,
     onError: (error) => {
@@ -176,10 +228,9 @@ const Login = () => {
       toast.error("Google login failed");
     },
   });
-  // ------------------------------------------
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden pt-24 pb-16">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden pt-24 pb-16 bg-gray-50 dark:bg-gray-900">
       {/* Animated gradient background */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-indigo-500/10 to-blue-500/10 blur-3xl"
@@ -230,7 +281,7 @@ const Login = () => {
                     {/* +91 Prefix — only visible if typing a number */}
                     {formData.emailOrNumber &&
                       !formData.emailOrNumber.includes("@") && (
-                        <span className="px-3 py-2 bg-muted rounded-l-md border border-r-0 border-input text-sm text-muted-foreground">
+                        <span className="px-3 py-2 bg-gray-200 rounded-l-md border border-r-0 border-gray-300 text-sm text-gray-500">
                           +91
                         </span>
                       )}
@@ -258,7 +309,7 @@ const Login = () => {
                         formData.emailOrNumber &&
                         !formData.emailOrNumber.includes("@")
                           ? "rounded-l-none"
-                          : ""
+                          : "w-full"
                       }
                       required
                     />
@@ -275,6 +326,7 @@ const Login = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, password: e.target.value })
                     }
+                    className="w-full"
                     required
                   />
                 </div>
@@ -282,8 +334,8 @@ const Login = () => {
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
                   <Button
                     type="submit"
-                    variant="gradient" // Assuming you have a gradient variant
-                    className="w-full text-lg py-6 font-semibold shadow-lg"
+                    variant="gradient"
+                    className="w-full text-lg py-6 font-semibold shadow-lg bg-blue-600 text-white hover:bg-blue-700"
                   >
                     Login
                   </Button>
@@ -292,10 +344,10 @@ const Login = () => {
                 {/* Divider */}
                 <div className="relative my-6">
                   <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-muted" />
+                    <span className="w-full border-t border-gray-300" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
+                    <span className="bg-white px-2 text-gray-500 dark:bg-gray-900">
                       Or continue with
                     </span>
                   </div>
@@ -310,8 +362,8 @@ const Login = () => {
                     <Button
                       type="button"
                       variant="outline"
-                      className="w-full py-6"
-                      onClick={() => googleLogin()} // --- [UPDATED] ---
+                      className="w-full py-6 bg-white dark:bg-gray-800"
+                      onClick={() => googleLogin()}
                     >
                       <GoogleIcon />
                       <span className="ml-2">Continue with Google</span>
@@ -325,7 +377,7 @@ const Login = () => {
                     <Button
                       type="button"
                       variant="outline"
-                      className="w-full py-6"
+                      className="w-full py-6 bg-white dark:bg-gray-800"
                       onClick={() => toast.info("GitHub sign-in coming soon!")}
                     >
                       <Github className="h-5 w-5" />
@@ -343,15 +395,15 @@ const Login = () => {
               >
                 <Link
                   to="/forgot-password"
-                  className="block text-sm text-primary hover:underline"
+                  className="block text-sm text-blue-600 hover:underline"
                 >
                   Forgot your password?
                 </Link>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Don't have an account?{" "}
                   <Link
                     to="/signup"
-                    className="text-primary hover:underline font-semibold"
+                    className="text-blue-600 hover:underline font-semibold"
                   >
                     Sign up
                   </Link>
@@ -365,4 +417,71 @@ const Login = () => {
   );
 };
 
-export default Login;
+// --- Placeholder Dashboard Component ---
+const Dashboard = () => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("tdcs_user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+    } else {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("tdcs_user");
+    toast.success("Logged out successfully!");
+    navigate("/login");
+  };
+
+  if (!user) {
+    return <div>Loading...</div>; // Or a loading spinner
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <Card>
+        <CardHeader>
+          <CardTitle>Welcome to your Dashboard</CardTitle>
+          <CardDescription>You are logged in.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="mb-4">Hello, {user.name || user.email}!</p>
+          <Button
+            onClick={handleLogout}
+            className="w-full bg-red-600 text-white hover:bg-red-700"
+          >
+            Logout
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+// --- Main App Component ---
+// This is the "main code" that wraps everything in the providers.
+function App() {
+  const googleClientId =
+    "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
+
+  return (
+    // The Provider now wraps your entire application
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <Toaster position="top-right" richColors />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          {/* Redirect to login by default */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
+  );
+}
+
+export default App;
