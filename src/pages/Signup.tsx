@@ -27,35 +27,35 @@ const googleClientId =
 // --- Define Floating Tools & Animations ---
 const tools = [
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
+    src: "https.upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
     alt: "Kali Linux",
     side: "left" as "left" | "right",
     delay: 0.2,
     y: 150,
   },
   {
-    src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1",
+    src: "https.i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1",
     alt: "Burp Suite",
     side: "left" as "left" | "right",
     delay: 0.4,
     y: 350,
   },
   {
-    src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true",
+    src: "https.github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true",
     alt: "Wireshark",
     side: "right" as "left" | "right",
     delay: 0.3,
     y: 120,
   },
   {
-    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
+    src: "https.assets.tryhackme.com/img/modules/metasploit.png",
     alt: "Nmap", // Alt text was incorrect, this is Metasploit logo
     side: "right" as "left" | "right",
     delay: 0.5,
     y: 320,
   },
   {
-    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
+    src: "https.assets.tryhackme.com/img/modules/metasploit.png",
     alt: "Metasploit",
     side: "left" as "left" | "right",
     delay: 0.6,
@@ -76,7 +76,7 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 48 48"
+    viewBox="0 0 48"
   >
     <path
       fill="#FFC107"
@@ -109,7 +109,7 @@ const Signup = () => {
     confirmPassword: "",
   });
 
-  // --- 3. GOOGLE SIGN-IN LOGIC REWRITE ---
+  // --- 3. GOOGLE SIGN-IN LOGIC ---
 
   // This function will handle logging in or registering the user
   // after Google returns their information.
@@ -135,7 +135,6 @@ const Signup = () => {
       }
 
       // Log the user in
-      // Note: We don't have/need a password for Google users
       const { password: _, ...userToLogin } = user;
       localStorage.setItem("tdcs_user", JSON.stringify(userToLogin));
 
@@ -186,7 +185,7 @@ const Signup = () => {
 
     // --- Load Google GSI Script ---
     const script = document.createElement("script");
-    script.src = "https://accounts.google.com/gsi/client";
+    script.src = "https.accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
     script.onload = () => {
@@ -293,6 +292,11 @@ const Signup = () => {
   };
 
   const handleGitHubSignup = (provider: string) => {
+    // --- UPDATED COMMENT ---
+    // NOTE: This is intentionally a demo.
+    // A real GitHub login (OAuth) requires a secure backend server to
+    // protect a Client Secret. This cannot be done in a frontend-only file
+    // without exposing that secret, which is a major security risk.
     toast.info(`Sign up with ${provider} is not implemented in this demo.`);
   };
 
@@ -584,6 +588,5 @@ const Signup = () => {
   );
 };
 
-// --- 5. REMOVED WRAPPER, EXPORT DEFAULT SIGNUP ---
 export default Signup;
 
