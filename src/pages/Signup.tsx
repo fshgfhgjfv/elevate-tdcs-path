@@ -258,7 +258,7 @@ const Signup = () => {
     toast.info(`Sign up with ${provider} is not implemented in this demo.`);
   };
 
-  // --- 1. UPDATE: 3D Card Tilt Animation Hooks ---
+  // --- 3D Card Tilt Animation Hooks ---
   const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -289,7 +289,7 @@ const Signup = () => {
   });
   // --- End 3D Card ---
 
-  // --- 2. UPDATE: Mouse Handlers ---
+  // --- Mouse Handlers ---
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
@@ -383,9 +383,9 @@ const Signup = () => {
           transition={{ duration: 0.5 }}
           className="max-w-md mx-auto"
         >
-          {/* --- 3. UPDATE: Card JSX --- */}
+          {/* --- CARD UPDATED HERE --- */}
           <Card
-            className="shadow-glow-lg"
+            className="shadow-glow-lg dark border border-red-600"
             style={{
               transform: "translateZ(100px)", // Increased depth
               transformStyle: "preserve-3d",
@@ -521,7 +521,6 @@ const Signup = () => {
                         }
                       }}
                       className="rounded-l-none"
-      
                       required
                       disabled={isLoading}
                     />
