@@ -14,182 +14,16 @@ export type Database = {
   }
   public: {
     Tables: {
-      courses: {
-        Row: {
-          content_url: string | null
-          created_at: string
-          created_by: string
-          description: string | null
-          id: string
-          price: number | null
-          published: boolean
-          slug: string
-          thumbnail_url: string | null
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          content_url?: string | null
-          created_at?: string
-          created_by: string
-          description?: string | null
-          id?: string
-          price?: number | null
-          published?: boolean
-          slug: string
-          thumbnail_url?: string | null
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          content_url?: string | null
-          created_at?: string
-          created_by?: string
-          description?: string | null
-          id?: string
-          price?: number | null
-          published?: boolean
-          slug?: string
-          thumbnail_url?: string | null
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      enrollments: {
-        Row: {
-          completed: boolean
-          course_id: string
-          enrolled_at: string
-          id: string
-          progress: number | null
-          user_id: string
-        }
-        Insert: {
-          completed?: boolean
-          course_id: string
-          enrolled_at?: string
-          id?: string
-          progress?: number | null
-          user_id: string
-        }
-        Update: {
-          completed?: boolean
-          course_id?: string
-          enrolled_at?: string
-          id?: string
-          progress?: number | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "enrollments_course_id_fkey"
-            columns: ["course_id"]
-            isOneToOne: false
-            referencedRelation: "courses"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      leads: {
-        Row: {
-          created_at: string
-          email: string
-          id: string
-          message: string | null
-          name: string
-          phone: string
-          source: string | null
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          id?: string
-          message?: string | null
-          name: string
-          phone: string
-          source?: string | null
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          id?: string
-          message?: string | null
-          name?: string
-          phone?: string
-          source?: string | null
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          created_at: string
-          enrolled_course: string | null
-          enrollment_status: string | null
-          full_name: string | null
-          id: string
-          phone: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          enrolled_course?: string | null
-          enrollment_status?: string | null
-          full_name?: string | null
-          id?: string
-          phone?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          enrolled_course?: string | null
-          enrollment_status?: string | null
-          full_name?: string | null
-          id?: string
-          phone?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "student" | "admin" | "instructor"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -316,8 +150,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["student", "admin", "instructor"],
-    },
+    Enums: {},
   },
 } as const
