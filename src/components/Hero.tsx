@@ -270,47 +270,44 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
 
     // --- NEW: Card Animation Variants ---
     const ceoCardVariants = {
-        hidden: { opacity: 0, y: 50, scale: 0.8 }, // Start lower, smaller, and invisible
+        hidden: { opacity: 0, y: 50, scale: 0.8 },
         visible: {
             opacity: 1,
             y: 0,
             scale: 1,
             transition: {
-                type: "spring",
+                type: "spring" as const,
                 stiffness: 100,
                 damping: 10,
-                duration: 0.8,
-                delay: 0.2 // Slight delay to come after text
+                delay: 0.2
             },
         },
     };
 
     const cooCardVariants = {
-        hidden: { opacity: 0, x: -100 }, // Start off-screen left
+        hidden: { opacity: 0, x: -100 },
         visible: {
             opacity: 1,
             x: 0,
             transition: {
-                type: "spring",
+                type: "spring" as const,
                 stiffness: 100,
                 damping: 12,
-                duration: 0.7,
-                delay: 0.4 // Delay to come after CEO
+                delay: 0.4
             },
         },
     };
 
     const cmoCardVariants = {
-        hidden: { opacity: 0, x: 100 }, // Start off-screen right
+        hidden: { opacity: 0, x: 100 },
         visible: {
             opacity: 1,
             x: 0,
             transition: {
-                type: "spring",
+                type: "spring" as const,
                 stiffness: 100,
                 damping: 12,
-                duration: 0.7,
-                delay: 0.5 // Delay to come after COO
+                delay: 0.5
             },
         },
     };
@@ -318,16 +315,16 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     // --- NEW: Glass Sweep Animation Variant ---
     const sweepVariants = {
         hidden: { 
-            x: "-150%", // Start fully off-screen to the left
-            skewX: "-30deg" // Add a skew to the highlight
+            x: "-150%",
+            skewX: "-30deg"
         },
         visible: { 
-            x: "150%", // End fully off-screen to the right
+            x: "150%",
             skewX: "-30deg",
             transition: { 
                 duration: 1.2, 
-                delay: 0.8, // Start this animation 0.8s after 'visible' is triggered (0.2s card delay + 0.6s)
-                ease: [0.6, 0.01, -0.05, 0.9] // A custom ease for a nice sweep
+                delay: 0.8,
+                ease: "easeInOut" as const
             } 
         }
     };

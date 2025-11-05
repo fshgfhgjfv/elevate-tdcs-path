@@ -2,13 +2,10 @@ import { motion, Variants } from "framer-motion";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Users, Book, HardHat, BarChart } from "lucide-react";
-import DashboardLeaderboard from "@/components/DashboardLeaderboard"; // Assumed path
-import HardwareServices from "@/components/HardwareServices"; // Assumed path
 
 // --- Animation Variants ---
 
@@ -105,24 +102,17 @@ const Index = () => {
           ))}
         </motion.div>
 
-        {/* === Main Dashboard Content (Leaderboard + Hardware) === */}
-        <div className="grid grid-cols-1 gap-8">
-          {/* === Leaderboard Component === */}
-          <motion.div variants={itemVariants}>
-            {/* Pass the logged-in user's name to the leaderboard
-              so it can highlight their row!
-            */}
-            <DashboardLeaderboard currentUsername={currentUsername} />
-          </motion.div>
-
-          {/* === Hardware Component === */}
-          <motion.div variants={itemVariants}>
-            {/* This renders the entire HardwareServices page component
-              directly on the dashboard.
-            */}
-            <HardwareServices />
-          </motion.div>
-        </div>
+        {/* === Placeholder for additional dashboard sections === */}
+        <motion.div variants={itemVariants}>
+          <Card>
+            <CardHeader>
+              <CardTitle>Dashboard Coming Soon</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">Additional dashboard features will be added here.</p>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </motion.div>
   );
