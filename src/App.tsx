@@ -80,8 +80,6 @@ const App = () => (
           
           <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
-          {/* Admin Panel */}
-          <Route path="/admin-panel" element={<SimpleAdminPanel />} />
 
           {/* 404 Fallback */}
           <Route path="*" element={<NotFound />} />
