@@ -32,8 +32,6 @@ import NotFound from "./pages/NotFound";
 // ✅ NEW: Import Hardware Services page
 import HardwareServices from "./pages/HardwareServices";
 
-// Admin Pages
-import SimpleAdminPanel from "./pages/admin/SimpleAdminPanel";
 
 const queryClient = new QueryClient();
 
