@@ -119,7 +119,7 @@ const ForgotPassword = () => {
                 >
                   <div className="space-y-2">
                     <Label htmlFor="email">Email Address</Label>
-                    <motion.div whileFocusWithin={{ scale: 1.02 }}>
+                    <div>
                       <Input
                         id="email"
                         type="email"
@@ -128,7 +128,7 @@ const ForgotPassword = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         className="focus:ring-2 focus:ring-primary/70 transition-all"
                       />
-                    </motion.div>
+                    </div>
                   </div>
 
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>

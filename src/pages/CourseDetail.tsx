@@ -10,6 +10,7 @@ import { CourseSkillsTools } from "@/components/CourseSkillsTools";
 import { CourseTestimonials } from "@/components/CourseTestimonials";
 import { WhyJoinSection } from "@/components/WhyJoinSection";
 import { CourseCurriculum } from "@/components/CourseCurriculum";
+import { BugBountyCurriculum } from "@/components/BugBountyCurriculum";
 import { LearningExperience } from "@/components/LearningExperience";
 import { MentorsSection } from "@/components/MentorsSection";
 import { HiringPartners } from "@/components/HiringPartners";
@@ -128,11 +129,18 @@ const CourseDetail = () => {
                 {course.category}
               </span>
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                {course.title} with Placement Assistance
+                {course.id === "bug-hunting-pentest" 
+                  ? "Bug Bounty & Penetration Testing Program" 
+                  : course.id === "cyber-blackhat"
+                  ? "Cyber Master's Pro Black Hat with Placement Assistance"
+                  : "Cyber Master's Pro Lite"}
               </h1>
               <p className="text-lg text-muted-foreground mb-6">
-                This course is designed by top experts. Get hands-on coding experience and placement 
-                assistance with 60 hiring drives monthly!
+                {course.id === "bug-hunting-pentest"
+                  ? "Master Bug Bounty Hunting, Penetration Testing, Web Security, API Testing & Advanced Vulnerability Assessment."
+                  : course.id === "cyber-blackhat" 
+                  ? "Master Ethical Hacking, Penetration Testing, Network Security, Web Security, and Advanced Cybersecurity Tools with hands-on experience and placement assistance with 60 hiring drives monthly!"
+                  : "Foundational ethical hacking & network security program for beginners with placement support."}
               </p>
 
               <div className="flex flex-wrap gap-4">
@@ -185,10 +193,14 @@ const CourseDetail = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold gradient-text mb-6 text-center">
-              STRUCTURED, INDUSTRY ORIENTED COURSE
+              {course.id === "bug-hunting-pentest" 
+                ? "CLASSROOM PROGRAM - BUG BOUNTY HUNTER"
+                : "CLASSROOM PROGRAM - CYBER MASTER"}
             </h2>
             <h3 className="text-2xl font-bold mb-4 text-center">
-              Learn Ethical Hacking & Cybersecurity
+              {course.id === "bug-hunting-pentest"
+                ? "Learn Bug Bounty Hunting & Web Security"
+                : "Learn Ethical Hacking & Cybersecurity"}
             </h3>
             <p className="text-center text-muted-foreground mb-8">
               Curated by top tech professionals
@@ -196,13 +208,17 @@ const CourseDetail = () => {
 
             <div className="bg-muted/20 rounded-2xl p-8 border-2 border-primary/20">
               <div className="flex items-center justify-between mb-4">
-                <h4 className="text-xl font-bold">CLASSROOM PROGRAM - CYBER MASTER</h4>
+                <h4 className="text-xl font-bold">
+                  {course.id === "bug-hunting-pentest" 
+                    ? "CLASSROOM PROGRAM - BUG BOUNTY HUNTER"
+                    : "CLASSROOM PROGRAM - CYBER MASTER"}
+                </h4>
                 <span className="px-4 py-1 rounded-full bg-primary/10 text-primary font-semibold text-sm">
                   Scholarships Available
                 </span>
               </div>
               <p className="text-muted-foreground mb-6">
-                Master Ethical Hacking, Penetration Testing, Network Security, Web Security, and Advanced Cybersecurity Tools.
+                {course.description}
               </p>
               <div className="grid md:grid-cols-3 gap-4 mb-6">
                 <div>
@@ -241,7 +257,11 @@ const CourseDetail = () => {
       <WhyJoinSection />
 
       {/* Curriculum */}
-      <CourseCurriculum />
+      {course.id === "bug-hunting-pentest" ? (
+        <BugBountyCurriculum />
+      ) : (
+        <CourseCurriculum />
+      )}
 
       {/* Learning Experience */}
       <LearningExperience />

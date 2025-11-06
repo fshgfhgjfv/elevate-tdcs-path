@@ -101,15 +101,15 @@ export default function Gallery() {
           transition={{ delay: 0.2 }}
         >
           {categories.map((cat) => (
-            <Button
-              key={cat}
-              variant={selectedCategory === cat ? "default" : "outline"}
-              onClick={() => setSelectedCategory(cat)}
-              whileTap={{ scale: 0.9 }}
-              className="rounded-full px-5"
-            >
-              {cat}
-            </Button>
+            <motion.div key={cat} whileTap={{ scale: 0.9 }}>
+              <Button
+                variant={selectedCategory === cat ? "default" : "outline"}
+                onClick={() => setSelectedCategory(cat)}
+                className="rounded-full px-5"
+              >
+                {cat}
+              </Button>
+            </motion.div>
           ))}
         </motion.div>
 

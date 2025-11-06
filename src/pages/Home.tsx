@@ -68,7 +68,7 @@ const Home = () => {
       <MentorsSection />
 
       {/* Hiring Drives */}
-      <section id="hiring-drives" className="py-16 bg-muted/20">
+      <section id="hiring-drives" className="py-16 bg-muted/20 overflow-hidden">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -84,16 +84,23 @@ const Home = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {hiringDrives.map((drive, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="hover:shadow-glow transition-all duration-300">
+          <div className="relative">
+            <motion.div
+              className="flex gap-6"
+              animate={{
+                x: [0, -1400],
+              }}
+              transition={{
+                x: {
+                  repeat: Infinity,
+                  repeatType: "loop",
+                  duration: 20,
+                  ease: "linear",
+                },
+              }}
+            >
+              {[...hiringDrives, ...hiringDrives].map((drive, index) => (
+                <Card key={index} className="min-w-[300px] hover:shadow-glow transition-all duration-300">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-center mb-4">
                       <img
@@ -110,14 +117,16 @@ const Home = () => {
                       <span className="text-primary font-semibold">{drive.salary}</span>
                       <p className="text-sm text-muted-foreground">{drive.location}</p>
                     </div>
-                    <Button variant="gradient" className="w-full mt-4">
-                      <Briefcase className="mr-2 h-4 w-4" />
-                      Enroll Now
-                    </Button>
+                    <Link to={`/courses/${drive.courseId}`}>
+                      <Button variant="gradient" className="w-full mt-4">
+                        <Briefcase className="mr-2 h-4 w-4" />
+                        Enroll Now
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
-              </motion.div>
-            ))}
+              ))}
+            </motion.div>
           </div>
         </div>
       </section>
