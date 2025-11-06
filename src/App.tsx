@@ -32,6 +32,9 @@ import NotFound from "./pages/NotFound";
 // ✅ NEW: Import Hardware Services page
 import HardwareServices from "./pages/HardwareServices";
 
+// Admin Pages
+import SimpleAdminPanel from "./pages/admin/SimpleAdminPanel";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -78,6 +81,9 @@ const App = () => (
           <Route path="/services/legal" element={<AdvocateConstruction />} />
           
           <Route path="/services/:serviceId" element={<ServiceDetail />} />
+
+          {/* Admin Panel */}
+          <Route path="/admin-panel" element={<SimpleAdminPanel />} />
 
           {/* 404 Fallback */}
           <Route path="*" element={<NotFound />} />

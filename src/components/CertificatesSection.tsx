@@ -6,12 +6,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import certificateDemo from "@/assets/certificate-demo.jpg";
 
 export const CertificatesSection = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -79,14 +81,24 @@ export const CertificatesSection = () => {
                   </li>
                 </ul>
               </div>
-              <Button
-                size="lg"
-                onClick={() => setIsUploadModalOpen(true)}
-                className="group"
-              >
-                <Upload className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-                Upload Certificate
-              </Button>
+              <div className="flex flex-wrap gap-4">
+                <Button
+                  size="lg"
+                  onClick={() => setIsUploadModalOpen(true)}
+                  className="group"
+                >
+                  <Upload className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+                  Upload Certificate
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => navigate("/courses")}
+                  className="group"
+                >
+                  Enroll Now
+                </Button>
+              </div>
             </div>
 
             {/* Right side - Certificate Demo */}

@@ -24,16 +24,16 @@ export const TestimonialCard = ({
       viewport={{ once: true }}
       whileHover={{ scale: 1.05 }}
       transition={{ duration: 0.3 }}
-      className="flex-shrink-0" // Prevents card from shrinking in the flex container
+      className="w-full mx-auto max-w-sm"
     >
-      <Card className="shadow-glow hover:shadow-glow-lg transition-all duration-300 w-80"> {/* Sets a fixed width */}
-        <CardContent className="p-6">
+      <Card className="shadow-glow hover:shadow-glow-lg transition-all duration-300 h-full">
+        <CardContent className="p-4 sm:p-6">
           {/* --- Static Image --- */}
-          <div className="flex items-center justify-center mb-4">
+          <div className="flex items-center justify-center mb-3 sm:mb-4">
             <img
               src={image}
               alt="TDCS STUDENTS"
-              className="w-16 h-16 rounded-full object-cover border-2 border-background"
+              className="w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-background"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.onerror = null;
@@ -44,12 +44,12 @@ export const TestimonialCard = ({
           </div>
 
           {/* --- Title --- */}
-          <h3 className="text-xl font-bold text-center mb-4 tracking-wide">
+          <h3 className="text-base sm:text-xl font-bold text-center mb-3 sm:mb-4 tracking-wide">
             TDCS STUDENTS
           </h3>
 
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div className="flex-1 text-center">
                 <div className="text-sm text-muted-foreground mb-1">Before</div>
                 <div className="font-semibold text-sm">{before}</div>
