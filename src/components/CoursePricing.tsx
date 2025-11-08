@@ -3,22 +3,70 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
-const features = [
-  "Aptitude Training",
-  "Soft Skills Training",
-  "Resume Preparation",
-  "AI-Powered Mock Interviews",
-  "Access to Placement Portal",
-  "Access to 300+ Senior Interview Experiences",
-  "Offline Placement Drives",
-  "Mock Interviews by Tech and HR Panels",
-];
+const pricingData = {
+  "bug-hunting-pentest": {
+    title: "Bug Bounty Hunter Pro",
+    subtitle: "Starts As low as",
+    monthlyPrice: "₹4,999/month",
+    originalPrice: "₹80,000",
+    discountedPrice: "₹65,000/-",
+    features: [
+      "Live Bug Hunting Sessions",
+      "Access to Private Bug Bounty Platforms",
+      "Real Vulnerability Reporting Experience",
+      "1-on-1 Mentor Guidance",
+      "Hall of Fame Recognition Support",
+      "CVE Documentation Training",
+      "Advanced Web & API Security",
+      "Mobile App Security Testing",
+    ],
+    scholarship: "Additional Scholarships Up To ₹12,000",
+  },
+  "cyber-blackhat": {
+    title: "Cyber Master's Pro Black Hat",
+    subtitle: "Starts As low as",
+    monthlyPrice: "₹5,833/month",
+    originalPrice: "₹1,00,000",
+    discountedPrice: "₹85,000/-",
+    features: [
+      "Aptitude Training",
+      "Soft Skills Training",
+      "Resume Preparation",
+      "AI-Powered Mock Interviews",
+      "Access to Placement Portal",
+      "Access to 300+ Senior Interview Experiences",
+      "Offline Placement Drives",
+      "Mock Interviews by Tech and HR Panels",
+    ],
+    scholarship: "Additional Scholarships Up To ₹15,000",
+  },
+  "cyber-lite": {
+    title: "Cyber Master's Pro Lite",
+    subtitle: "Starts As low as",
+    monthlyPrice: "₹5,833/month",
+    originalPrice: "₹1,00,000",
+    discountedPrice: "₹85,000/-",
+    features: [
+      "Aptitude Training",
+      "Soft Skills Training",
+      "Resume Preparation",
+      "AI-Powered Mock Interviews",
+      "Access to Placement Portal",
+      "Access to 300+ Senior Interview Experiences",
+      "Offline Placement Drives",
+      "Mock Interviews by Tech and HR Panels",
+    ],
+    scholarship: "Additional Scholarships Up To ₹15,000",
+  },
+};
 
 interface CoursePricingProps {
   onEnroll: () => void;
+  courseId: string;
 }
 
-export const CoursePricing = ({ onEnroll }: CoursePricingProps) => {
+export const CoursePricing = ({ onEnroll, courseId }: CoursePricingProps) => {
+  const pricing = pricingData[courseId as keyof typeof pricingData] || pricingData["cyber-blackhat"];
   return (
     <section className="py-16 bg-muted/20" id="pricing">
       <div className="container mx-auto px-4">
@@ -33,17 +81,17 @@ export const CoursePricing = ({ onEnroll }: CoursePricingProps) => {
 
         <Card className="max-w-3xl mx-auto shadow-glow-lg">
           <CardHeader className="text-center border-b">
-            <CardTitle className="text-2xl mb-2">Cyber Master's Pro Lite</CardTitle>
-            <p className="text-muted-foreground">Starts As low as</p>
-            <div className="text-4xl font-bold gradient-text my-4">₹5,833/month</div>
+            <CardTitle className="text-2xl mb-2">{pricing.title}</CardTitle>
+            <p className="text-muted-foreground">{pricing.subtitle}</p>
+            <div className="text-4xl font-bold gradient-text my-4">{pricing.monthlyPrice}</div>
             <div className="space-y-2 text-sm text-muted-foreground">
               <p>Lifetime Access to the Course</p>
               <p>12 month Zero cost EMI</p>
-              <p className="text-primary font-semibold">Additional Scholarships Up To ₹15,000</p>
+              <p className="text-primary font-semibold">{pricing.scholarship}</p>
             </div>
             <div className="mt-4">
-              <span className="text-2xl line-through text-muted-foreground mr-4">₹1,00,000</span>
-              <span className="text-3xl font-bold gradient-text">₹85,000/-</span>
+              <span className="text-2xl line-through text-muted-foreground mr-4">{pricing.originalPrice}</span>
+              <span className="text-3xl font-bold gradient-text">{pricing.discountedPrice}</span>
               <p className="text-xs text-muted-foreground mt-1">In total (incl. of all taxes)</p>
             </div>
           </CardHeader>
@@ -54,21 +102,38 @@ export const CoursePricing = ({ onEnroll }: CoursePricingProps) => {
             </h3>
             
             <div className="grid md:grid-cols-2 gap-4 mb-8">
-              {features.map((feature, index) => (
-                <div key={index} className="flex items-start gap-3">
+              {pricing.features.map((feature, index) => (
+                <motion.div 
+                  key={index} 
+                  className="flex items-start gap-3"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
                   <CheckCircle2 className="text-primary mt-1 flex-shrink-0" />
                   <span className="text-sm">{feature}</span>
-                </div>
+                </motion.div>
               ))}
             </div>
 
             <div className="space-y-3">
-              <Button variant="gradient" size="lg" className="w-full" onClick={onEnroll}>
-                Apply Now
-              </Button>
-              <Button variant="outline" size="lg" className="w-full">
-                Request Callback
-              </Button>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button variant="gradient" size="lg" className="w-full" onClick={onEnroll}>
+                  Apply Now
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button variant="outline" size="lg" className="w-full">
+                  Request Callback
+                </Button>
+              </motion.div>
             </div>
           </CardContent>
         </Card>

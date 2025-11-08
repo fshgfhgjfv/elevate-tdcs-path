@@ -297,7 +297,7 @@ const CourseDetail = () => {
       <RecruiterTestimonial />
 
       {/* Pricing */}
-      <CoursePricing onEnroll={handleEnroll} />
+      <CoursePricing onEnroll={handleEnroll} courseId={id || ""} />
 
       {/* FAQ */}
       <CourseFAQ />
