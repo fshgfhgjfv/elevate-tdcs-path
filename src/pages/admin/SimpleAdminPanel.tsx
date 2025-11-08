@@ -157,15 +157,16 @@ const AdminLogin = ({ email, setEmail, password, setPassword, handleLogin, isLoa
 
 // Main App Component
 export default function App() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    // MODIFIED: Starting isAuthenticated as true to load dashboard immediately
+    const [isAuthenticated, setIsAuthenticated] = useState(true); 
     const [isLoading, setIsLoading] = useState(true);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [courses, setCourses] = useState([]);
     const { toast } = useToast();
 
-    // Use a simplified state to manage view (for single file environment)
-    const [view, setView] = useState('dashboard'); // 'login' or 'dashboard'
+    // MODIFIED: Starting view as 'dashboard'
+    const [view, setView] = useState('dashboard'); 
 
     const loadCourses = useCallback(async () => {
         try {
@@ -189,10 +190,11 @@ export default function App() {
     }, [toast]);
 
     const checkAuth = useCallback(async () => {
+        // This function is now effectively disabled for instant viewing
+        // but remains here for a proper future implementation.
         try {
             const { data: { session } } = await mockSupabase.auth.getSession();
             if (session?.user) {
-                // Mock check for admin role
                 const { data: roles } = await mockSupabase
                     .from("user_roles")
                     .select("role")
@@ -222,8 +224,9 @@ export default function App() {
     }, [loadCourses]);
 
     useEffect(() => {
-        checkAuth();
-    }, [checkAuth]);
+        // MODIFIED: Directly call loadCourses since isAuthenticated is now true by default
+        loadCourses();
+    }, [loadCourses]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -270,6 +273,7 @@ export default function App() {
     };
 
     const handleLogout = async () => {
+        // NOTE: Logging out will take you back to the login page.
         await mockSupabase.auth.signOut();
         setIsAuthenticated(false);
         setView('login');
