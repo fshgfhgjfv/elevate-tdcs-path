@@ -30,9 +30,9 @@ const MOCK_ADMIN_EMAIL = "admin@tdcs.com";
 const MOCK_ADMIN_PASSWORD = "password123";
 const MOCK_ADMIN_ID = "admin-user-123";
 const MOCK_COURSES = [
-  { id: 1, title: "Advanced React Hooks", description: "Deep dive into state management and performance.", price: 4999, slug: "react-hooks", published: true, created_at: new Date(Date.now() - 86400000).toISOString() },
-  { id: 2, title: "Tailwind CSS Mastery", description: "Build stunning, responsive interfaces faster.", price: 2999, slug: "tailwind-mastery", published: false, created_at: new Date(Date.now() - 172800000).toISOString() },
-  { id: 3, title: "Supabase Backend Fundamentals", description: "Authentication and database setup.", price: 5999, slug: "supabase-backend", published: true, created_at: new Date(Date.now() - 259200000).toISOString() },
+  { id: 1, title: "Cyber Master's Pro Lite", description: "Deep dive into state management and performance.", price: 499, slug: "react-hooks", published: true, created_at: new Date(Date.now() - 86400000).toISOString() },
+  { id: 2, title: "Cyber Master's Pro Black Hat", description: "Build stunning, responsive interfaces faster.", price:19999, slug: "tailwind-mastery", published: false, created_at: new Date(Date.now() - 172800000).toISOString() },
+  { id: 3, title: "Bug Bounty & Penetration Testing", description: "Authentication and database setup.", price: 6999, slug: "supabase-backend", published: true, created_at: new Date(Date.now() - 259200000).toISOString() },
 ];
 
 const mockSupabase = {
