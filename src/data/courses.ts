@@ -123,42 +123,88 @@ export const courses: Course[] = [
   },
 ];
 
-export const testimonials = [
+export interface Testimonial {
+  name: string;
+  before: string;
+  after: string;
+  company: string;
+  courseId: string;
+  image?: string;
+  testimonial: string;
+}
+
+export const testimonials: Testimonial[] = [
   {
     name: "Sandeep Singh",
     before: "Chemical Engineer",
     after: "Software Engineer",
     company: "Innovaccer",
+    courseId: "cyber-blackhat",
+    testimonial: "The Black Hat program transformed my career. The placement assistance and mock interviews were invaluable in landing my dream job.",
   },
   {
     name: "Kabita Mondal",
     before: "M.Sc in CS",
     after: "Application Developer",
     company: "Thoughtworks",
+    courseId: "cyber-blackhat",
+    testimonial: "Comprehensive curriculum with excellent mentorship. The hands-on projects prepared me well for real-world challenges.",
   },
   {
     name: "Akash Ingoley",
     before: "Gap year",
     after: "Software Developer",
     company: "Pay Glocal",
+    courseId: "cyber-lite",
+    testimonial: "Perfect for beginners! The foundational course gave me the confidence to pursue cybersecurity professionally.",
   },
   {
     name: "Pradyot Verma",
     before: "Mechanical Engineer",
     after: "Software Developer",
     company: "MakeMyTrip",
+    courseId: "cyber-blackhat",
+    testimonial: "Career transition made easy with TDCS. The placement support and industry connections are top-notch.",
   },
   {
     name: "Stuti Pandey",
     before: "Fresher Graduate",
     after: "Full Stack Developer",
     company: "Zomato",
+    courseId: "cyber-lite",
+    testimonial: "As a fresher, this course gave me the edge I needed. The practical labs and projects were game-changers.",
   },
   {
     name: "Lalit K Tiwari",
     before: "Civil Engineer",
     after: "Data Analyst",
     company: "Flipkart",
+    courseId: "cyber-lite",
+    testimonial: "Excellent introduction to cybersecurity. The instructors are knowledgeable and always available for doubts.",
+  },
+  {
+    name: "Rahul Mehta",
+    before: "IT Professional",
+    after: "Bug Bounty Hunter",
+    company: "HackerOne",
+    courseId: "bug-hunting-pentest",
+    testimonial: "The bug bounty program is exceptional! I earned my first bounty within 2 months of completing the course.",
+  },
+  {
+    name: "Priya Sharma",
+    before: "Web Developer",
+    after: "Security Researcher",
+    company: "Bugcrowd",
+    courseId: "bug-hunting-pentest",
+    testimonial: "Real-world bug hunting techniques that actually work. I'm now earning consistently from bug bounties.",
+  },
+  {
+    name: "Amit Kumar",
+    before: "Network Admin",
+    after: "Penetration Tester",
+    company: "Accenture",
+    courseId: "bug-hunting-pentest",
+    testimonial: "The pentesting methodology taught here is industry-standard. Got certified and hired within a month!",
   },
 ];
 

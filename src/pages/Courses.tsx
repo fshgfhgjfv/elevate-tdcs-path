@@ -1,9 +1,11 @@
-import { useState, useRef } from "react"; // Added useRef
+import { useState, useRef } from "react";
 import { CourseCard } from "@/components/CourseCard";
 import { courses } from "@/data/courses";
-import { motion, useScroll, useTransform } from "framer-motion"; // Added useScroll and useTransform
+import { motion, useScroll, useTransform } from "framer-motion";
 import { HiringPartners } from "@/components/HiringPartners";
 import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
+import { CourseFilters, FilterState } from "@/components/CourseFilters";
+import { CourseComparison } from "@/components/CourseComparison";
 
 // Data for the course perks sections
 const coursePerks = [
@@ -59,13 +61,44 @@ const swagImages = [
 
 const Courses = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("Live Courses");
+  const [filters, setFilters] = useState<FilterState>({
+    priceRange: [0, 100000],
+    duration: [],
+    specialization: [],
+    placement: null,
+  });
   const categories = ["Live Courses", "Recorded Courses", "Offline Courses"];
 
   // Filter live courses only — recorded/offline will show placeholders
-  const filteredCourses =
-    selectedCategory === "Live Courses"
-      ? courses.filter((course) => course.category === "Live Online")
-      : [];
+  const applyFilters = () => {
+    let filtered = courses.filter((course) => course.category === "Live Online");
+
+    // Price filter
+    filtered = filtered.filter(
+      (course) => course.price >= filters.priceRange[0] && course.price <= filters.priceRange[1]
+    );
+
+    // Duration filter
+    if (filters.duration.length > 0) {
+      filtered = filtered.filter((course) => {
+        if (filters.duration.includes("1-2 months") && course.duration.includes("2 months")) return true;
+        if (filters.duration.includes("3 months") && course.duration.includes("3 months")) return true;
+        if (filters.duration.includes("6+ months") && (course.duration.includes("4 months") || course.duration.includes("6 months"))) return true;
+        return false;
+      });
+    }
+
+    // Placement filter
+    if (filters.placement === true) {
+      filtered = filtered.filter(
+        (course) => course.id === "cyber-blackhat" || course.id === "cyber-lite"
+      );
+    }
+
+    return filtered;
+  };
+
+  const filteredCourses = selectedCategory === "Live Courses" ? applyFilters() : [];
 
   // --- HOOKS FOR HORIZONTAL SCROLL ---
   const scrollRef = useRef(null);
@@ -96,7 +129,7 @@ const Courses = () => {
         </motion.div>
 
         {/* Category Filters */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
+        <div className="flex flex-wrap justify-center gap-4 mb-8">
           {categories.map((category) => (
             <button
               key={category}
@@ -111,6 +144,11 @@ const Courses = () => {
             </button>
           ))}
         </div>
+
+        {/* Course Filters */}
+        {selectedCategory === "Live Courses" && (
+          <CourseFilters onFilterChange={setFilters} />
+        )}
 
         {/* Courses Grid or Coming Soon */}
         <motion.div
@@ -151,6 +189,11 @@ const Courses = () => {
             </p>
           </div>
         )}
+      </div>
+
+      {/* Course Comparison Section */}
+      <div className="mt-24">
+        <CourseComparison />
       </div>
 
       {/* --- Course Perks Section --- */}

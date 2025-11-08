@@ -8,6 +8,7 @@ import { CourseStats } from "@/components/CourseStats";
 import { CounselorForm } from "@/components/CounselorForm";
 import { CourseSkillsTools } from "@/components/CourseSkillsTools";
 import { CourseTestimonials } from "@/components/CourseTestimonials";
+import { CourseSpecificTestimonials } from "@/components/CourseSpecificTestimonials";
 import { WhyJoinSection } from "@/components/WhyJoinSection";
 import { CourseCurriculum } from "@/components/CourseCurriculum";
 import { BugBountyCurriculum } from "@/components/BugBountyCurriculum";
@@ -255,6 +256,9 @@ const CourseDetail = () => {
 
       {/* Why Join */}
       <WhyJoinSection />
+
+      {/* Course-Specific Testimonials */}
+      <CourseSpecificTestimonials courseId={id || ""} />
 
       {/* Curriculum */}
       {course.id === "bug-hunting-pentest" ? (
