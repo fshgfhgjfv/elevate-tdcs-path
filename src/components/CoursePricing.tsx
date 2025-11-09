@@ -7,9 +7,9 @@ const pricingData = {
   "bug-hunting-pentest": {
     title: "Bug Bounty Hunter Pro",
     subtitle: "Starts As low as",
-    monthlyPrice: "₹4,999/month",
-    originalPrice: "₹80,000",
-    discountedPrice: "₹65,000/-",
+    monthlyPrice: "₹999/month",
+    originalPrice: "₹30,000",
+    discountedPrice: "₹6,999",
     features: [
       "Live Bug Hunting Sessions",
       "Access to Private Bug Bounty Platforms",
