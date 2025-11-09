@@ -14,7 +14,7 @@ const coursePerks = [
     description:
       "Show off your skills with our exclusive kit, including a premium T-shirt, stickers, and other goodies delivered to your doorstep.",
     imageUrl:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEhWb4nI8g2Sr24qhD0KUaLd44ByiPtXmBuWFkeJN0nZt4vt1EbaNwoYb_PzOVLbGlEz01uC6e78QdlhR5YQrhAimAX-N3u8SzZajBkIYcIQ3Umwsl1or2rHZJCWMVGlicpGlmncQnyEBS8-TwiVSxEf5q3B8yHex0CSa2fyyaz5IeCGD4HCJxVfXZB4QM75",
+      "https://blogger.googleusercontent.com/img/a/AVvXsEjYbtTNBy0k-Z-mQPiTS6crzmU3nypEPnHTnXvIrMP5ad38CzbJptT9jkTHFz5O5V3q5YGLCDhGahEIsCFYsHI1eaPb30lnhJ0pZ3d-o61pehHJ38kKNtoBnewayL2wGFf-wzvWrfyhj22KvOV7fXLzgojsg7rpLpMFHipPVr28fohOf72bYxFQeRJAhX_q",
     layout: "text-left", // text-left, image-right
   },
   {
