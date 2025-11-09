@@ -43,9 +43,9 @@ const pricingData = {
   "cyber-lite": {
     title: "Cyber Master's Pro Lite",
     subtitle: "Starts As low as",
-    monthlyPrice: "₹5,833/month",
-    originalPrice: "₹1,00,000",
-    discountedPrice: "₹85,000/-",
+    monthlyPrice: "₹250/month",
+    originalPrice: "₹10,000",
+    discountedPrice: "₹499",
     features: [
       "Aptitude Training",
       "Soft Skills Training",
