@@ -70,7 +70,7 @@ export const CourseFilters = ({ onFilterChange }: CourseFiltersProps) => {
 
   const resetFilters = () => {
     const defaultFilters: FilterState = {
-      priceRange: [0, 100000],
+      priceRange: [0, 20000],
       duration: [],
       specialization: [],
       placement: null,
