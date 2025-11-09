@@ -22,7 +22,7 @@ const coursePerks = [
     description:
       "Gain access to a curated toolkit of premium cybersecurity software and platforms, the same tools used by professionals in the field.",
     imageUrl:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEiF0pE9E9cI6SZ0_mC-JOYMKbn5qnp-puKFHtqzuqHA2r3pDTFpqgssYyjvyswgxFuqe1fCYyyXbuUq-i17TRx4ertGqicGG4do7acBIysjZqEZpS4_65C500s9x4iEOhBd0aEGTS2JspYxRORsHozbLPEiXpo-7b4Z9SCP8WOir8Wz9n13kNHP7dKUven9",
+      "https://blogger.googleusercontent.com/img/a/AVvXsEi1JIx1qJmm8kI7QQlN0G3q2EFU-7c_5jzoJEdOcDJe2MdV0kaI4PQKUVPmqpDLYAADBluhaNV4nHiA8UHmcBVkzwF18uzi-XI1Wb9JebIS7pdCJ_8O-qkJQxWvojlQg2RHrGSqZJtO8soP6ZvEBgKcxwG95GxEjWmrKZP64iRrzfHXxEojjqWjMuRvAIlo9",
     layout: "text-right", // text-right, image-left
   },
   {
