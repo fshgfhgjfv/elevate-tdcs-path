@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 const comparisonData = {
   features: [
     { name: "Duration", bugBounty: "3 months", blackHat: "6 months", lite: "15 days" },
-    { name: "Price", bugBounty: "₹65,000", blackHat: "₹85,000", lite: "₹85,000" },
-    { name: "EMI Option", bugBounty: "₹4,999/mo", blackHat: "₹5,833/mo", lite: "₹5,833/mo" },
+    { name: "Price", bugBounty: "₹6,999", blackHat: "₹19,999", lite: "₹499" },
+    { name: "EMI Option", bugBounty: "₹2,999/mo", blackHat: "₹4,833/mo", lite: "₹200/5days" },
     { name: "Live Bug Hunting", bugBounty: true, blackHat: false, lite: false },
     { name: "Private Platforms Access", bugBounty: true, blackHat: false, lite: false },
     { name: "CVE Documentation", bugBounty: true, blackHat: false, lite: false },
