@@ -25,9 +25,9 @@ const pricingData = {
   "cyber-blackhat": {
     title: "Cyber Master's Pro Black Hat",
     subtitle: "Starts As low as",
-    monthlyPrice: "₹5,833/month",
+    monthlyPrice: "₹2,833/month",
     originalPrice: "₹1,00,000",
-    discountedPrice: "₹85,000/-",
+    discountedPrice: "19,000/-",
     features: [
       "Aptitude Training",
       "Soft Skills Training",
