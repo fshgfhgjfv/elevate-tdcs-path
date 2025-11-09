@@ -84,12 +84,20 @@ const hackingSkills = [
 ];
 
 const hackingTools = [
-  { name: "Kali Linux", icon: "🐧", description: "The industry-standard operating system for penetration testing." },
-  { name: "Burp Suite", icon: "🕷️", description: "Essential tool for web application vulnerability scanning and exploitation." },
-  { name: "Wireshark", icon: "🦈", description: "Packet sniffing and network analysis tool for deep protocol inspection." },
-  { name: "Nmap", icon: "📡", description: "Network discovery and security auditing utility." },
-  { name: "Metasploit", icon: "💉", description: "World's most used penetration testing framework." },
-  { name: "Hydra / John the Ripper", icon: "🔑", description: "Powerful tools for password cracking and brute-force attacks." },
+  // Updated to use external image URLs
+  { name: "Kali Linux", img: "https://upload.wikimedia.org/wikipedia/commons/2/23/Kali-linux-logo.png", description: "The industry-standard operating system for penetration testing." },
+  { name: "Burp Suite", img: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Burp_Suite_Logo.svg", description: "Essential tool for web application vulnerability scanning and exploitation." },
+  { name: "Wireshark", img: "https://upload.wikimedia.org/wikipedia/commons/4/4c/Wireshark_logo.png", description: "Packet sniffing and network analysis tool for deep protocol inspection." },
+  { name: "Nmap", img: "https://upload.wikimedia.org/wikipedia/commons/2/20/Nmap_logo.svg", description: "Network discovery and security auditing utility." },
+  { name: "Metasploit", img: "https://upload.wikimedia.org/wikipedia/commons/9/91/Metasploit_logo.png", description: "World's most used penetration testing framework." },
+  { name: "Hydra", img: "https://cdn.iconscout.com/icon/premium/png-512-thumb/password-cracker-341908.png", description: "Powerful tool for password cracking and brute-force attacks." },
+];
+
+const hackingProjects = [
+  { title: "Network Scanning & Mapping", description: "Perform a full reconnaissance scan using Nmap on a simulated target environment." },
+  { title: "Web App Penetration Test", description: "Identify and exploit OWASP Top 10 vulnerabilities (SQLi, XSS) using Burp Suite." },
+  { title: "Wireless Security Audit", description: "Crack WPA/WPA2 passwords and analyze captured handshakes using aircrack-ng tools." },
+  { title: "Malware Analysis Lab", description: "Set up a safe environment to analyze malware behavior and extract indicators of compromise (IOCs)." },
 ];
 
 const hackingCareers = [
@@ -190,9 +198,13 @@ const HackingCourseOverview = () => {
                                     viewport={{ once: true }}
                                     className="relative group bg-gray-800 border border-green-500/30 p-8 rounded-2xl flex flex-col items-center justify-center text-center space-y-3 transition-all cursor-pointer h-40"
                                 >
-                                    <div className="text-5xl mb-2" role="img" aria-label={tool.name}>
-                                        {tool.icon}
-                                    </div>
+                                    {/* Updated to use image URL */}
+                                    <img 
+                                        src={tool.img} 
+                                        alt={tool.name} 
+                                        className="w-16 h-16 object-contain mb-2" 
+                                        onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/64x64/34D399/1F2937?text=Tool"}} // Fallback image
+                                    />
                                     <span className="font-bold text-white text-lg">{tool.name}</span>
                                 </motion.div>
                             ))}
@@ -210,6 +222,15 @@ const HackingCourseOverview = () => {
                                     Our curriculum is project-based, ensuring you gain practical experience. Here are a few examples of what you will build and master:
                                 </p>
                                 
+                                <motion.img
+                                    src="https://images.unsplash.com/photo-1627916607962-c07a3c3f915f?auto=format&fit=crop&w=1200&q=80" // New relevant image URL
+                                    alt="Cybersecurity Project Showcase"
+                                    className="w-full rounded-2xl shadow-lg object-cover mb-8 border border-gray-700"
+                                    whileHover={{ scale: 1.01 }}
+                                    transition={{ duration: 0.3 }}
+                                    onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/1200x500/1F2937/FFFFFF?text=Projects+Showcase"}} // Fallback image
+                                />
+
                                 <div className="grid md:grid-cols-3 gap-6">
                                     {hackingProjects.map((project, index) => (
                                         <motion.div
