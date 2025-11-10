@@ -29,9 +29,9 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 
-// ✅ New: Import Service Pages
+// ✅ New: Import additional service pages
 import HardwareServices from "./pages/HardwareServices";
-import { WebsiteDevelopment } from "./pages/services/website-development"; // <-- ADD THIS
+import WebsiteDevelopment from "./pages/services/website-development"; // ✅ FIXED IMPORT (default export)
 
 const queryClient = new QueryClient();
 
@@ -73,7 +73,7 @@ const App = () => (
           <Route path="/services/software" element={<Services />} />
           <Route path="/services/hardware" element={<HardwareServices />} />
           <Route path="/services/legal" element={<AdvocateConstruction />} />
-          <Route path="/services/website-development" element={<WebsiteDevelopment />} /> {/* ✅ NEW ROUTE */}
+          <Route path="/services/website-development" element={<WebsiteDevelopment />} /> {/* ✅ New Route */}
           <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
           {/* 🚫 404 Fallback */}
