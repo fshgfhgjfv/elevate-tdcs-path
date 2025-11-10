@@ -31,7 +31,8 @@ import NotFound from "./pages/NotFound";
 import HardwareServices from "./pages/HardwareServices";
 import WebsiteDevelopment from "./pages/website-development";
 
-// ✅ NEW: Admin Panel
+// ✅ NEW: Pages
+import WebsiteSecurityDetails from "./pages/WebsiteSecurityDetails";
 import SimpleAdminPanel from "./pages/admin/SimpleAdminPanel";
 
 const queryClient = new QueryClient();
@@ -46,7 +47,7 @@ const App = () => (
         <Header />
 
         <Routes>
-          {/* Main Pages */}
+          {/* 🌐 Main Pages */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact-us" element={<ContactUs />} />
@@ -54,34 +55,36 @@ const App = () => (
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
 
-          {/* Courses */}
+          {/* 🎓 Courses */}
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:id" element={<CourseDetail />} />
           <Route path="/courses/:id/content" element={<CourseContent />} />
 
-          {/* Auth & Profile */}
+          {/* 👤 Auth & Profile */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/my-profile" element={<MyProfile />} />
 
-          {/* Certificates */}
+          {/* 🪪 Certificates */}
           <Route path="/verify-certificate" element={<VerifyCertificate />} />
           <Route path="/certificate-download" element={<CertificateDownload />} />
 
-          {/* Services */}
+          {/* 🧰 Services */}
           <Route path="/services" element={<Services />} />
           <Route path="/services/software" element={<Services />} />
           <Route path="/services/hardware" element={<HardwareServices />} />
           <Route path="/services/legal" element={<AdvocateConstruction />} />
           <Route path="/services/website-development" element={<WebsiteDevelopment />} />
+          {/* ✅ NEW ROUTE: Website Security Page */}
+          <Route path="/services/website-security" element={<WebsiteSecurityDetails />} />
           <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
-          {/* ✅ Admin Panel */}
+          {/* 🛠️ Admin Panel */}
           <Route path="/admin" element={<SimpleAdminPanel />} />
 
-          {/* 404 Fallback */}
+          {/* 🚫 404 Fallback */}
           <Route path="*" element={<NotFound />} />
         </Routes>
 
