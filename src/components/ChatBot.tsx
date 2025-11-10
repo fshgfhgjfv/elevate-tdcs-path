@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { MessageCircle, X, Send, Bot, User } from "lucide-react";
+import { MessageCircle, X, Send, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
@@ -14,12 +14,18 @@ interface Message {
 export const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Hi! I'm TDCS AI Assistant. How can I help you today?" }
+    {
+      role: "assistant",
+      content: "Hi! I'm TDCS AI Assistant. How can I help you today?",
+    },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+
+  const LOGO_URL =
+    "https://blogger.googleusercontent.com/img/a/AVvXsEh6t9BjBO7igeafdAkeEQW1JNA1TAfi2lIR0Nr857ozJmsC-qPIm9m2BbQi8JkDD3TmGVuyKAyxnIc88lETBh18Xia9FqGTkGdtzD7215GLuqRBIhm9UCh7F4FDB9BsKHg78TKGkSUfCtTHefuZ5LwuXqdGLzO50ulgxWj2b-6gGAZJHE15AEKDUnwStMAm";
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -57,96 +63,50 @@ export const ChatBot = () => {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let textBuffer = "";
-      let streamDone = false;
       let assistantContent = "";
 
-      // Add empty assistant message to update progressively
-      setMessages(prev => [...prev, { role: "assistant", content: "" }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
-      while (!streamDone) {
+      while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        
+
         textBuffer += decoder.decode(value, { stream: true });
+        const lines = textBuffer.split("\n");
+        textBuffer = lines.pop() || "";
 
-        let newlineIndex: number;
-        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
-          let line = textBuffer.slice(0, newlineIndex);
-          textBuffer = textBuffer.slice(newlineIndex + 1);
-
-          if (line.endsWith("\r")) line = line.slice(0, -1);
-          if (line.startsWith(":") || line.trim() === "") continue;
+        for (const line of lines) {
           if (!line.startsWith("data: ")) continue;
-
           const jsonStr = line.slice(6).trim();
-          if (jsonStr === "[DONE]") {
-            streamDone = true;
-            break;
-          }
-
+          if (jsonStr === "[DONE]") return;
           try {
             const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+            const content = parsed.choices?.[0]?.delta?.content;
             if (content) {
               assistantContent += content;
-              setMessages(prev => {
+              setMessages((prev) => {
                 const newMessages = [...prev];
-                newMessages[newMessages.length - 1] = {
-                  role: "assistant",
-                  content: assistantContent
-                };
+                newMessages[newMessages.length - 1].content = assistantContent;
                 return newMessages;
               });
             }
-          } catch {
-            textBuffer = line + "\n" + textBuffer;
-            break;
-          }
-        }
-      }
-
-      // Final flush
-      if (textBuffer.trim()) {
-        for (let raw of textBuffer.split("\n")) {
-          if (!raw) continue;
-          if (raw.endsWith("\r")) raw = raw.slice(0, -1);
-          if (raw.startsWith(":") || raw.trim() === "") continue;
-          if (!raw.startsWith("data: ")) continue;
-          const jsonStr = raw.slice(6).trim();
-          if (jsonStr === "[DONE]") continue;
-          try {
-            const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
-            if (content) {
-              assistantContent += content;
-              setMessages(prev => {
-                const newMessages = [...prev];
-                newMessages[newMessages.length - 1] = {
-                  role: "assistant",
-                  content: assistantContent
-                };
-                return newMessages;
-              });
-            }
-          } catch { /* ignore */ }
+          } catch {}
         }
       }
     } catch (error) {
-      console.error("Chat error:", error);
+      console.error(error);
       toast.error("Failed to get response. Please try again.");
-      setMessages(prev => prev.slice(0, -1));
+      setMessages((prev) => prev.slice(0, -1));
     }
   };
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
-
     const userMessage: Message = { role: "user", content: input };
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setInput("");
     setIsLoading(true);
-
     await streamChat(updatedMessages);
     setIsLoading(false);
   };
@@ -184,15 +144,17 @@ export const ChatBot = () => {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             className="fixed bottom-24 right-6 z-50 w-96 max-w-[calc(100vw-3rem)]"
           >
-            <Card className="shadow-2xl backdrop-blur-lg bg-background/95 border-2">
+            <Card className="shadow-2xl backdrop-blur-lg bg-background/95 border-2 rounded-xl overflow-hidden">
               {/* Header */}
-              <div className="p-4 border-b bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-t-lg">
-                <div className="flex items-center gap-2">
-                  <Bot className="h-6 w-6" />
-                  <div>
-                    <h3 className="font-bold">TDCS AI Assistant</h3>
-                    <p className="text-xs opacity-90">Online • Always here to help</p>
-                  </div>
+              <div className="p-4 border-b bg-gradient-to-r from-purple-600 to-blue-600 text-white flex items-center gap-3">
+                <img
+                  src={LOGO_URL}
+                  alt="TDCS Logo"
+                  className="w-10 h-10 rounded-full border-2 border-white shadow-md"
+                />
+                <div>
+                  <h3 className="font-bold text-lg">TDCS AI Assistant</h3>
+                  <p className="text-xs opacity-90">Online • Always here to help</p>
                 </div>
               </div>
 
@@ -201,14 +163,16 @@ export const ChatBot = () => {
                 {messages.map((msg, idx) => (
                   <div
                     key={idx}
-                    className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                    className={`flex gap-2 ${
+                      msg.role === "user" ? "justify-end" : "justify-start"
+                    }`}
                   >
                     {msg.role === "assistant" && (
-                      <div className="flex-shrink-0">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center">
-                          <Bot className="h-5 w-5 text-white" />
-                        </div>
-                      </div>
+                      <img
+                        src={LOGO_URL}
+                        alt="TDCS Bot"
+                        className="w-8 h-8 rounded-full flex-shrink-0 border border-border shadow"
+                      />
                     )}
                     <div
                       className={`rounded-lg p-3 max-w-[80%] ${
@@ -220,21 +184,19 @@ export const ChatBot = () => {
                       <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                     </div>
                     {msg.role === "user" && (
-                      <div className="flex-shrink-0">
-                        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                          <User className="h-5 w-5 text-primary-foreground" />
-                        </div>
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
+                        <User className="h-5 w-5" />
                       </div>
                     )}
                   </div>
                 ))}
                 {isLoading && (
                   <div className="flex gap-2 justify-start">
-                    <div className="flex-shrink-0">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center">
-                        <Bot className="h-5 w-5 text-white" />
-                      </div>
-                    </div>
+                    <img
+                      src={LOGO_URL}
+                      alt="TDCS Bot"
+                      className="w-8 h-8 rounded-full flex-shrink-0 border border-border shadow"
+                    />
                     <div className="bg-muted rounded-lg p-3">
                       <div className="flex gap-1">
                         <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
@@ -248,25 +210,23 @@ export const ChatBot = () => {
               </div>
 
               {/* Input */}
-              <div className="p-4 border-t">
-                <div className="flex gap-2">
-                  <Input
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Ask me anything..."
-                    disabled={isLoading}
-                    className="flex-1"
-                  />
-                  <Button
-                    onClick={handleSend}
-                    disabled={isLoading || !input.trim()}
-                    size="icon"
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
+              <div className="p-4 border-t flex gap-2">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Ask me anything..."
+                  disabled={isLoading}
+                  className="flex-1"
+                />
+                <Button
+                  onClick={handleSend}
+                  disabled={isLoading || !input.trim()}
+                  size="icon"
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
               </div>
             </Card>
           </motion.div>
