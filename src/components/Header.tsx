@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, User, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const LOGO_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEh6t9BjBO7igeafdAkeEQW1JNA1TAfi2lIR0Nr857ozJmsC-qPIm9m2BbQi8JkDD3TmGVuyKAyxnIc88lETBh18Xia9FqGTkGdtzD7215GLuqRBIhm9UCh7F4FDB9BsKHg78TKGkSUfCtTHefuZ5LwuXqdGLzO50ulgxWj2b-6gGAZJHE15AEKDUnwStMAm";
+const LOGO_URL =
+  "https://blogger.googleusercontent.com/img/a/AVvXsEh6t9BjBO7igeafdAkeEQW1JNA1TAfi2lIR0Nr857ozJmsC-qPIm9m2BbQi8JkDD3TmGVuyKAyxnIc88lETBh18Xia9FqGTkGdtzD7215GLuqRBIhm9UCh7F4FDB9BsKHg78TKGkSUfCtTHefuZ5LwuXqdGLzO50ulgxWj2b-6gGAZJHE15AEKDUnwStMAm";
 
 export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -28,9 +29,7 @@ export const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem("tdcs_user");
     Object.keys(localStorage).forEach((key) => {
-      if (key.startsWith("tdcs_purchased_")) {
-        localStorage.removeItem(key);
-      }
+      if (key.startsWith("tdcs_purchased_")) localStorage.removeItem(key);
     });
     setUser(null);
     navigate("/");
@@ -40,14 +39,15 @@ export const Header = () => {
     { name: "Home", path: "/" },
     { name: "Courses", path: "/courses" },
     { name: "Gallery", path: "/gallery" },
-    // Services will be handled separately
     { name: "Contact", path: "/contact-us" },
   ];
 
   return (
     <motion.header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-background/95 backdrop-blur-md shadow-glow" : "bg-background/80 backdrop-blur-sm"
+        isScrolled
+          ? "bg-background/95 backdrop-blur-md shadow-glow"
+          : "bg-background/80 backdrop-blur-sm"
       }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -57,7 +57,11 @@ export const Header = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <img src={LOGO_URL} alt="TDCS Logo" className="h-10 md:h-12 w-auto" />
+            <img
+              src={LOGO_URL}
+              alt="TDCS Logo"
+              className="h-10 md:h-12 w-auto"
+            />
             <span className="text-2xl md:text-3xl font-bold gradient-text animate-glow-pulse">
               TDCS
             </span>
@@ -70,14 +74,16 @@ export const Header = () => {
                 key={link.path}
                 to={link.path}
                 className={`link-underline font-medium transition-colors ${
-                  location.pathname === link.path ? "text-primary" : "text-foreground hover:text-primary"
+                  location.pathname === link.path
+                    ? "text-primary"
+                    : "text-foreground hover:text-primary"
                 }`}
               >
                 {link.name}
               </Link>
             ))}
 
-            {/* Services dropdown */}
+            {/* Services Dropdown */}
             <div
               className="relative"
               onMouseEnter={() => setIsServicesOpen(true)}
@@ -120,6 +126,12 @@ export const Header = () => {
                     >
                       Legal Advice
                     </Link>
+                    <Link
+                      to="/services/website-development"
+                      className="block px-4 py-2 rounded-md hover:bg-accent"
+                    >
+                      Website Development
+                    </Link>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -136,7 +148,11 @@ export const Header = () => {
                     Dashboard
                   </Button>
                 </Link>
-                <Button variant="destructive" onClick={handleLogout} className="gap-2">
+                <Button
+                  variant="destructive"
+                  onClick={handleLogout}
+                  className="gap-2"
+                >
                   <LogOut className="w-4 h-4" />
                   Logout
                 </Button>
@@ -147,7 +163,9 @@ export const Header = () => {
                   <Button variant="outline">Login</Button>
                 </Link>
                 <Link to="/signup">
-                  <Button variant="default" className="gradient-primary">Sign Up</Button>
+                  <Button variant="default" className="gradient-primary">
+                    Sign Up
+                  </Button>
                 </Link>
               </>
             )}
@@ -179,7 +197,9 @@ export const Header = () => {
                   key={link.path}
                   to={link.path}
                   className={`font-medium py-2 ${
-                    location.pathname === link.path ? "text-primary" : "text-foreground"
+                    location.pathname === link.path
+                      ? "text-primary"
+                      : "text-foreground"
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -190,14 +210,37 @@ export const Header = () => {
               {/* Services for mobile */}
               <div className="flex flex-col gap-2">
                 <p className="font-semibold text-foreground">Services</p>
-                <Link to="/services/software" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full text-left">Software</Button>
+                <Link
+                  to="/services/software"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Button variant="ghost" className="w-full text-left">
+                    Software
+                  </Button>
                 </Link>
-                <Link to="/services/hardware" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full text-left">Hardware</Button>
+                <Link
+                  to="/services/hardware"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Button variant="ghost" className="w-full text-left">
+                    Hardware
+                  </Button>
                 </Link>
-                <Link to="/services/legal" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full text-left">Legal Advice</Button>
+                <Link
+                  to="/services/legal"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Button variant="ghost" className="w-full text-left">
+                    Legal Advice
+                  </Button>
+                </Link>
+                <Link
+                  to="/services/website-development"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Button variant="ghost" className="w-full text-left">
+                    Website Development
+                  </Button>
                 </Link>
               </div>
 
@@ -205,7 +248,11 @@ export const Header = () => {
               <div className="flex flex-col gap-3 pt-4 border-t">
                 {user ? (
                   <>
-                    <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full"
+                    >
                       <Button variant="outline" className="w-full gap-2">
                         <User className="w-4 h-4" />
                         Dashboard
@@ -225,13 +272,24 @@ export const Header = () => {
                   </>
                 ) : (
                   <>
-                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
+                    <Link
+                      to="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full"
+                    >
                       <Button variant="outline" className="w-full">
                         Login
                       </Button>
                     </Link>
-                    <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
-                      <Button variant="default" className="w-full gradient-primary">
+                    <Link
+                      to="/signup"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full"
+                    >
+                      <Button
+                        variant="default"
+                        className="w-full gradient-primary"
+                      >
                         Sign Up
                       </Button>
                     </Link>
