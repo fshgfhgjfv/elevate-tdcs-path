@@ -3,7 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 
@@ -13,6 +19,7 @@ interface Tool {
   duration: string;
   description?: string;
   features?: string[];
+  examplePrice?: string;
 }
 
 interface ServiceCardProps {
@@ -50,10 +57,10 @@ export const ServiceCard = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <Card className="h-full overflow-hidden hover:shadow-glow-lg transition-all duration-500 group border-2 flex flex-col">
+        <Card className="h-full overflow-hidden hover:shadow-glow-lg hover:-translate-y-1 transition-all duration-500 group border border-border/40 bg-card/50 flex flex-col">
           <CardContent className="p-0 flex-1 flex flex-col">
-            {/* Product Box Image */}
-            <div className="relative h-80 overflow-hidden bg-gradient-to-br from-background to-muted/20">
+            {/* Image or Gradient Banner */}
+            <div className="relative h-72 overflow-hidden bg-gradient-to-br from-background to-muted/20">
               {image ? (
                 <img
                   src={image}
@@ -62,11 +69,13 @@ export const ServiceCard = ({
                   loading="lazy"
                 />
               ) : (
-                <div className={`w-full h-full bg-gradient-to-br ${colors} opacity-80 flex items-center justify-center`}>
-                  <IconComponent className="w-32 h-32 text-white/30" />
+                <div
+                  className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${colors} opacity-90`}
+                >
+                  <IconComponent className="w-28 h-28 text-white/40" />
                 </div>
               )}
-              
+
               {/* Badge */}
               <div className="absolute top-4 right-4 bg-background/90 backdrop-blur-sm px-4 py-2 rounded-lg border border-primary/50">
                 <span className="text-sm font-bold gradient-text tracking-wider">
@@ -74,42 +83,64 @@ export const ServiceCard = ({
                 </span>
               </div>
 
-              {/* TDCS Logo Glow */}
-              <div className="absolute bottom-4 left-4">
-                <div className="text-3xl font-bold text-white drop-shadow-glow">
-                  TDCS
-                </div>
+              {/* TDCS Watermark */}
+              <div className="absolute bottom-4 left-4 text-3xl font-bold text-white/70 drop-shadow-glow">
+                TDCS
               </div>
             </div>
 
-            {/* Content */}
-            <div className="p-4 sm:p-6 space-y-4 flex-1 flex flex-col">
+            {/* Main Content */}
+            <div className="p-5 sm:p-6 flex flex-col space-y-4 flex-1">
+              {/* Header */}
               <div className="flex items-start gap-3">
-                <div className={`p-2 sm:p-3 rounded-lg bg-gradient-to-br ${colors}`}>
+                <div className={`p-3 rounded-lg bg-gradient-to-br ${colors}`}>
                   <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-xl sm:text-2xl font-bold mb-2 break-words">{title}</h3>
-                  <p className="text-muted-foreground text-xs sm:text-sm">{tagline}</p>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-1">{title}</h3>
+                  <p className="text-muted-foreground text-sm">{tagline}</p>
                 </div>
               </div>
 
-              {/* Animated Logo Carousel */}
-              <div className="relative overflow-hidden py-4">
+              {/* Tool Carousel */}
+              <div className="overflow-hidden py-3">
                 <div className="flex gap-2 sm:gap-3 animate-scroll-left-fast">
                   {[...tools, ...tools].map((tool, idx) => (
                     <motion.button
                       key={idx}
                       whileHover={{ scale: 1.1 }}
                       onClick={() => setSelectedTool(tool)}
-                      className="flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 bg-muted/50 hover:bg-muted rounded-full text-xs font-medium flex items-center gap-2 transition-all cursor-pointer group/tool"
+                      className="flex-shrink-0 px-4 py-2 bg-muted/50 hover:bg-muted rounded-full text-xs sm:text-sm font-medium flex items-center gap-2 transition-all cursor-pointer"
                       title={`${tool.name} - ${tool.duration}`}
                     >
                       <span className="text-base sm:text-lg">{tool.icon}</span>
-                      <span className="hidden sm:inline text-xs">{tool.name}</span>
+                      <span>{tool.name}</span>
                     </motion.button>
                   ))}
                 </div>
+              </div>
+
+              {/* CTA Section */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-t pt-4 mt-auto gap-4">
+                <div className="flex-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground">
+                    Starting at
+                  </p>
+                  <p className="text-xl sm:text-2xl font-bold gradient-text">
+                    {price}
+                  </p>
+                  <Badge variant="secondary" className="mt-2 text-xs">
+                    Budget Friendly
+                  </Badge>
+                </div>
+                <Button
+                  variant="gradient"
+                  size="lg"
+                  className="shadow-glow hover:scale-[1.02] transition-all w-full sm:w-auto"
+                  onClick={() => onGetService(id, title, price)}
+                >
+                  Get This Service
+                </Button>
               </div>
 
               {/* Learn More Link */}
@@ -120,23 +151,6 @@ export const ServiceCard = ({
               >
                 View Full Details →
               </Button>
-
-              {/* Price & CTA */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-4 border-t gap-4 mt-auto">
-                <div className="flex-1">
-                  <p className="text-xs sm:text-sm text-muted-foreground">Starting at</p>
-                  <p className="text-xl sm:text-2xl font-bold gradient-text">{price}</p>
-                  <Badge variant="secondary" className="mt-2 text-xs">Low Budget Friendly</Badge>
-                </div>
-                <Button
-                  variant="gradient"
-                  size="lg"
-                  className="shadow-glow animate-pulse hover:animate-none w-full sm:w-auto text-sm sm:text-base"
-                  onClick={() => onGetService(id, title, price)}
-                >
-                  GET THIS Service
-                </Button>
-              </div>
             </div>
           </CardContent>
         </Card>
@@ -151,13 +165,18 @@ export const ServiceCard = ({
               {selectedTool?.name}
             </DialogTitle>
             <DialogDescription>
-              <Badge variant="secondary" className="mt-2">{selectedTool?.duration}</Badge>
+              <Badge variant="secondary" className="mt-2">
+                {selectedTool?.duration}
+              </Badge>
             </DialogDescription>
           </DialogHeader>
+
           <div className="space-y-4 py-4">
             <p className="text-muted-foreground">
-              {selectedTool?.description || `${selectedTool?.name} is included in this premium bundle pack.`}
+              {selectedTool?.description ||
+                `${selectedTool?.name} is part of our website & security service bundle.`}
             </p>
+
             {selectedTool?.features && (
               <div>
                 <h4 className="font-semibold mb-2">Key Features:</h4>
@@ -168,6 +187,13 @@ export const ServiceCard = ({
                 </ul>
               </div>
             )}
+
+            {selectedTool?.examplePrice && (
+              <p className="text-sm font-semibold text-primary">
+                Example Price: {selectedTool.examplePrice}
+              </p>
+            )}
+
             <Button
               variant="gradient"
               className="w-full"
@@ -176,7 +202,7 @@ export const ServiceCard = ({
                 onGetService(id, title, price);
               }}
             >
-              GET THIS Service
+              Get This Service
             </Button>
           </div>
         </DialogContent>
