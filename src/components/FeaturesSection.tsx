@@ -32,7 +32,7 @@ const features = [
     description:
       "Work on live projects and build a portfolio that stands out to employers.",
     image:
-      "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&h=400&fit=crop&q=80",
+      "https://anaxee.com/wp-content/uploads/2025/09/blog-feature-image-31.jpg",
   },
   {
     icon: MessageCircle,
