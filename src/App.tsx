@@ -29,9 +29,10 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 import HardwareServices from "./pages/HardwareServices";
-
-// ✅ FIXED: correct import path for website-development
 import WebsiteDevelopment from "./pages/website-development";
+
+// ✅ NEW: Admin Panel
+import SimpleAdminPanel from "./pages/admin/SimpleAdminPanel";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,9 @@ const App = () => (
           <Route path="/services/legal" element={<AdvocateConstruction />} />
           <Route path="/services/website-development" element={<WebsiteDevelopment />} />
           <Route path="/services/:serviceId" element={<ServiceDetail />} />
+
+          {/* ✅ Admin Panel */}
+          <Route path="/admin" element={<SimpleAdminPanel />} />
 
           {/* 404 Fallback */}
           <Route path="*" element={<NotFound />} />
