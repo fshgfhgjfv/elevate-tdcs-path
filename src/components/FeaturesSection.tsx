@@ -24,7 +24,7 @@ const features = [
     description:
       "Get placed in top companies with our proven placement assistance and hiring drives.",
     image:
-      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&h=400&fit=crop&q=80",
+      "https://blogger.googleusercontent.com/img/a/AVvXsEijiYHKn12RrDtqknhXwxRKrPkCkgg7N6rXpXhiuO92b49wDfXV0nJOj3Iz-hG0f3hgLTklsw00VIeySgy_PSAe1EyBG95RV979K75kg4i6OldYKKT4YUy2TrITpMgRL1sB7udJueNRZ8IjL1lpLegF2qwK7D2LzdU8q-lcAL-quAhaxbTAZtG8Oxwzsz0U",
   },
   {
     icon: Code,
