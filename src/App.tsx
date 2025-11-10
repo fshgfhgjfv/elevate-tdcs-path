@@ -29,9 +29,9 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 
-// ✅ NEW: Import Hardware Services page
+// ✅ New: Import Service Pages
 import HardwareServices from "./pages/HardwareServices";
-
+import { WebsiteDevelopment } from "./pages/services/website-development"; // <-- ADD THIS
 
 const queryClient = new QueryClient();
 
@@ -44,7 +44,7 @@ const App = () => (
         <ScrollToTop />
         <Header />
         <Routes>
-          {/* Main Pages */}
+          {/* 🌐 Main Pages */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact-us" element={<ContactUs />} />
@@ -52,36 +52,31 @@ const App = () => (
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
 
-          {/* Courses */}
+          {/* 🎓 Courses */}
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:id" element={<CourseDetail />} />
           <Route path="/courses/:id/content" element={<CourseContent />} />
 
-          {/* Auth & Profile */}
+          {/* 👤 Auth & Profile */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/my-profile" element={<MyProfile />} />
 
-          {/* Certificates */}
+          {/* 🪪 Certificates */}
           <Route path="/verify-certificate" element={<VerifyCertificate />} />
           <Route path="/certificate-download" element={<CertificateDownload />} />
 
-          {/* Services */}
+          {/* ⚙️ Services */}
           <Route path="/services" element={<Services />} />
           <Route path="/services/software" element={<Services />} />
-          
-          {/* ✅ Updated Hardware route */}
           <Route path="/services/hardware" element={<HardwareServices />} />
-          
-          {/* ✅ Legal / Advocate route */}
           <Route path="/services/legal" element={<AdvocateConstruction />} />
-          
+          <Route path="/services/website-development" element={<WebsiteDevelopment />} /> {/* ✅ NEW ROUTE */}
           <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
-
-          {/* 404 Fallback */}
+          {/* 🚫 404 Fallback */}
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />
