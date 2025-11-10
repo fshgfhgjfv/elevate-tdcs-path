@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,18 +10,21 @@ import { ExternalLink, Star } from "lucide-react";
 const services = [
   {
     name: "Website Security",
+    slug: "website-security",
     description: "Protect your site from hackers, malware, and data leaks with enterprise-grade monitoring.",
     price: "Starting at $199",
     image: "https://images.unsplash.com/photo-1556741533-f6acd647d2fb?auto=format&fit=crop&w=800&q=80",
   },
   {
     name: "Penetration Testing",
+    slug: "penetration-testing",
     description: "Simulate cyberattacks to uncover vulnerabilities before real hackers do.",
     price: "Starting at $299",
     image: "https://images.unsplash.com/photo-1510511459019-5dda7724fd87?auto=format&fit=crop&w=800&q=80",
   },
   {
     name: "Web Development",
+    slug: "web-development",
     description: "Custom-built, responsive websites using React, Next.js, or WordPress.",
     price: "Starting at $499",
     image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
@@ -49,7 +53,7 @@ const projects = [
   },
 ];
 
-// --- Testimonials Data ---
+// --- Testimonials ---
 const testimonials = [
   {
     name: "Emily Carter",
@@ -71,7 +75,7 @@ const testimonials = [
   },
 ];
 
-// --- FAQ Data ---
+// --- FAQs ---
 const faqs = [
   {
     q: "How long does a typical project take?",
@@ -95,6 +99,7 @@ export default function WebsiteDevelopment() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref });
   const y1 = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+  const navigate = useNavigate();
 
   return (
     <section ref={ref} className="container mx-auto px-4 py-20 space-y-24 relative">
@@ -123,7 +128,8 @@ export default function WebsiteDevelopment() {
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
             whileHover={{ scale: 1.03 }}
-            className="rounded-2xl overflow-hidden border border-border/50 bg-gradient-to-b from-background to-background/80 hover:shadow-lg transition-all"
+            onClick={() => navigate(`/services/${service.slug}`)} // 👈 dynamic link
+            className="cursor-pointer rounded-2xl overflow-hidden border border-border/50 bg-gradient-to-b from-background to-background/80 hover:shadow-lg hover:shadow-primary/30 transition-all"
           >
             <img src={service.image} alt={service.name} className="h-48 w-full object-cover" />
             <CardHeader>
@@ -133,8 +139,15 @@ export default function WebsiteDevelopment() {
               <p className="text-foreground/80 mb-4">{service.description}</p>
               <div className="flex justify-between items-center">
                 <span className="font-bold">{service.price}</span>
-                <Button variant="default" className="gradient-primary">
-                  Get Quote
+                <Button
+                  variant="default"
+                  className="gradient-primary"
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent triggering card click
+                    navigate(`/services/${service.slug}`);
+                  }}
+                >
+                  Learn More
                 </Button>
               </div>
             </CardContent>
@@ -142,7 +155,7 @@ export default function WebsiteDevelopment() {
         ))}
       </div>
 
-      {/* --- PROJECTS SHOWCASE --- */}
+      {/* --- PROJECTS --- */}
       <motion.div style={{ y: y1 }} className="space-y-10">
         <h2 className="text-3xl font-bold text-center">🚀 Real Projects We’ve Built</h2>
         <div className="grid md:grid-cols-3 gap-8">
@@ -182,11 +195,7 @@ export default function WebsiteDevelopment() {
               className="min-w-[300px] bg-gradient-to-b from-background to-muted p-6 rounded-2xl shadow-md hover:shadow-glow"
             >
               <div className="flex items-center gap-3 mb-3">
-                <img
-                  src={t.img}
-                  alt={t.name}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
+                <img src={t.img} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
                 <div>
                   <h4 className="font-semibold">{t.name}</h4>
                   <p className="text-sm text-muted-foreground">{t.role}</p>
