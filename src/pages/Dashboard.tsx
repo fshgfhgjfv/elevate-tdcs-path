@@ -1,37 +1,39 @@
-import { useState, useEffect } from "react";
-import { useNavigate, Routes, Route, Link, useLocation } from "react-router-dom";
+import { useState, useEffect, lazy, Suspense } from "react";
+import { useNavigate, Routes, Route } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { 
-  BookOpen, 
-  Trophy, 
-  Award, 
-  Settings, 
-  HelpCircle,
-  Menu,
-  X
-} from "lucide-react";
-import DashboardMyCourses from "./dashboard/DashboardMyCourses";
-import DashboardLeaderboard from "./dashboard/DashboardLeaderboard";
-import DashboardCertificates from "./dashboard/DashboardCertificates";
-import DashboardAccountSettings from "./dashboard/DashboardAccountSettings";
-import DashboardSupport from "./dashboard/DashboardSupport";
+import { BookOpen, Trophy, Award, Settings, HelpCircle, Menu, X } from "lucide-react";
+import Sidebar, { SidebarItem } from "./Sidebar";
+import { User } from "./types";
+
+// Lazy loaded pages
+const DashboardMyCourses = lazy(() => import("./dashboard/DashboardMyCourses"));
+const DashboardLeaderboard = lazy(() => import("./dashboard/DashboardLeaderboard"));
+const DashboardCertificates = lazy(() => import("./dashboard/DashboardCertificates"));
+const DashboardAccountSettings = lazy(() => import("./dashboard/DashboardAccountSettings"));
+const DashboardSupport = lazy(() => import("./dashboard/DashboardSupport"));
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const userData = localStorage.getItem("tdcs_user");
-    if (!userData) {
+    try {
+      const userData = localStorage.getItem("tdcs_user");
+      if (!userData) {
+        navigate("/login");
+        return;
+      }
+      setUser(JSON.parse(userData));
+    } catch (error) {
+      console.error("Failed to parse user data:", error);
       navigate("/login");
-      return;
     }
-    setUser(JSON.parse(userData));
   }, [navigate]);
 
-  const sidebarItems = [
+  if (!user) return null;
+
+  const sidebarItems: SidebarItem[] = [
     { icon: BookOpen, label: "My Courses", path: "/dashboard" },
     { icon: Trophy, label: "Student Leaderboard", path: "/dashboard/leaderboard" },
     { icon: Award, label: "Certificates", path: "/dashboard/certificates" },
@@ -39,14 +41,13 @@ const Dashboard = () => {
     { icon: HelpCircle, label: "Support / Help", path: "/dashboard/support" },
   ];
 
-  const isActive = (path: string) => {
-    if (path === "/dashboard") {
-      return location.pathname === "/dashboard";
-    }
-    return location.pathname.startsWith(path);
-  };
-
-  if (!user) return null;
+  const dashboardRoutes = [
+    { path: "/", element: <DashboardMyCourses user={user} /> },
+    { path: "/leaderboard", element: <DashboardLeaderboard /> },
+    { path: "/certificates", element: <DashboardCertificates /> },
+    { path: "/settings", element: <DashboardAccountSettings user={user} setUser={setUser} /> },
+    { path: "/support", element: <DashboardSupport /> },
+  ];
 
   return (
     <div className="min-h-screen pt-20 bg-gradient-to-br from-background via-background to-primary/5">
@@ -57,57 +58,32 @@ const Dashboard = () => {
           size="icon"
           className="lg:hidden fixed top-24 left-4 z-50"
           onClick={() => setSidebarOpen(!sidebarOpen)}
+          aria-label="Toggle sidebar"
         >
           {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </Button>
 
         {/* Sidebar */}
-        <aside
-          className={`
-            fixed lg:sticky top-20 left-0 h-[calc(100vh-5rem)] w-64 
-            bg-card border-r z-40 transition-transform duration-300
-            ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-          `}
-        >
-          <div className="p-6">
-            <h2 className="text-2xl font-bold gradient-text mb-6">Dashboard</h2>
-            <nav className="space-y-2">
-              {sidebarItems.map((item) => (
-                <Link key={item.path} to={item.path} onClick={() => setSidebarOpen(false)}>
-                  <Button
-                    variant={isActive(item.path) ? "default" : "ghost"}
-                    className={`w-full justify-start gap-3 ${
-                      isActive(item.path) 
-                        ? "gradient-primary text-white hover:opacity-90" 
-                        : "hover:bg-primary/10"
-                    }`}
-                  >
-                    <item.icon className="w-5 h-5" />
-                    {item.label}
-                  </Button>
-                </Link>
-              ))}
-            </nav>
-          </div>
-        </aside>
+        <Sidebar items={sidebarItems} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
         {/* Overlay for mobile */}
-        {sidebarOpen && (
-          <div
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 lg:hidden"
-            onClick={() => setSidebarOpen(false)}
-          />
-        )}
+        <div
+          className={`fixed inset-0 bg-background/80 backdrop-blur-sm z-30 transition-opacity ${
+            sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          } lg:hidden`}
+          onClick={() => setSidebarOpen(false)}
+        />
 
         {/* Main Content */}
         <main className="flex-1 p-4 md:p-8">
-          <Routes>
-            <Route path="/" element={<DashboardMyCourses user={user} />} />
-            <Route path="/leaderboard" element={<DashboardLeaderboard />} />
-            <Route path="/certificates" element={<DashboardCertificates />} />
-            <Route path="/settings" element={<DashboardAccountSettings user={user} setUser={setUser} />} />
-            <Route path="/support" element={<DashboardSupport />} />
-          </Routes>
+          <h1 className="text-xl font-semibold mb-4">Welcome back, {user.name} 👋</h1>
+          <Suspense fallback={<div className="text-center py-20">Loading...</div>}>
+            <Routes>
+              {dashboardRoutes.map((route) => (
+                <Route key={route.path} path={route.path} element={route.element} />
+              ))}
+            </Routes>
+          </Suspense>
         </main>
       </div>
     </div>
