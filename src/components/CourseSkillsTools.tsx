@@ -13,13 +13,16 @@ const skills = [
   { name: "Python", img: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" },
 ];
 
+// 🔥 UPDATED: HACKING / CYBERSECURITY TOOLS (Live URLs)
 const tools = [
-  { name: "VS Code", img: "https://code.visualstudio.com/assets/images/code-stable.png" },
-  { name: "GitHub", img: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" },
-  { name: "Docker", img: "https://www.docker.com/wp-content/uploads/2022/03/Moby-logo.png" },
-  { name: "AWS", img: "https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" },
-  { name: "Postman", img: "https://voyager.postman.com/logo/postman-logo-orange.svg" },
-  { name: "Command Line", img: "https://upload.wikimedia.org/wikipedia/commons/5/51/Windows_Terminal_logo.svg" },
+  { name: "Kali Linux", img: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg" },
+  { name: "Metasploit", img: "https://upload.wikimedia.org/wikipedia/commons/8/8f/Metasploit_logo_and_wordmark.png" },
+  { name: "Burp Suite", img: "https://portswigger.net/content/images/logos/burp-suite.svg" },
+  { name: "Wireshark", img: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Wireshark_icon.svg" },
+  { name: "Nmap", img: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Nmap-logo.svg" },
+  { name: "John the Ripper", img: "https://upload.wikimedia.org/wikipedia/commons/0/04/John_the_Ripper_logo.png" },
+  { name: "Aircrack-ng", img: "https://upload.wikimedia.org/wikipedia/commons/9/98/Aircrack-ng-logo.png" },
+  { name: "Hydra", img: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Hydra-logo.png" },
 ];
 
 const careers = [
