@@ -20,7 +20,7 @@ const services = [
     slug: "penetration-testing",
     description: "Simulate cyberattacks to uncover vulnerabilities before real hackers do.",
     price: "Starting at $299",
-    image: "https://images.unsplash.com/photo-1510511459019-5dda7724fd87?auto=format&fit=crop&w=800&q=80",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT97UlNaiIwu_wXnTxSEQP1WwGCwcIwOBLXqQ&s",
   },
   {
     name: "Web Development",
