@@ -12,8 +12,8 @@ const services = [
     name: "Website Security",
     slug: "website-security",
     description: "Protect your site from hackers, malware, and data leaks with enterprise-grade monitoring.",
-    price: "Starting at $199",
-    image: "https://images.unsplash.com/photo-1556741533-f6acd647d2fb?auto=format&firop&w=800&q=80",
+    price: "Starting at 1999",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTult-T4p-9ig7zIoGth7nrWrSHOmtzv_C1gA&s",
   },
   {
     name: "Penetration Testing",
