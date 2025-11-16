@@ -35,7 +35,7 @@ const services = [
 const projects = [
   {
     title: "Finexa Banking Portal",
-    img: "https://images.unsplash.com/photo-1603791452906-bb2f9e7d2ad1?auto=format&fit=crop&w=800&q=80",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4nWsfrm6LUico5887e1nHr27RY5naM-RN4w&s",
     link: "https://finexa.com",
     desc: "A secure, AI-driven digital banking platform with interactive dashboards and real-time analytics.",
   },
