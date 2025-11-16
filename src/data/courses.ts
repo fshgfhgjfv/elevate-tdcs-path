@@ -184,7 +184,7 @@ export const testimonials: Testimonial[] = [
     after: "Application Developer",
     company: "Thoughtworks",
     courseId: "cyber-blackhat",
-    image: "https://randomuser.me/api/portraits/women/44.jpg",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzzCpnE0enlEeacrQHddcjdy1bKy4rqZOK5g&s",
     testimonial:
       "Comprehensive curriculum with excellent mentorship. The hands-on projects prepared me well for real-world challenges.",
   },
