@@ -264,18 +264,47 @@ export const testimonials: Testimonial[] = [
 // 🧰 TOOLS
 // ===========================================
 export const tools: Tool[] = [
-  { name: "Kali Linux", icon: "🐉" },
-  { name: "Nmap", icon: "🗺️" },
-  { name: "Metasploit", icon: "🎯" },
-  { name: "Burp Suite", icon: "🔍" },
-  { name: "Wireshark", icon: "🦈" },
-  { name: "Python", icon: "🐍" },
-  { name: "Linux", icon: "🐧" },
-  { name: "Docker", icon: "🐳" },
-  { name: "Git", icon: "📦" },
-  { name: "SQL", icon: "💾" },
+  { 
+    name: "Kali Linux", 
+    icon: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg" 
+  },
+  { 
+    name: "Nmap", 
+    icon: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Nmap_logo.svg" 
+  },
+  { 
+    name: "Metasploit", 
+    icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Metasploit_logo.svg" 
+  },
+  { 
+    name: "Burp Suite", 
+    icon: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Burp_Suite_logo.png" 
+  },
+  { 
+    name: "Wireshark", 
+    icon: "https://upload.wikimedia.org/wikipedia/commons/8/82/Wireshark_logo.svg" 
+  },
+  { 
+    name: "Python", 
+    icon: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" 
+  },
+  { 
+    name: "Linux", 
+    icon: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" 
+  },
+  { 
+    name: "Docker", 
+    icon: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Docker_%28container_engine%29_logo.svg" 
+  },
+  { 
+    name: "Git", 
+    icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg" 
+  },
+  { 
+    name: "SQL", 
+    icon: "https://upload.wikimedia.org/wikipedia/commons/8/87/Sql_data_base_with_logo.png" 
+  },
 ];
-
 // ===========================================
 // 💼 HIRING DRIVES
 // ===========================================
