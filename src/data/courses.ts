@@ -314,7 +314,7 @@ export const hiringDrives: HiringDrive[] = [
     role: "Software Developer",
     salary: "6–10 LPA",
     location: "Bangalore",
-    logo: "https://images.unsplash.com/photo-1581093588401-22c7a2c57c8e?auto=format&fit=crop&w=300&q=80",
+    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_T4gIa3-huI-PtTmRr95TxKLqS3KBnCtTgw&s",
     courseId: "cyber-blackhat",
   },
   {
