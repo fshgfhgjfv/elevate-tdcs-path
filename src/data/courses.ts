@@ -96,7 +96,7 @@ export const courses: Course[] = [
     description:
       "Advanced program covering exploit dev, malware analysis, red teaming & advanced pentesting.",
     price: 19999,
-    thumbnail: "https://blogger.googleusercontent.com/img/a/AVvXsEjeEMY9fu5iWBuobT6Qc1RzXeYHdb_aiz3udocy3qW1lKZyeCd-q5N-rfVxVUm4oV_o1INLR6P3FgVlw7VtjUpQtpZKnkM6pPFpzr0f7cn6HpqdcXmJ8uiYhzweSPEBt9CUrXrX_BfLcBrcvzVRi8QQ7Rdp9fh-3iDo_5fykHL20xZ-XmL4Nyk0uvXiqkzP",
+    thumbnail: "https://blogger.googleusercontent.com/img/a/AVvXsEimZrWbA4DGBCy0eQXhIBbuVefY_7WOcvJ6SC11Q55L0rc9sMT_b_2-BRTbGYPv9e6r05aREJI91KC7tE1rlobdc_gOLsRIO11_PAD246NAYCDsCboM9pSzJtqHLmhaXcDfb9c1NwfQviILZrJHgLByTSuTUKjmSAfkPgqWVgbYCNL8NF7ZCLb4UiJtqpBd",
     category: "Live Online",
     duration: "4 months",
     modules: [
