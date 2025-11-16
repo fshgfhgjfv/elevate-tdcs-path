@@ -83,7 +83,7 @@ export const courses: Course[] = [
       "Completion certificate",
       "Community forum access",
     ],
-    demoVideo: "https://drive.google.com/file/d/1aSj5YmuMg7RZ_Cc37h2x-p0pE3ZD1TNY/view",
+    demoVideo: "https://youtu.be/JNcuJSJ3Z1Q?si=boi5NFQYhCrvT5JV",
     resources: [
       { name: "Sample Lab Guide", url: "#" },
       { name: "Course Slidebook", url: "#" },
