@@ -19,14 +19,14 @@ const services = [
     name: "Penetration Testing",
     slug: "penetration-testing",
     description: "Simulate cyberattacks to uncover vulnerabilities before real hackers do.",
-    price: "Starting at $299",
+    price: "Starting at 2999",
     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT97UlNaiIwu_wXnTxSEQP1WwGCwcIwOBLXqQ&s",
   },
   {
     name: "Web Development",
     slug: "web-development",
     description: "Custom-built, responsive websites using React, Next.js, or WordPress.",
-    price: "Starting at $499",
+    price: "Starting at 4999",
     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4bltNxyXCmTTjBUSrTkHyy5_10dIpwnkvDw&s",
   },
 ];
