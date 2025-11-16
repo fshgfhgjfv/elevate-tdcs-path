@@ -63,7 +63,7 @@ export const courses: Course[] = [
     title: "Cyber Master's Pro Lite",
     description: "Foundational ethical hacking & network security program for beginners.",
     price: 499,
-    thumbnail: "https://blogger.googleusercontent.com/img/a/AVvXsEjYbtTNBy0k-Z-mQPiTS6crzmU3nypEPnHTnXvIrMP5ad38CzbJptT9jkTHFz5O5V3q5YGLCDhGahEIsCFYsHI1eaPb30lnhJ0pZ3d-o61pehHJ38kKNtoBnewayL2wGFf-wzvWrfyhj22KvOV7fXLzgojsg7rpLpMFHipPVr28fohOf72bYxFQeRJAhX_q",
+    thumbnail: "https://blogger.googleusercontent.com/img/a/AVvXsEi2jJG9xx6SAnzeq8WvvqKFO2Wn9YwnEdeYhxL7LjbWmkhPOxQtYUivHqch9IPeMZ-y-3uK8Aa0zq5soxCEACNabiI-rTbpJBw-0XHxgGiRAwHqOP7js6xq25wf51fDUH2ZVhkYRvu2ZoiwznZRf3ujEjstLaTBL6NFyCwuJ0RGX_fU48fQNTvKsgEZB7YY",
     category: "Live Online",
     duration: "2 months",
     modules: [
