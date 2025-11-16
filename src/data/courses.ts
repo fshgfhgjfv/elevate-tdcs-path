@@ -330,7 +330,7 @@ export const hiringDrives: HiringDrive[] = [
     role: "Security Analyst",
     salary: "7–12 LPA",
     location: "Hyderabad",
-    logo: "https://images.unsplash.com/photo-1612831662375-295c1003d3b2?auto=format&fit=crop&w=300&q=80",
+    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIQ18JzfbqKwsK3e5KlUt8EJbaEaeduXgJkA&s",
     courseId: "bug-hunting-pentest",
   },
   {
