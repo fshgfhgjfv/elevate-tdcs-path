@@ -130,7 +130,7 @@ export const courses: Course[] = [
     description:
       "Specialized course covering bug bounty hunting, web security, API testing & professional pentesting.",
     price: 6999,
-    thumbnail: "https://blogger.googleusercontent.com/img/a/AVvXsEi4ct1WE8BDLiLeHOrJPuKoKpL7lDYjGHJ9ri0KRZmUsnb9IopXvTgjLOEl5SpRx81nXGwfxrDg69SppqEQEdHKSZr27KLZPnjmZ1Pr22aNixdsjfQUjsh6FqHMnginbMd9ev4RnvVFpcgjihOAN7ezY5nL3-IYlPT7CL9et3ydZmc5X2IZpBPEHWHSTTD_",
+    thumbnail: "https://blogger.googleusercontent.com/img/a/AVvXsEiDzw2wArcdtq3c1v02jDShldtvfyD2qvWJM2yaXc29klQ_ExVwMldeZrakMyLyyNcCF7nYsNdUxVVBCypNx3TPvxEFgsf74dPzE2DrU2Wx658znAPE_f4ikvGr2M4-sJY_4TmL7QdE7XSgBkD1tn65aeBOrYDZSDa54MK1u5HcANKoBXCsXvEOhLjYCUq3",
     category: "Live Online",
     duration: "3 months",
     modules: [
