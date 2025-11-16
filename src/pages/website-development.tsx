@@ -27,7 +27,7 @@ const services = [
     slug: "web-development",
     description: "Custom-built, responsive websites using React, Next.js, or WordPress.",
     price: "Starting at $499",
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4bltNxyXCmTTjBUSrTkHyy5_10dIpwnkvDw&s",
   },
 ];
 
