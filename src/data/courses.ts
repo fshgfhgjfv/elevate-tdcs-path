@@ -174,7 +174,7 @@ export const testimonials: Testimonial[] = [
     after: "Software Engineer",
     company: "Innovaccer",
     courseId: "cyber-blackhat",
-    image: "https://randomuser.me/api/portraits/men/11.jpg",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIQ18JzfbqKwsK3e5KlUt8EJbaEaeduXgJkA&s",
     testimonial:
       "The Black Hat program transformed my career. The placement assistance and mock interviews were invaluable in landing my dream job.",
   },
