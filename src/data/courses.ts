@@ -338,7 +338,7 @@ export const hiringDrives: HiringDrive[] = [
     role: "DevOps Engineer",
     salary: "8–15 LPA",
     location: "Pune",
-    logo: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=300&q=80",
+    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzzCpnE0enlEeacrQHddcjdy1bKy4rqZOK5g&s",
     courseId: "cyber-blackhat",
   },
 ];
