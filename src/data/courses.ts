@@ -322,7 +322,7 @@ export const hiringDrives: HiringDrive[] = [
     role: "Data Analyst",
     salary: "5–8 LPA",
     location: "Mumbai",
-    logo: "https://images.unsplash.com/photo-1581092795360-fd1ca5a1a5a2?auto=format&fit=crop&w=300&q=80",
+    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLXJxerw8fSd7U0TIPAFknujTCkTZD0Ktt2Q&s",
     courseId: "cyber-lite",
   },
   {
