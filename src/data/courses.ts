@@ -117,7 +117,7 @@ export const courses: Course[] = [
       "Career placement support",
       "1-on-1 mentorship sessions",
     ],
-    demoVideo: "https://drive.google.com/file/d/1aSj5YmuMg7RZ_Cc37h2x-p0pE3ZD1TNY/view",
+    demoVideo: "https://youtu.be/JNcuJSJ3Z1Q?si=boi5NFQYhCrvT5JV",
     resources: [
       { name: "Advanced Lab Guide", url: "#" },
       { name: "Exploit Development Manual", url: "#" },
