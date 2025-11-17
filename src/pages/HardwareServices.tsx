@@ -17,7 +17,7 @@ const hardwareProducts = [
     isOutOfStock: false,
   },
   {
-    name: "All Linuxndroid Courses",
+    name: "All TDCS Technologies Private Limited Courses",
     image: "https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=400",
     category: "Combo",
     rating: 0,
