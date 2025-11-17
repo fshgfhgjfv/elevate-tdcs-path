@@ -13,7 +13,8 @@ import {
   Tag,
   Clock,
   CheckCircle,
-  X
+  X,
+  ArrowLeft // Added for back button
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import React, { useMemo, useState } from "react";
@@ -22,6 +23,7 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label"; // Added for form
 
 const RAZORPAY_KEY = "rzp_test_1DP5mmOlF5G5ag";
 
@@ -137,7 +139,7 @@ const formatPrice = (price: number) => {
   }).format(price);
 };
 
-// 3. --- New Individual Product Card Component ---
+// 3. --- Product Card Component ---
 const ProductCard = ({ product, onViewDetails }: { product: any, onViewDetails: (product: any) => void }) => {
   return (
     <motion.div
@@ -185,8 +187,37 @@ const ProductCard = ({ product, onViewDetails }: { product: any, onViewDetails: 
   );
 };
 
-// 4. --- NEW: Product Detail Modal Component ---
-const ProductDetailModal = ({ product, onClose, onGetService }: { product: any, onClose: () => void, onGetService: (id: string, name: string, price: string) => void }) => {
+// 4. --- UPDATED: Product Detail Modal Component ---
+const ProductDetailModal = ({ product, onClose, onGetService }: { 
+  product: any, 
+  onClose: () => void, 
+  onGetService: (id: string, name: string, price: string, userDetails: { name: string, email: string, mobile: string }) => void 
+}) => {
+  // --- New state for modal view and form data ---
+  const [view, setView] = useState<'details' | 'form'>('details');
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Call the prop with the form data
+    onGetService(product.id, product.name, product.price.toString(), formData);
+    onClose(); // Close the modal after starting payment
+  };
+
+  const modalVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+  };
+
   return (
     <motion.div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
@@ -200,7 +231,7 @@ const ProductDetailModal = ({ product, onClose, onGetService }: { product: any, 
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 30, scale: 0.95 }}
         className="bg-background rounded-2xl w-full max-w-2xl shadow-xl overflow-hidden"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking form
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 relative">
           <Button variant="ghost" size="icon" className="absolute top-4 right-4" onClick={onClose}>
@@ -222,35 +253,92 @@ const ProductDetailModal = ({ product, onClose, onGetService }: { product: any, 
           </div>
         </div>
 
-        <div className="bg-muted/50 p-6 space-y-4">
-          <h3 className="text-xl font-semibold">Key Benefits</h3>
-          <ul className="space-y-2">
-            {product.features.map((feature: string, index: number) => (
-              <li key={index} className="flex items-center space-x-2">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span className="text-muted-foreground">{feature}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        
-        <div className="p-6 bg-background flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-          <div className="text-center sm:text-left">
-            <p className="text-3xl font-bold text-primary">{formatPrice(product.price)}</p>
-            <p className="text-muted-foreground">For {product.duration}</p>
-          </div>
-          <Button
-            variant="gradient"
-            size="lg"
-            className="w-full sm:w-auto shadow-glow"
-            onClick={() => {
-              onGetService(product.id, product.name, product.price.toString());
-              onClose();
-            }}
-          >
-            Get Service Now
-          </Button>
-        </div>
+        {/* --- Animated view switcher --- */}
+        <AnimatePresence mode="wait">
+          {view === 'details' ? (
+            <motion.div
+              key="details"
+              variants={modalVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              <div className="bg-muted/50 p-6 space-y-4">
+                <h3 className="text-xl font-semibold">Key Benefits</h3>
+                <ul className="space-y-2">
+                  {product.features.map((feature: string, index: number) => (
+                    <li key={index} className="flex items-center space-x-2">
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <span className="text-muted-foreground">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="p-6 bg-background flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+                <div className="text-center sm:text-left">
+                  <p className="text-3xl font-bold text-primary">{formatPrice(product.price)}</p>
+                  <p className="text-muted-foreground">For {product.duration}</p>
+                </div>
+                <Button
+                  variant="gradient"
+                  size="lg"
+                  className="w-full sm:w-auto shadow-glow"
+                  onClick={() => setView('form')} // Switch to form view
+                >
+                  Get Service Now
+                </Button>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="form"
+              variants={modalVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              <form onSubmit={handleSubmit}>
+                <div className="p-6 space-y-4">
+                  <h3 className="text-xl font-semibold">Enter Your Details</h3>
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="John Doe" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="john@example.com" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="mobile">Mobile Number</Label>
+                    <Input id="mobile" name="mobile" type="tel" value={formData.mobile} onChange={handleChange} placeholder="9876543210" required maxLength={10} />
+                  </div>
+                </div>
+                
+                <div className="p-6 bg-muted/50 flex flex-col-reverse sm:flex-row justify-between items-center gap-4">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full sm:w-auto"
+                    onClick={() => setView('details')} // Switch back to details
+                    type="button"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back
+                  </Button>
+                  <Button
+                    variant="gradient"
+                    size="lg"
+                    className="w-full sm:w-auto shadow-glow"
+                    type="submit"
+                  >
+                    Proceed to Payment
+                  </Button>
+                </div>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </motion.div>
   );
@@ -315,8 +403,13 @@ const Services = () => {
     return products;
   }, [searchTerm, priceRange, selectedCategories, selectedDurations, sortOrder]);
 
-  // --- Razorpay Handler ---
-  const handleGetService = (serviceId: string, serviceName: string, price: string) => {
+  // --- UPDATED Razorpay Handler ---
+  const handleGetService = (
+    serviceId: string, 
+    serviceName: string, 
+    price: string, 
+    userDetails: { name: string, email: string, mobile: string } // Added userDetails
+  ) => {
     const options = {
       key: RAZORPAY_KEY,
       amount: parseInt(price.replace(/[^0-9]/g, '')) * 100,
@@ -329,7 +422,12 @@ const Services = () => {
           description: `Your ${serviceName} subscription is now active.`,
         });
       },
-      prefill: { name: "", email: "", contact: "" },
+      // --- UPDATED prefill object ---
+      prefill: { 
+        name: userDetails.name, 
+        email: userDetails.email, 
+        contact: userDetails.mobile 
+      },
       theme: { color: "#FFB347" },
     };
 
@@ -423,7 +521,6 @@ const Services = () => {
               
               <Card>
                 <CardHeader><CardTitle>Duration</CardTitle></CardHeader>
-                {/* --- THIS IS THE FIX --- */}
                 <CardContent className="space-y-3">
                   {durations.map(duration => (
                     <div key={duration} className="flex items-center space-x-2">
