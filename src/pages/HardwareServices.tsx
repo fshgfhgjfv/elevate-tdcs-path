@@ -178,7 +178,8 @@ const ProductCard = ({ product }: { product: (typeof hardwareProducts)[0] }) => 
         <RatingStars rating={product.rating} />
         <div className="pt-2">
           <span className="text-xl font-bold text-red-600">{formatPrice(product.salePrice)}</span>
-          <span className="ml-2 text-sm text-muted-foreground line-through">{formatPrice(fproduct.originalPrice)}</span>
+          {/* --- FIX 1: fproduct -> product --- */}
+          <span className="ml-2 text-sm text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>
         </div>
       </CardContent>
     </Card>
@@ -283,7 +284,8 @@ const HardwareServices = () => {
                 <Select disabled>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Default sorting" />
-                  </Sitrigger>
+                    {/* --- FIX 2: /Sitrigger -> /SelectTrigger --- */}
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="default">Default sorting</SelectItem>
                     <SelectItem value="price-low">Sort by price: low to high</SelectItem>
