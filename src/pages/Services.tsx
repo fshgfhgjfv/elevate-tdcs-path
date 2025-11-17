@@ -423,6 +423,7 @@ const Services = () => {
               
               <Card>
                 <CardHeader><CardTitle>Duration</CardTitle></CardHeader>
+                {/* --- THIS IS THE FIX --- */}
                 <CardContent className="space-y-3">
                   {durations.map(duration => (
                     <div key={duration} className="flex items-center space-x-2">
@@ -436,7 +437,7 @@ const Services = () => {
                       </label>
                     </div>
                   ))}
-                </GridContent>
+                </CardContent>
               </Card>
             </aside>
 
