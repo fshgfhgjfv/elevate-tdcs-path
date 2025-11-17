@@ -108,7 +108,7 @@ const hardwareProducts = [
   },
   {
     name: "Mr.Hacker Bug Bounty Course (Website Penetration)",
-    image: "https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=400",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFm8WCUAtuRQM-I8W83xWnLqxRaU2vfAMYZQ&s",
     category: "Courses",
     rating: 0,
     originalPrice: 1500,
