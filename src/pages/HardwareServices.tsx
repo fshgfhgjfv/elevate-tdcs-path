@@ -27,7 +27,7 @@ const hardwareProducts = [
   },
   {
     name: "AtomS3U(Rubber-Duck-Kit)",
-    image: "https://images.pexels.com/photos/4316/technology-computer-chips-board.jpg?auto=compress&cs=tinysrgb&w=400",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbselltZRTKqlWg620s_Rq_HE2tgyUSIj7Pg&s",
     category: "Hardware",
     rating: 0,
     originalPrice: 2999,
