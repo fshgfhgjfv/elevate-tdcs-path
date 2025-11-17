@@ -160,7 +160,6 @@ const ProductCard = ({ product }: { product: (typeof hardwareProducts)[0] }) => 
             src={product.image}
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          }
           />
           <div className="absolute top-3 left-3 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1">
             <Tag className="h-3 w-3" />
@@ -179,7 +178,7 @@ const ProductCard = ({ product }: { product: (typeof hardwareProducts)[0] }) => 
         <RatingStars rating={product.rating} />
         <div className="pt-2">
           <span className="text-xl font-bold text-red-600">{formatPrice(product.salePrice)}</span>
-          <span className="ml-2 text-sm text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>
+          <span className="ml-2 text-sm text-muted-foreground line-through">{formatPrice(fproduct.originalPrice)}</span>
         </div>
       </CardContent>
     </Card>
@@ -206,10 +205,10 @@ const HardwareServices = () => {
 
         {/* This div wraps the entire store layout to be blurred */}
         <div className="relative pointer-events-none">
-          {/* --- UPDATED: Sidebar is now on the left --- */}
+          {/* Sidebar is on the left */}
           <div className="flex flex-col lg:flex-row gap-8"> 
             
-            {/* Sidebar Filters (Now on the left) */}
+            {/* Sidebar Filters (Left) */}
             <aside className="lg:w-1/4 space-y-6">
               <Card>
                 <CardHeader><CardTitle>Filter by Price</CardTitle></CardHeader>
@@ -277,14 +276,14 @@ const HardwareServices = () => {
               </Card>
             </aside>
 
-            {/* Main Product Grid (Now on the right) */}
+            {/* Main Product Grid (Right) */}
             <main className="lg:w-3/4">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-muted-foreground text-sm">Showing 1–12 of 12 results</span>
                 <Select disabled>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Default sorting" />
-                  </SelectTrigger>
+                  </Sitrigger>
                   <SelectContent>
                     <SelectItem value="default">Default sorting</SelectItem>
                     <SelectItem value="price-low">Sort by price: low to high</SelectItem>
