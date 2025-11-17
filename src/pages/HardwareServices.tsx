@@ -5,11 +5,11 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Star, Tag } from "lucide-react";
 
-// Mock data for the store
+// --- UPDATED: Mock data with all your products ---
 const hardwareProducts = [
   {
     name: "Pro Ducky Pi (Hardware Penetration)",
-    image: "/path/to/your/image_646742.jpg", // <-- Using your uploaded image path
+    image: "/path/to/your/image_646742.jpg", // <-- Your uploaded image
     category: "Hardware",
     rating: 5,
     originalPrice: 3499,
@@ -17,52 +17,61 @@ const hardwareProducts = [
     isOutOfStock: false,
   },
   {
-    name: "Raspberry Pi-Kit (Pre-Installed Kali)",
-    image: "https://images.pexels.com/photos/1009136/pexels-photo-1009136.jpeg?auto=compress&cs=tinysrgb&w=400",
-    category: "Hardware",
-    rating: 5,
-    originalPrice: 7999,
-    salePrice: 6999,
+    name: "All Linuxndroid Courses",
+    image: "https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=400",
+    category: "Combo",
+    rating: 0,
+    originalPrice: 5624,
+    salePrice: 4499,
     isOutOfStock: false,
   },
   {
-    name: "AtomS3U (Rubber-Duck-Kit)",
+    name: "AtomS3U(Rubber-Duck-Kit)",
     image: "https://images.pexels.com/photos/4316/technology-computer-chips-board.jpg?auto=compress&cs=tinysrgb&w=400",
     category: "Hardware",
-    rating: 4.5,
+    rating: 0,
     originalPrice: 2999,
     salePrice: 2499,
     isOutOfStock: false,
   },
   {
-    name: "CYD-ESP32 (Marauder) Cyber Edition",
-    image: "https://images.pexels.com/photos/4491459/pexels-photo-4491459.jpeg?auto=compress&cs=tinysrgb&w=400",
-    category: "Hardware",
-    rating: 5,
-    originalPrice: 3999,
-    salePrice: 2999,
-    isOutOfStock: false,
-  },
-  {
-    name: "BW16-5Ghz Kit (Pre-Installed Firmware)",
+    name: "BW16-5Ghz Kit(Pre-Installed Firmware)",
     image: "https://images.pexels.com/photos/843226/pexels-photo-843226.jpeg?auto=compress&cs=tinysrgb&w=400",
     category: "Hardware",
-    rating: 5,
+    rating: 5.00,
     originalPrice: 1999,
     salePrice: 1499,
     isOutOfStock: false,
   },
   {
-    name: "ESP32/2NRF Kit (Bluetooth Penetration)",
+    name: "CYBER-T USB-ARMY-KNIFE(Pre-Installed Firmware)",
+    image: "https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=400",
+    category: "Hardware",
+    rating: 5.00,
+    originalPrice: 3499,
+    salePrice: 2860,
+    isOutOfStock: false,
+  },
+  {
+    name: "CYD-ESP32(Marauder) Cyber Edition",
+    image: "https://images.pexels.com/photos/4491459/pexels-photo-4491459.jpeg?auto=compress&cs=tinysrgb&w=400",
+    category: "Hardware",
+    rating: 5.00,
+    originalPrice: 3999,
+    salePrice: 2999,
+    isOutOfStock: false,
+  },
+  {
+    name: "ESP32/2NRF Kit(Bluetooth Penetration)",
     image: "https://images.pexels.com/photos/4481258/pexels-photo-4481258.jpeg?auto=compress&cs=tinysrgb&w=400",
     category: "Hardware",
-    rating: 4.5,
+    rating: 4.50,
     originalPrice: 2499,
     salePrice: 1799,
     isOutOfStock: true,
   },
   {
-    name: "ESP8266-Kit (Pre-Installed WiFi Firmware)",
+    name: "ESP8266-Kit(Pre-Installed WiFi Firmware)",
     image: "https://images.pexels.com/photos/3575189/pexels-photo-3575189.jpeg?auto=compress&cs=tinysrgb&w=400",
     category: "Hardware",
     rating: 0,
@@ -71,39 +80,12 @@ const hardwareProducts = [
     isOutOfStock: false,
   },
   {
-    name: "CYBER-T USB-ARMY-KNIFE",
-    image: "https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=400",
-    category: "Hardware",
-    rating: 5,
-    originalPrice: 3499,
-    salePrice: 2860,
-    isOutOfStock: false,
-  },
-  {
-    name: "Flipper Zero",
-    image: "https://images.pexels.com/photos/1329061/pexels-photo-1329061.jpeg?auto=compress&cs=tinysrgb&w=400",
-    category: "Combo",
-    rating: 5,
-    originalPrice: 19999,
-    salePrice: 17999,
-    isOutOfStock: false,
-  },
-  {
-    name: "All Linuxndroid Courses",
-    image: "https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=400",
-    category: "Courses",
-    rating: 0,
-    originalPrice: 5624,
-    salePrice: 4499,
-    isOutOfStock: false,
-  },
-  {
-    name: "Mr.Hacker Bug Bounty Course",
+    name: "EvilTeam (RedTeamer Choice)",
     image: "https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg?auto=compress&cs=tinysrgb&w=400",
     category: "Courses",
-    rating: 0,
-    originalPrice: 1500,
-    salePrice: 699,
+    rating: 4.50,
+    originalPrice: 2000,
+    salePrice: 1099,
     isOutOfStock: false,
   },
   {
@@ -113,6 +95,24 @@ const hardwareProducts = [
     rating: 4.75,
     originalPrice: 2000,
     salePrice: 1049,
+    isOutOfStock: false,
+  },
+  {
+    name: "Start Android (Beginner Level)",
+    image: "https://images.pexels.com/photos/147413/fuchs-fox-animal-sly-147413.jpeg?auto=compress&cs=tinysrgb&w=400",
+    category: "Courses",
+    rating: 0,
+    originalPrice: 1500,
+    salePrice: 299,
+    isOutOfStock: false,
+  },
+  {
+    name: "Mr.Hacker Bug Bounty Course (Website Penetration)",
+    image: "https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=400",
+    category: "Courses",
+    rating: 0,
+    originalPrice: 1500,
+    salePrice: 699,
     isOutOfStock: false,
   },
 ];
@@ -134,7 +134,7 @@ const RatingStars = ({ rating }: { rating: number }) => {
   if (rating === 0) return <div className="h-5"></div>; // Keep space
   
   return (
-    <div className="flex">
+    <div className="flex items-center">
       {[...Array(totalStars)].map((_, i) => (
         <Star
           key={i}
@@ -145,7 +145,7 @@ const RatingStars = ({ rating }: { rating: number }) => {
           }`}
         />
       ))}
-      <span className="ml-2 text-sm text-muted-foreground">({rating})</span>
+      <span className="ml-2 text-sm text-muted-foreground">({rating.toFixed(2)})</span>
     </div>
   );
 };
@@ -178,7 +178,6 @@ const ProductCard = ({ product }: { product: (typeof hardwareProducts)[0] }) => 
         <RatingStars rating={product.rating} />
         <div className="pt-2">
           <span className="text-xl font-bold text-red-600">{formatPrice(product.salePrice)}</span>
-          {/* --- FIX 1: fproduct -> product --- */}
           <span className="ml-2 text-sm text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>
         </div>
       </CardContent>
@@ -222,6 +221,7 @@ const HardwareServices = () => {
                 </CardContent>
               </Card>
 
+              {/* --- UPDATED: Filter counts --- */}
               <Card>
                 <CardHeader><CardTitle>Categories</CardTitle></CardHeader>
                 <CardContent className="space-y-3">
@@ -280,11 +280,11 @@ const HardwareServices = () => {
             {/* Main Product Grid (Right) */}
             <main className="lg:w-3/4">
               <div className="flex justify-between items-center mb-4">
-                <span className="text-muted-foreground text-sm">Showing 1–12 of 12 results</span>
+                {/* --- UPDATED: Result count text --- */}
+                <span className="text-muted-foreground text-sm">Showing 1–9 of 24 results</span>
                 <Select disabled>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Default sorting" />
-                    {/* --- FIX 2: /Sitrigger -> /SelectTrigger --- */}
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="default">Default sorting</SelectItem>
@@ -324,7 +324,7 @@ const HardwareServices = () => {
           </h2>
           <p className="text-2xl text-white/80 mt-2" style={{ textShadow: '0 0 15px rgba(255, 255, 255, 0.5)' }}>
             Our new hardware store is launching soon.
-          </p>
+          </auto-scaling-text>
         </motion.div>
       </div>
 
