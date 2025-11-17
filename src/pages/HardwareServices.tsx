@@ -36,7 +36,7 @@ const hardwareProducts = [
   },
   {
     name: "BW16-5Ghz Kit(Pre-Installed Firmware)",
-    image: "https://images.pexels.com/photos/843226/pexels-photo-843226.jpeg?auto=compress&cs=tinysrgb&w=400",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkDg98A3ww8C_jg8f_KU91KY9kn2MRyqZoLQ&s",
     category: "Hardware",
     rating: 5.00,
     originalPrice: 1999,
