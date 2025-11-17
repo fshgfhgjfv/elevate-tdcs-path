@@ -63,7 +63,7 @@ const hardwareProducts = [
   },
   {
     name: "ESP32/2NRF Kit(Bluetooth Penetration)",
-    image: "https://images.pexels.com/photos/4481258/pexels-photo-4481258.jpeg?auto=compress&cs=tinysrgb&w=400",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPFn3vA9m383WW65WUV3J1gqkwxPLWzWz-tiFOTFYZkRvLRiNCVQNOSiAUPknvA-Fn-nE&usqp=CAU",
     category: "Hardware",
     rating: 4.50,
     originalPrice: 2499,
