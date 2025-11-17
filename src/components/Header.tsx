@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User, LogOut } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const LOGO_URL =
@@ -12,6 +12,14 @@ export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  
+  // --- UPDATED Theme State ---
+  // Initializes from localStorage or defaults to "dark"
+  const [theme, setTheme] = useState(
+    localStorage.getItem("tdcs_theme") || "dark"
+  );
+  // --- End Updated Theme State ---
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -25,6 +33,23 @@ export const Header = () => {
     const userData = localStorage.getItem("tdcs_user");
     if (userData) setUser(JSON.parse(userData));
   }, [location]);
+
+  // --- Theme Effect ---
+  // Applies the 'dark' class to <html> and saves to localStorage
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+    localStorage.setItem("tdcs_theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+  // --- End Theme Effect ---
 
   const handleLogout = () => {
     localStorage.removeItem("tdcs_user");
@@ -139,7 +164,19 @@ export const Header = () => {
           </nav>
 
           {/* Desktop Auth Buttons */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-2">
+            {/* Theme Toggle Button (Desktop) */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+            >
+              <Sun className="h-5 w-5 block dark:hidden" />
+              <Moon className="h-5 w-5 hidden dark:block" />
+            </Button>
+            {/* End Theme Toggle Button */}
+
             {user ? (
               <>
                 <Link to="/dashboard">
@@ -246,6 +283,18 @@ export const Header = () => {
 
               {/* Auth Buttons */}
               <div className="flex flex-col gap-3 pt-4 border-t">
+                {/* Theme Toggle Button (Mobile) */}
+                <Button
+                  variant="outline"
+                  className="w-full gap-2 justify-start"
+                  onClick={toggleTheme}
+                >
+                  <Sun className="w-4 h-4 block dark:hidden" />
+                  <Moon className="w-4 h-4 hidden dark:block" />
+                  <span>{theme === "light" ? "Dark" : "Light"} Mode</span>
+                </Button>
+                {/* End Theme Toggle Button */}
+
                 {user ? (
                   <>
                     <Link
