@@ -5,7 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Star, Tag } from "lucide-react";
 
-// 1. More detailed mock data for the store
+// Mock data for the store
 const hardwareProducts = [
   {
     name: "Pro Ducky Pi (Hardware Penetration)",
@@ -150,7 +150,7 @@ const RatingStars = ({ rating }: { rating: number }) => {
   );
 };
 
-// 2. New Product Card Component
+// New Product Card Component
 const ProductCard = ({ product }: { product: (typeof hardwareProducts)[0] }) => {
   return (
     <Card className="overflow-hidden shadow-lg group relative">
@@ -186,7 +186,7 @@ const ProductCard = ({ product }: { product: (typeof hardwareProducts)[0] }) => 
 };
 
 
-// 3. The Main Page Component, rebuilt as a store
+// The Main Page Component, rebuilt as a store
 const HardwareServices = () => {
   return (
     <div className="min-h-screen pt-24 pb-16 bg-gradient-to-br from-background via-background to-primary/5 relative">
@@ -205,8 +205,10 @@ const HardwareServices = () => {
 
         {/* This div wraps the entire store layout to be blurred */}
         <div className="relative pointer-events-none">
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Sidebar Filters */}
+          {/* --- UPDATED: Sidebar is now on the right --- */}
+          <div className="flex flex-col lg:flex-row-reverse gap-8"> 
+            
+            {/* Sidebar Filters (Now on the right) */}
             <aside className="lg:w-1/4 space-y-6">
               <Card>
                 <CardHeader><CardTitle>Filter by Price</CardTitle></CardHeader>
@@ -242,9 +244,40 @@ const HardwareServices = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* --- ADDED: New Filter Cards --- */}
+              <Card>
+                <CardHeader><CardTitle>Deals</CardTitle></CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="cat-sale" disabled checked />
+                    <label htmlFor="cat-sale" className="text-sm font-medium leading-none text-muted-foreground">
+                      On Sale
+                    </label>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader><CardTitle>Stock Status</CardTitle></CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="cat-stock" disabled checked />
+                    <label htmlFor="cat-stock" className="text-sm font-medium leading-none text-muted-foreground">
+                      In Stock
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="cat-out" disabled />
+                    <label htmlFor="cat-out" className="text-sm font-medium leading-none text-muted-foreground">
+                      Out of Stock
+                    </label>
+                  </div>
+                </CardContent>
+              </Card>
             </aside>
 
-            {/* Main Product Grid */}
+            {/* Main Product Grid (Now on the left) */}
             <main className="lg:w-3/4">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-muted-foreground text-sm">Showing 1–12 of 12 results</span>
@@ -270,8 +303,8 @@ const HardwareServices = () => {
         </div>
       </div>
 
-      {/* 4. The "Coming Soon" Overlay with Blur and Glow */}
-      <div className="absolute inset-0 z-10 bg-black/60 backdrop-blur-md flex items-center justify-center">
+      {/* --- UPDATED: "Coming Soon" Overlay with less blur --- */}
+      <div className="absolute inset-0 z-10 bg-black/60 backdrop-blur-sm flex items-center justify-center">
         <motion.div
           className="text-center"
           // Pulse/glow animation
