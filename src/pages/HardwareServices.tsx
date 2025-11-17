@@ -54,7 +54,7 @@ const hardwareProducts = [
   },
   {
     name: "CYD-ESP32(Marauder) Cyber Edition",
-    image: "https://images.pexels.com/photos/4491459/pexels-photo-4491459.jpeg?auto=compress&cs=tinysrgb&w=400",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3ALPJCxwCPh2-ApQTWan19yyVgLShdVxwXQ&s",
     category: "Hardware",
     rating: 5.00,
     originalPrice: 3999,
