@@ -9,7 +9,7 @@ import { Star, Tag } from "lucide-react";
 const hardwareProducts = [
   {
     name: "Pro Ducky Pi (Hardware Penetration)",
-    image: "/path/to/your/image_646742.jpg", // <-- Use the path to your uploaded image
+    image: "/path/to/your/image_646742.jpg", // <-- Using your uploaded image path
     category: "Hardware",
     rating: 5,
     originalPrice: 3499,
@@ -160,6 +160,7 @@ const ProductCard = ({ product }: { product: (typeof hardwareProducts)[0] }) => 
             src={product.image}
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          }
           />
           <div className="absolute top-3 left-3 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1">
             <Tag className="h-3 w-3" />
@@ -205,10 +206,10 @@ const HardwareServices = () => {
 
         {/* This div wraps the entire store layout to be blurred */}
         <div className="relative pointer-events-none">
-          {/* --- UPDATED: Sidebar is now on the right --- */}
-          <div className="flex flex-col lg:flex-row-reverse gap-8"> 
+          {/* --- UPDATED: Sidebar is now on the left --- */}
+          <div className="flex flex-col lg:flex-row gap-8"> 
             
-            {/* Sidebar Filters (Now on the right) */}
+            {/* Sidebar Filters (Now on the left) */}
             <aside className="lg:w-1/4 space-y-6">
               <Card>
                 <CardHeader><CardTitle>Filter by Price</CardTitle></CardHeader>
@@ -245,7 +246,6 @@ const HardwareServices = () => {
                 </CardContent>
               </Card>
 
-              {/* --- ADDED: New Filter Cards --- */}
               <Card>
                 <CardHeader><CardTitle>Deals</CardTitle></CardHeader>
                 <CardContent className="space-y-3">
@@ -277,7 +277,7 @@ const HardwareServices = () => {
               </Card>
             </aside>
 
-            {/* Main Product Grid (Now on the left) */}
+            {/* Main Product Grid (Now on the right) */}
             <main className="lg:w-3/4">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-muted-foreground text-sm">Showing 1–12 of 12 results</span>
@@ -303,7 +303,7 @@ const HardwareServices = () => {
         </div>
       </div>
 
-      {/* --- UPDATED: "Coming Soon" Overlay with less blur --- */}
+      {/* "Coming Soon" Overlay with less blur */}
       <div className="absolute inset-0 z-10 bg-black/60 backdrop-blur-sm flex items-center justify-center">
         <motion.div
           className="text-center"
