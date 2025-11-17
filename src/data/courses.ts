@@ -39,7 +39,8 @@ export interface Testimonial {
 // ---------------------
 export interface Tool {
   name: string;
-  icon: string;
+  icon: string; // The URL for the image
+  url: string; // The URL for the tool's main website
 }
 
 // ---------------------
@@ -61,9 +62,11 @@ export const courses: Course[] = [
   {
     id: "cyber-lite",
     title: "Cyber Master's Pro Lite",
-    description: "Foundational ethical hacking & network security program for beginners.",
+    description:
+      "Foundational ethical hacking & network security program for beginners.",
     price: 499,
-    thumbnail: "https://blogger.googleusercontent.com/img/a/AVvXsEi2jJG9xx6SAnzeq8WvvqKFO2Wn9YwnEdeYhxL7LjbWmkhPOxQtYUivHqch9IPeMZ-y-3uK8Aa0zq5soxCEACNabiI-rTbpJBw-0XHxgGiRAwHqOP7js6xq25wf51fDUH2ZVhkYRvu2ZoiwznZRf3ujEjstLaTBL6NFyCwuJ0RGX_fU48fQNTvKsgEZB7YY",
+    thumbnail:
+      "https://blogger.googleusercontent.com/img/a/AVvXsEi2jJG9xx6SAnzeq8WvvqKFO2Wn9YwnEdeYhxL7LjbWmkhPOxQtYUivHqch9IPeMZ-y-3uK8Aa0zq5soxCEACNabiI-rTbpJBw-0XHxgGiRAwHqOP7js6xq25wf51fDUH2ZVhkYRvu2ZoiwznZRf3ujEjstLaTBL6NFyCwuJ0RGX_fU48fQNTvKsgEZB7YY",
     category: "Live Online",
     duration: "2 months",
     modules: [
@@ -96,7 +99,8 @@ export const courses: Course[] = [
     description:
       "Advanced program covering exploit dev, malware analysis, red teaming & advanced pentesting.",
     price: 19999,
-    thumbnail: "https://blogger.googleusercontent.com/img/a/AVvXsEimZrWbA4DGBCy0eQXhIBbuVefY_7WOcvJ6SC11Q55L0rc9sMT_b_2-BRTbGYPv9e6r05aREJI91KC7tE1rlobdc_gOLsRIO11_PAD246NAYCDsCboM9pSzJtqHLmhaXcDfb9c1NwfQviILZrJHgLByTSuTUKjmSAfkPgqWVgbYCNL8NF7ZCLb4UiJtqpBd",
+    thumbnail:
+      "https://blogger.googleusercontent.com/img/a/AVvXsEimZrWbA4DGBCy0eQXhIBbuVefY_7WOcvJ6SC11Q55L0rc9sMT_b_2-BRTbGYPv9e6r05aREJI91KC7tE1rlobdc_gOLsRIO11_PAD246NAYCDsCboM9pSzJtqHLmhaXcDfb9c1NwfQviILZrJHgLByTSuTUKjmSAfkPgqWVgbYCNL8NF7ZCLb4UiJtqpBd",
     category: "Live Online",
     duration: "4 months",
     modules: [
@@ -130,7 +134,8 @@ export const courses: Course[] = [
     description:
       "Specialized course covering bug bounty hunting, web security, API testing & professional pentesting.",
     price: 6999,
-    thumbnail: "https://blogger.googleusercontent.com/img/a/AVvXsEiDzw2wArcdtq3c1v02jDShldtvfyD2qvWJM2yaXc29klQ_ExVwMldeZrakMyLyyNcCF7nYsNdUxVVBCypNx3TPvxEFgsf74dPzE2DrU2Wx658znAPE_f4ikvGr2M4-sJY_4TmL7QdE7XSgBkD1tn65aeBOrYDZSDa54MK1u5HcANKoBXCsXvEOhLjYCUq3",
+    thumbnail:
+      "https://blogger.googleusercontent.com/img/a/AVvXsEiDzw2wArcdtq3c1v02jDShldtvfyD2qvWJM2yaXc29klQ_ExVwMldeZrakMyLyyNcCF7nYsNdUxVVBCypNx3TPvxEFgsf74dPzE2DrU2Wx658znAPE_f4ikvGr2M4-sJY_4TmL7QdE7XSgBkD1tn65aeBOrYDZSDa54MK1u5HcANKoBXCsXvEOhLjYCUq3",
     category: "Live Online",
     duration: "3 months",
     modules: [
@@ -155,7 +160,8 @@ export const courses: Course[] = [
       "Career guidance for bug hunters",
       "Community support and mentorship",
     ],
-    demoVideo: "https://drive.google.com/file/d/1aSj5YmuMg7RZ_Cc37h2x-p0pE3ZD1TNY/view",
+    demoVideo:
+      "https://drive.google.com/file/d/1aSj5YmuMg7RZ_Cc37h2x-p0pE3ZD1TNY/view",
     resources: [
       { name: "Bug Hunting Checklist", url: "#" },
       { name: "Pentest Methodology Guide", url: "#" },
@@ -174,7 +180,8 @@ export const testimonials: Testimonial[] = [
     after: "Software Engineer",
     company: "Innovaccer",
     courseId: "cyber-blackhat",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIQ18JzfbqKwsK3e5KlUt8EJbaEaeduXgJkA&s",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIQ18JzfbqKwsK3e5KlUt8EJbaEaeduXgJkA&s",
     testimonial:
       "The Black Hat program transformed my career. The placement assistance and mock interviews were invaluable in landing my dream job.",
   },
@@ -184,7 +191,8 @@ export const testimonials: Testimonial[] = [
     after: "Application Developer",
     company: "Thoughtworks",
     courseId: "cyber-blackhat",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzzCpnE0enlEeacrQHddcjdy1bKy4rqZOK5g&s",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzzCpnE0enlEeacrQHddcjdy1bKy4rqZOK5g&s",
     testimonial:
       "Comprehensive curriculum with excellent mentorship. The hands-on projects prepared me well for real-world challenges.",
   },
@@ -264,45 +272,55 @@ export const testimonials: Testimonial[] = [
 // 🧰 TOOLS
 // ===========================================
 export const tools: Tool[] = [
-  { 
-    name: "Kali Linux", 
-    icon: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg" 
+  {
+    name: "Kali Linux",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
+    url: "https://www.kali.org/",
   },
-  { 
-    name: "Nmap", 
-    icon: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Nmap_logo.svg" 
+  {
+    name: "Nmap",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Nmap_logo.svg",
+    url: "https://nmap.org/",
   },
-  { 
-    name: "Metasploit", 
-    icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Metasploit_logo.svg" 
+  {
+    name: "Metasploit",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Metasploit_logo.svg",
+    url: "https://www.rapid7.com/products/metasploit/",
   },
-  { 
-    name: "Burp Suite", 
-    icon: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Burp_Suite_logo.png" 
+  {
+    name: "Burp Suite",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Burp_Suite_logo.png",
+    url: "https://portswigger.net/burp",
   },
-  { 
-    name: "Wireshark", 
-    icon: "https://upload.wikimedia.org/wikipedia/commons/8/82/Wireshark_logo.svg" 
+  {
+    name: "Wireshark",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/8/82/Wireshark_logo.svg",
+    url: "https://www.wireshark.org/",
   },
-  { 
-    name: "Python", 
-    icon: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" 
+  {
+    name: "Python",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg",
+    url: "https://www.python.org/",
   },
-  { 
-    name: "Linux", 
-    icon: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" 
+  {
+    name: "Linux",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg",
+    url: "https://www.linux.com/",
   },
-  { 
-    name: "Docker", 
-    icon: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Docker_%28container_engine%29_logo.svg" 
+  {
+    name: "Docker",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Docker_%28container_engine%29_logo.svg",
+    url: "https://www.docker.com/",
   },
-  { 
-    name: "Git", 
-    icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg" 
+  {
+    name: "Git",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg",
+    url: "https://git-scm.com/",
   },
-  { 
-    name: "SQL", 
-    icon: "https://upload.wikimedia.org/wikipedia/commons/8/87/Sql_data_base_with_logo.png" 
+  {
+    name: "SQL",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/8/87/Sql_data_base_with_logo.png",
+    url: "https://en.wikipedia.org/wiki/SQL",
   },
 ];
 // ===========================================
@@ -314,7 +332,7 @@ export const hiringDrives: HiringDrive[] = [
     role: "Software Developer",
     salary: "6–10 LPA",
     location: "Bangalore",
-    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_T4gIa3-huI-PtTmRr95TxKLqS3KBnCtTgw&s",
+    logo: "httpshttps://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_T4gIa3-huI-PtTmRr95TxKLqS3KBnCtTgw&s",
     courseId: "cyber-blackhat",
   },
   {
