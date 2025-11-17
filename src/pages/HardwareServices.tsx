@@ -316,7 +316,7 @@ const HardwareServices = () => {
           transition={{
             duration: 2,
             repeat: Infinity,
-            ease: "easeInOut"c
+            ease: "easeInOut"
           }}
         >
           <h2 className="text-6xl font-extrabold text-white" style={{ textShadow: '0 0 25px rgba(255, 255, 255, 0.7)' }}>
