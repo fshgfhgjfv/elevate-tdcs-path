@@ -221,7 +221,7 @@ const HardwareServices = () => {
                 </CardContent>
               </Card>
 
-              {/* --- UPDATED: Filter counts --- */}
+              {/* Filter counts */}
               <Card>
                 <CardHeader><CardTitle>Categories</CardTitle></CardHeader>
                 <CardContent className="space-y-3">
@@ -280,7 +280,7 @@ const HardwareServices = () => {
             {/* Main Product Grid (Right) */}
             <main className="lg:w-3/4">
               <div className="flex justify-between items-center mb-4">
-                {/* --- UPDATED: Result count text --- */}
+                {/* Result count text */}
                 <span className="text-muted-foreground text-sm">Showing 1–9 of 24 results</span>
                 <Select disabled>
                   <SelectTrigger className="w-[180px]">
@@ -322,9 +322,10 @@ const HardwareServices = () => {
           <h2 className="text-6xl font-extrabold text-white" style={{ textShadow: '0 0 25px rgba(255, 255, 255, 0.7)' }}>
             COMING SOON
           </h2>
+          {/* --- THIS IS THE FIX --- */}
           <p className="text-2xl text-white/80 mt-2" style={{ textShadow: '0 0 15px rgba(255, 255, 255, 0.5)' }}>
             Our new hardware store is launching soon.
-          </auto-scaling-text>
+          </p>
         </motion.div>
       </div>
 
