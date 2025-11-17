@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -11,7 +11,9 @@ import {
   Lock,
   Search,
   Tag,
-  Clock
+  Clock,
+  CheckCircle,
+  X
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import React, { useMemo, useState } from "react";
@@ -29,67 +31,67 @@ declare global {
   }
 }
 
-// 1. --- Original Bundle Data Structure ---
+// 1. --- Original Bundle Data Structure (with logos instead of emojis) ---
 const services = [
   {
     id: "ai-productivity",
-    title: "AI & Productivity Tools Pro Pack",
+    title: "AI & Productivity Tools",
     tools: [
-      { name: "ChatGPT", icon: "🤖", duration: "3 Months", description: "Advanced AI chat assistant", features: ["GPT-4 access", "Faster responses", "Priority access"] },
-      { name: "Perplexity AI Pro", icon: "🤖", duration: "1 Year", description: "AI-powered search engine", features: ["Unlimited searches", "Deep research", "Source citations"] },
-      { name: "Gemini Pro", icon: "🔮", duration: "1 Year", description: "Google's advanced AI", features: ["Multimodal AI", "Code generation", "Document analysis"] },
-      { name: "Gemini Ultra", icon: "🔮", duration: "1 Month", description: "Premium Gemini tier", features: ["Most capable model", "Extended context", "Advanced reasoning"] },
-      { name: "Gamma AI", icon: "⚡", duration: "1 Year", description: "AI presentation maker", features: ["Auto design", "Templates", "Collaboration"] },
-      { name: "Notion Business", icon: "📝", duration: "6 Months", description: "All-in-one workspace", features: ["Unlimited pages", "Team collaboration", "Advanced permissions"] },
-      { name: "Lovable Pro", icon: "💖", duration: "1 Year", description: "AI app development", features: ["Code generation", "Real-time preview", "Deployment"] },
-      { name: "Replit Core", icon: "💻", duration: "1 Year", description: "Cloud IDE platform", features: ["Always-on projects", "Multiplayer coding", "Ghostwriter AI"] },
-      { name: "Bolt.new AI Code", icon: "⚡", duration: "1 Year", description: "AI code assistant", features: ["Code generation", "Auto-completion", "Debugging help"] },
-      { name: "N8N Automation", icon: "🔄", duration: "1 Year", description: "Workflow automation", features: ["300+ integrations", "Self-hosted option", "Custom workflows"] },
-      { name: "Make.com", icon: "🔹", duration: "1 Year", description: "Visual automation", features: ["No-code builder", "1000+ apps", "Advanced logic"] },
-      { name: "ClickSites AI Website", icon: "🌐", duration: "1 Year", description: "AI website builder", features: ["Instant sites", "SEO optimization", "Custom domains"] },
-      { name: "Jasper AI", icon: "✍", duration: "1Month", description: "AI content writer", features: ["Marketing copy", "Blog posts", "Social media"] },
-      { name: "Warp Dev AI", icon: "🖥", duration: "1 Year", description: "Modern terminal", features: ["AI command search", "Workflows", "Collaboration"] },
-      { name: "Mobbin UI/UX", icon: "🎨", duration: "1 Year", description: "UI design library", features: ["50k+ screens", "Design patterns", "Mobile & web"] },
-      { name: "Magic Patterns", icon: "🎭", duration: "1 Year", description: "AI UI generator", features: ["Generate designs", "Export code", "Figma plugin"] },
-      { name: "Wispr Voice AI", icon: "🎤", duration: "1 Year", description: "Voice transcription", features: ["Real-time transcription", "Multi-language", "High accuracy"] },
-      { name: "Granola Meeting", icon: "🍳", duration: "1 Year", description: "AI meeting notes", features: ["Auto summaries", "Action items", "Integrations"] },
-      { name: "Superhuman", icon: "📧", duration: "1 Year", description: "Email productivity", features: ["Blazing fast", "Keyboard shortcuts", "AI assistance"] },
-      { name: "Linear AI Project", icon: "📊", duration: "1 Year", description: "Issue tracking", features: ["Project management", "Roadmaps", "Integrations"] },
-      { name: "Raycast AI", icon: "⚡", duration: "1 Year", description: "Productivity launcher", features: ["Quick actions", "Extensions", "AI commands"] },
+      { name: "ChatGPT", iconUrl: "https://logo.clearbit.com/openai.com", duration: "3 Months", description: "Advanced AI chat assistant", features: ["GPT-4 access", "Faster responses", "Priority access"] },
+      { name: "Perplexity AI Pro", iconUrl: "https://logo.clearbit.com/perplexity.ai", duration: "1 Year", description: "AI-powered search engine", features: ["Unlimited searches", "Deep research", "Source citations"] },
+      { name: "Gemini Pro", iconUrl: "https://logo.clearbit.com/google.com", duration: "1 Year", description: "Google's advanced AI", features: ["Multimodal AI", "Code generation", "Document analysis"] },
+      { name: "Gemini Ultra", iconUrl: "https://logo.clearbit.com/google.com", duration: "1 Month", description: "Premium Gemini tier", features: ["Most capable model", "Extended context", "Advanced reasoning"] },
+      { name: "Gamma AI", iconUrl: "https://logo.clearbit.com/gamma.app", duration: "1 Year", description: "AI presentation maker", features: ["Auto design", "Templates", "Collaboration"] },
+      { name: "Notion Business", iconUrl: "https://logo.clearbit.com/notion.so", duration: "6 Months", description: "All-in-one workspace", features: ["Unlimited pages", "Team collaboration", "Advanced permissions"] },
+      { name: "Lovable Pro", iconUrl: "https://logo.clearbit.com/lovable.ai", duration: "1 Year", description: "AI app development", features: ["Code generation", "Real-time preview", "Deployment"] },
+      { name: "Replit Core", iconUrl: "https://logo.clearbit.com/replit.com", duration: "1 Year", description: "Cloud IDE platform", features: ["Always-on projects", "Multiplayer coding", "Ghostwriter AI"] },
+      { name: "Bolt.new AI Code", iconUrl: "https://logo.clearbit.com/bolt.new", duration: "1 Year", description: "AI code assistant", features: ["Code generation", "Auto-completion", "Debugging help"] },
+      { name: "N8N Automation", iconUrl: "https://logo.clearbit.com/n8n.io", duration: "1 Year", description: "Workflow automation", features: ["300+ integrations", "Self-hosted option", "Custom workflows"] },
+      { name: "Make.com", iconUrl: "https://logo.clearbit.com/make.com", duration: "1 Year", description: "Visual automation", features: ["No-code builder", "1000+ apps", "Advanced logic"] },
+      { name: "ClickSites AI Website", iconUrl: "https://logo.clearbit.com/clicksites.ai", duration: "1 Year", description: "AI website builder", features: ["Instant sites", "SEO optimization", "Custom domains"] },
+      { name: "Jasper AI", iconUrl: "https://logo.clearbit.com/jasper.ai", duration: "1 Month", description: "AI content writer", features: ["Marketing copy", "Blog posts", "Social media"] },
+      { name: "Warp Dev AI", iconUrl: "https://logo.clearbit.com/warp.dev", duration: "1 Year", description: "Modern terminal", features: ["AI command search", "Workflows", "Collaboration"] },
+      { name: "Mobbin UI/UX", iconUrl: "https://logo.clearbit.com/mobbin.design", duration: "1 Year", description: "UI design library", features: ["50k+ screens", "Design patterns", "Mobile & web"] },
+      { name: "Magic Patterns", iconUrl: "https://logo.clearbit.com/magicpatterns.design", duration: "1 Year", description: "AI UI generator", features: ["Generate designs", "Export code", "Figma plugin"] },
+      { name: "Wispr Voice AI", iconUrl: "https://logo.clearbit.com/wispr.ai", duration: "1 Year", description: "Voice transcription", features: ["Real-time transcription", "Multi-language", "High accuracy"] },
+      { name: "Granola Meeting", iconUrl: "https://logo.clearbit.com/granola.ai", duration: "1 Year", description: "AI meeting notes", features: ["Auto summaries", "Action items", "Integrations"] },
+      { name: "Superhuman", iconUrl: "https://logo.clearbit.com/superhuman.com", duration: "1 Year", description: "Email productivity", features: ["Blazing fast", "Keyboard shortcuts", "AI assistance"] },
+      { name: "Linear AI Project", iconUrl: "https://logo.clearbit.com/linear.app", duration: "1 Year", description: "Issue tracking", features: ["Project management", "Roadmaps", "Integrations"] },
+      { name: "Raycast AI", iconUrl: "https://logo.clearbit.com/raycast.com", duration: "1 Year", description: "Productivity launcher", features: ["Quick actions", "Extensions", "AI commands"] },
     ],
   },
   {
     id: "software-subscriptions",
-    title: "Software & Subscriptions Ultimate Pack",
+    title: "Software & Subscriptions",
     tools: [
-      { name: "Canva Pro", icon: "🎨", duration: "1 Year", description: "Graphic design platform", features: ["Premium templates", "Brand kit", "Background remover"] },
-      { name: "Adobe Creative Cloud", icon: "🎭", duration: "1 Year", description: "Creative suite", features: ["All Adobe apps", "Cloud storage", "Premium fonts"] },
-      { name: "CorelDRAW", icon: "✏️", duration: "1Year", description: "Vector graphics editor", features: ["Professional design", "Typography", "Illustrations"] },
-      { name: "Descript", icon: "🎬", duration: "1 Year", description: "Video & audio editor", features: ["Transcription", "Overdub", "Screen recording"] },
-      { name: "Filmora", icon: "🎥", duration: "1 Year", description: "Video editing", features: ["Effects library", "AI tools", "Export options"] },
-      { name: "CapCut Pro", icon: "📹", duration: "1 Year", description: "Video editor", features: ["Advanced editing", "Effects", "Auto captions"] },
-      { name: "ElevenLabs", icon: "🔊", duration: "1 Year", description: "AI voice generation", features: ["Voice cloning", "Multiple languages", "High quality"] },
+      { name: "Canva Pro", iconUrl: "https://logo.clearbit.com/canva.com", duration: "1 Year", description: "Graphic design platform", features: ["Premium templates", "Brand kit", "Background remover"] },
+      { name: "Adobe Creative Cloud", iconUrl: "https://logo.clearbit.com/adobe.com", duration: "1 Year", description: "Creative suite", features: ["All Adobe apps", "Cloud storage", "Premium fonts"] },
+      { name: "CorelDRAW", iconUrl: "https://logo.clearbit.com/coreldraw.com", duration: "1 Year", description: "Vector graphics editor", features: ["Professional design", "Typography", "Illustrations"] },
+      { name: "Descript", iconUrl: "https://logo.clearbit.com/descript.com", duration: "1 Year", description: "Video & audio editor", features: ["Transcription", "Overdub", "Screen recording"] },
+      { name: "Filmora", iconUrl: "https://logo.clearbit.com/filmora.com", duration: "1 Year", description: "Video editing", features: ["Effects library", "AI tools", "Export options"] },
+      { name: "CapCut Pro", iconUrl: "https://logo.clearbit.com/capcut.com", duration: "1 Year", description: "Video editor", features: ["Advanced editing", "Effects", "Auto captions"] },
+      { name: "ElevenLabs", iconUrl: "https://logo.clearbit.com/elevenlabs.io", duration: "1 Year", description: "AI voice generation", features: ["Voice cloning", "Multiple languages", "High quality"] },
     ],
   },
   {
     id: "vpn-security",
-    title: "VPN & Security Premium Shield Pack",
+    title: "VPN & Security",
     tools: [
-      { name: "ExpressVPN Premium", icon: "🛡️", duration: "1 Year", description: "Top-tier VPN service", features: ["160+ locations", "Military encryption", "24/7 support"] },
-      { name: "Surfshark VPN", icon: "🦈", duration: "1 Year", description: "Unlimited devices VPN", features: ["Unlimited devices", "CleanWeb", "Multi-hop"] },
-      { name: "Advanced Threat Protection", icon: "🔒", duration: "1 Year", description: "Security suite", features: ["Real-time protection", "Malware blocking", "Safe browsing"] },
-      { name: "Secure DNS", icon: "🌐", duration: "1 Year", description: "Privacy DNS", features: ["Ad blocking", "Tracking protection", "Fast resolution"] },
+      { name: "ExpressVPN Premium", iconUrl: "https://logo.clearbit.com/expressvpn.com", duration: "1 Year", description: "Top-tier VPN service", features: ["160+ locations", "Military encryption", "24/7 support"] },
+      { name: "Surfshark VPN", iconUrl: "https://logo.clearbit.com/surfshark.com", duration: "1 Year", description: "Unlimited devices VPN", features: ["Unlimited devices", "CleanWeb", "Multi-hop"] },
+      { name: "Advanced Threat Protection", iconUrl: "https://logo.clearbit.com/tdcs.in", duration: "1 Year", description: "Security suite", features: ["Real-time protection", "Malware blocking", "Safe browsing"] },
+      { name: "Secure DNS", iconUrl: "https://logo.clearbit.com/cloudflare.com", duration: "1 Year", description: "Privacy DNS", features: ["Ad blocking", "Tracking protection", "Fast resolution"] },
     ],
   },
   {
     id: "learning-career",
-    title: "Learning & Career Master Pack",
+    title: "Learning & Career",
     tools: [
-      { name: "Coursera Plus", icon: "🎓", duration: "1 Year", description: "Online learning", features: ["7000+ courses", "Professional certificates", "University courses"] },
-      { name: "edX Premium", icon: "📚", duration: "1 Year", description: "University courses", features: ["Top universities", "MicroMasters", "Certificates"] },
-      { name: "LinkedIn Learning", icon: "💼", duration: "1 Year", description: "Professional skills", features: ["16000+ courses", "Certificates", "Expert instructors"] },
-      { name: "Udemy Business", icon: "🎯", duration: "1 Year", description: "Business learning", features: ["7000+ courses", "Team access", "Learning paths"] },
-      { name: "Career Coaching", icon: "👨‍💼", duration: "1 Year", description: "1-on-1 coaching", features: ["Resume review", "Interview prep", "Career guidance"] },
+      { name: "Coursera Plus", iconUrl: "https://logo.clearbit.com/coursera.org", duration: "1 Year", description: "Online learning", features: ["7000+ courses", "Professional certificates", "University courses"] },
+      { name: "edX Premium", iconUrl: "https://logo.clearbit.com/edx.org", duration: "1 Year", description: "University courses", features: ["Top universities", "MicroMasters", "Certificates"] },
+      { name: "LinkedIn Learning", iconUrl: "https://logo.clearbit.com/linkedin.com", duration: "1 Year", description: "Professional skills", features: ["16000+ courses", "Certificates", "Expert instructors"] },
+      { name: "Udemy Business", iconUrl: "https://logo.clearbit.com/udemy.com", duration: "1 Year", description: "Business learning", features: ["7000+ courses", "Team access", "Learning paths"] },
+      { name: "Career Coaching", iconUrl: "https://logo.clearbit.com/tdcs.in", duration: "1 Year", description: "1-on-1 coaching", features: ["Resume review", "Interview prep", "Career guidance"] },
     ],
   }
 ];
@@ -113,7 +115,7 @@ const flattenProducts = (services: any[]) => {
         ...tool,
         id: `${service.id}-${tool.name.toLowerCase().replace(/ /g, '-')}`,
         category: service.title,
-        price: getPriceForDuration(tool.duration), // Assign the new price
+        price: getPriceForDuration(tool.duration),
       });
     });
   });
@@ -136,7 +138,7 @@ const formatPrice = (price: number) => {
 };
 
 // 3. --- New Individual Product Card Component ---
-const ProductCard = ({ product, onGetService }: { product: any, onGetService: (id: string, name: string, price: string) => void }) => {
+const ProductCard = ({ product, onViewDetails }: { product: any, onViewDetails: (product: any) => void }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -147,7 +149,12 @@ const ProductCard = ({ product, onGetService }: { product: any, onGetService: (i
     >
       <Card className="flex-grow flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
         <CardHeader className="flex flex-row items-center space-x-4 p-4">
-          <span className="text-4xl">{product.icon}</span>
+          <img 
+            src={product.iconUrl} 
+            alt={`${product.name} logo`} 
+            className="w-12 h-12 rounded-lg object-contain border"
+            onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/100?text=Logo')}
+          />
           <div>
             <CardTitle className="text-lg leading-tight">{product.name}</CardTitle>
             <Badge variant="secondary" className="mt-1">{product.category}</Badge>
@@ -168,9 +175,9 @@ const ProductCard = ({ product, onGetService }: { product: any, onGetService: (i
           <Button
             variant="gradient"
             className="w-full"
-            onClick={() => onGetService(product.id, product.name, product.price.toString())}
+            onClick={() => onViewDetails(product)}
           >
-            Get Service
+            View Details
           </Button>
         </div>
       </Card>
@@ -178,8 +185,79 @@ const ProductCard = ({ product, onGetService }: { product: any, onGetService: (i
   );
 };
 
+// 4. --- NEW: Product Detail Modal Component ---
+const ProductDetailModal = ({ product, onClose, onGetService }: { product: any, onClose: () => void, onGetService: (id: string, name: string, price: string) => void }) => {
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 30, scale: 0.95 }}
+        className="bg-background rounded-2xl w-full max-w-2xl shadow-xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking form
+      >
+        <div className="p-6 relative">
+          <Button variant="ghost" size="icon" className="absolute top-4 right-4" onClick={onClose}>
+            <X className="w-5 h-5" />
+          </Button>
 
-// 4. --- Main Services Component (Rebuilt as a Store) ---
+          <div className="flex flex-col sm:flex-row items-center sm:space-x-6 space-y-4 sm:space-y-0">
+            <img 
+              src={product.iconUrl} 
+              alt={`${product.name} logo`}
+              className="w-32 h-32 rounded-2xl object-contain border shadow-md"
+              onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/200?text=Logo')}
+            />
+            <div className="text-center sm:text-left">
+              <Badge variant="secondary">{product.category}</Badge>
+              <h2 className="text-3xl font-bold mt-2">{product.name}</h2>
+              <p className="text-lg text-muted-foreground mt-1">{product.description}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-muted/50 p-6 space-y-4">
+          <h3 className="text-xl font-semibold">Key Benefits</h3>
+          <ul className="space-y-2">
+            {product.features.map((feature: string, index: number) => (
+              <li key={index} className="flex items-center space-x-2">
+                <CheckCircle className="w-5 h-5 text-green-500" />
+                <span className="text-muted-foreground">{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        
+        <div className="p-6 bg-background flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+          <div className="text-center sm:text-left">
+            <p className="text-3xl font-bold text-primary">{formatPrice(product.price)}</p>
+            <p className="text-muted-foreground">For {product.duration}</p>
+          </div>
+          <Button
+            variant="gradient"
+            size="lg"
+            className="w-full sm:w-auto shadow-glow"
+            onClick={() => {
+              onGetService(product.id, product.name, product.price.toString());
+              onClose();
+            }}
+          >
+            Get Service Now
+          </Button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+
+// 5. --- Main Services Component (Rebuilt as a Store) ---
 const Services = () => {
   // --- Filter State ---
   const [searchTerm, setSearchTerm] = useState("");
@@ -187,6 +265,9 @@ const Services = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedDurations, setSelectedDurations] = useState<string[]>([]);
   const [sortOrder, setSortOrder] = useState("default");
+  
+  // --- Modal State ---
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   // --- Filter Handlers ---
   const handleCategoryChange = (category: string) => {
@@ -204,45 +285,33 @@ const Services = () => {
         : [...prev, duration]
     );
   };
+  
+  // --- Modal Handler ---
+  const handleViewDetails = (product: any) => {
+    setSelectedProduct(product);
+  };
 
   // --- Filtered Products Logic ---
   const filteredProducts = useMemo(() => {
     let products = allProducts;
-
-    // Search filter
     if (searchTerm) {
       products = products.filter(p =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-
-    // Price filter
     products = products.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1]);
-
-    // Category filter
     if (selectedCategories.length > 0) {
       products = products.filter(p => selectedCategories.includes(p.category));
     }
-
-    // Duration filter
     if (selectedDurations.length > 0) {
       products = products.filter(p => selectedDurations.includes(p.duration));
     }
-    
-    // Sort
     switch (sortOrder) {
-      case "price-asc":
-        products.sort((a, b) => a.price - b.price);
-        break;
-      case "price-desc":
-        products.sort((a, b) => b.price - a.price);
-        break;
-      case "name-asc":
-        products.sort((a, b) => a.name.localeCompare(b.name));
-        break;
+      case "price-asc": products.sort((a, b) => a.price - b.price); break;
+      case "price-desc": products.sort((a, b) => b.price - a.price); break;
+      case "name-asc": products.sort((a, b) => a.name.localeCompare(b.name)); break;
     }
-
     return products;
   }, [searchTerm, priceRange, selectedCategories, selectedDurations, sortOrder]);
 
@@ -295,7 +364,7 @@ const Services = () => {
         </div>
       </section>
 
-      {/* --- NEW: Store Layout Section --- */}
+      {/* --- Store Layout Section --- */}
       <section className="py-16 bg-muted/10">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-8">
@@ -345,7 +414,7 @@ const Services = () => {
                         onCheckedChange={() => handleCategoryChange(category)}
                       />
                       <label htmlFor={`cat-${category}`} className="text-sm font-medium leading-none">
-                        {category.replace(' Pro Pack', '').replace(' Ultimate Pack', '').replace(' Premium Shield Pack', '').replace(' Master Pack', '')}
+                        {category}
                       </label>
                     </div>
                   ))}
@@ -367,7 +436,7 @@ const Services = () => {
                       </label>
                     </div>
                   ))}
-                </CardContent>
+                </GridContent>
               </Card>
             </aside>
 
@@ -395,7 +464,7 @@ const Services = () => {
                   <ProductCard
                     key={product.id}
                     product={product}
-                    onGetService={handleGetService}
+                    onViewDetails={handleViewDetails}
                   />
                 ))}
               </div>
@@ -419,7 +488,7 @@ const Services = () => {
             className="text-center mb-12"
           >
             <h2 className="text-4xl font-bold gradient-text mb-4">
-              Why Choose TDCS Bundles?
+              Why Choose TDCS Services?
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Premium access to industry-leading tools at a fraction of the cost
@@ -474,7 +543,7 @@ const Services = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button variant="gradient" size="lg" className="shadow-glow">
-                  View All Bundles
+                  View All Services
                 </Button>
                 <Button variant="outline" size="lg">
                   Contact Sales
@@ -484,6 +553,17 @@ const Services = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* --- This is the Modal Renderer --- */}
+      <AnimatePresence>
+        {selectedProduct && (
+          <ProductDetailModal 
+            product={selectedProduct}
+            onClose={() => setSelectedProduct(null)}
+            onGetService={handleGetService}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
