@@ -45,7 +45,7 @@ const hardwareProducts = [
   },
   {
     name: "CYBER-T USB-ARMY-KNIFE(Pre-Installed Firmware)",
-    image: "https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=400",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzRhZ8FEcQAMMyx2ONJqm65DAUk8ufX-5WZw&s",
     category: "Hardware",
     rating: 5.00,
     originalPrice: 3499,
