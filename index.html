@@ -7,22 +7,19 @@
     <meta name="description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
     <meta name="author" content="TDCS Technologies Private Limited" />
     <style>
-      /* --- UPDATE: Check for reduced motion preference --- */
-      @media (prefers-reduced-motion: no-preference) {
-        body {
-          cursor: none;
-        }
-      }
-      
-      /* Hide the custom cursor by default if motion is not preferred */
+      /* Hide the custom cursor by default */
       #main-cursor-dot {
         display: none; 
       }
 
-      /* --- UPDATE: Only display custom cursor if motion is preferred --- */
-      @media (prefers-reduced-motion: no-preference) {
+      /* --- UPDATE: Only apply custom cursor styles if motion is preferred AND it's a mouse/trackpad device --- */
+      @media (prefers-reduced-motion: no-preference) and (pointer: fine) {
+        body {
+          cursor: none; /* Hide the system cursor */
+        }
+      
         #main-cursor-dot {
-          display: block; /* Show the dot */
+          display: block; /* Show the custom cursor dot */
           position: fixed;
           width: 10px;
           height: 10px;
@@ -35,6 +32,7 @@
         }
       }
 
+      /* Trail dots are only created by the script, so they only appear if the script runs */
       .cursor-trail-dot {
         position: fixed;
         background-color: rgba(0, 180, 255, 0.5);
@@ -43,7 +41,6 @@
         z-index: 9999;
         opacity: 0;
         transform: translate(-50%, -50%) scale(0.5);
-        /* Animation will only run if dots are created by the script */
         animation: fadeOutTrail 1s forwards ease-out;
       }
 
@@ -64,7 +61,6 @@
         }
       }
 
-      /* Fallback for the body cursor (redundant but safe) */
       body {
         background-color: #f0f2f5;
         min-height: 100vh;
@@ -81,8 +77,9 @@
     <script type="module" src="/src/main.tsx"></script>
 
     <script>
-      // --- UPDATE: Check for reduced motion preference ---
+      // --- UPDATE: Check for reduced motion AND fine pointer (mouse/trackpad) ---
       const motionQuery = window.matchMedia("(prefers-reduced-motion: no-preference)");
+      const pointerQuery = window.matchMedia("(pointer: fine)");
       
       const mainCursorDot = document.getElementById("main-cursor-dot");
       let mouseX = 0, mouseY = 0;
@@ -90,8 +87,8 @@
       const trailSpawnInterval = 50; 
       let lastTrailSpawnTime = 0;
 
-      // --- UPDATE: Only run the script if the user wants motion ---
-      if (mainCursorDot && motionQuery.matches) {
+      // --- UPDATE: Only run the script if the user wants motion AND has a mouse/trackpad ---
+      if (mainCursorDot && motionQuery.matches && pointerQuery.matches) {
         
         // Update mouse position
         window.addEventListener("mousemove", (e) => {
