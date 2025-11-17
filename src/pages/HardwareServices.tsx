@@ -72,7 +72,7 @@ const hardwareProducts = [
   },
   {
     name: "ESP8266-Kit(Pre-Installed WiFi Firmware)",
-    image: "https://images.pexels.com/photos/3575189/pexels-photo-3575189.jpeg?auto=compress&cs=tinysrgb&w=400",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTceDP9h5jZhHpLWxEJfzltR3bW9PZthPzW_O6GEB5LJzYcPfZqvp2Axh61MknE-ZmIdLY&usqp=CAU",
     category: "Hardware",
     rating: 0,
     originalPrice: 999,
