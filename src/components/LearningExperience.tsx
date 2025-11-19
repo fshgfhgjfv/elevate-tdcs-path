@@ -69,7 +69,7 @@ export const LearningExperience = () => {
 
         <div className="relative rounded-2xl overflow-hidden shadow-glow-lg max-w-4xl mx-auto">
           <img
-            src="https://blogger.googleusercontent.com/img/a/AVvXsEjOkMX4fbsyENTpjtQh3Trpx08MVH3i3nXQIMN5PplxXDLrYcqzbh0eyC0ctQRzdIKMM1Dh_YAlnCJyUpF_55ZY5kXV2-4-AT2pa9nXCfxmx1DG7K2Uz2p9d34ANsg_RVeJfbBze-wNrLF4TZDCoaZEwmZS3cbM8ZGlgg0g7J5veTYBD_QQATTa9K4vzndK=w370-h507"
+            src="https://blogger.googleusercontent.com/img/a/AVvXsEiR5vzDDaHMOfP1b-GEtK6ei7hJEusnJCXBjSvIGljLZn3JO2xjGRmXp0yLkyNLPIcfdSGJ3rvwzJQrxswByoWFdnt2NLHhfR9MGYE2Mw8_MuljtoWurnjNQZgLSt-_JDJDa13sA1OEVCLQrMRrYWaRgce8pSOYBVu-5L5vB3bXczlNFDNaGyyYJCYUy1fV"
             alt="Learning Environment"
             className="w-full h-96 object-cover"
           />
