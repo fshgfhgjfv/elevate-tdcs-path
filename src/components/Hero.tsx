@@ -442,7 +442,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             className="flex flex-wrap gap-4 md:gap-8 items-center pt-4"
                         >
                             <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">
-                                Trusted by thousands of students globally.
+                                cyber security & ethical Hacking training agency
                             </p>
                         </motion.div>
                     </div>
