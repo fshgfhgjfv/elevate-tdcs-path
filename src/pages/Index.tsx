@@ -106,7 +106,7 @@ const Index = () => {
         <motion.div variants={itemVariants}>
           <Card>
             <CardHeader>
-              <CardTitle>Dashboard Coming Soon</CardTitle>
+              <CardTitle>Dashboard</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">Additional dashboard features will be added here.</p>
