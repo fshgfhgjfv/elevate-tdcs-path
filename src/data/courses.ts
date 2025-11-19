@@ -1,68 +1,17 @@
-import React from "react";
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import {
-  PlayCircle,
-  ArrowRight,
-  ExternalLink,
-  Award,
-  MapPin,
-} from "lucide-react";
+import { Terminal, Shield, Cpu, Award, CheckCircle, MapPin, PlayCircle, ArrowRight } from "lucide-react";
+import { useState } from "react";
 
-// --- TYPES & INTERFACES ---
-interface SimpleButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "outline" | "ghost";
-  children: React.ReactNode;
-}
+// ---
+// --- 1. DATA SECTION ---
+// ---
 
-interface SimpleBadgeProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-interface SimpleCardProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-// --- INTERNAL UI COMPONENTS ---
-
-const SimpleButton: React.FC<SimpleButtonProps> = ({
-  children,
-  className = "",
-  variant = "primary",
-  ...props
-}) => {
-  const baseStyle =
-    "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none disabled:opacity-50 active:scale-95";
-
-  const variants = {
-    primary: "bg-slate-900 text-white hover:bg-blue-600 shadow-lg shadow-slate-900/20",
-    outline:
-      "border border-slate-300 text-slate-700 hover:border-slate-900 hover:text-slate-900 bg-transparent",
-    ghost: "text-slate-600 hover:text-blue-600 hover:bg-blue-50",
-  };
-
-  return (
-    <button className={`${baseStyle} ${variants[variant]} ${className}`} {...props}>
-      {children}
-    </button>
-  );
-};
-
-const SimpleBadge: React.FC<SimpleBadgeProps> = ({ children, className = "" }) => (
-  <span
-    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold transition-colors ${className}`}
-  >
-    {children}
-  </span>
-);
-
-const SimpleCard: React.FC<SimpleCardProps> = ({ children, className = "" }) => (
-  <div className={`bg-white rounded-xl border border-slate-200 shadow-sm ${className}`}>
-    {children}
-  </div>
-);
-
+// Tools Data (Updated with high-quality CDNs)
 const tools = [
   { name: "Kali Linux", icon: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg", url: "https://www.kali.org/" },
   { name: "Nmap", icon: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Nmap_logo.svg", url: "https://nmap.org/" },
@@ -76,6 +25,7 @@ const tools = [
   { name: "SQL", icon: "https://upload.wikimedia.org/wikipedia/commons/8/87/Sql_data_base_with_logo.png", url: "https://en.wikipedia.org/wiki/SQL" },
 ];
 
+// Courses Data
 const courses = [
   {
     id: "cyber-lite",
@@ -106,6 +56,7 @@ const courses = [
   },
 ];
 
+// Testimonials Data
 const testimonials = [
   { name: "Sandeep Singh", role: "Software Engineer", company: "Innovaccer", feedback: "The Black Hat program transformed my career. The placement assistance was invaluable." },
   { name: "Kabita Mondal", role: "App Developer", company: "Thoughtworks", feedback: "Comprehensive curriculum with excellent mentorship. Hands-on projects were great." },
@@ -113,6 +64,7 @@ const testimonials = [
   { name: "Rahul Mehta", role: "Bug Bounty Hunter", company: "HackerOne", feedback: "Earned my first bounty within 2 months of completing the course!" },
 ];
 
+// Hiring Drives
 const hiringDrives = [
   { company: "TechCorp India", role: "Software Developer", salary: "6–10 LPA", location: "Bangalore" },
   { company: "DataSystems Pro", role: "Data Analyst", salary: "5–8 LPA", location: "Mumbai" },
@@ -120,7 +72,7 @@ const hiringDrives = [
   { company: "CloudTech", role: "DevOps Engineer", salary: "8–15 LPA", location: "Pune" },
 ];
 
-// --- ANIMATION VARIANTS ---
+// --- 2. ANIMATION VARIANTS ---
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
@@ -131,50 +83,206 @@ const staggerContainer = {
   visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
+// --- 3. MAIN COMPONENT ---
 const TDCSLandingPage = () => {
   return (
-    <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-100 text-slate-900">
-
+    <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-100">
+      
       {/* --- HERO SECTION --- */}
-      <section className="relative pt-32 pb-24 px-4 overflow-hidden bg-slate-900 text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(#3b82f622_1px,transparent_1px)] [background-size:16px_16px] opacity-20"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-900/90"></div>
-
-        <div className="container mx-auto text-center relative z-10 max-w-5xl">
+      <section className="relative pt-32 pb-20 px-4 overflow-hidden bg-slate-900 text-white">
+        {/* Background Grid */}
+        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+        
+        <div className="container mx-auto text-center relative z-10 max-w-4xl">
           <motion.div initial="hidden" animate="visible" variants={fadeInUp}>
-            <SimpleBadge className="mb-8 bg-blue-600/90 text-white px-4 py-1.5 border border-blue-500/50 backdrop-blur-sm">
+            <Badge className="mb-6 bg-blue-600 hover:bg-blue-700 px-4 py-1 text-sm">
               🚀 New Batch Starting Soon
-            </SimpleBadge>
-
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-slate-300">
+            </Badge>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
               Master Cybersecurity <br /> & Secure Your Future
             </h1>
-
             <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
               Join 35,000+ students learning ethical hacking, penetration testing, and software development with <strong>TDCS Technologies</strong>.
             </p>
-
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <SimpleButton variant="primary" className="px-8 py-4 text-lg rounded-full bg-blue-600 hover:bg-blue-500 border-0">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-6 text-lg rounded-full shadow-lg shadow-blue-900/50">
                 Explore Courses
-              </SimpleButton>
-
-              <SimpleButton variant="outline" className="px-8 py-4 text-lg rounded-full border-slate-600 text-slate-200 hover:bg-white/10 hover:text-white hover:border-white">
+              </Button>
+              <Button size="lg" variant="outline" className="border-slate-600 text-slate-900 hover:bg-slate-800 hover:text-white px-8 py-6 text-lg rounded-full">
                 <PlayCircle className="mr-2 w-5 h-5" /> Watch Demo
-              </SimpleButton>
+              </Button>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Rest of your long file remains unchanged...
-          ☑ Tools
-          ☑ Courses
-          ☑ Hiring Drives
-          ☑ Testimonials
-          ☑ Footer
-      */}
+      {/* --- TOOLS SECTION (UPDATED) --- */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <motion.div 
+            initial="hidden" 
+            whileInView="visible" 
+            viewport={{ once: true }} 
+            variants={fadeInUp}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Tools You Will Master</h2>
+            <p className="text-slate-600 max-w-2xl mx-auto text-lg">
+              Get hands-on experience with industry-standard tools used by top cybersecurity professionals.
+            </p>
+          </motion.div>
 
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8"
+          >
+            {tools.map((tool, index) => (
+              <motion.a
+                key={index}
+                href={tool.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                variants={fadeInUp}
+                className="group flex flex-col items-center justify-center p-8 bg-slate-50 rounded-2xl border border-slate-100 hover:border-blue-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+              >
+                <div className="h-16 w-16 mb-6 relative flex items-center justify-center">
+                  <img
+                    src={tool.icon}
+                    alt={`${tool.name} logo`}
+                    className="max-h-full max-w-full object-contain filter grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                  />
+                </div>
+                <h3 className="font-semibold text-slate-700 group-hover:text-blue-600 transition-colors">
+                  {tool.name}
+                </h3>
+              </motion.a>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* --- COURSES SECTION --- */}
+      <section className="py-24 bg-slate-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Expert-Led Courses</h2>
+            <p className="text-slate-600">Choose the path that fits your career goals.</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {courses.map((course) => (
+              <Card key={course.id} className="overflow-hidden border-none shadow-lg hover:shadow-2xl transition-all duration-300 group">
+                <div className="h-48 overflow-hidden relative">
+                  <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-slate-900/0 transition-all z-10"/>
+                  <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                  <Badge className="absolute top-4 right-4 z-20 bg-white/90 text-slate-900 hover:bg-white">
+                    {course.category}
+                  </Badge>
+                </div>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-2 text-slate-900 group-hover:text-blue-600 transition-colors">
+                    {course.title}
+                  </h3>
+                  <p className="text-slate-600 text-sm mb-4 line-clamp-2">{course.description}</p>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {course.modules.slice(0, 3).map((mod, i) => (
+                      <span key={i} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-md font-medium">
+                        {mod}
+                      </span>
+                    ))}
+                    {course.modules.length > 3 && <span className="text-xs text-slate-400 px-2 py-1">+ more</span>}
+                  </div>
+                  <div className="flex items-center justify-between mt-auto">
+                    <span className="text-2xl font-bold text-slate-900">{course.price}</span>
+                    <Button className="bg-slate-900 text-white hover:bg-blue-600 rounded-full px-6">
+                      Enroll Now
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- HIRING PARTNERS --- */}
+      <section className="py-24 bg-slate-900 text-white">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between mb-12">
+            <div className="mb-8 md:mb-0">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Active Hiring Drives</h2>
+              <p className="text-slate-400">Exclusive opportunities for TDCS students.</p>
+            </div>
+            <Button variant="outline" className="border-slate-600 text-slate-900 hover:bg-white hover:text-slate-900">
+              View All Drives <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {hiringDrives.map((job, index) => (
+              <div key={index} className="bg-slate-800 p-6 rounded-xl border border-slate-700 hover:border-blue-500 transition-colors">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-slate-900 font-bold text-xl">
+                    {job.company.charAt(0)}
+                  </div>
+                  <Badge className="bg-green-500/20 text-green-400 hover:bg-green-500/30">Active</Badge>
+                </div>
+                <h4 className="font-bold text-lg mb-1">{job.role}</h4>
+                <p className="text-slate-400 text-sm mb-4">{job.company}</p>
+                <div className="space-y-2 text-sm text-slate-300">
+                  <div className="flex items-center"><Award className="w-4 h-4 mr-2 text-blue-400"/> {job.salary}</div>
+                  <div className="flex items-center"><MapPin className="w-4 h-4 mr-2 text-blue-400"/> {job.location}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- TESTIMONIALS MARQUEE --- */}
+      <section className="py-24 overflow-hidden bg-white">
+        <div className="container mx-auto px-4 mb-12 text-center">
+          <h2 className="text-3xl font-bold text-slate-900">Success Stories</h2>
+        </div>
+        
+        <div className="relative w-full overflow-hidden mask-image-gradient">
+          <motion.div 
+            className="flex gap-6 w-max"
+            animate={{ x: "-50%" }}
+            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+          >
+            {[...testimonials, ...testimonials].map((t, i) => (
+              <div key={i} className="w-[400px] bg-slate-50 p-8 rounded-2xl border border-slate-100">
+                <p className="text-slate-600 italic mb-6 text-lg leading-relaxed">"{t.feedback}"</p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                    {t.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h5 className="font-bold text-slate-900">{t.name}</h5>
+                    <p className="text-sm text-slate-500">{t.role} at {t.company}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* --- FOOTER --- */}
+      <footer className="bg-slate-950 text-slate-400 py-12 border-t border-slate-800">
+        <div className="container mx-auto px-4 text-center">
+          <p className="mb-4">&copy; 2025 TDCS Technologies Pvt Ltd. All rights reserved.</p>
+          <div className="flex justify-center gap-6 text-sm">
+            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-white transition-colors">Contact Support</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
