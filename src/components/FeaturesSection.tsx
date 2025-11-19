@@ -40,7 +40,7 @@ const features = [
     description:
       "Get your doubts cleared anytime with our dedicated support team and mentors.",
     image:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEiKZPGDz3vgnEnQJA20543TgVnh2MVkm1VVfDDiGyRxpxvdgXLRFNHry2W6dvaU4IPteY8peDKw_IkElg1rGAkiRH9oF6X1_Euaqy-L2SoLeX1vGU4eU89RR7n_gxAZ1Lvj9Yok3_tX3-WY3jWtKsO-nzQYQG7Ik2H5QHHfqWrHElEPn2_2Dg9v2BhMKzXE",
+      "https://blogger.googleusercontent.com/img/a/AVvXsEiTEKhg-l2pOBrzsPHoSFlijpEmqo-N6N_hZh9mlI4m5DpBbmK7bhTBCOcZnHXE-0CXLt8nOTozaBCOvF1QV7Q-NAwqA8j-dSUIrD24394faJ62dysyjwX4tplIATnkAw-40DFkjc4Ad2gx_XtURio9OH9NBLTHpEoa_9QM28Cllw9w-ZQtqcmi3aPr1-0m",
   },
   {
     icon: Trophy,
