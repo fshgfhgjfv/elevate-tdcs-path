@@ -48,7 +48,7 @@ const features = [
     description:
       "Participate in coding challenges and competitions to sharpen your skills.",
     image:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEimizosAB0-4b_WcqgR_uqvHfRZJtrwq-0a392Q5CbdzD2xqDlUyjiZbLoQg29Wqfpx29-8CTG6N6BGDR-hNS9KyP3N4bbsu7jaY2wbd7CRcyBNNl8ONgZZJaUZVCQ3tX23LoZr6RMHcAcP3OgGpg5C_3o1WMxibH9hJjWildOa7o-mlvHiYaq4n9AaN7_T",
+      "https://blogger.googleusercontent.com/img/a/AVvXsEglSc6c-jcyBazdNhMtzUfcW9GY_YmQWwtHp7krxk6XbY9TX6fFI5DYR3FG_G05ubWywVgxxwXSUy9KniXPVp89SlRpUUxQrjjNBt2rqw-F8R-riBsW_owKHJXv5llpLE3s-OEPqVr8PukfGA_wotmkpA0AJ1QMptBKoXG5fSSfCpZw5zuIARneM21MOdAX",
   },
   {
     icon: Target,
