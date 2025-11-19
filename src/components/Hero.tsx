@@ -25,7 +25,7 @@ interface BookDemoModalProps {
 }
 
 // 1. Splitting the headline into words for individual animation
-const headline = "The Training and Placement platform for your career";
+const headline = "Stay Secure with TDCS TECHNOLOGIES PRIVATE LIMITED";
 const words = headline.split(" ");
 
 // Word-by-word animation variants
