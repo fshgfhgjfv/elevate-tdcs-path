@@ -224,12 +224,26 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
     );
 };
 
+// NEW: Variants for the smooth slide animation
+const slideDetailsVariants = {
+    hidden: { opacity: 0, y: -10, height: 0, transition: { duration: 0.2 } },
+    visible: {
+        opacity: 1,
+        y: 0,
+        height: 'auto',
+        transition: {
+            duration: 0.3,
+            ease: "easeOut",
+        }
+    },
+};
+
 export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     // NEW: State for the Book Demo Modal
     const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
     const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
     
-    // **MODIFIED:** State to track which card is hovered for detail expansion
+    // MODIFIED: State to track which card is hovered for detail expansion
     const [hoveredCard, setHoveredCard] = useState<string | null>(null);
     const heroRef = useRef(null);
     // Use useInView to trigger animations when the component scrolls into view
@@ -246,7 +260,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     const cardRefCOO: RefObject<HTMLDivElement> = useRef(null);
     const cardRefCMO: RefObject<HTMLDivElement> = useRef(null);
 
-    // --- Original Animation variants (for sections other than headline) ---
+    // --- Animation variants (UNCHANGED) ---
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -268,7 +282,6 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         },
     };
 
-    // --- Card Animation Variants (UNCHANGED) ---
     const ceoCardVariants = {
         hidden: { opacity: 0, y: 50, scale: 0.8 },
         visible: {
@@ -312,7 +325,6 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         },
     };
 
-    // --- Glass Sweep Animation Variant (UNCHANGED) ---
     const sweepVariants = {
         hidden: { 
             x: "-150%",
@@ -442,7 +454,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             className="flex flex-wrap gap-4 md:gap-8 items-center pt-4"
                         >
                             <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">
-                                cyber security & ethical Hacking training agency
+                                Trusted by thousands of students globally.
                             </p>
                         </motion.div>
                     </div>
@@ -480,20 +492,21 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             
                             {/* CRITICAL FIX: Text wrapper with high z-index (z-20) */}
                             <div className="relative z-20">
-                                {/* FIX: Text size reduced from text-3xl to text-2xl */}
-                                <h3 className="text-2xl font-extrabold mb-2">Dibyajit Ghosh</h3> 
+                                {/* FIX: Text size reduced from text-2xl to text-xl */}
+                                <h3 className="text-xl font-extrabold mb-2">Dibyajit Ghosh</h3> 
                                 <p className={`text-lg transition-all ${hoveredCard === 'ceo' ? 'mb-4' : 'mb-6'}`}>
                                     {hoveredCard === 'ceo' ? '**Founder & CEO (Director of TDCS)**' : 'Founder & CEO'}
                                 </p>
                                 
-                                {/* NEW: Animate description visibility */}
+                                {/* NEW: AnimatePresence for smooth slide/expand animation */}
                                 <AnimatePresence>
                                     {hoveredCard === 'ceo' && (
                                         <motion.div
-                                            className="text-sm font-semibold opacity-80 space-y-2"
-                                            initial={{ opacity: 0, y: 10, height: 0 }}
-                                            animate={{ opacity: 1, y: 0, height: 'auto', transition: { duration: 0.3 } }}
-                                            exit={{ opacity: 0, y: -10, height: 0, transition: { duration: 0.2 } }}
+                                            className="text-sm font-semibold opacity-80 space-y-2 overflow-hidden" // Added overflow-hidden to clip the sliding text
+                                            variants={slideDetailsVariants} // Apply slide variants
+                                            initial="hidden"
+                                            animate="visible"
+                                            exit="hidden"
                                         >
                                             <p>Visionary leader driving future talent.</p>
                                         </motion.div>
@@ -518,7 +531,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                         {/* 2. COO & CMO Cards (Smaller, Side-by-Side on wide screens, Stacked on mobile) */}
                         <div className="flex flex-col sm:flex-row gap-4 w-full">
                             
-                            {/* COO Card - NOW HOVER-BASED */}
+                            {/* COO Card - NOW HOVER-BASED with Slide Animation */}
                             <motion.div
                                 ref={cardRefCOO}
                                 variants={cooCardVariants}
@@ -543,10 +556,11 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 <AnimatePresence>
                                     {hoveredCard === 'coo' && (
                                         <motion.p
-                                            className="text-xs font-semibold opacity-90 relative z-20 mb-2"
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0, transition: { duration: 0.3 } }}
-                                            exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+                                            className="text-xs font-semibold opacity-90 relative z-20 mb-2 overflow-hidden"
+                                            variants={slideDetailsVariants} // Apply slide variants
+                                            initial="hidden"
+                                            animate="visible"
+                                            exit="hidden"
                                         >
                                             Operational Excellence and Logistics.
                                         </motion.p>
@@ -564,7 +578,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 />
                             </motion.div>
 
-                            {/* CMO Card - NOW HOVER-BASED */}
+                            {/* CMO Card - NOW HOVER-BASED with Slide Animation */}
                             <motion.div
                                 ref={cardRefCMO}
                                 variants={cmoCardVariants}
@@ -589,10 +603,11 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 <AnimatePresence>
                                     {hoveredCard === 'cmo' && (
                                         <motion.p
-                                            className="text-xs font-semibold opacity-90 relative z-20 mb-2"
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0, transition: { duration: 0.3 } }}
-                                            exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+                                            className="text-xs font-semibold opacity-90 relative z-20 mb-2 overflow-hidden"
+                                            variants={slideDetailsVariants} // Apply slide variants
+                                            initial="hidden"
+                                            animate="visible"
+                                            exit="hidden"
                                         >
                                             Strategizing market penetration and brand value.
                                         </motion.p>
