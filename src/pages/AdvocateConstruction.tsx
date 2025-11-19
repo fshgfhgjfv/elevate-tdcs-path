@@ -178,7 +178,7 @@ const AdvocateProfilePage = () => {
               className="w-36 h-36 mx-auto mb-8 rounded-full overflow-hidden border-4 border-white shadow-2xl ring-4 ring-slate-100"
             >
               <img 
-                src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=400" 
+                src="https://cutiedp.com/wp-content/uploads/2025/08/no-dp-image-5.webp" 
                 alt="Advocate Profile" 
                 className="w-full h-full object-cover"
               />
