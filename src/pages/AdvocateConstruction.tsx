@@ -4,13 +4,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { motion, AnimatePresence } from "framer-motion";
-import { Scale, Gavel, Users, FileText, Calendar, PlayCircle, ChevronDown } from "lucide-react";
+import { Calendar, PlayCircle, ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 // ---
 // --- 1. SETTINGS & DATA ---
 // ---
-const CALENDLY_LINK = "https://calendly.com/advocate-majumder/30min"; // <-- UPDATE THIS LINK
+// NOTE: Replace this with the Advocate's actual booking link when available
+const CALENDLY_LINK = "https://calendly.com/advocate-majumder/30min"; 
 
 // --- Animation Variants ---
 const containerVariants = {
@@ -24,45 +25,57 @@ const itemVariants = {
   hidden: { y: 30, opacity: 0 },
   visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } },
 };
-// --- Variants for collapsible content ---
 const contentVariants = {
   collapsed: { opacity: 0, height: 0, marginTop: 0 },
   open: { opacity: 1, height: "auto", marginTop: "1rem" },
 };
 
-// --- Practice Areas Data ---
+// --- Practice Areas Data (Updated with Images) ---
 const practiceAreas = [
   {
-    icon: Scale,
     title: "Civil Law",
+    // High-quality legal library/books image
+    image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=800",
     preview: "Comprehensive support for property disputes, contract breaches, and inheritance matters.",
     details: "Our full-service civil law practice provides comprehensive litigation support and advisory services. We are dedicated to protecting your rights and assets through meticulous case preparation and strong courtroom representation in all matters of property, contracts, and inheritance.",
   },
   {
-    icon: Gavel,
     title: "Criminal Law",
+    // Courtroom gavel image
+    image: "https://images.unsplash.com/photo-1593115057322-e94b77572f20?auto=format&fit=crop&q=80&w=800",
     preview: "Strategic and ethical criminal defense for a wide range of cases, from bail to trial.",
     details: "We offer a robust defense for all criminal charges. Our approach is focused on ensuring a fair legal process, protecting your constitutional rights, and achieving the best possible outcome, whether that's a favorable plea, a dismissal, or a not-guilty verdict at trial.",
   },
   {
-    icon: Users,
     title: "Legal Consultation",
+    // Professional meeting/consultation image
+    image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=800",
     preview: "Expert legal advice tailored to your specific situation to help you understand your options.",
     details: "Get expert legal advice tailored to your specific situation. We help you understand complex legal issues, explore your options, and make informed decisions. Our consultations cover all our practice areas and are available online or in-person.",
   },
   {
-    icon: FileText,
     title: "Arbitration",
+    // Handshake/Agreement image
+    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&q=80&w=800",
     preview: "A faster, more efficient alternative to traditional court proceedings for resolving disputes.",
     details: "As a faster alternative to traditional court proceedings, we offer expert arbitration and mediation services. We help resolve commercial and civil disputes efficiently, saving you time and money while working towards an amicable, binding solution.",
   },
 ];
 
-// --- Featured Videos Data ---
+// --- Featured Videos Data (Updated with REAL Indian Law Videos) ---
 const featuredVideos = [
-  { id: "1Hk7kyfpKjU", title: "Understanding Civil Law" },
-  { id: "v4-pSgB7i2U", title: "Your Rights in Criminal Cases" },
-  { id: "V0Xp-1X41sY", title: "The Process of Arbitration" },
+  { 
+    id: "YiYEtB3_Sv4", 
+    title: "Stages of a Civil Suit in India" 
+  },
+  { 
+    id: "v9mR1DgEApE", 
+    title: "India's New Criminal Laws Explained" 
+  },
+  { 
+    id: "YLgm_Lv-w1A", 
+    title: "The Arbitration Process in India" 
+  },
 ];
 
 // --- FAQ Data ---
@@ -104,34 +117,30 @@ const testimonials = [
 // --- 2. THE MAIN PAGE COMPONENT ---
 // ---
 const AdvocateProfilePage = () => {
-  // State for the modal
   const [showCalendly, setShowCalendly] = useState(false);
-  // State for the interactive practice areas
   const [openAreaIndex, setOpenAreaIndex] = useState<number | null>(null);
-  // State for the lazy-loading videos
   const [loadVideoId, setLoadVideoId] = useState<string | null>(null);
 
-  // Toggle function for practice areas
   const toggleArea = (index: number) => {
     setOpenAreaIndex(openAreaIndex === index ? null : index);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/10 pt-24 pb-16 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 pt-24 pb-16 relative overflow-hidden font-sans">
       
       {/* --- Floating CTA Button --- */}
       <motion.div
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 100, delay: 1.5 }}
-        whileHover={{ scale: 1.1, rotate: 2 }}
+        whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className="fixed bottom-6 right-6 z-40"
       >
         <Button
           size="lg"
           onClick={() => setShowCalendly(true)}
-          className="bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg hover:shadow-xl"
+          className="bg-slate-900 text-white hover:bg-slate-800 shadow-xl rounded-full px-6 py-6 h-auto"
         >
           <Calendar className="mr-2 w-5 h-5" />
           Book Appointment
@@ -143,26 +152,38 @@ const AdvocateProfilePage = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="max-w-5xl mx-auto"
+          className="max-w-6xl mx-auto"
         >
           
           {/* --- Hero Section --- */}
-          <div className="text-center mb-14">
+          <div className="text-center mb-20 mt-8">
+            <motion.div 
+              variants={itemVariants}
+              className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-white shadow-2xl"
+            >
+              {/* Profile Placeholder Image */}
+              <img 
+                src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=400" 
+                alt="Advocate Profile" 
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+            
             <motion.h1
               variants={itemVariants}
-              className="text-5xl sm:text-6xl font-extrabold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-3"
+              className="text-5xl sm:text-7xl font-serif font-bold text-slate-900 mb-4 tracking-tight"
             >
               Advocate Sarbari Majumder
             </motion.h1>
             <motion.h2
               variants={itemVariants}
-              className="text-xl sm:text-2xl text-muted-foreground mb-4"
+              className="text-xl sm:text-2xl text-slate-600 font-light mb-6 uppercase tracking-widest"
             >
-              Legal Counsel | High Court of Calcutta
+              High Court of Calcutta
             </motion.h2>
             <motion.p
               variants={itemVariants}
-              className="text-lg italic text-foreground/90 mb-6 max-w-2xl mx-auto"
+              className="text-lg text-slate-600 italic mb-8 max-w-2xl mx-auto border-l-4 border-slate-900 pl-4 py-1"
             >
               “Dedicated to Justice. Committed to Clients.”
             </motion.p>
@@ -170,28 +191,29 @@ const AdvocateProfilePage = () => {
               <Button
                 onClick={() => setShowCalendly(true)}
                 size="lg"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg"
+                className="bg-slate-900 text-white hover:bg-slate-800 px-8 py-6 text-lg rounded-md"
               >
-                Book a Consultation
+                Schedule Consultation
               </Button>
             </motion.div>
           </div>
 
           {/* --- About Section --- */}
-          <motion.div variants={itemVariants} className="space-y-6 mb-16">
-            <Card className="shadow-glow backdrop-blur-xl border-primary/20">
-              <CardContent className="p-8">
-                <p className="text-lg leading-relaxed text-foreground/90">
+          <motion.div variants={itemVariants} className="grid md:grid-cols-2 gap-8 mb-24">
+            <Card className="shadow-lg border-none bg-white">
+              <CardContent className="p-10 flex flex-col justify-center h-full">
+                <h3 className="text-2xl font-bold mb-4 text-slate-800">Experience & Integrity</h3>
+                <p className="text-lg leading-relaxed text-slate-600">
                   Advocate Sarbari Majumder is a distinguished legal practitioner with over 15 years of experience in
                   diverse legal domains including civil, criminal, and arbitration law. Practicing at the High Court of
-                  Calcutta, she is known for her strategic thinking, compassionate counsel, and relentless pursuit of
-                  justice.
+                  Calcutta, she is known for her strategic thinking and relentless pursuit of justice.
                 </p>
               </CardContent>
             </Card>
-            <Card className="shadow-glow backdrop-blur-xl border-secondary/20">
-              <CardContent className="p-8">
-                <p className="text-lg leading-relaxed text-foreground/90">
+            <Card className="shadow-lg border-none bg-slate-900 text-white">
+              <CardContent className="p-10 flex flex-col justify-center h-full">
+                <h3 className="text-2xl font-bold mb-4 text-slate-200">Client-First Approach</h3>
+                <p className="text-lg leading-relaxed text-slate-300">
                   Her practice emphasizes ethical representation, transparent communication, and client-first service.
                   Advocate Majumder has successfully represented clients across India, providing clarity and confidence
                   in every legal process.
@@ -200,14 +222,15 @@ const AdvocateProfilePage = () => {
             </Card>
           </motion.div>
 
-          {/* --- Practice Areas Section (Interactive) --- */}
+          {/* --- Practice Areas Section (Updated with Images) --- */}
           <motion.h3
             variants={itemVariants}
-            className="text-3xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-16"
+            className="text-4xl font-bold text-center text-slate-900 mb-16 font-serif"
           >
             Practice Areas
           </motion.h3>
-          <div className="space-y-16 mb-20">
+          
+          <div className="space-y-20 mb-32">
             {practiceAreas.map((area, index) => {
               const isEven = index % 2 === 0;
               const isOpen = openAreaIndex === index;
@@ -215,51 +238,56 @@ const AdvocateProfilePage = () => {
               return (
                 <motion.div
                   key={area.title}
-                  className="flex flex-col md:flex-row items-center gap-8 md:gap-12"
+                  className="flex flex-col md:flex-row items-center gap-8 md:gap-16"
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
-                  transition={{ type: "spring", stiffness: 100 }}
+                  transition={{ type: "spring", stiffness: 50 }}
                 >
-                  {/* Icon/Image Part */}
+                  {/* Image Part (Replaces Icon) */}
                   <div
-                    className={`w-full md:w-2/5 ${
+                    className={`w-full md:w-1/2 ${
                       isEven ? "md:order-1" : "md:order-2"
                     }`}
                   >
-                    <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8 flex justify-center items-center shadow-lg">
-                      <area.icon className="w-24 h-24 text-blue-600" />
+                    <div className="relative group overflow-hidden rounded-2xl shadow-2xl h-64 md:h-80 w-full">
+                      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all duration-500 z-10" />
+                      <img 
+                        src={area.image} 
+                        alt={area.title} 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
                     </div>
                   </div>
 
-                  {/* Text/Content Part */}
+                  {/* Content Part */}
                   <div
-                    className={`w-full md:w-3/5 ${
+                    className={`w-full md:w-1/2 ${
                       isEven ? "md:order-2" : "md:order-1"
                     }`}
                   >
-                    {/* Clickable Header */}
                     <div
-                      className="flex justify-between items-center cursor-pointer"
+                      className="cursor-pointer group"
                       onClick={() => toggleArea(index)}
                     >
-                      <h4 className="text-3xl font-bold text-gray-800">
-                        {area.title}
-                      </h4>
-                      <motion.div
-                        animate={{ rotate: isOpen ? 180 : 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <ChevronDown className="w-7 h-7 text-gray-500" />
-                      </motion.div>
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-3xl font-bold text-slate-900 group-hover:text-slate-700 transition-colors">
+                          {area.title}
+                        </h4>
+                        <motion.div
+                          animate={{ rotate: isOpen ? 180 : 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="p-2 bg-slate-100 rounded-full group-hover:bg-slate-200"
+                        >
+                          <ChevronDown className="w-6 h-6 text-slate-600" />
+                        </motion.div>
+                      </div>
+                      
+                      <p className="text-xl text-slate-600 mb-4">
+                        {area.preview}
+                      </p>
                     </div>
 
-                    {/* Preview Text (Always visible) */}
-                    <p className="text-lg text-muted-foreground mt-2">
-                      {area.preview}
-                    </p>
-
-                    {/* Collapsible Details */}
                     <AnimatePresence initial={false}>
                       {isOpen && (
                         <motion.div
@@ -268,13 +296,10 @@ const AdvocateProfilePage = () => {
                           initial="collapsed"
                           animate="open"
                           exit="collapsed"
-                          transition={{
-                            type: "spring",
-                            stiffness: 300,
-                            damping: 30,
-                          }}
+                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         >
-                          <p className="text-foreground text-lg leading-relaxed">
+                          <div className="h-[1px] w-full bg-slate-200 my-4" />
+                          <p className="text-slate-700 text-lg leading-relaxed">
                             {area.details}
                           </p>
                         </motion.div>
@@ -286,52 +311,65 @@ const AdvocateProfilePage = () => {
             })}
           </div>
 
-          {/* --- Embedded Videos Section (Lazy-Loaded) --- */}
-          <motion.h3
-            variants={itemVariants}
-            className="text-3xl font-bold text-center bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-10"
-          >
-            Featured Videos
-          </motion.h3>
-          <div className="grid md:grid-cols-3 gap-6 mb-24">
-            {featuredVideos.map((video, i) => (
-              <motion.div
-                key={video.id}
-                className="relative overflow-hidden rounded-2xl shadow-lg group aspect-video"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-              >
-                {loadVideoId === video.id ? (
-                  <iframe
-                    className="w-full h-full"
-                    src={`https://www.youtube.com/embed/${video.id}?autoplay=1`}
-                    title={video.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                ) : (
-                  <button
-                    onClick={() => setLoadVideoId(video.id)}
-                    className="w-full h-full flex items-center justify-center bg-black rounded-2xl cursor-pointer"
-                    aria-label={`Play video: ${video.title}`}
-                  >
-                    <PlayCircle className="w-16 h-16 text-white transition-transform group-hover:scale-110" />
-                  </button>
-                )}
-              </motion.div>
-            ))}
+          {/* --- Featured Videos Section (Updated with Real Links) --- */}
+          <div className="bg-slate-900 -mx-4 md:-mx-20 px-4 md:px-20 py-20 mb-24 rounded-3xl">
+            <motion.h3
+              variants={itemVariants}
+              className="text-3xl font-bold text-center text-white mb-12"
+            >
+              Legal Insights & Resources
+            </motion.h3>
+            <div className="grid md:grid-cols-3 gap-8">
+              {featuredVideos.map((video, i) => (
+                <motion.div
+                  key={video.id}
+                  className="relative overflow-hidden rounded-xl shadow-2xl bg-black aspect-video border border-slate-700"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  {loadVideoId === video.id ? (
+                    <iframe
+                      className="w-full h-full"
+                      src={`https://www.youtube.com/embed/${video.id}?autoplay=1`}
+                      title={video.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  ) : (
+                    <button
+                      onClick={() => setLoadVideoId(video.id)}
+                      className="w-full h-full flex flex-col items-center justify-center group relative"
+                      aria-label={`Play video: ${video.title}`}
+                    >
+                      {/* Thumbnail Overlay Effect */}
+                      <img 
+                        src={`https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`}
+                        alt={video.title}
+                        className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"
+                      />
+                      <div className="relative z-10 flex flex-col items-center">
+                        <PlayCircle className="w-16 h-16 text-white drop-shadow-lg transition-transform group-hover:scale-110 mb-4" />
+                        <span className="text-white font-semibold text-lg px-4 text-center drop-shadow-md">
+                            {video.title}
+                        </span>
+                      </div>
+                    </button>
+                  )}
+                </motion.div>
+              ))}
+            </div>
           </div>
 
-          {/* --- Testimonials Scroller --- */}
+          {/* --- Testimonials --- */}
           <motion.h3
             variants={itemVariants}
-            className="text-3xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-10"
+            className="text-3xl font-bold text-center text-slate-900 mb-10"
           >
             Client Testimonials
           </motion.h3>
           <motion.div
-            className="flex overflow-x-auto space-x-6 pb-6 mb-24 scrollbar-hide"
+            className="flex overflow-x-auto space-x-6 pb-8 mb-20 scrollbar-hide px-2"
             initial="hidden"
             animate="visible"
             variants={containerVariants}
@@ -340,10 +378,20 @@ const AdvocateProfilePage = () => {
               <motion.div
                 key={i}
                 variants={itemVariants}
-                className="min-w-[300px] md:min-w-[400px] bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all"
+                className="min-w-[320px] md:min-w-[400px] bg-white rounded-xl p-8 shadow-lg border border-slate-100"
               >
-                <p className="text-muted-foreground italic mb-4">“{t.feedback}”</p>
-                <p className="font-semibold text-right text-gray-800">— {t.name}</p>
+                <div className="flex mb-4">
+                    {[1,2,3,4,5].map(star => (
+                        <span key={star} className="text-yellow-400 text-xl">★</span>
+                    ))}
+                </div>
+                <p className="text-slate-600 italic mb-6 text-lg">“{t.feedback}”</p>
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center font-bold text-slate-500">
+                        {t.name.charAt(0)}
+                    </div>
+                    <p className="font-bold text-slate-900">{t.name}</p>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -351,19 +399,23 @@ const AdvocateProfilePage = () => {
           {/* --- FAQ Section --- */}
           <motion.h3
             variants={itemVariants}
-            className="text-3xl font-bold text-center bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-10"
+            className="text-3xl font-bold text-center text-slate-900 mb-10"
           >
             Frequently Asked Questions
           </motion.h3>
           <motion.div
             variants={itemVariants}
-            className="max-w-3xl mx-auto mb-24 border border-border/40 rounded-2xl p-6 bg-white/60 backdrop-blur"
+            className="max-w-3xl mx-auto mb-24"
           >
-            <Accordion type="single" collapsible>
+            <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((f, i) => (
-                <AccordionItem key={i} value={`faq-${i}`}>
-                  <AccordionTrigger>{f.q}</AccordionTrigger>
-                  <AccordionContent>{f.a}</AccordionContent>
+                <AccordionItem key={i} value={`faq-${i}`} className="border border-slate-200 rounded-lg bg-white px-4 shadow-sm">
+                  <AccordionTrigger className="text-lg font-medium text-slate-800 hover:text-blue-700 hover:no-underline py-6">
+                    {f.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-slate-600 text-lg pb-6">
+                    {f.a}
+                  </AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
@@ -371,35 +423,36 @@ const AdvocateProfilePage = () => {
         </motion.div>
       </div>
 
-      {/* --- Calendly Modal (Book a Meeting) --- */}
+      {/* --- Calendly Modal --- */}
       <AnimatePresence>
         {showCalendly && (
           <motion.div
-            className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            onClick={() => setShowCalendly(false)}
           >
             <motion.div
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl relative"
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl relative overflow-hidden h-[70vh]"
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={() => setShowCalendly(false)}
-                className="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-2xl z-10"
+                className="absolute top-4 right-4 bg-white/80 hover:bg-slate-100 text-slate-500 hover:text-slate-900 rounded-full p-2 z-10 transition-colors"
                 aria-label="Close booking modal"
               >
-                ✕
+                <ChevronDown className="w-6 h-6 rotate-180" />
               </button>
               <iframe
                 src={CALENDLY_LINK}
                 width="100%"
-                height="600"
+                height="100%"
                 frameBorder="0"
-                className="rounded-2xl"
                 title="Book Appointment"
               ></iframe>
             </motion.div>
