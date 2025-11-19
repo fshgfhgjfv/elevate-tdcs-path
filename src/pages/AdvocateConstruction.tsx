@@ -177,7 +177,7 @@ const AdvocateProfilePage = () => {
               className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-white shadow-2xl"
             >
               <img 
-                src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=400" 
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdRzy-W6Dil85l5oRi3d6FcljHxL3oOHwuOfZ3p9uqTO0KFDr9ierdwxIVh_iYAl1Au4k&usqp=CAU" 
                 alt="Advocate Profile" 
                 className="w-full h-full object-cover"
               />
