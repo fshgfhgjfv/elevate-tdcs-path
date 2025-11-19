@@ -7,6 +7,10 @@ import { Download, X } from "lucide-react";
 import type { RefObject } from "react";
 import { CalendarCheck } from "lucide-react"; // NEW: Import for Book Demo Modal
 
+// 1. CONSTANT FOR GRADIENT
+// NOTE: I've updated the headline below to apply the gradient class to all words, 
+// matching the company name. The original code only applied it to 'Training' and 'career', 
+// which weren't in the new headline.
 const GRADIENT_CLASS = "text-transparent bg-clip-text bg-gradient-to-r from-[#FF9A3C] via-[#FF50B3] to-[#8C53FF]";
 
 interface HeroProps {
@@ -28,7 +32,7 @@ interface BookDemoModalProps {
 const headline = "Stay Secure with TDCS TECHNOLOGIES PRIVATE LIMITED";
 const words = headline.split(" ");
 
-// Word-by-word animation variants
+// Word-by-word animation variants (UNCHANGED)
 const wordContainerVariants = {
     visible: {
         transition: {
@@ -52,7 +56,7 @@ const wordItemVariants = {
     },
 };
 
-// Helper function to show a temporary notification (placed outside components for re-use)
+// Helper function to show a temporary notification (UNCHANGED)
 const alertMessage = (message: string, type: 'success' | 'error') => {
     const alertBox = document.getElementById('global-alert-hero');
     if (alertBox) {
@@ -67,7 +71,7 @@ const alertMessage = (message: string, type: 'success' | 'error') => {
     }
 };
 
-// --- NEW: BookDemoModal Component ---
+// --- BookDemoModal Component (UNCHANGED) ---
 const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
     if (!isOpen) return null;
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -145,8 +149,7 @@ const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
     );
 };
 
-// --- DownloadBrochureModal Component (INTEGRATED) ---
-// FIXED: Added explicit prop typing (DownloadBrochureModalProps)
+// --- DownloadBrochureModal Component (UNCHANGED) ---
 const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) => {
     if (!isOpen) return null;
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -268,7 +271,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         },
     };
 
-    // --- NEW: Card Animation Variants ---
+    // --- Card Animation Variants (UNCHANGED) ---
     const ceoCardVariants = {
         hidden: { opacity: 0, y: 50, scale: 0.8 },
         visible: {
@@ -312,7 +315,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         },
     };
 
-    // --- NEW: Glass Sweep Animation Variant ---
+    // --- Glass Sweep Animation Variant (UNCHANGED) ---
     const sweepVariants = {
         hidden: { 
             x: "-150%",
@@ -330,7 +333,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     };
 
 
-    // Card mouse move handler for 3D effect
+    // Card mouse move handler for 3D effect (UNCHANGED)
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, cardRef: RefObject<HTMLDivElement>) => {
         if (!cardRef.current) return;
         const rect = cardRef.current.getBoundingClientRect();
@@ -342,13 +345,21 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         x.set(offsetX * 0.2);
         y.set(offsetY * 0.2);
     };
+    
+    // **NEW: CEO Card size on expansion**
+    const ceoCardStyle = {
+        padding: expandedCard === 'ceo' ? '3rem' : '2.5rem', // Increase padding to make it visually bigger
+        width: '100%',
+        minHeight: expandedCard === 'ceo' ? '350px' : '250px', // Explicitly control height
+        transition: 'all 0.4s ease-out'
+    };
 
     return (
         <section ref={heroRef} className="relative min-h-[90vh] flex items-center pt-24 pb-16 md:pt-32 lg:pt-40 bg-white dark:bg-gray-900 overflow-hidden">
             {/* ALERT PLACEHOLDER: Used by the integrated DownloadBrochureModal and BookDemoModal for success messages */}
             <div id="global-alert-hero" className="fixed top-4 right-4 z-[9999] opacity-0 transition-opacity duration-300 pointer-events-none"></div>
 
-            {/* 2. Animated Background/Overlay (Subtle Glow/Blob) */}
+            {/* 2. Animated Background/Overlay (Subtle Glow/Blob) - UNCHANGED */}
             <div className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden">
                 <motion.div
                     className="absolute w-[600px] h-[600px] bg-[#FF50B3] opacity-10 rounded-full blur-3xl"
@@ -371,7 +382,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"} // Animate when in view
                 >
-                    {/* Left Column: Main Text, Buttons, and Badges (Takes full width on mobile) */}
+                    {/* Left Column: Main Text, Buttons, and Badges (UNCHANGED) */}
                     <div className="lg:col-span-2 space-y-6">
                         <motion.div variants={itemVariants} className="flex items-center space-x-3">
                             {/* Avatars */}
@@ -390,11 +401,11 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             animate={isInView ? "visible" : "hidden"}
                             className="text-4xl md:text-6xl font-extrabold leading-tight text-gray-900 dark:text-white"
                         >
-                            {/* 3. Word-by-Word Headline Animation */}
+                            {/* 3. Word-by-Word Headline Animation - CORRECTED GRADIENT APPLICATION */}
                             {words.map((word, index) => (
                                 <motion.span key={index} variants={wordItemVariants} className="inline-block mr-2" style={{ perspective: 1000 }}>
-                                    {/* Apply gradient only to 'Training' and 'career' */}
-                                    {word === 'Training' || word === 'career' ? (
+                                    {/* Apply gradient to the entire company name */}
+                                    {word === 'TDCS' || word === 'TECHNOLOGIES' || word === 'PRIVATE' || word === 'LIMITED' ? (
                                         <span className={GRADIENT_CLASS}>{word}</span>
                                     ) : (
                                         word
@@ -407,15 +418,15 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             Get job-ready with expert-led courses or participate in our free hiring drives.
                         </motion.p>
                         
-                        {/* BUTTONS SECTION */}
+                        {/* BUTTONS SECTION (UNCHANGED) */}
                         <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-start mb-6">
-                            {/* 1. View Courses (Primary Gradient CTA) - Assuming 'variant="gradient"' is defined in Button component */}
+                            {/* 1. View Courses (Primary Gradient CTA) */}
                             <Link to="/courses">
                                 <Button size="lg" className="text-lg px-8 py-6 w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700">
                                     View Courses
                                 </Button>
                             </Link>
-                            {/* 2. Book a Demo (NEW MODAL CTA) - Replaces the Link to use the modal */}
+                            {/* 2. Book a Demo (NEW MODAL CTA) */}
                             <Button
                                 size="lg"
                                 className="text-lg px-8 py-6 w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow bg-indigo-600 text-white hover:bg-indigo-700"
@@ -436,7 +447,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             </Button>
                         </motion.div>
 
-                        {/* Recognition Badges */}
+                        {/* Recognition Badges (UNCHANGED) */}
                         <motion.div
                             variants={itemVariants}
                             className="flex flex-wrap gap-4 md:gap-8 items-center pt-4"
@@ -450,60 +461,64 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                     {/* Right Column: Tiered Leadership Cards */}
                     <div className="lg:col-span-1 space-y-4 flex flex-col items-center lg:items-end">
                         
-                        {/* 1. CEO Card (Larger, Blue Gradient, Centered on mobile) - NOW CLICKABLE */}
+                        {/* 1. CEO Card (Larger, Blue Gradient, Centered on mobile) - CORRECTED FOR EXPANSION */}
                         <motion.div
                             ref={cardRefCEO}
-                            // EDITED: Apply ceoCardVariants
                             variants={ceoCardVariants}
-                            layout // Add layout for smooth height animation on click
-                            className="relative p-8 md:p-10 w-full rounded-2xl shadow-2xl text-white overflow-hidden cursor-pointer will-change-transform" // <-- overflow-hidden is CRITICAL
+                            layout
+                            // **CRITICAL CHANGE: Use style prop for dynamic size control**
                             style={{
                                 background: 'linear-gradient(135deg, #1D4ED8, #3B82F6)', // Strong blue gradient
                                 rotateX,
                                 rotateY,
-                                transformStyle: "preserve-3d"
+                                transformStyle: "preserve-3d",
+                                ...ceoCardStyle // Apply dynamic size
                             }}
+                            className="relative w-full rounded-2xl shadow-2xl text-white overflow-hidden cursor-pointer will-change-transform" // <-- Removed padding here
                             onMouseMove={(e) => handleMouseMove(e, cardRefCEO)}
                             onMouseLeave={() => { x.set(0); y.set(0); }}
                             onClick={() => setExpandedCard(expandedCard === 'ceo' ? null : 'ceo')} // Toggle expand
                             transition={{ type: "spring", stiffness: 100, damping: 10 }}
                         >
-                            {/* --- NEW: Glass Sweep Overlay --- */}
-                            {/* This element will inherit "hidden" and "visible" states from its parent grid container */}
-                            <motion.div
-                                className="absolute inset-0 w-full h-full z-5" // z-5 is between image (z-0) and text (z-10)
-                                style={{
-                                    background: "linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%)",
-                                }}
-                                variants={sweepVariants}
-                            />
-                            {/* ---------------------------------- */}
+                            <div className="p-8 md:p-10"> {/* Add padding wrapper inside motion.div */}
+                                {/* --- NEW: Glass Sweep Overlay --- */}
+                                {/* This needs to be repositioned relative to the inner content if using padding wrapper */}
+                                <motion.div
+                                    className="absolute inset-0 w-full h-full z-5"
+                                    style={{
+                                        background: "linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%)",
+                                    }}
+                                    variants={sweepVariants}
+                                />
+                                {/* ---------------------------------- */}
 
-                            <h3 className="text-3xl font-extrabold mb-2 z-10 relative">Dibyajit Ghosh</h3>
-                            <p className={`text-lg z-10 relative transition-all ${expandedCard === 'ceo' ? 'mb-2' : 'mb-6'}`}>
-                                {expandedCard === 'ceo' ? 'Founder & CEO (Director of TDCS)' : 'Founder & CEO'}
-                            </p>
-                            
-                            {/* NEW: Animate description visibility */}
-                            <AnimatePresence>
-                                {expandedCard === 'ceo' && (
-                                    <motion.p
-                                        className="text-sm font-semibold opacity-80 z-10 relative mb-6"
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0, transition: { duration: 0.3 } }}
-                                        exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
-                                    >
-                                        Visionary leader driving future talent.
-                                    </motion.p>
-                                )}
-                            </AnimatePresence>
+                                <h3 className="text-3xl font-extrabold mb-2 z-10 relative">Dibyajit Ghosh</h3>
+                                <p className={`text-lg z-10 relative transition-all ${expandedCard === 'ceo' ? 'mb-4' : 'mb-8'}`}>
+                                    {expandedCard === 'ceo' ? '**Founder & CEO (Director of TDCS)**' : 'Founder & CEO'}
+                                </p>
+                                
+                                {/* NEW: Animate description visibility */}
+                                <AnimatePresence>
+                                    {expandedCard === 'ceo' && (
+                                        <motion.div
+                                            className="text-sm font-semibold opacity-80 z-10 relative space-y-2"
+                                            initial={{ opacity: 0, y: 10, height: 0 }}
+                                            animate={{ opacity: 1, y: 0, height: 'auto', transition: { duration: 0.3 } }}
+                                            exit={{ opacity: 0, y: -10, height: 0, transition: { duration: 0.2 } }}
+                                        >
+                                            <p>Visionary leader driving future talent.</p>
+                                            <p className="font-normal text-xs italic">Click the card again to collapse.</p>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                                
+                            </div> {/* End padding wrapper */}
                             
                             {/* CEO Image - Larger and positioned for impact */}
                             <motion.img
                                 // Placeholder image for CEO
                                 src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhQ9heh07dWNTxnm6dhyphenhyphen2rzfxjmA_xS3UXPh3sBCY_B2ywNCfyr8QXWKLsur3PJKzLo-pUsoGmIfTmGl8m7cGmUezdk_RvStMnzxjIstX1S-V6gc2PrG8WkudchJv_c0LuVu0xbO7mUnWh5mWZHMe9THz3dwqCLTN0-2bAoI0k_rynUr6vk2xDdSKi0bM-/s539/WhatsApp_Image_2025-10-26_at_15.56.54_d2e7dc94-removebg-preview.png"
                                 alt="Dibyajit Ghosh"
-                                // EDITED: Changed w-40 h-40 md:w-48 md:h-48 to be slightly smaller
                                 className="absolute -right-4 -bottom-3 w-44 h-36 md:w-44 md:h-44 object-cover opacity-80 z-0"
                                 style={{
                                     x: useTransform(x, [-100, 100], [10, -10]),
@@ -516,12 +531,11 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                         {/* 2. COO & CMO Cards (Smaller, Side-by-Side on wide screens, Stacked on mobile) */}
                         <div className="flex flex-col sm:flex-row gap-4 w-full">
                             
-                            {/* COO Card - NOW CLICKABLE */}
+                            {/* COO Card - CORRECTED FOR IMAGE OVERLAP */}
                             <motion.div
                                 ref={cardRefCOO}
-                                // EDITED: Apply cooCardVariants
                                 variants={cooCardVariants}
-                                layout // Add layout for smooth height animation
+                                layout
                                 className="relative p-5 md:p-6 flex-1 min-w-0 rounded-xl shadow-lg text-white overflow-hidden cursor-pointer will-change-transform"
                                 style={{
                                     background: 'linear-gradient(135deg, #059669, #34D399)', // Green gradient
@@ -535,14 +549,25 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 transition={{ type: "spring", stiffness: 100, damping: 10 }}
                             >
                                 <h3 className="text-xl font-bold mb-1 z-10 relative">Shivam Shing</h3>
-                                <p className="text-sm mb-4 z-10 relative">
-                                    {/* NEW: Conditional title */}
-                                    {expandedCard === 'coo' ? 'Chief Operating Officer' : 'COO'}
+                                {/* CRITICAL FIX: Increased bottom margin when not expanded for clear text display */}
+                                <p className={`text-sm z-10 relative transition-all ${expandedCard === 'coo' ? 'mb-4' : 'mb-10'}`}>
+                                    {expandedCard === 'coo' ? '**Chief Operating Officer**' : 'COO'}
                                 </p>
+                                <AnimatePresence>
+                                    {expandedCard === 'coo' && (
+                                        <motion.p
+                                            className="text-xs font-semibold opacity-90 z-10 relative mb-2"
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0, transition: { duration: 0.3 } }}
+                                            exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+                                        >
+                                            Operational Excellence and Logistics.
+                                        </motion.p>
+                                    )}
+                                </AnimatePresence>
                                 <motion.img
                                     src="https://blogger.googleusercontent.com/img/a/AVvXsEgiDtg5YtmQ7bdvNmeAAMyhwpc5tLm_RNR2Lv4y4u6hsMzTiuqNyxo7O0qU32donmMZoTduoxe-4WgWVdPh29JH9vmYXkqCI7hiyzwaYBxxXgTfKbCsjTST6gyIWQB230kRXgwfQvxV-dqB9V-Xqr3915tuA9d88D1rGY-l9sJy_vhC3HJR0pdEI6F3E8Nr"
                                     alt="COO"
-                                    // NEW: Standardized and responsive Tailwind classes
                                     className="absolute -right-4 -bottom-4 w-24 h-24 md:w-28 md:h-28 object-cover opacity-70 z-0"
                                     style={{
                                         x: useTransform(x, [-100, 100], [5, -5]),
@@ -552,12 +577,11 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 />
                             </motion.div>
 
-                            {/* CMO Card - NOW CLICKABLE */}
+                            {/* CMO Card - CORRECTED FOR IMAGE OVERLAP */}
                             <motion.div
                                 ref={cardRefCMO}
-                                // EDITED: Apply cmoCardVariants
                                 variants={cmoCardVariants}
-                                layout // Add layout for smooth height animation
+                                layout
                                 className="relative p-5 md:p-6 flex-1 min-w-0 rounded-xl shadow-lg text-white overflow-hidden cursor-pointer will-change-transform"
                                 style={{
                                     background: 'linear-gradient(135deg, #DC2626, #F87171)', // Red gradient
@@ -571,14 +595,25 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 transition={{ type: "spring", stiffness: 100, damping: 10 }}
                             >
                                 <h3 className="text-xl font-bold mb-1 z-10 relative">Tushar Bhakta</h3>
-                                <p className="text-sm mb-4 z-10 relative">
-                                    {/* NEW: Conditional title */}
-                                    {expandedCard === 'cmo' ? 'Chief Marketing Officer' : 'CMO'}
+                                {/* CRITICAL FIX: Increased bottom margin when not expanded for clear text display */}
+                                <p className={`text-sm z-10 relative transition-all ${expandedCard === 'cmo' ? 'mb-4' : 'mb-10'}`}>
+                                    {expandedCard === 'cmo' ? '**Chief Marketing Officer**' : 'CMO'}
                                 </p>
+                                <AnimatePresence>
+                                    {expandedCard === 'cmo' && (
+                                        <motion.p
+                                            className="text-xs font-semibold opacity-90 z-10 relative mb-2"
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0, transition: { duration: 0.3 } }}
+                                            exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+                                        >
+                                            Strategizing market penetration and brand value.
+                                        </motion.p>
+                                    )}
+                                </AnimatePresence>
                                 <motion.img
                                     src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh68HDmzQ4YTj9g9soRrkq-eHc9cAfbC03ZOXSClA19NofdsJ2lzm2A29d2qxG3xXSUfuEVl-sGEVnkokdgS6snQn86My-Bekn2MLrF135mZPHpwXfsLg1XxhFaClj1Uebgi6IcxeseCR6rvwc3vg6IgYUm8voolffwjQhcY4haMotxomzPVjfJm7ylnHdF/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png"
                                     alt="CMO"
-                                    // NEW: Standardized and responsive Tailwind classes
                                     className="absolute -right-4 -bottom-4 w-24 h-24 md:w-28 md:h-28 object-cover opacity-70 z-0"
                                     style={{
                                         x: useTransform(x, [-100, 100], [5, -5]),
@@ -592,13 +627,13 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                 </motion.div>
             </div>
 
-            {/* NEW: Book Demo Modal */}
+            {/* NEW: Book Demo Modal (UNCHANGED) */}
             <BookDemoModal
                 isOpen={isDemoModalOpen}
                 onClose={() => setIsDemoModalOpen(false)}
             />
 
-            {/* Download Brochure Modal */}
+            {/* Download Brochure Modal (UNCHANGED) */}
             <DownloadBrochureModal
                 isOpen={isBrochureModalOpen}
                 onClose={() => setIsBrochureModalOpen(false)}
