@@ -8,9 +8,6 @@ import type { RefObject } from "react";
 import { CalendarCheck } from "lucide-react"; // NEW: Import for Book Demo Modal
 
 // 1. CONSTANT FOR GRADIENT
-// NOTE: I've updated the headline below to apply the gradient class to all words, 
-// matching the company name. The original code only applied it to 'Training' and 'career', 
-// which weren't in the new headline.
 const GRADIENT_CLASS = "text-transparent bg-clip-text bg-gradient-to-r from-[#FF9A3C] via-[#FF50B3] to-[#8C53FF]";
 
 interface HeroProps {
@@ -346,14 +343,8 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         y.set(offsetY * 0.2);
     };
     
-    // **NEW: CEO Card size on expansion**
-    const ceoCardStyle = {
-        padding: expandedCard === 'ceo' ? '3rem' : '2.5rem', // Increase padding to make it visually bigger
-        width: '100%',
-        minHeight: expandedCard === 'ceo' ? '350px' : '250px', // Explicitly control height
-        transition: 'all 0.4s ease-out'
-    };
-
+    // **CEO Card size reverted to normal - NO CONDITIONAL STYLES HERE**
+    
     return (
         <section ref={heroRef} className="relative min-h-[90vh] flex items-center pt-24 pb-16 md:pt-32 lg:pt-40 bg-white dark:bg-gray-900 overflow-hidden">
             {/* ALERT PLACEHOLDER: Used by the integrated DownloadBrochureModal and BookDemoModal for success messages */}
@@ -401,7 +392,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             animate={isInView ? "visible" : "hidden"}
                             className="text-4xl md:text-6xl font-extrabold leading-tight text-gray-900 dark:text-white"
                         >
-                            {/* 3. Word-by-Word Headline Animation - CORRECTED GRADIENT APPLICATION */}
+                            {/* 3. Word-by-Word Headline Animation - Applying Gradient to Company Name */}
                             {words.map((word, index) => (
                                 <motion.span key={index} variants={wordItemVariants} className="inline-block mr-2" style={{ perspective: 1000 }}>
                                     {/* Apply gradient to the entire company name */}
@@ -461,58 +452,52 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                     {/* Right Column: Tiered Leadership Cards */}
                     <div className="lg:col-span-1 space-y-4 flex flex-col items-center lg:items-end">
                         
-                        {/* 1. CEO Card (Larger, Blue Gradient, Centered on mobile) - CORRECTED FOR EXPANSION */}
+                        {/* 1. CEO Card (Reverted to original fixed size) */}
                         <motion.div
                             ref={cardRefCEO}
                             variants={ceoCardVariants}
                             layout
-                            // **CRITICAL CHANGE: Use style prop for dynamic size control**
+                            className="relative p-8 md:p-10 w-full rounded-2xl shadow-2xl text-white overflow-hidden cursor-pointer will-change-transform"
                             style={{
                                 background: 'linear-gradient(135deg, #1D4ED8, #3B82F6)', // Strong blue gradient
                                 rotateX,
                                 rotateY,
-                                transformStyle: "preserve-3d",
-                                ...ceoCardStyle // Apply dynamic size
+                                transformStyle: "preserve-3d"
                             }}
-                            className="relative w-full rounded-2xl shadow-2xl text-white overflow-hidden cursor-pointer will-change-transform" // <-- Removed padding here
                             onMouseMove={(e) => handleMouseMove(e, cardRefCEO)}
                             onMouseLeave={() => { x.set(0); y.set(0); }}
                             onClick={() => setExpandedCard(expandedCard === 'ceo' ? null : 'ceo')} // Toggle expand
                             transition={{ type: "spring", stiffness: 100, damping: 10 }}
                         >
-                            <div className="p-8 md:p-10"> {/* Add padding wrapper inside motion.div */}
-                                {/* --- NEW: Glass Sweep Overlay --- */}
-                                {/* This needs to be repositioned relative to the inner content if using padding wrapper */}
-                                <motion.div
-                                    className="absolute inset-0 w-full h-full z-5"
-                                    style={{
-                                        background: "linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%)",
-                                    }}
-                                    variants={sweepVariants}
-                                />
-                                {/* ---------------------------------- */}
+                            {/* --- NEW: Glass Sweep Overlay --- */}
+                            <motion.div
+                                className="absolute inset-0 w-full h-full z-5"
+                                style={{
+                                    background: "linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%)",
+                                }}
+                                variants={sweepVariants}
+                            />
+                            {/* ---------------------------------- */}
 
-                                <h3 className="text-3xl font-extrabold mb-2 z-10 relative">Dibyajit Ghosh</h3>
-                                <p className={`text-lg z-10 relative transition-all ${expandedCard === 'ceo' ? 'mb-4' : 'mb-8'}`}>
-                                    {expandedCard === 'ceo' ? '**Founder & CEO (Director of TDCS)**' : 'Founder & CEO'}
-                                </p>
-                                
-                                {/* NEW: Animate description visibility */}
-                                <AnimatePresence>
-                                    {expandedCard === 'ceo' && (
-                                        <motion.div
-                                            className="text-sm font-semibold opacity-80 z-10 relative space-y-2"
-                                            initial={{ opacity: 0, y: 10, height: 0 }}
-                                            animate={{ opacity: 1, y: 0, height: 'auto', transition: { duration: 0.3 } }}
-                                            exit={{ opacity: 0, y: -10, height: 0, transition: { duration: 0.2 } }}
-                                        >
-                                            <p>Visionary leader driving future talent.</p>
-                                            <p className="font-normal text-xs italic">Click the card again to collapse.</p>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                                
-                            </div> {/* End padding wrapper */}
+                            <h3 className="text-3xl font-extrabold mb-2 z-10 relative">Dibyajit Ghosh</h3>
+                            <p className={`text-lg z-10 relative transition-all ${expandedCard === 'ceo' ? 'mb-4' : 'mb-6'}`}>
+                                {expandedCard === 'ceo' ? '**Founder & CEO (Director of TDCS)**' : 'Founder & CEO'}
+                            </p>
+                            
+                            {/* NEW: Animate description visibility */}
+                            <AnimatePresence>
+                                {expandedCard === 'ceo' && (
+                                    <motion.div
+                                        className="text-sm font-semibold opacity-80 z-10 relative space-y-2"
+                                        initial={{ opacity: 0, y: 10, height: 0 }}
+                                        animate={{ opacity: 1, y: 0, height: 'auto', transition: { duration: 0.3 } }}
+                                        exit={{ opacity: 0, y: -10, height: 0, transition: { duration: 0.2 } }}
+                                    >
+                                        <p>Visionary leader driving future talent.</p>
+                                        <p className="font-normal text-xs italic">Click the card again to collapse.</p>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                             
                             {/* CEO Image - Larger and positioned for impact */}
                             <motion.img
@@ -531,7 +516,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                         {/* 2. COO & CMO Cards (Smaller, Side-by-Side on wide screens, Stacked on mobile) */}
                         <div className="flex flex-col sm:flex-row gap-4 w-full">
                             
-                            {/* COO Card - CORRECTED FOR IMAGE OVERLAP */}
+                            {/* COO Card - FIX: Corrected for Image Overlap */}
                             <motion.div
                                 ref={cardRefCOO}
                                 variants={cooCardVariants}
@@ -577,7 +562,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 />
                             </motion.div>
 
-                            {/* CMO Card - CORRECTED FOR IMAGE OVERLAP */}
+                            {/* CMO Card - FIX: Corrected for Image Overlap */}
                             <motion.div
                                 ref={cardRefCMO}
                                 variants={cmoCardVariants}
