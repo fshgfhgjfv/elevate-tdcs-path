@@ -6,65 +6,83 @@
     <title>TDCS Technologies Private Limited</title>
     <meta name="description" content="Get job-ready with TDCS expert-led courses in cybersecurity, software development, and data analytics. 35k+ students placed.">
     <meta name="author" content="TDCS Technologies Private Limited" />
+    
     <style>
-      /* Hide the custom cursor by default */
+      /* Base Body Style */
+      body {
+        background-color: #f0f2f5;
+        min-height: 100vh;
+        margin: 0;
+        /* Prevent horizontal scroll if cursor goes slightly off-edge */
+        overflow-x: hidden; 
+      }
+
+      /* Default: Hide custom cursor */
       #main-cursor-dot {
         display: none; 
       }
 
-      /* --- UPDATE: Only apply custom cursor styles if motion is preferred AND it's a mouse/trackpad device --- */
+      /* --- OPTIMIZED CSS --- */
+      /* Only activate if motion is allowed and pointer is fine (mouse) */
       @media (prefers-reduced-motion: no-preference) and (pointer: fine) {
         body {
-          cursor: none; /* Hide the system cursor */
+          cursor: none; /* Hide system cursor */
         }
       
         #main-cursor-dot {
-          display: block; /* Show the custom cursor dot */
+          display: block;
           position: fixed;
+          top: 0;
+          left: 0;
           width: 10px;
           height: 10px;
           background-color: rgba(0, 150, 255, 0.8);
           border-radius: 50%;
-          pointer-events: none;
+          pointer-events: none; /* Crucial: allows clicking through the dot */
           z-index: 10000;
-          transform: translate(-50%, -50%);
-          transition: transform 0.1s ease-out, width 0.1s ease-out, height 0.1s ease-out;
+          
+          /* Optimization: Use transform for movement, center dot using margin */
+          margin-top: -5px; 
+          margin-left: -5px;
+          
+          /* Performance hints */
+          will-change: transform; 
+          transition: width 0.2s ease-out, height 0.2s ease-out, background-color 0.2s;
+        }
+
+        #main-cursor-dot.hover {
+          width: 20px;
+          height: 20px;
+          margin-top: -10px; /* Adjust centering for new size */
+          margin-left: -10px;
+          background-color: rgba(0, 200, 255, 0.5);
+          backdrop-filter: blur(2px);
         }
       }
 
-      /* Trail dots are only created by the script, so they only appear if the script runs */
+      /* Trail Dot Styling */
       .cursor-trail-dot {
         position: fixed;
+        top: 0;
+        left: 0;
         background-color: rgba(0, 180, 255, 0.5);
         border-radius: 50%;
         pointer-events: none;
         z-index: 9999;
         opacity: 0;
-        transform: translate(-50%, -50%) scale(0.5);
-        animation: fadeOutTrail 1s forwards ease-out;
-      }
-
-      #main-cursor-dot.hover {
-        width: 15px;
-        height: 15px;
-        background-color: rgba(0, 200, 255, 0.9);
+        will-change: transform, opacity;
+        animation: fadeOutTrail 0.8s forwards ease-out;
       }
 
       @keyframes fadeOutTrail {
         0% {
-          opacity: 1;
-          transform: translate(-50%, -50%) scale(1);
+          opacity: 0.8;
+          transform: translate3d(var(--tx), var(--ty), 0) scale(1);
         }
         100% {
           opacity: 0;
-          transform: translate(-50%, -50%) scale(0.1);
+          transform: translate3d(var(--tx), var(--ty), 0) scale(0);
         }
-      }
-
-      body {
-        background-color: #f0f2f5;
-        min-height: 100vh;
-        margin: 0;
       }
     </style>
   </head>
@@ -73,73 +91,101 @@
     <div id="main-cursor-dot"></div>
     <div id="root"></div>
 
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
     <script type="module" src="/src/main.tsx"></script>
 
     <script>
-      // --- UPDATE: Check for reduced motion AND fine pointer (mouse/trackpad) ---
-      const motionQuery = window.matchMedia("(prefers-reduced-motion: no-preference)");
-      const pointerQuery = window.matchMedia("(pointer: fine)");
-      
-      const mainCursorDot = document.getElementById("main-cursor-dot");
-      let mouseX = 0, mouseY = 0;
-      let targetX = 0, targetY = 0;
-      const trailSpawnInterval = 50; 
-      let lastTrailSpawnTime = 0;
+      (function() {
+        // 1. Feature Detection
+        const motionQuery = window.matchMedia("(prefers-reduced-motion: no-preference)");
+        const pointerQuery = window.matchMedia("(pointer: fine)");
+        const mainCursorDot = document.getElementById("main-cursor-dot");
 
-      // --- UPDATE: Only run the script if the user wants motion AND has a mouse/trackpad ---
-      if (mainCursorDot && motionQuery.matches && pointerQuery.matches) {
+        // Only run if elements exist and conditions are met
+        if (!mainCursorDot || !motionQuery.matches || !pointerQuery.matches) return;
+
+        // 2. Variables
+        let mouse = { x: 0, y: 0 };
+        let cursor = { x: 0, y: 0 };
+        const speed = 0.15; // 0.1 to 1.0 (lower is smoother/slower)
         
-        // Update mouse position
+        // Trail Config
+        let lastTrailTime = 0;
+        const trailInterval = 40; // ms between trail dots
+
+        // 3. Event Listeners (Lightweight)
         window.addEventListener("mousemove", (e) => {
-          mouseX = e.clientX;
-          mouseY = e.clientY;
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+        }, { passive: true }); // passive improves scroll performance
 
-          const now = Date.now();
-          if (now - lastTrailSpawnTime > trailSpawnInterval) {
-            createTrailDot(mouseX, mouseY);
-            lastTrailSpawnTime = now;
-          }
-        });
-
-        // Smoothly follow mouse
-        function animateMainCursor() {
-          targetX += (mouseX - targetX) * 0.15;
-          targetY += (mouseY - targetY) * 0.15;
-          mainCursorDot.style.left = `${targetX}px`;
-          mainCursorDot.style.top = `${targetY}px`;
-          requestAnimationFrame(animateMainCursor);
-        }
-        animateMainCursor(); // Start the animation loop
-
-        function createTrailDot(x, y) {
-          const trailDot = document.createElement("div");
-          trailDot.classList.add("cursor-trail-dot");
-          trailDot.style.left = `${x}px`;
-          trailDot.style.top = `${y}px`;
-          const size = Math.random() * 8 + 4;
-          trailDot.style.width = `${size}px`;
-          trailDot.style.height = `${size}px`;
-          document.body.appendChild(trailDot);
-
-          trailDot.addEventListener("animationend", () => {
-            trailDot.remove();
-          });
-        }
-
-        // Add hover effect for clickable elements
+        // Hover Effects
+        const hoverSelectors = "a, button, input, textarea, .hoverable, [role='button']";
+        
         document.addEventListener("mouseover", (e) => {
-          if (e.target.closest("a, button, .hoverable")) {
+          if (e.target.closest(hoverSelectors)) {
             mainCursorDot.classList.add("hover");
           }
-        });
+        }, { passive: true });
 
         document.addEventListener("mouseout", (e) => {
-          if (e.target.closest("a, button, .hoverable")) {
+          if (e.target.closest(hoverSelectors)) {
             mainCursorDot.classList.remove("hover");
           }
-        });
-      }
+        }, { passive: true });
+
+        // 4. The Animation Loop
+        function animate() {
+          // Linear Interpolation (Lerp) for smooth following
+          cursor.x += (mouse.x - cursor.x) * speed;
+          cursor.y += (mouse.y - cursor.y) * speed;
+
+          // OPTIMIZATION: Use translate3d for GPU acceleration
+          mainCursorDot.style.transform = `translate3d(${cursor.x}px, ${cursor.y}px, 0)`;
+
+          // Trail Logic
+          const now = Date.now();
+          if (now - lastTrailTime > trailInterval) {
+            // Only spawn trail if mouse has actually moved significantly
+            const dist = Math.hypot(mouse.x - cursor.x, mouse.y - cursor.y);
+            if (dist > 1) { 
+              createTrailDot(cursor.x, cursor.y);
+              lastTrailTime = now;
+            }
+          }
+
+          requestAnimationFrame(animate);
+        }
+
+        // 5. Trail Creation (DOM Manipulation)
+        function createTrailDot(x, y) {
+          const dot = document.createElement("div");
+          dot.classList.add("cursor-trail-dot");
+          
+          // Randomize size slightly
+          const size = Math.random() * 6 + 4; 
+          dot.style.width = `${size}px`;
+          dot.style.height = `${size}px`;
+          
+          // Center the dot based on size
+          const offset = size / 2;
+          
+          // Pass coordinates to CSS variable to handle the static position in animation
+          // This avoids writing top/left which causes reflow
+          dot.style.setProperty('--tx', `${x - offset}px`);
+          dot.style.setProperty('--ty', `${y - offset}px`);
+
+          document.body.appendChild(dot);
+
+          // Cleanup
+          dot.addEventListener("animationend", () => {
+            dot.remove();
+          }, { once: true });
+        }
+
+        // Start Loop
+        animate();
+      })();
     </script>
   </body>
 </html>
