@@ -229,8 +229,8 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
     const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
     const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
     
-    // NEW: State to track which card is expanded
-    const [expandedCard, setExpandedCard] = useState<string | null>(null);
+    // **MODIFIED:** State to track which card is hovered for detail expansion
+    const [hoveredCard, setHoveredCard] = useState<string | null>(null);
     const heroRef = useRef(null);
     // Use useInView to trigger animations when the component scrolls into view
     const isInView = useInView(heroRef, { once: true, amount: 0.1 });
@@ -450,7 +450,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                     {/* Right Column: Tiered Leadership Cards */}
                     <div className="lg:col-span-1 space-y-4 flex flex-col items-center lg:items-end">
                         
-                        {/* 1. CEO Card - FIX: Content wrapped in z-20 div */}
+                        {/* 1. CEO Card - NOW HOVER-BASED */}
                         <motion.div
                             ref={cardRefCEO}
                             variants={ceoCardVariants}
@@ -463,8 +463,8 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 transformStyle: "preserve-3d"
                             }}
                             onMouseMove={(e) => handleMouseMove(e, cardRefCEO)}
-                            onMouseLeave={() => { x.set(0); y.set(0); }}
-                            onClick={() => setExpandedCard(expandedCard === 'ceo' ? null : 'ceo')} // Toggle expand
+                            onMouseLeave={() => { x.set(0); y.set(0); setHoveredCard(null); }} // <-- SET HOVER NULL
+                            onMouseEnter={() => setHoveredCard('ceo')} // <-- SET HOVER TRUE
                             transition={{ type: "spring", stiffness: 100, damping: 10 }}
                         >
                             
@@ -480,14 +480,15 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             
                             {/* CRITICAL FIX: Text wrapper with high z-index (z-20) */}
                             <div className="relative z-20">
-                                <h3 className="text-3xl font-extrabold mb-2">Dibyajit Ghosh</h3>
-                                <p className={`text-lg transition-all ${expandedCard === 'ceo' ? 'mb-4' : 'mb-6'}`}>
-                                    {expandedCard === 'ceo' ? '**Founder & CEO (Director of TDCS)**' : 'Founder & CEO'}
+                                {/* FIX: Text size reduced from text-3xl to text-2xl */}
+                                <h3 className="text-2xl font-extrabold mb-2">Dibyajit Ghosh</h3> 
+                                <p className={`text-lg transition-all ${hoveredCard === 'ceo' ? 'mb-4' : 'mb-6'}`}>
+                                    {hoveredCard === 'ceo' ? '**Founder & CEO (Director of TDCS)**' : 'Founder & CEO'}
                                 </p>
                                 
                                 {/* NEW: Animate description visibility */}
                                 <AnimatePresence>
-                                    {expandedCard === 'ceo' && (
+                                    {hoveredCard === 'ceo' && (
                                         <motion.div
                                             className="text-sm font-semibold opacity-80 space-y-2"
                                             initial={{ opacity: 0, y: 10, height: 0 }}
@@ -495,7 +496,6 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                             exit={{ opacity: 0, y: -10, height: 0, transition: { duration: 0.2 } }}
                                         >
                                             <p>Visionary leader driving future talent.</p>
-                                            <p className="font-normal text-xs italic">Click the card again to collapse.</p>
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
@@ -518,7 +518,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                         {/* 2. COO & CMO Cards (Smaller, Side-by-Side on wide screens, Stacked on mobile) */}
                         <div className="flex flex-col sm:flex-row gap-4 w-full">
                             
-                            {/* COO Card - FIX: Text z-index increased */}
+                            {/* COO Card - NOW HOVER-BASED */}
                             <motion.div
                                 ref={cardRefCOO}
                                 variants={cooCardVariants}
@@ -531,17 +531,17 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                     transformStyle: "preserve-3d"
                                 }}
                                 onMouseMove={(e) => handleMouseMove(e, cardRefCOO)}
-                                onMouseLeave={() => { x.set(0); y.set(0); }}
-                                onClick={() => setExpandedCard(expandedCard === 'coo' ? null : 'coo')} // Toggle expand
+                                onMouseLeave={() => { x.set(0); y.set(0); setHoveredCard(null); }} // <-- SET HOVER NULL
+                                onMouseEnter={() => setHoveredCard('coo')} // <-- SET HOVER TRUE
                                 transition={{ type: "spring", stiffness: 100, damping: 10 }}
                             >
                                 <h3 className="text-xl font-bold mb-1 relative z-20">Shivam Shing</h3>
-                                {/* CRITICAL FIX: Increased bottom margin when not expanded for clear text display & z-index to 20 */}
-                                <p className={`text-sm relative z-20 transition-all ${expandedCard === 'coo' ? 'mb-4' : 'mb-10'}`}>
-                                    {expandedCard === 'coo' ? '**Chief Operating Officer**' : 'COO'}
+                                {/* CRITICAL FIX: Bottom margin adjusted for hover state for smooth layout shift */}
+                                <p className={`text-sm relative z-20 transition-all ${hoveredCard === 'coo' ? 'mb-4' : 'mb-10'}`}>
+                                    {hoveredCard === 'coo' ? '**Chief Operating Officer**' : 'COO'}
                                 </p>
                                 <AnimatePresence>
-                                    {expandedCard === 'coo' && (
+                                    {hoveredCard === 'coo' && (
                                         <motion.p
                                             className="text-xs font-semibold opacity-90 relative z-20 mb-2"
                                             initial={{ opacity: 0, y: 10 }}
@@ -564,7 +564,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 />
                             </motion.div>
 
-                            {/* CMO Card - FIX: Text z-index increased */}
+                            {/* CMO Card - NOW HOVER-BASED */}
                             <motion.div
                                 ref={cardRefCMO}
                                 variants={cmoCardVariants}
@@ -577,17 +577,17 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                     transformStyle: "preserve-3d"
                                 }}
                                 onMouseMove={(e) => handleMouseMove(e, cardRefCMO)}
-                                onMouseLeave={() => { x.set(0); y.set(0); }}
-                                onClick={() => setExpandedCard(expandedCard === 'cmo' ? null : 'cmo')} // Toggle expand
+                                onMouseLeave={() => { x.set(0); y.set(0); setHoveredCard(null); }} // <-- SET HOVER NULL
+                                onMouseEnter={() => setHoveredCard('cmo')} // <-- SET HOVER TRUE
                                 transition={{ type: "spring", stiffness: 100, damping: 10 }}
                             >
                                 <h3 className="text-xl font-bold mb-1 relative z-20">Tushar Bhakta</h3>
-                                {/* CRITICAL FIX: Increased bottom margin when not expanded for clear text display & z-index to 20 */}
-                                <p className={`text-sm relative z-20 transition-all ${expandedCard === 'cmo' ? 'mb-4' : 'mb-10'}`}>
-                                    {expandedCard === 'cmo' ? '**Chief Marketing Officer**' : 'CMO'}
+                                {/* CRITICAL FIX: Bottom margin adjusted for hover state for smooth layout shift */}
+                                <p className={`text-sm relative z-20 transition-all ${hoveredCard === 'cmo' ? 'mb-4' : 'mb-10'}`}>
+                                    {hoveredCard === 'cmo' ? '**Chief Marketing Officer**' : 'CMO'}
                                 </p>
                                 <AnimatePresence>
-                                    {expandedCard === 'cmo' && (
+                                    {hoveredCard === 'cmo' && (
                                         <motion.p
                                             className="text-xs font-semibold opacity-90 relative z-20 mb-2"
                                             initial={{ opacity: 0, y: 10 }}
