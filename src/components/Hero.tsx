@@ -416,7 +416,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                         </motion.h1>
 
                         <motion.p variants={itemVariants} className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-xl">
-                            Get job-ready with expert-led courses or participate in our free hiring drives.
+                            As an ISO and MSME certified leader in cybersecurity, we offer expert online training to equip you with the skills to confidently navigate the digital world. Our expertly designed courses will empower you to stay ahead of evolving cyber threats.
                         </motion.p>
                         
                         {/* BUTTONS SECTION (UNCHANGED) */}
