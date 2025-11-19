@@ -12,8 +12,6 @@ const skills = [
   { name: "Aircrack-ng", img: "https://upload.wikimedia.org/wikipedia/commons/9/98/Aircrack-ng-logo.png" },
   { name: "Hydra", img: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Hydra-logo.png" },
 ];
-
-
   
 
 const careers = [
