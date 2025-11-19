@@ -10,7 +10,6 @@ import { useState } from "react";
 // ---
 // --- 1. SETTINGS & DATA ---
 // ---
-// NOTE: Replace this with the Advocate's actual booking link when available
 const CALENDLY_LINK = "https://calendly.com/advocate-majumder/30min"; 
 
 // --- Animation Variants ---
@@ -30,52 +29,39 @@ const contentVariants = {
   open: { opacity: 1, height: "auto", marginTop: "1rem" },
 };
 
-// --- Practice Areas Data (Updated with Images) ---
+// --- Practice Areas Data ---
 const practiceAreas = [
   {
     title: "Civil Law",
-    // High-quality legal library/books image
     image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=800",
     preview: "Comprehensive support for property disputes, contract breaches, and inheritance matters.",
     details: "Our full-service civil law practice provides comprehensive litigation support and advisory services. We are dedicated to protecting your rights and assets through meticulous case preparation and strong courtroom representation in all matters of property, contracts, and inheritance.",
   },
   {
     title: "Criminal Law",
-    // Courtroom gavel image
     image: "https://images.unsplash.com/photo-1593115057322-e94b77572f20?auto=format&fit=crop&q=80&w=800",
     preview: "Strategic and ethical criminal defense for a wide range of cases, from bail to trial.",
     details: "We offer a robust defense for all criminal charges. Our approach is focused on ensuring a fair legal process, protecting your constitutional rights, and achieving the best possible outcome, whether that's a favorable plea, a dismissal, or a not-guilty verdict at trial.",
   },
   {
     title: "Legal Consultation",
-    // Professional meeting/consultation image
     image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=800",
     preview: "Expert legal advice tailored to your specific situation to help you understand your options.",
     details: "Get expert legal advice tailored to your specific situation. We help you understand complex legal issues, explore your options, and make informed decisions. Our consultations cover all our practice areas and are available online or in-person.",
   },
   {
     title: "Arbitration",
-    // Handshake/Agreement image
     image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&q=80&w=800",
     preview: "A faster, more efficient alternative to traditional court proceedings for resolving disputes.",
     details: "As a faster alternative to traditional court proceedings, we offer expert arbitration and mediation services. We help resolve commercial and civil disputes efficiently, saving you time and money while working towards an amicable, binding solution.",
   },
 ];
 
-// --- Featured Videos Data (Updated with REAL Indian Law Videos) ---
+// --- Featured Videos Data ---
 const featuredVideos = [
-  { 
-    id: "YiYEtB3_Sv4", 
-    title: "Stages of a Civil Suit in India" 
-  },
-  { 
-    id: "v9mR1DgEApE", 
-    title: "India's New Criminal Laws Explained" 
-  },
-  { 
-    id: "YLgm_Lv-w1A", 
-    title: "The Arbitration Process in India" 
-  },
+  { id: "YiYEtB3_Sv4", title: "Stages of a Civil Suit in India" },
+  { id: "v9mR1DgEApE", title: "India's New Criminal Laws Explained" },
+  { id: "YLgm_Lv-w1A", title: "The Arbitration Process in India" },
 ];
 
 // --- FAQ Data ---
@@ -94,24 +80,53 @@ const faqs = [
   },
 ];
 
-// --- Testimonials Data ---
+// --- Testimonials Data (Expanded) ---
 const testimonials = [
   {
     name: "Rahul Mehta",
-    feedback:
-      "Advocate Majumder was incredibly professional and guided me through a difficult civil case with clarity and confidence. Highly recommended!",
+    feedback: "Advocate Majumder was incredibly professional and guided me through a difficult civil case with clarity.",
+    role: "Civil Litigation",
   },
   {
     name: "Priya Singh",
-    feedback:
-      "Her attention to detail and ethical practice truly stood out. I felt supported and informed throughout my case.",
+    feedback: "Her attention to detail and ethical practice truly stood out. I felt supported and informed throughout my case.",
+    role: "Family Dispute",
   },
   {
     name: "Amit Verma",
-    feedback:
-      "Expert advice and a personal touch — she helped me resolve a long-standing legal issue smoothly.",
+    feedback: "Expert advice and a personal touch — she helped me resolve a long-standing legal issue smoothly.",
+    role: "Property Law",
+  },
+  {
+    name: "Sneha Reddy",
+    feedback: "We needed swift arbitration for a corporate dispute, and her strategy was flawless. Highly recommended.",
+    role: "Corporate Arbitration",
+  },
+  {
+    name: "Vikram Malhotra",
+    feedback: "She saved my ancestral land from illegal possession. Her knowledge of land laws in West Bengal is unmatched.",
+    role: "Real Estate",
+  },
+  {
+    name: "Dr. Anjali Gupta",
+    feedback: "Compassionate yet fierce. She handled my custody case with the sensitivity it required while being tough in court.",
+    role: "Family Law",
+  },
+  {
+    name: "Michael D'Souza",
+    feedback: "Review of our international contracts was spotless. She spotted risks we would have completely missed.",
+    role: "Contract Law",
+  },
+  {
+    name: "Rajesh K.",
+    feedback: "I won my case against a big builder thanks to her. She doesn't back down from a fight.",
+    role: "Consumer Court",
   },
 ];
+
+// Split testimonials into two rows for the marquee effect
+const firstRow = testimonials.slice(0, testimonials.length / 2);
+const secondRow = testimonials.slice(testimonials.length / 2);
 
 // ---
 // --- 2. THE MAIN PAGE COMPONENT ---
@@ -161,7 +176,6 @@ const AdvocateProfilePage = () => {
               variants={itemVariants}
               className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-white shadow-2xl"
             >
-              {/* Profile Placeholder Image */}
               <img 
                 src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=400" 
                 alt="Advocate Profile" 
@@ -222,7 +236,7 @@ const AdvocateProfilePage = () => {
             </Card>
           </motion.div>
 
-          {/* --- Practice Areas Section (Updated with Images) --- */}
+          {/* --- Practice Areas Section --- */}
           <motion.h3
             variants={itemVariants}
             className="text-4xl font-bold text-center text-slate-900 mb-16 font-serif"
@@ -244,12 +258,7 @@ const AdvocateProfilePage = () => {
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ type: "spring", stiffness: 50 }}
                 >
-                  {/* Image Part (Replaces Icon) */}
-                  <div
-                    className={`w-full md:w-1/2 ${
-                      isEven ? "md:order-1" : "md:order-2"
-                    }`}
-                  >
+                  <div className={`w-full md:w-1/2 ${isEven ? "md:order-1" : "md:order-2"}`}>
                     <div className="relative group overflow-hidden rounded-2xl shadow-2xl h-64 md:h-80 w-full">
                       <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all duration-500 z-10" />
                       <img 
@@ -260,16 +269,8 @@ const AdvocateProfilePage = () => {
                     </div>
                   </div>
 
-                  {/* Content Part */}
-                  <div
-                    className={`w-full md:w-1/2 ${
-                      isEven ? "md:order-2" : "md:order-1"
-                    }`}
-                  >
-                    <div
-                      className="cursor-pointer group"
-                      onClick={() => toggleArea(index)}
-                    >
+                  <div className={`w-full md:w-1/2 ${isEven ? "md:order-2" : "md:order-1"}`}>
+                    <div className="cursor-pointer group" onClick={() => toggleArea(index)}>
                       <div className="flex items-center justify-between mb-4">
                         <h4 className="text-3xl font-bold text-slate-900 group-hover:text-slate-700 transition-colors">
                           {area.title}
@@ -282,12 +283,8 @@ const AdvocateProfilePage = () => {
                           <ChevronDown className="w-6 h-6 text-slate-600" />
                         </motion.div>
                       </div>
-                      
-                      <p className="text-xl text-slate-600 mb-4">
-                        {area.preview}
-                      </p>
+                      <p className="text-xl text-slate-600 mb-4">{area.preview}</p>
                     </div>
-
                     <AnimatePresence initial={false}>
                       {isOpen && (
                         <motion.div
@@ -299,9 +296,7 @@ const AdvocateProfilePage = () => {
                           transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         >
                           <div className="h-[1px] w-full bg-slate-200 my-4" />
-                          <p className="text-slate-700 text-lg leading-relaxed">
-                            {area.details}
-                          </p>
+                          <p className="text-slate-700 text-lg leading-relaxed">{area.details}</p>
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -311,12 +306,9 @@ const AdvocateProfilePage = () => {
             })}
           </div>
 
-          {/* --- Featured Videos Section (Updated with Real Links) --- */}
+          {/* --- Featured Videos Section --- */}
           <div className="bg-slate-900 -mx-4 md:-mx-20 px-4 md:px-20 py-20 mb-24 rounded-3xl">
-            <motion.h3
-              variants={itemVariants}
-              className="text-3xl font-bold text-center text-white mb-12"
-            >
+            <motion.h3 variants={itemVariants} className="text-3xl font-bold text-center text-white mb-12">
               Legal Insights & Resources
             </motion.h3>
             <div className="grid md:grid-cols-3 gap-8">
@@ -342,7 +334,6 @@ const AdvocateProfilePage = () => {
                       className="w-full h-full flex flex-col items-center justify-center group relative"
                       aria-label={`Play video: ${video.title}`}
                     >
-                      {/* Thumbnail Overlay Effect */}
                       <img 
                         src={`https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`}
                         alt={video.title}
@@ -361,52 +352,58 @@ const AdvocateProfilePage = () => {
             </div>
           </div>
 
-          {/* --- Testimonials --- */}
-          <motion.h3
-            variants={itemVariants}
-            className="text-3xl font-bold text-center text-slate-900 mb-10"
-          >
-            Client Testimonials
-          </motion.h3>
-          <motion.div
-            className="flex overflow-x-auto space-x-6 pb-8 mb-20 scrollbar-hide px-2"
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-          >
-            {testimonials.map((t, i) => (
-              <motion.div
-                key={i}
-                variants={itemVariants}
-                className="min-w-[320px] md:min-w-[400px] bg-white rounded-xl p-8 shadow-lg border border-slate-100"
-              >
-                <div className="flex mb-4">
-                    {[1,2,3,4,5].map(star => (
-                        <span key={star} className="text-yellow-400 text-xl">★</span>
-                    ))}
-                </div>
-                <p className="text-slate-600 italic mb-6 text-lg">“{t.feedback}”</p>
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center font-bold text-slate-500">
-                        {t.name.charAt(0)}
-                    </div>
-                    <p className="font-bold text-slate-900">{t.name}</p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+          {/* --- Infinite Testimonials Marquee --- */}
+          <div className="mb-24 overflow-hidden w-full">
+             <motion.h3
+              variants={itemVariants}
+              className="text-3xl font-bold text-center text-slate-900 mb-12"
+            >
+              Client Testimonials
+            </motion.h3>
+
+            {/* Row 1: Scrolls Right to Left */}
+            <div className="flex mb-6 relative max-w-[100vw] overflow-hidden">
+                <motion.div
+                  className="flex gap-6 min-w-full"
+                  animate={{ x: "-50%" }} 
+                  transition={{
+                    duration: 20, 
+                    repeat: Infinity, 
+                    ease: "linear",
+                  }}
+                >
+                  {/* Duplicate content for seamless loop */}
+                  {[...firstRow, ...firstRow].map((t, i) => (
+                     <TestimonialCard key={`r1-${i}`} testimonial={t} />
+                  ))}
+                </motion.div>
+            </div>
+
+            {/* Row 2: Scrolls Left to Right */}
+            <div className="flex relative max-w-[100vw] overflow-hidden">
+                <motion.div
+                  className="flex gap-6 min-w-full"
+                  initial={{ x: "-50%" }}
+                  animate={{ x: "0%" }} 
+                  transition={{
+                    duration: 20, 
+                    repeat: Infinity, 
+                    ease: "linear",
+                  }}
+                >
+                   {/* Duplicate content for seamless loop */}
+                   {[...secondRow, ...secondRow].map((t, i) => (
+                     <TestimonialCard key={`r2-${i}`} testimonial={t} />
+                  ))}
+                </motion.div>
+            </div>
+          </div>
 
           {/* --- FAQ Section --- */}
-          <motion.h3
-            variants={itemVariants}
-            className="text-3xl font-bold text-center text-slate-900 mb-10"
-          >
+          <motion.h3 variants={itemVariants} className="text-3xl font-bold text-center text-slate-900 mb-10">
             Frequently Asked Questions
           </motion.h3>
-          <motion.div
-            variants={itemVariants}
-            className="max-w-3xl mx-auto mb-24"
-          >
+          <motion.div variants={itemVariants} className="max-w-3xl mx-auto mb-24">
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((f, i) => (
                 <AccordionItem key={i} value={`faq-${i}`} className="border border-slate-200 rounded-lg bg-white px-4 shadow-sm">
@@ -462,5 +459,28 @@ const AdvocateProfilePage = () => {
     </div>
   );
 };
+
+// Helper Component for Testimonials
+const TestimonialCard = ({ testimonial }: { testimonial: any }) => (
+  <div className="min-w-[350px] max-w-[350px] bg-white rounded-xl p-6 shadow-md border border-slate-100 flex flex-col justify-between">
+    <div>
+      <div className="flex mb-3">
+          {[1,2,3,4,5].map(star => (
+              <span key={star} className="text-yellow-400 text-lg">★</span>
+          ))}
+      </div>
+      <p className="text-slate-600 italic mb-4 text-md leading-relaxed">"{testimonial.feedback}"</p>
+    </div>
+    <div className="flex items-center gap-3 pt-4 border-t border-slate-50">
+        <div className="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center font-bold text-white text-sm">
+            {testimonial.name.charAt(0)}
+        </div>
+        <div>
+            <p className="font-bold text-slate-900 text-sm">{testimonial.name}</p>
+            <p className="text-xs text-slate-500 uppercase tracking-wide">{testimonial.role}</p>
+        </div>
+    </div>
+  </div>
+);
 
 export default AdvocateProfilePage;
