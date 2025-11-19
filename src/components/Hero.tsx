@@ -343,8 +343,6 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
         y.set(offsetY * 0.2);
     };
     
-    // **CEO Card size reverted to normal - NO CONDITIONAL STYLES HERE**
-    
     return (
         <section ref={heroRef} className="relative min-h-[90vh] flex items-center pt-24 pb-16 md:pt-32 lg:pt-40 bg-white dark:bg-gray-900 overflow-hidden">
             {/* ALERT PLACEHOLDER: Used by the integrated DownloadBrochureModal and BookDemoModal for success messages */}
@@ -452,7 +450,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                     {/* Right Column: Tiered Leadership Cards */}
                     <div className="lg:col-span-1 space-y-4 flex flex-col items-center lg:items-end">
                         
-                        {/* 1. CEO Card (Reverted to original fixed size) */}
+                        {/* 1. CEO Card - FIX: Content wrapped in z-20 div */}
                         <motion.div
                             ref={cardRefCEO}
                             variants={ceoCardVariants}
@@ -469,7 +467,8 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             onClick={() => setExpandedCard(expandedCard === 'ceo' ? null : 'ceo')} // Toggle expand
                             transition={{ type: "spring", stiffness: 100, damping: 10 }}
                         >
-                            {/* --- NEW: Glass Sweep Overlay --- */}
+                            
+                            {/* --- NEW: Glass Sweep Overlay (z-5) --- */}
                             <motion.div
                                 className="absolute inset-0 w-full h-full z-5"
                                 style={{
@@ -478,28 +477,31 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 variants={sweepVariants}
                             />
                             {/* ---------------------------------- */}
-
-                            <h3 className="text-3xl font-extrabold mb-2 z-10 relative">Dibyajit Ghosh</h3>
-                            <p className={`text-lg z-10 relative transition-all ${expandedCard === 'ceo' ? 'mb-4' : 'mb-6'}`}>
-                                {expandedCard === 'ceo' ? '**Founder & CEO (Director of TDCS)**' : 'Founder & CEO'}
-                            </p>
                             
-                            {/* NEW: Animate description visibility */}
-                            <AnimatePresence>
-                                {expandedCard === 'ceo' && (
-                                    <motion.div
-                                        className="text-sm font-semibold opacity-80 z-10 relative space-y-2"
-                                        initial={{ opacity: 0, y: 10, height: 0 }}
-                                        animate={{ opacity: 1, y: 0, height: 'auto', transition: { duration: 0.3 } }}
-                                        exit={{ opacity: 0, y: -10, height: 0, transition: { duration: 0.2 } }}
-                                    >
-                                        <p>Visionary leader driving future talent.</p>
-                                        <p className="font-normal text-xs italic">Click the card again to collapse.</p>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                            {/* CRITICAL FIX: Text wrapper with high z-index (z-20) */}
+                            <div className="relative z-20">
+                                <h3 className="text-3xl font-extrabold mb-2">Dibyajit Ghosh</h3>
+                                <p className={`text-lg transition-all ${expandedCard === 'ceo' ? 'mb-4' : 'mb-6'}`}>
+                                    {expandedCard === 'ceo' ? '**Founder & CEO (Director of TDCS)**' : 'Founder & CEO'}
+                                </p>
+                                
+                                {/* NEW: Animate description visibility */}
+                                <AnimatePresence>
+                                    {expandedCard === 'ceo' && (
+                                        <motion.div
+                                            className="text-sm font-semibold opacity-80 space-y-2"
+                                            initial={{ opacity: 0, y: 10, height: 0 }}
+                                            animate={{ opacity: 1, y: 0, height: 'auto', transition: { duration: 0.3 } }}
+                                            exit={{ opacity: 0, y: -10, height: 0, transition: { duration: 0.2 } }}
+                                        >
+                                            <p>Visionary leader driving future talent.</p>
+                                            <p className="font-normal text-xs italic">Click the card again to collapse.</p>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
                             
-                            {/* CEO Image - Larger and positioned for impact */}
+                            {/* CEO Image (z-0) */}
                             <motion.img
                                 // Placeholder image for CEO
                                 src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhQ9heh07dWNTxnm6dhyphenhyphen2rzfxjmA_xS3UXPh3sBCY_B2ywNCfyr8QXWKLsur3PJKzLo-pUsoGmIfTmGl8m7cGmUezdk_RvStMnzxjIstX1S-V6gc2PrG8WkudchJv_c0LuVu0xbO7mUnWh5mWZHMe9THz3dwqCLTN0-2bAoI0k_rynUr6vk2xDdSKi0bM-/s539/WhatsApp_Image_2025-10-26_at_15.56.54_d2e7dc94-removebg-preview.png"
@@ -516,7 +518,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                         {/* 2. COO & CMO Cards (Smaller, Side-by-Side on wide screens, Stacked on mobile) */}
                         <div className="flex flex-col sm:flex-row gap-4 w-full">
                             
-                            {/* COO Card - FIX: Corrected for Image Overlap */}
+                            {/* COO Card - FIX: Text z-index increased */}
                             <motion.div
                                 ref={cardRefCOO}
                                 variants={cooCardVariants}
@@ -533,15 +535,15 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 onClick={() => setExpandedCard(expandedCard === 'coo' ? null : 'coo')} // Toggle expand
                                 transition={{ type: "spring", stiffness: 100, damping: 10 }}
                             >
-                                <h3 className="text-xl font-bold mb-1 z-10 relative">Shivam Shing</h3>
-                                {/* CRITICAL FIX: Increased bottom margin when not expanded for clear text display */}
-                                <p className={`text-sm z-10 relative transition-all ${expandedCard === 'coo' ? 'mb-4' : 'mb-10'}`}>
+                                <h3 className="text-xl font-bold mb-1 relative z-20">Shivam Shing</h3>
+                                {/* CRITICAL FIX: Increased bottom margin when not expanded for clear text display & z-index to 20 */}
+                                <p className={`text-sm relative z-20 transition-all ${expandedCard === 'coo' ? 'mb-4' : 'mb-10'}`}>
                                     {expandedCard === 'coo' ? '**Chief Operating Officer**' : 'COO'}
                                 </p>
                                 <AnimatePresence>
                                     {expandedCard === 'coo' && (
                                         <motion.p
-                                            className="text-xs font-semibold opacity-90 z-10 relative mb-2"
+                                            className="text-xs font-semibold opacity-90 relative z-20 mb-2"
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0, transition: { duration: 0.3 } }}
                                             exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
@@ -562,7 +564,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 />
                             </motion.div>
 
-                            {/* CMO Card - FIX: Corrected for Image Overlap */}
+                            {/* CMO Card - FIX: Text z-index increased */}
                             <motion.div
                                 ref={cardRefCMO}
                                 variants={cmoCardVariants}
@@ -579,15 +581,15 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                                 onClick={() => setExpandedCard(expandedCard === 'cmo' ? null : 'cmo')} // Toggle expand
                                 transition={{ type: "spring", stiffness: 100, damping: 10 }}
                             >
-                                <h3 className="text-xl font-bold mb-1 z-10 relative">Tushar Bhakta</h3>
-                                {/* CRITICAL FIX: Increased bottom margin when not expanded for clear text display */}
-                                <p className={`text-sm z-10 relative transition-all ${expandedCard === 'cmo' ? 'mb-4' : 'mb-10'}`}>
+                                <h3 className="text-xl font-bold mb-1 relative z-20">Tushar Bhakta</h3>
+                                {/* CRITICAL FIX: Increased bottom margin when not expanded for clear text display & z-index to 20 */}
+                                <p className={`text-sm relative z-20 transition-all ${expandedCard === 'cmo' ? 'mb-4' : 'mb-10'}`}>
                                     {expandedCard === 'cmo' ? '**Chief Marketing Officer**' : 'CMO'}
                                 </p>
                                 <AnimatePresence>
                                     {expandedCard === 'cmo' && (
                                         <motion.p
-                                            className="text-xs font-semibold opacity-90 z-10 relative mb-2"
+                                            className="text-xs font-semibold opacity-90 relative z-20 mb-2"
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0, transition: { duration: 0.3 } }}
                                             exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
