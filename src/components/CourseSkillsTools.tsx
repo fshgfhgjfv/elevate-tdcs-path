@@ -3,19 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 
 const skills = [
-  { name: "HTML", img: "https://upload.wikimedia.org/wikipedia/commons/6/61/HTML5_logo_and_wordmark.svg" },
-  { name: "CSS", img: "https://upload.wikimedia.org/wikipedia/commons/d/d5/CSS3_logo_and_wordmark.svg" },
-  { name: "JavaScript", img: "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png" },
-  { name: "Node.js", img: "https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg" },
-  { name: "MongoDB", img: "https://upload.wikimedia.org/wikipedia/en/4/45/MongoDB-Logo.svg" },
-  { name: "Express.js", img: "https://upload.wikimedia.org/wikipedia/commons/6/64/Expressjs.png" },
-  { name: "React", img: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" },
-  { name: "Python", img: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" },
-];
-
-// 🔥 UPDATED: HACKING / CYBERSECURITY TOOLS (Live URLs)
-const tools = [
-  { name: "Kali Linux", img: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg" },
+ { name: "Kali Linux", img: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg" },
   { name: "Metasploit", img: "https://upload.wikimedia.org/wikipedia/commons/8/8f/Metasploit_logo_and_wordmark.png" },
   { name: "Burp Suite", img: "https://portswigger.net/content/images/logos/burp-suite.svg" },
   { name: "Wireshark", img: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Wireshark_icon.svg" },
@@ -24,6 +12,9 @@ const tools = [
   { name: "Aircrack-ng", img: "https://upload.wikimedia.org/wikipedia/commons/9/98/Aircrack-ng-logo.png" },
   { name: "Hydra", img: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Hydra-logo.png" },
 ];
+
+
+  
 
 const careers = [
   "Backend Developer",
