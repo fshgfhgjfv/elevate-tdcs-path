@@ -37,9 +37,7 @@ export interface Testimonial {
 // ---------------------
 // 🧰 Tool Model
 // ---------------------
-export interface Tool {
-  name: string;
-  icon: 
+
 }
 
 // ---------------------
