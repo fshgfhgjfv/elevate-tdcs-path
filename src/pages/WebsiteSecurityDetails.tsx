@@ -83,9 +83,9 @@ export default function WebsiteSecurityDetails() {
         <h2 className="text-3xl font-bold text-center">💰 Pricing Plans</h2>
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {[
-            { title: "Basic", price: "$199", features: ["SSL Setup", "Weekly Scan", "Firewall Config"] },
-            { title: "Pro", price: "$299", features: ["24/7 Monitoring", "DDoS Protection", "Monthly Report"] },
-            { title: "Enterprise", price: "$499", features: ["Dedicated Security Expert", "Advanced AI Protection", "Priority Support"] },
+            { title: "Basic", price: "1999", features: ["SSL Setup", "Weekly Scan", "Firewall Config"] },
+            { title: "Pro", price: "2999", features: ["24/7 Monitoring", "DDoS Protection", "Monthly Report"] },
+            { title: "Enterprise", price: "4999", features: ["Dedicated Security Expert", "Advanced AI Protection", "Priority Support"] },
           ].map((plan, i) => (
             <motion.div
               key={plan.title}
