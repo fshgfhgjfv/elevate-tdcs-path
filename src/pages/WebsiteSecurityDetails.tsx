@@ -33,7 +33,7 @@ export default function WebsiteSecurityDetails() {
       >
         <iframe
           className="w-full h-64 md:h-96"
-          src="https://www.youtube.com/embed/2Vv-BfVoq4g"
+          src="https://youtu.be/pZVUjbrSpQ8?si=Ln11VRIZoBJzejEI"
           title="Website Security Demo"
           allowFullScreen
         />
