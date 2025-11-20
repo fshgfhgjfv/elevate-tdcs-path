@@ -37,7 +37,10 @@ export interface Testimonial {
 // ---------------------
 // 🧰 Tool Model
 // ---------------------
-
+export interface Tool {
+  name: string;
+  icon: string; // The URL for the image
+  url: string; // The URL for the tool's main website
 }
 
 // ---------------------
