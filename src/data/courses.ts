@@ -37,10 +37,58 @@ export interface Testimonial {
 // ---------------------
 // 🧰 Tool Model
 // ---------------------
-export interface Tool {
-  name: string;
-  icon: string; // The URL for the image
-  url: string; // The URL for the tool's main website
+export const tools: Tool[] = [
+  {
+    name: "Kali Linux",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
+    url: "https://www.kali.org/",
+  },
+  {
+    name: "Nmap",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Nmap_logo.svg",
+    url: "https://nmap.org/",
+  },
+  {
+    name: "Metasploit",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Metasploit_logo.svg",
+    url: "https://www.rapid7.com/products/metasploit/",
+  },
+  {
+    name: "Burp Suite",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Burp_Suite_logo.png",
+    url: "https://portswigger.net/burp",
+  },
+  {
+    name: "Wireshark",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/8/82/Wireshark_logo.svg",
+    url: "https://www.wireshark.org/",
+  },
+  {
+    name: "Python",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg",
+    url: "https://www.python.org/",
+  },
+  {
+    name: "Linux",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg",
+    url: "https://www.linux.com/",
+  },
+  {
+    name: "Docker",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Docker_%28container_engine%29_logo.svg",
+    url: "https://www.docker.com/",
+  },
+  {
+    name: "Git",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg",
+    url: "https://git-scm.com/",
+  },
+  {
+    name: "SQL",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/8/87/Sql_data_base_with_logo.png",
+    url: "https://en.wikipedia.org/wiki/SQL",
+  },
+];
 }
 
 // ---------------------
