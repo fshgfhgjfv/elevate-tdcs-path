@@ -35,11 +35,12 @@ export interface Testimonial {
 }
 
 // ---------------------
-// 🧰 Tool Model
+// 🧰 Tool Model (Updated)
 // ---------------------
 export interface Tool {
   name: string;
   icon: string; // The URL for the image
+  emoji: string; // ✨ NEW: Emoji representation
   url: string; // The URL for the tool's main website
 }
 
@@ -269,62 +270,73 @@ export const testimonials: Testimonial[] = [
 ];
 
 // ===========================================
-// 🧰 TOOLS
+// 🧰 TOOLS (Updated with Emojis)
 // ===========================================
 export const tools: Tool[] = [
   {
     name: "Kali Linux",
     icon: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
+    emoji: "🐉",
     url: "https://www.kali.org/",
   },
   {
     name: "Nmap",
     icon: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Nmap_logo.svg",
+    emoji: "👁️",
     url: "https://nmap.org/",
   },
   {
     name: "Metasploit",
     icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Metasploit_logo.svg",
+    emoji: "⚔️",
     url: "https://www.rapid7.com/products/metasploit/",
   },
   {
     name: "Burp Suite",
     icon: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Burp_Suite_logo.png",
+    emoji: "🐞",
     url: "https://portswigger.net/burp",
   },
   {
     name: "Wireshark",
     icon: "https://upload.wikimedia.org/wikipedia/commons/8/82/Wireshark_logo.svg",
+    emoji: "🦈",
     url: "https://www.wireshark.org/",
   },
   {
     name: "Python",
     icon: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg",
+    emoji: "🐍",
     url: "https://www.python.org/",
   },
   {
     name: "Linux",
     icon: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg",
+    emoji: "🐧",
     url: "https://www.linux.com/",
   },
   {
     name: "Docker",
     icon: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Docker_%28container_engine%29_logo.svg",
+    emoji: "🐳",
     url: "https://www.docker.com/",
   },
   {
     name: "Git",
     icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg",
+    emoji: "🌿",
     url: "https://git-scm.com/",
   },
   {
     name: "SQL",
     icon: "https://upload.wikimedia.org/wikipedia/commons/8/87/Sql_data_base_with_logo.png",
+    emoji: "🗄️",
     url: "https://en.wikipedia.org/wiki/SQL",
   },
 ];
+
 // ===========================================
-// 💼 HIRING DRIVES
+// 💼 HIRING DRIVES (Fixed URL Typo)
 // ===========================================
 export const hiringDrives: HiringDrive[] = [
   {
@@ -332,7 +344,7 @@ export const hiringDrives: HiringDrive[] = [
     role: "Software Developer",
     salary: "6–10 LPA",
     location: "Bangalore",
-    logo: "httpshttps://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_T4gIa3-huI-PtTmRr95TxKLqS3KBnCtTgw&s",
+    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_T4gIa3-huI-PtTmRr95TxKLqS3KBnCtTgw&s",
     courseId: "cyber-blackhat",
   },
   {
