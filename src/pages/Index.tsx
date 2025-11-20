@@ -9,7 +9,6 @@ import { Users, Book, HardHat, BarChart } from "lucide-react";
 
 // --- Animation Variants ---
 
-// 1. Staggered container for the whole page
 const pageContainerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -20,7 +19,6 @@ const pageContainerVariants: Variants = {
   },
 };
 
-// 2. Variants for items to fade-in and slide-up
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
@@ -30,64 +28,70 @@ const itemVariants: Variants = {
   },
 };
 
-// Mock data for the overview cards
+// Mock data
 const overviewStats = [
   {
     title: "Total Students",
     value: "1,250",
     icon: Users,
     change: "+12%",
+    changeColor: "text-green-500",
   },
   {
     title: "Available Courses",
     value: "48",
     icon: Book,
     change: "+2 new",
+    changeColor: "text-green-500",
   },
   {
     title: "Hardware Kits",
     value: "Coming Soon",
     icon: HardHat,
     change: "4 types",
+    changeColor: "text-orange-500",
   },
   {
     title: "Average Score",
     value: "15.2 pts",
     icon: BarChart,
     change: "-0.5%",
+    changeColor: "text-red-500",
   },
 ];
 
 const Index = () => {
-  // Example: Get the current user's name
-  // In a real app, you'd get this from auth context
   const currentUsername = "Manish Pande";
 
   return (
     <motion.div
-      className="min-h-screen bg-background p-4 md:p-8"
+      // Mobile: p-4, Desktop: p-8. min-h-screen ensures full height.
+      className="min-h-screen bg-background p-4 md:p-8 pb-20" 
       variants={pageContainerVariants}
       initial="hidden"
       animate="visible"
     >
-      <div className="container mx-auto max-w-7xl space-y-8">
+      <div className="container mx-auto max-w-7xl space-y-6 md:space-y-8">
         {/* === Header === */}
-        <motion.div variants={itemVariants}>
-          <h1 className="text-4xl font-bold tracking-tight mb-2">
+        <motion.div variants={itemVariants} className="space-y-2">
+          {/* Mobile: text-2xl, Desktop: text-4xl */}
+          <h1 className="text-2xl md:text-4xl font-bold tracking-tight">
             Welcome back, {currentUsername}!
           </h1>
-          <p className="text-lg text-muted-foreground">
+          {/* Mobile: text-sm, Desktop: text-lg */}
+          <p className="text-sm md:text-lg text-muted-foreground">
             Here's your overview of the platform's activity.
           </p>
         </motion.div>
 
         {/* === Overview Stats Grid === */}
         <motion.div
-          className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
+          // Mobile: 1 col, Tablet (sm): 2 cols, Desktop (lg): 4 cols
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6"
           variants={itemVariants}
         >
           {overviewStats.map((stat) => (
-            <Card key={stat.title}>
+            <Card key={stat.title} className="shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   {stat.title}
@@ -96,20 +100,21 @@ const Index = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground">{stat.change}</p>
+                <p className={`text-xs ${stat.changeColor || "text-muted-foreground"}`}>
+                  {stat.change}
+                </p>
               </CardContent>
             </Card>
           ))}
         </motion.div>
 
-        {/* === Placeholder for additional dashboard sections === */}
+        {/* === Dashboard Placeholder === */}
         <motion.div variants={itemVariants}>
-          <Card>
-            <CardHeader>
-              <CardTitle>Dashboard</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Additional dashboard features will be added here.</p>
+          <Card className="h-64 md:h-96 flex items-center justify-center border-dashed bg-muted/20">
+            <CardContent className="text-center">
+              <p className="text-sm md:text-base text-muted-foreground">
+                Additional dashboard widgets (Charts, Activity Feed) will appear here.
+              </p>
             </CardContent>
           </Card>
         </motion.div>
