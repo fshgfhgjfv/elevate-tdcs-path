@@ -39,8 +39,7 @@ export interface Testimonial {
 // ---------------------
 export interface Tool {
   name: string;
-  icon: string; // The URL for the image
-  url: string; // The URL for the tool's main website
+  icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP_QY0sWuSwxZf2xZ5dfhwLaKXF1AgbNkMVg&s"';
 }
 
 // ---------------------
