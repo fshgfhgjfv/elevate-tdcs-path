@@ -289,7 +289,7 @@ export const tools: Tool[] = [
     name: "Metasploit",
     icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Metasploit_logo.svg",
     emoji: "⚔️",
-    url: "https://www.rapid7.com/products/metasploit/",
+    
   },
   {
     name: "Burp Suite",
