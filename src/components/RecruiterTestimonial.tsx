@@ -39,7 +39,7 @@ const testimonials: Testimonial[] = [
     quoteText: "PayGlocal today has the best engineers on board because of TDCS. The value they add to a student's career and the company's hiring needs is unparalleled. It's become a ritual for us to ping TDCS for new openings.",
     authorName: "Tushar Bhakta",
     authorTitle: "Chief Marketing Officer",
-    authorAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80",
+    authorAvatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhPcY7OD_gvFPpSHxxFdNsKjh7B0YsN4dDz2DATlkBPxrfHB1s1vJuSY6ivppjiUWBLJgnaHmag-MT1j5dY3ogIZnmk8XUANyMirIM2KFEX0NU7IOem0cxXU3JZz181SdNAfMxSn0UvfmB0B_0binfWdGEjveahWjhfSjJ5COdckX94i6iZxkBBB4akTyyz",
     linkedinUrl: "#"
   }
 ];
