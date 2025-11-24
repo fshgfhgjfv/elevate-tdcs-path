@@ -530,7 +530,7 @@ const Signup = () => {
                       <Input
                         id="number"
                         type="text"
-                        placeholder="9876543210"
+                        placeholder="Enter Mobile Number"
                         value={formData.number}
                         onChange={(e) => {
                           const val = e.target.value.replace(/\D/g, "");
