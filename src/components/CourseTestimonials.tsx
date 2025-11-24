@@ -123,7 +123,7 @@ export const CourseTestimonials = () => {
           className="text-center mb-12"
         >
           <motion.h2 variants={sectionVariants} className="text-4xl font-bold gradient-text mb-4">
-            Stories from people like you ✨
+            Stories from people like you 
           </motion.h2>
           <motion.p variants={sectionVariants} className="text-lg text-muted-foreground">
             Hear from our successful students who transformed their careers.
