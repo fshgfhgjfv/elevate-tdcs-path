@@ -9,7 +9,7 @@ const testimonials = [
     name: "Stuti Pandey",
     role: "Software Engineer @Walmart",
     preAccio: "B.Tech",
-    image: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.mbacrystalball.com%2Fblog%2F2022%2F10%2F17%2Findian-it-male-engineer-mba-success-stories%2F&psig=AOvVaw2M_QSMN6-d7UyHVPImVqUx&ust=1761768733596000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCNCD1Y7ax5ADFQAAAAAdAAAAABAE",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_JiiwmCLRbJUO0pW--Up0dl5OY1vLyXgHzw&s",
     quote: "The whole training is designed keeping each and every student and their educational and professional past in mind. The batch managers keep track of our progress every month.",
     company: "https://upload.wikimedia.org/wikipedia/commons/c/ca/Walmart_logo.svg",
   },
