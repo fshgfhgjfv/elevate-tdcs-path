@@ -25,7 +25,7 @@ const testimonials: Testimonial[] = [
     linkedinUrl: "#"
   },
   {
-    posterImg: "https://blogger.googleusercontent.com/img/a/AVvXsEglSc6c-jcyBazdNhMtzUfcW9GY_YmQWwtHp7krxk6XbY9TX6fFI5DYR3FG_G05ubWywVgxxwXSUy9KniXPVp89SlRpUUxQrjjNBt2rqw-F8R-riBsW_owKHJXv5llpLE3s-OEPqVr8PukfGA_wotmkpA0AJ1QMptBKoXG5fSSfCpZw5zuIARneM21MOdAX",
+    posterImg: "https://blogger.googleusercontent.com/img/a/AVvXsEhwxU1wn396TPzXrwwuUFYAptHStVwiAXDoYSEo8_sZM7j5UQ-hpzvTh8XxeVE1eNBctGmFARw_jqnaC4dwuD2L1LFKHMUeWpH1xYZvg-iqtGuEQU4wtgYk7RQ096RFBuD6jQ3d7e2xoA_niTtJhFwDX149xzITVsi0tSbBcb0s0EoosdTTrWC5RfQKdNk8",
     quoteTitle: "Best Off-Campus Partner",
     quoteText: "TDCS has become our exclusive off-campus partner for hiring entry-level developers. Their assessment to selection ratio is unbelievable. The students are all-rounders and require little on-job training.",
     authorName: "Krishna Potnis",
