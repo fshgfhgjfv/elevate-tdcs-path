@@ -44,7 +44,7 @@ const testimonials = [
     preAccio: "Auto Engineering",
     image: "https://lh3.googleusercontent.com/a/ACg8ocImI5eQoLkxy4fCdFb0D4_7RR9aA-pilQmiylZkuVTfZhC2sA=w45-h45-p-rp-mo-br100", // Placeholder Photo
     quote: "It's never too late to change your professional path. I was an Automobile Engineering student, who wanted to switch to IT Field and with TDCS's help I was able to make that switch.",
-    company: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Tata_Consultancy_Services_Logo.svg", // Placeholder Company
+    company: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMGUBsjIT_mzAYxV_bxBRk5b0sUckyjpZWJg&s", // Placeholder Company
   },
   {
     name: "Kabita Mondal",
