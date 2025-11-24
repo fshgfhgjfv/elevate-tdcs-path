@@ -19,13 +19,19 @@ import {
 import { toast } from "sonner";
 import { Loader2, Github } from "lucide-react";
 
-// --- 1. GOOGLE IMPORTS ---
-import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
+// --- GOOGLE LOGIN IMPORT ---
+import { useGoogleLogin } from "@react-oauth/google";
 
-const googleClientId =
-  "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
+// GOOGLE ICON
+const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+    <path
+      fill="#FFC107"
+      d="M43.611,20.083H42V20H24v8h11.303c-1.659..."
+    />
+  </svg>
+);
 
-// --- Floating Tools ---
 const tools = [
   {
     src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
@@ -72,16 +78,6 @@ const iconVariants = {
   }),
 };
 
-// GOOGLE ICON
-const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-    <path
-      fill="#FFC107"
-      d="M43.611,20.083H42V20H24v8h11.303c-1.659..."
-    />
-  </svg>
-);
-
 const Signup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -93,6 +89,7 @@ const Signup = () => {
     confirmPassword: "",
   });
 
+  // Auto redirect if logged in
   useEffect(() => {
     const user = localStorage.getItem("tdcs_user");
     if (user) navigate("/dashboard");
@@ -116,7 +113,7 @@ const Signup = () => {
       return;
     }
     if (!/^[0-9]{10}$/.test(number)) {
-      toast.error("Please enter a valid 10-digit phone number");
+      toast.error("Invalid phone number");
       setIsLoading(false);
       return;
     }
@@ -144,6 +141,7 @@ const Signup = () => {
         number: `+91${number}`,
         password,
       };
+
       users.push(newUser);
       localStorage.setItem("tdcs_users", JSON.stringify(users));
 
@@ -151,23 +149,23 @@ const Signup = () => {
       localStorage.setItem("tdcs_user", JSON.stringify(safeUser));
 
       toast.success("Account created successfully!");
-      setIsLoading(false);
       navigate("/dashboard");
+      setIsLoading(false);
     }, 1000);
   };
 
-  // --- UPDATED GOOGLE SUCCESS HANDLER ---
+  // --- GOOGLE LOGIN SUCCESS HANDLER ---
   const handleGoogleSuccess = async (tokenResponse: any) => {
     setIsLoading(true);
     try {
-      const userInfoResponse = await fetch(
+      const response = await fetch(
         "https://www.googleapis.com/oauth2/v3/userinfo",
         {
           headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
         }
       );
 
-      const userInfo = await userInfoResponse.json();
+      const userInfo = await response.json();
       const { email, name, sub: googleId } = userInfo;
 
       const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
@@ -187,12 +185,10 @@ const Signup = () => {
         isNewUser = true;
       }
 
-      const { password: _, ...safeUser } = user;
-      localStorage.setItem("tdcs_user", JSON.stringify(safeUser));
-
-      toast.success(isNewUser ? "Account created!" : "Logged in!");
+      localStorage.setItem("tdcs_user", JSON.stringify(user));
+      toast.success(isNewUser ? "Account Created!" : "Logged In!");
       navigate("/dashboard");
-    } catch (error) {
+    } catch {
       toast.error("Google Sign-In failed.");
     }
     setIsLoading(false);
@@ -200,21 +196,18 @@ const Signup = () => {
 
   const handleGoogleError = () => {
     toast.error("Google Sign-In failed.");
-    setIsLoading(false);
   };
 
-  // --- UPDATED GOOGLE LOGIN HOOK (POPUP MODE) ---
+  // --- GOOGLE LOGIN (POPUP MODE, FIXED) ---
   const googleLogin = useGoogleLogin({
     onSuccess: handleGoogleSuccess,
     onError: handleGoogleError,
-    flow: "implicit", // <<<<<< FIXED HERE!!! (popup mode)
+    flow: "implicit", // <<< FIX: Popup mode only, no redirects
   });
 
-  const handleGitHubSignup = () => {
-    toast.info("GitHub sign-in not implemented.");
-  };
+  const handleGitHubSignup = () => toast.info("GitHub sign-in not implemented.");
 
-  // 3D card animation (unchanged)
+  // UI ANIMATION (unchanged)
   const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -323,7 +316,7 @@ const Signup = () => {
               }}
             />
 
-            <CardHeader style={{ zIndex: 2, position: "relative" }}>
+            <CardHeader style={{ zIndex: 2 }}>
               <CardTitle className="text-3xl gradient-text">
                 Create Account
               </CardTitle>
@@ -332,7 +325,7 @@ const Signup = () => {
               </CardDescription>
             </CardHeader>
 
-            <CardContent style={{ zIndex: 2, position: "relative" }}>
+            <CardContent style={{ zIndex: 2 }}>
               <motion.form
                 onSubmit={handleSubmit}
                 className="space-y-4"
@@ -344,7 +337,7 @@ const Signup = () => {
                   variants={itemVariants}
                   className="flex flex-col sm:flex-row gap-3"
                 >
-                  {/* UPDATED GOOGLE BUTTON */}
+                  {/* GOOGLE BUTTON */}
                   <Button
                     variant="outline"
                     className="w-full"
@@ -511,11 +504,5 @@ const Signup = () => {
   );
 };
 
-// --- 5. WRAP WITH GOOGLE PROVIDER (UNCHANGED) ---
-const SignupWithGoogleAuth = () => (
-  <GoogleOAuthProvider clientId={googleClientId}>
-    <Signup />
-  </GoogleOAuthProvider>
-);
-
-export default SignupWithGoogleAuth;
+// --- THIS IS THE CORRECT FINAL EXPORT ---
+export default Signup;
