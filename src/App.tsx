@@ -56,62 +56,72 @@ export const RefreshRedirect = () => {
 
 const queryClient = new QueryClient();
 
+// ⭐ ADD THIS
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
 
-        {/* ⭐ Added here */}
-        <RefreshRedirect />
+      {/* ⭐ GOOGLE LOGIN FIX WRAPPER ADDED */}
+      <GoogleOAuthProvider clientId="736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com">
 
-        <ScrollToTop />
-        <Header />
+        <BrowserRouter>
+          {/* ⭐ Added here */}
+          <RefreshRedirect />
 
-        <Routes>
-          {/* 🌐 Main Pages */}
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact-us" element={<ContactUs />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/privacy" element={<Privacy />} />
+          <ScrollToTop />
+          <Header />
 
-          {/* 🎓 Courses */}
-          <Route path="/courses" element={<Courses />} />
-          <Route path="/courses/:id" element={<CourseDetail />} />
-          <Route path="/courses/:id/content" element={<CourseContent />} />
+          <Routes>
+            {/* 🌐 Main Pages */}
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
 
-          {/* 👤 Auth & Profile */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/dashboard/*" element={<Dashboard />} />
-          <Route path="/my-profile" element={<MyProfile />} />
+            {/* 🎓 Courses */}
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/courses/:id" element={<CourseDetail />} />
+            <Route path="/courses/:id/content" element={<CourseContent />} />
 
-          {/* 🪪 Certificates */}
-          <Route path="/verify-certificate" element={<VerifyCertificate />} />
-          <Route path="/certificate-download" element={<CertificateDownload />} />
+            {/* 👤 Auth & Profile */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/dashboard/*" element={<Dashboard />} />
+            <Route path="/my-profile" element={<MyProfile />} />
 
-          {/* 🧰 Services */}
-          <Route path="/services" element={<Services />} />
-          <Route path="/services/software" element={<Services />} />
-          <Route path="/services/hardware" element={<HardwareServices />} />
-          <Route path="/services/legal" element={<AdvocateConstruction />} />
-          <Route path="/services/website-development" element={<WebsiteDevelopment />} />
-          <Route path="/services/website-security" element={<WebsiteSecurityDetails />} />
-          <Route path="/services/:serviceId" element={<ServiceDetail />} />
+            {/* 🪪 Certificates */}
+            <Route path="/verify-certificate" element={<VerifyCertificate />} />
+            <Route path="/certificate-download" element={<CertificateDownload />} />
 
-          {/* 🛠️ Admin Panel */}
-          <Route path="/admin" element={<SimpleAdminPanel />} />
+            {/* 🧰 Services */}
+            <Route path="/services" element={<Services />} />
+            <Route path="/services/software" element={<Services />} />
+            <Route path="/services/hardware" element={<HardwareServices />} />
+            <Route path="/services/legal" element={<AdvocateConstruction />} />
+            <Route path="/services/website-development" element={<WebsiteDevelopment />} />
+            <Route path="/services/website-security" element={<WebsiteSecurityDetails />} />
+            <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
-          {/* 🚫 404 Fallback */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            {/* 🛠️ Admin Panel */}
+            <Route path="/admin" element={<SimpleAdminPanel />} />
 
-        <Footer />
-      </BrowserRouter>
+            {/* 🚫 404 Fallback */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+
+          <Footer />
+        </BrowserRouter>
+
+      </GoogleOAuthProvider>
+      {/* ⭐ END GOOGLE WRAPPER */}
+
     </TooltipProvider>
   </QueryClientProvider>
 );
