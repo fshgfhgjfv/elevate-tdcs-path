@@ -177,7 +177,7 @@ const Signup = () => {
     // regex explanation: ^[6-9] means starts with 6,7,8,9. \d{9} means followed by 9 digits.
     const phoneRegex = /^[6-9]\d{9}$/;
     if (!phoneRegex.test(number)) {
-      toast.error("Invalid Phone Number. Must start with 6-9 and be 10 digits.");
+      toast.error("Invalid Phone Number. Must start with be 10 digits.");
       setIsLoading(false);
       return;
     }
