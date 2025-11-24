@@ -25,10 +25,10 @@ const testimonials: Testimonial[] = [
     linkedinUrl: "#"
   },
   {
-    posterImg: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh-Ii-RqfAVUNRwJraLOcAU0HZt4SLE72rYXE8J-ahuVFY3RXM6BmL851JIRF7QwWJfdnR5ehZQHrgQcbirWOkCpkPRJSc0V0sVTCkkqce8ulF_GtcBiqhzkLRKEJgeZy-TZs8kRE_DZ0iKcRZJDkyywFcNKKoRDuvVG6ytyaGBMatenGZTpPV8Rv3qFCoo/s570/Screenshot%202025-11-19%20203323.png",
+    posterImg: "https://blogger.googleusercontent.com/img/a/AVvXsEhwxU1wn396TPzXrwwuUFYAptHStVwiAXDoYSEo8_sZM7j5UQ-hpzvTh8XxeVE1eNBctGmFARw_jqnaC4dwuD2L1LFKHMUeWpH1xYZvg-iqtGuEQU4wtgYk7RQ096RFBuD6jQ3d7e2xoA_niTtJhFwDX149xzITVsi0tSbBcb0s0EoosdTTrWC5RfQKdNk8",
     quoteTitle: "Best Off-Campus Partner",
     quoteText: "TDCS has become our exclusive off-campus partner for hiring entry-level developers. Their assessment to selection ratio is unbelievable. The students are all-rounders and require little on-job training.",
-    authorName: "Krishna Potnis",
+    authorName: "Shivam Shing",
     authorTitle: "Sr. Director Engineering",
     authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80",
     linkedinUrl: "#"
