@@ -588,7 +588,7 @@ const Signup = () => {
                           <div className="flex gap-2">
                             <Input
                               type="text"
-                              placeholder="123456"
+                              placeholder=" Enter 6-digit OTP"
                               maxLength={6}
                               className="text-center tracking-widest bg-gray-900/50"
                               value={verification.phone.otp}
