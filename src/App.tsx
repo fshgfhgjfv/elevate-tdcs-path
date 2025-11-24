@@ -31,9 +31,28 @@ import NotFound from "./pages/NotFound";
 import HardwareServices from "./pages/HardwareServices";
 import WebsiteDevelopment from "./pages/website-development";
 
-// ✅ NEW: Pages
+// NEW Pages
 import WebsiteSecurityDetails from "./pages/WebsiteSecurityDetails";
 import SimpleAdminPanel from "./pages/admin/SimpleAdminPanel";
+
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+// ⭐ NEW COMPONENT → Redirect to Home on Refresh
+export const RefreshRedirect = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+      if (location.pathname !== "/") {
+        navigate("/", { replace: true });
+      }
+    }
+  }, []);
+
+  return null;
+};
 
 const queryClient = new QueryClient();
 
@@ -43,6 +62,10 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+
+        {/* ⭐ Added here */}
+        <RefreshRedirect />
+
         <ScrollToTop />
         <Header />
 
@@ -77,7 +100,6 @@ const App = () => (
           <Route path="/services/hardware" element={<HardwareServices />} />
           <Route path="/services/legal" element={<AdvocateConstruction />} />
           <Route path="/services/website-development" element={<WebsiteDevelopment />} />
-          {/* ✅ NEW ROUTE: Website Security Page */}
           <Route path="/services/website-security" element={<WebsiteSecurityDetails />} />
           <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
