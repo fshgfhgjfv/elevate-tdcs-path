@@ -34,7 +34,7 @@ const testimonials: Testimonial[] = [
     linkedinUrl: "#"
   },
   {
-    posterImg: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80",
+    posterImg: "https://blogger.googleusercontent.com/img/a/AVvXsEiTNGkqkHJOS8z5tcDq-Qz8r4-HCfioKGpdCb4iEVLHGIRtaJkT1a6ByD6wbz1rZIsQkOTIFKaWxaF5cNAl9RNldk_X9ISz1ZVYEn39690Yq3fRQYFfhoVZO0ps0HJrAQ4tVDx8h_Ji4jD1vlkZw0WBXJ1Peiq9HdI15X5bRfgrKdxCNPGlOYV1hFD9ty8c",
     quoteTitle: "Unparalleled Value Addition",
     quoteText: "PayGlocal today has the best engineers on board because of TDCS. The value they add to a student's career and the company's hiring needs is unparalleled. It's become a ritual for us to ping TDCS for new openings.",
     authorName: "Yogesh Lokhande",
