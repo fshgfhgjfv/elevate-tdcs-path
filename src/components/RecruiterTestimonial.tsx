@@ -30,14 +30,14 @@ const testimonials: Testimonial[] = [
     quoteText: "TDCS has become our exclusive off-campus partner for hiring entry-level developers. Their assessment to selection ratio is unbelievable. The students are all-rounders and require little on-job training.",
     authorName: "Shivam Shing",
     authorTitle: "Sr. Director Engineering",
-    authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80",
+    authorAvatar: "https://blogger.googleusercontent.com/img/a/AVvXsEgrwmLkO5Feodxq5QaY_atrGnsO9pqgfFM05kadDK8NB_24j-cIBsML47l20CtYES_Zfa4jUVR24_u4po_QnjcsO4yiRZUlpESCdAb2JVdbzkhp3gaU55kpGn_v-EUQaxkosCtzSR3-0eyjtW4m9gkglNME7wzxffg-A0kX98SqspAZNX1Aep3Wf-OgGpoP",
     linkedinUrl: "#"
   },
   {
     posterImg: "https://blogger.googleusercontent.com/img/a/AVvXsEiTNGkqkHJOS8z5tcDq-Qz8r4-HCfioKGpdCb4iEVLHGIRtaJkT1a6ByD6wbz1rZIsQkOTIFKaWxaF5cNAl9RNldk_X9ISz1ZVYEn39690Yq3fRQYFfhoVZO0ps0HJrAQ4tVDx8h_Ji4jD1vlkZw0WBXJ1Peiq9HdI15X5bRfgrKdxCNPGlOYV1hFD9ty8c",
     quoteTitle: "Unparalleled Value Addition",
     quoteText: "PayGlocal today has the best engineers on board because of TDCS. The value they add to a student's career and the company's hiring needs is unparalleled. It's become a ritual for us to ping TDCS for new openings.",
-    authorName: "Yogesh Lokhande",
+    authorName: "Tushar Bhakta",
     authorTitle: "Co-founder & CTO",
     authorAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80",
     linkedinUrl: "#"
