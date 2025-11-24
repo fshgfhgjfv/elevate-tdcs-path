@@ -18,14 +18,14 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, Github, Check, X } from "lucide-react";
+import { Loader2, Github } from "lucide-react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
 // --- CONFIGURATION ---
 const googleClientId =
   "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
 
-// --- Define Floating Tools & Animations ---
+// --- Floating Tools Data ---
 const tools = [
   {
     src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
@@ -50,7 +50,7 @@ const tools = [
   },
   {
     src: "https://assets.tryhackme.com/img/modules/metasploit.png",
-    alt: "Nmap", 
+    alt: "Nmap",
     side: "right" as "left" | "right",
     delay: 0.5,
     y: 320,
@@ -105,7 +105,7 @@ const Signup = () => {
     confirmPassword: "",
   });
 
-  // --- Password Strength Logic ---
+  // --- Password Strength State ---
   const [strength, setStrength] = useState(0);
 
   useEffect(() => {
@@ -116,11 +116,12 @@ const Signup = () => {
       return;
     }
 
-    if (pass.length > 5) score += 1; // Base length
-    if (pass.length > 10) score += 1; // Good length
-    if (/[A-Z]/.test(pass)) score += 1; // Uppercase
-    if (/[0-9]/.test(pass)) score += 1; // Number
-    if (/[^A-Za-z0-9]/.test(pass)) score += 1; // Special char
+    // Calculation Logic
+    if (pass.length > 5) score += 1;
+    if (pass.length > 10) score += 1;
+    if (/[A-Z]/.test(pass)) score += 1;
+    if (/[0-9]/.test(pass)) score += 1;
+    if (/[^A-Za-z0-9]/.test(pass)) score += 1;
 
     setStrength(score);
   }, [formData.password]);
@@ -141,7 +142,6 @@ const Signup = () => {
     if (s === 5) return "Very Strong";
     return "";
   };
-  // --- End Password Strength Logic ---
 
   useEffect(() => {
     const user = localStorage.getItem("tdcs_user");
@@ -157,31 +157,49 @@ const Signup = () => {
     const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
     const { name, email, number, password, confirmPassword } = formData;
 
+    // 1. Empty Fields Check
     if (!name || !email || !number || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
       setIsLoading(false);
       return;
     }
-    if (!email.includes("@")) {
-      toast.error("Please enter a valid email");
+
+    // 2. Strict Gmail Validation
+    // Only allows letters (a-z, A-Z), numbers (0-9), and dots (.) before @gmail.com
+    const gmailRegex = /^[a-zA-Z0-9.]+@gmail\.com$/;
+    if (!gmailRegex.test(email)) {
+      toast.error("Please use a valid Gmail address (e.g., user@gmail.com)");
       setIsLoading(false);
       return;
     }
-    if (!/^[0-9]{10}$/.test(number)) {
-      toast.error("Please enter a valid 10-digit phone number");
+
+    // 3. Phone Validation (Starts with 6, 7, 8, or 9)
+    // regex explanation: ^[6-9] means starts with 6,7,8,9. \d{9} means followed by 9 digits.
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(number)) {
+      toast.error("Invalid Phone Number. Must start with 6-9 and be 10 digits.");
       setIsLoading(false);
       return;
     }
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
-      setIsLoading(false);
-      return;
-    }
+
+    // 4. Password Match Check
     if (password !== confirmPassword) {
       toast.error("Passwords don't match");
       setIsLoading(false);
       return;
     }
+
+    // 5. Strict Password Strength Check
+    // Strength 0, 1, 2 is Weak. We block signup.
+    if (strength <= 2) {
+      toast.error(
+        "Password is too weak! Add symbols, numbers, and uppercase letters."
+      );
+      setIsLoading(false);
+      return;
+    }
+
+    // 6. Duplicate Email Check
     if (users.find((u: any) => u.email === email)) {
       toast.error("User with this email already exists");
       setIsLoading(false);
@@ -207,7 +225,7 @@ const Signup = () => {
     }, 1000);
   };
 
-  // --- Google Signup ---
+  // --- Google Sign In Logic (Unchanged) ---
   const handleGoogleSuccess = async (tokenResponse: any) => {
     setIsLoading(true);
     try {
@@ -218,10 +236,8 @@ const Signup = () => {
         }
       );
 
-      if (!userInfoResponse.ok) {
+      if (!userInfoResponse.ok)
         throw new Error("Failed to fetch user info from Google");
-      }
-
       const userInfo = await userInfoResponse.json();
       const { email, name, sub: googleId } = userInfo;
 
@@ -250,7 +266,6 @@ const Signup = () => {
 
       const { password: _, ...userToLogin } = user;
       localStorage.setItem("tdcs_user", JSON.stringify(userToLogin));
-
       toast.success(
         isNewUser ? "Account created successfully!" : "Logged in successfully!"
       );
@@ -258,13 +273,12 @@ const Signup = () => {
       navigate("/dashboard");
     } catch (error) {
       console.error("Google Sign-In Error:", error);
-      toast.error("Google Sign-In failed. Please try again.");
+      toast.error("Google Sign-In failed.");
       setIsLoading(false);
     }
   };
 
   const handleGoogleError = () => {
-    console.error("Google Sign-In Error");
     toast.error("Google Sign-In failed.");
     setIsLoading(false);
   };
@@ -313,12 +327,8 @@ const Signup = () => {
 
   const formVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
-
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
@@ -326,7 +336,7 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
-      {/* --- Floating Tools --- */}
+      {/* Floating Tools */}
       <div
         className="absolute inset-0 -z-10 overflow-hidden"
         aria-hidden="true"
@@ -371,11 +381,7 @@ const Signup = () => {
           ref={cardRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          style={{
-            transformStyle: "preserve-3d",
-            rotateX,
-            rotateY,
-          }}
+          style={{ transformStyle: "preserve-3d", rotateX, rotateY }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -476,11 +482,11 @@ const Signup = () => {
                 </motion.div>
 
                 <motion.div variants={itemVariants}>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Email (Gmail Only)</Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="your@email.com"
+                    placeholder="yourname@gmail.com"
                     value={formData.email}
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
@@ -500,9 +506,10 @@ const Signup = () => {
                     <Input
                       id="number"
                       type="text"
-                      placeholder="10-digit number"
+                      placeholder="6-9xxxxxxxxx"
                       value={formData.number}
                       onChange={(e) => {
+                        // Input filtering: Only allow digits
                         const value = e.target.value.replace(/\D/g, "");
                         if (value.length <= 10) {
                           setFormData({ ...formData, number: value });
@@ -529,7 +536,7 @@ const Signup = () => {
                     disabled={isLoading}
                     className="bg-gray-900/50"
                   />
-                  {/* --- PASSWORD STRENGTH METER --- */}
+                  {/* Password Strength Meter */}
                   <AnimatePresence>
                     {formData.password && (
                       <motion.div
@@ -538,7 +545,6 @@ const Signup = () => {
                         exit={{ opacity: 0, height: 0 }}
                         className="mt-2 space-y-2"
                       >
-                        {/* Strength Bars */}
                         <div className="flex gap-1 h-1.5">
                           {[1, 2, 3, 4].map((level) => (
                             <div
@@ -551,16 +557,15 @@ const Signup = () => {
                                   width: strength >= level ? "100%" : "0%",
                                   backgroundColor:
                                     strength >= level
-                                      ? // Helper function to determine color based on CURRENT total strength, not bar index
-                                        level === 1
-                                        ? "rgb(239 68 68)" // Red
+                                      ? level === 1
+                                        ? "rgb(239 68 68)"
                                         : level === 2 && strength <= 2
                                         ? "rgb(239 68 68)"
                                         : level <= 2 && strength >= 3
-                                        ? "rgb(234 179 8)" // Yellow
+                                        ? "rgb(234 179 8)"
                                         : level === 3 && strength === 3
                                         ? "rgb(234 179 8)"
-                                        : "rgb(34 197 94)" // Green
+                                        : "rgb(34 197 94)"
                                       : "transparent",
                                 }}
                                 className={`h-full w-full ${getStrengthColor(
@@ -571,8 +576,6 @@ const Signup = () => {
                             </div>
                           ))}
                         </div>
-
-                        {/* Status Text */}
                         <div className="flex justify-between items-center text-xs">
                           <span
                             className={`font-medium ${
@@ -584,43 +587,12 @@ const Signup = () => {
                             }`}
                           >
                             Strength: {getStrengthText(strength)}
+                            {strength <= 2 && " (Too Weak to Signup)"}
                           </span>
-
-                          {/* Optional: Requirement Checklist */}
-                          <div className="flex gap-2 text-[10px] text-muted-foreground">
-                            <span
-                              className={
-                                formData.password.length >= 6
-                                  ? "text-green-500"
-                                  : ""
-                              }
-                            >
-                              6+ chars
-                            </span>
-                            <span
-                              className={
-                                /[0-9]/.test(formData.password)
-                                  ? "text-green-500"
-                                  : ""
-                              }
-                            >
-                              Num
-                            </span>
-                            <span
-                              className={
-                                /[^A-Za-z0-9]/.test(formData.password)
-                                  ? "text-green-500"
-                                  : ""
-                              }
-                            >
-                              Sym
-                            </span>
-                          </div>
                         </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
-                  {/* --- END METER --- */}
                 </motion.div>
 
                 <motion.div variants={itemVariants}>
