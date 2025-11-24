@@ -17,7 +17,7 @@ const testimonials = [
     name: "Pradyot Verma",
     role: "Software Developer @MakeMyTrip",
     preAccio: "B.Tech Mech",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
+    image: "https://lh3.googleusercontent.com/a/ACg8ocLF2531l46smiRm4DZTK3aYBtm07m6S_vBTGFMnBF2j-NdNIw=w45-h45-p-rp-mo-br100",
     quote: "As a mechanical engineer, I used to think it was near to impossible for me to land a tech role in the Software Industry. But then, TDCS happened.",
     company: "https://companieslogo.com/img/orig/MMYT.NS-8d61db31.png",
   },
