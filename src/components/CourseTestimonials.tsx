@@ -34,7 +34,7 @@ const testimonials = [
     name: "Kasim Khan",
     role: "Data Analyst @KPMG", // Placeholder Role
     preAccio: "B.Com", // Placeholder Education
-    image: "https://images.unsplash.com/photo-1547425260-76bc0351e1e6?w=200&h=200&fit=crop", // Placeholder Photo
+    image: "https://lh3.googleusercontent.com/a-/ALV-UjVg9u82-OP6b9tgeYLydpOTyHai-4TKfkDQ6DG5qqItYmHUqro8=w45-h45-p-rp-mo-br100", // Placeholder Photo
     quote: "For a person with a background in a non-technical field, TDCS trained me and helped me in improving my technical skills perfectly and land the job I had dreamed of!",
     company: "https://upload.wikimedia.org/wikipedia/commons/e/e0/KPMG_logo.svg", // Placeholder Company
   },
