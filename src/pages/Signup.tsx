@@ -97,7 +97,7 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 const Signup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -152,8 +152,6 @@ const Signup = () => {
   };
 
   // --- Verification Handlers ---
-
-  // 1. Start Email Verification
   const startEmailVerify = () => {
     toast.info("OTP sent to your email (Simulated)");
     setVerification((prev) => ({
@@ -162,7 +160,6 @@ const Signup = () => {
     }));
   };
 
-  // 2. Confirm Email OTP
   const confirmEmailOtp = () => {
     if (verification.email.otp.length === 6) {
       setVerification((prev) => ({
@@ -175,7 +172,6 @@ const Signup = () => {
     }
   };
 
-  // 3. Start Phone Verification
   const startPhoneVerify = () => {
     toast.info("OTP sent to your mobile (Simulated)");
     setVerification((prev) => ({
@@ -184,7 +180,6 @@ const Signup = () => {
     }));
   };
 
-  // 4. Confirm Phone OTP
   const confirmPhoneOtp = () => {
     if (verification.phone.otp.length === 6) {
       setVerification((prev) => ({
@@ -204,44 +199,39 @@ const Signup = () => {
     const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
     const { name, email, number, password, confirmPassword } = formData;
 
-    // --- Validations ---
     if (!name || !email || !number || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
       setIsLoading(false);
       return;
     }
-
     if (!verification.email.isVerified) {
       toast.error("Please verify your Gmail first.");
       setIsLoading(false);
       return;
     }
-
     if (!verification.phone.isVerified) {
       toast.error("Please verify your Phone Number first.");
       setIsLoading(false);
       return;
     }
-
     if (password !== confirmPassword) {
       toast.error("Passwords don't match");
       setIsLoading(false);
       return;
     }
-
     if (strength <= 2) {
-      toast.error("Password is too weak! Add symbols, numbers, and uppercase letters.");
+      toast.error(
+        "Password is too weak! Add symbols, numbers, and uppercase letters."
+      );
       setIsLoading(false);
       return;
     }
-
     if (users.find((u: any) => u.email === email)) {
       toast.error("User with this email already exists");
       setIsLoading(false);
       return;
     }
 
-    // Success Simulation
     setTimeout(() => {
       const newUser = {
         id: Date.now().toString(),
@@ -254,28 +244,20 @@ const Signup = () => {
       localStorage.setItem("tdcs_users", JSON.stringify(users));
       const { password: _, ...userWithoutPassword } = newUser;
       localStorage.setItem("tdcs_user", JSON.stringify(userWithoutPassword));
-
       toast.success("Account created successfully!");
       setIsLoading(false);
       navigate("/dashboard");
     }, 1000);
   };
 
-  // --- Google & Animations (Unchanged) ---
-  const handleGoogleSuccess = async (tokenResponse: any) => { /* ... same as before ... */ }; // (Kept short for brevity, assume logic exists)
-  // ... (Assuming standard Google logic handles login/signup without OTP)
-  // Note: For this demo, Google auth bypasses manual OTP as it's trusted.
-  
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-        // Simple Google Login Logic
-        setIsLoading(true);
-        // ... (Mocking success for brevity)
-        setTimeout(() => {
-            toast.success("Logged in with Google!");
-            setIsLoading(false);
-            navigate("/dashboard");
-        }, 1000);
+      setIsLoading(true);
+      setTimeout(() => {
+        toast.success("Logged in with Google!");
+        setIsLoading(false);
+        navigate("/dashboard");
+      }, 1000);
     },
     onError: () => toast.error("Google Login Failed"),
   });
@@ -293,7 +275,10 @@ const Signup = () => {
   const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ["0%", "100%"]);
   const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ["0%", "100%"]);
   const glareOpacity = useMotionValue(0);
-  const glareOpacitySpring = useSpring(glareOpacity, { stiffness: 400, damping: 30 });
+  const glareOpacitySpring = useSpring(glareOpacity, {
+    stiffness: 400,
+    damping: 30,
+  });
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current) return;
@@ -302,23 +287,40 @@ const Signup = () => {
     y.set((e.clientY - rect.top) / rect.height - 0.5);
     glareOpacity.set(0.15);
   };
-  const handleMouseLeave = () => { x.set(0); y.set(0); glareOpacity.set(0); };
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+    glareOpacity.set(0);
+  };
 
-  const formVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } };
-  const itemVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
+  const formVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+  };
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
 
   return (
     <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
-      {/* Background Tools */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         {tools.map((tool) => (
           <motion.img
             key={tool.alt}
             src={tool.src}
             className="absolute h-16 w-16 md:h-24 md:w-24 opacity-10"
-            style={{ top: tool.y, ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }) }}
+            style={{
+              top: tool.y,
+              ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }),
+            }}
             animate={{ y: [tool.y, tool.y + 20, tool.y] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: tool.delay }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: tool.delay,
+            }}
           />
         ))}
       </div>
@@ -333,79 +335,182 @@ const Signup = () => {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-md mx-auto"
         >
-          <Card className="shadow-glow-lg dark border border-red-600/50 bg-black/80 backdrop-blur-sm" style={{ transform: "translateZ(100px)", transformStyle: "preserve-3d" }}>
-            {/* Glare */}
-            <motion.div className="pointer-events-none absolute inset-0 rounded-[inherit]" style={{ opacity: glareOpacitySpring, background: useTransform([glareX, glareY], ([lx, ly]) => `radial-gradient(800px circle at ${lx} ${ly}, rgba(255, 255, 255, 0.2), transparent 80%)`), zIndex: 1 }} />
+          <Card
+            className="shadow-glow-lg dark border border-red-600/50 bg-black/80 backdrop-blur-sm"
+            style={{
+              transform: "translateZ(100px)",
+              transformStyle: "preserve-3d",
+            }}
+          >
+            <motion.div
+              className="pointer-events-none absolute inset-0 rounded-[inherit]"
+              style={{
+                opacity: glareOpacitySpring,
+                background: useTransform(
+                  [glareX, glareY],
+                  ([lx, ly]) =>
+                    `radial-gradient(800px circle at ${lx} ${ly}, rgba(255, 255, 255, 0.2), transparent 80%)`
+                ),
+                zIndex: 1,
+              }}
+            />
 
             <CardHeader style={{ position: "relative", zIndex: 2 }}>
-              <CardTitle className="text-3xl bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">Create Account</CardTitle>
-              <CardDescription>Sign up to start your learning journey</CardDescription>
+              <CardTitle className="text-3xl bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+                Create Account
+              </CardTitle>
+              <CardDescription>
+                Sign up to start your learning journey
+              </CardDescription>
             </CardHeader>
 
             <CardContent style={{ position: "relative", zIndex: 2 }}>
-              <motion.form onSubmit={handleSubmit} className="space-y-4" variants={formVariants} initial="hidden" animate="visible">
-                
+              <motion.form
+                onSubmit={handleSubmit}
+                className="space-y-4"
+                variants={formVariants}
+                initial="hidden"
+                animate="visible"
+              >
                 {/* Social Login Buttons */}
-                <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3">
-                  <Button variant="outline" className="w-full" onClick={() => googleLogin()} type="button" disabled={isLoading}><GoogleIcon className="mr-2 h-4 w-4" />Google</Button>
-                  <Button variant="outline" className="w-full" onClick={() => handleGitHubSignup("GitHub")} type="button" disabled={isLoading}><Github className="mr-2 h-4 w-4" />GitHub</Button>
+                <motion.div
+                  variants={itemVariants}
+                  className="flex flex-col sm:flex-row gap-3"
+                >
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => googleLogin()}
+                    type="button"
+                    disabled={isLoading}
+                  >
+                    <GoogleIcon className="mr-2 h-4 w-4" />
+                    Google
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => handleGitHubSignup("GitHub")}
+                    type="button"
+                    disabled={isLoading}
+                  >
+                    <Github className="mr-2 h-4 w-4" />
+                    GitHub
+                  </Button>
                 </motion.div>
 
-                {/* Divider */}
-                <motion.div variants={itemVariants} className="relative py-2"><div className="absolute inset-0 flex items-center"><span className="w-full border-t border-gray-700" /></div><div className="relative flex justify-center text-xs uppercase"><span className="bg-black px-2 text-muted-foreground">Or email</span></div></motion.div>
-
-                <motion.div variants={itemVariants}>
-                  <Label>Full Name</Label>
-                  <Input type="text" placeholder="John Doe" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required disabled={isLoading} className="bg-gray-900/50" />
+                <motion.div variants={itemVariants} className="relative py-2">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-gray-700" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-black px-2 text-muted-foreground">
+                      Or email
+                    </span>
+                  </div>
                 </motion.div>
 
-                {/* --- EMAIL SECTION WITH OTP --- */}
+                {/* --- UPDATED NAME FIELD --- */}
                 <motion.div variants={itemVariants}>
-                  <Label>Email (Gmail Only)</Label>
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="your full name"
+                    value={formData.name}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    required
+                    disabled={isLoading}
+                    className="bg-gray-900/50"
+                  />
+                </motion.div>
+
+                {/* --- UPDATED EMAIL FIELD WITH OTP --- */}
+                <motion.div variants={itemVariants}>
+                  <Label htmlFor="email">Email (Gmail Only)</Label>
                   <div className="flex gap-2">
                     <Input
+                      id="email"
                       type="email"
-                      placeholder="yourname@gmail.com"
+                      placeholder="example@gmail.com"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
+                      required
                       disabled={isLoading || verification.email.isVerified}
-                      className={`bg-gray-900/50 ${verification.email.isVerified ? "border-green-500 text-green-500" : ""}`}
+                      className={`bg-gray-900/50 ${
+                        verification.email.isVerified
+                          ? "border-green-500 text-green-500"
+                          : ""
+                      }`}
                     />
-                    {/* Verify Button or Verified Badge */}
+                    {/* Verify Button */}
                     {verification.email.isVerified ? (
-                       <div className="flex items-center justify-center px-3 bg-green-500/10 border border-green-500 rounded-md">
-                         <CheckCircle2 className="h-5 w-5 text-green-500" />
-                       </div>
+                      <div className="flex items-center justify-center px-3 bg-green-500/10 border border-green-500 rounded-md">
+                        <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      </div>
                     ) : (
                       <AnimatePresence>
-                        {gmailRegex.test(formData.email) && !verification.email.isVerifying && (
-                          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}>
-                            <Button type="button" variant="outline" onClick={startEmailVerify} className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white">
+                        {gmailRegex.test(formData.email) &&
+                          !verification.email.isVerifying && (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                            >
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={startEmailVerify}
+                                className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+                              >
                                 Verify
-                            </Button>
-                          </motion.div>
-                        )}
+                              </Button>
+                            </motion.div>
+                          )}
                       </AnimatePresence>
                     )}
                   </div>
-
-                  {/* Email OTP Input Area */}
+                  {/* Email OTP Input */}
                   <AnimatePresence>
                     {verification.email.isVerifying && (
-                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
                         <div className="mt-2 p-3 border border-dashed border-gray-700 rounded-md bg-gray-900/30">
-                          <Label className="text-xs text-muted-foreground mb-1 block">Enter 6-digit OTP sent to email</Label>
+                          <Label className="text-xs text-muted-foreground mb-1 block">
+                            Enter 6-digit OTP sent to email
+                          </Label>
                           <div className="flex gap-2">
-                            <Input 
-                              type="text" 
-                              placeholder="123456" 
-                              maxLength={6} 
-                              className="text-center tracking-widest"
+                            <Input
+                              type="text"
+                              placeholder="123456"
+                              maxLength={6}
+                              className="text-center tracking-widest bg-gray-900/50"
                               value={verification.email.otp}
-                              onChange={(e) => setVerification(prev => ({...prev, email: {...prev.email, otp: e.target.value.replace(/\D/g, '')}}))}
+                              onChange={(e) =>
+                                setVerification((prev) => ({
+                                  ...prev,
+                                  email: {
+                                    ...prev.email,
+                                    otp: e.target.value.replace(/\D/g, ""),
+                                  },
+                                }))
+                              }
                             />
-                            <Button type="button" size="sm" onClick={confirmEmailOtp} className="bg-green-600 hover:bg-green-700 text-white">
-                                Confirm
+                            <Button
+                              type="button"
+                              size="sm"
+                              onClick={confirmEmailOtp}
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                            >
+                              Confirm
                             </Button>
                           </div>
                         </div>
@@ -414,59 +519,96 @@ const Signup = () => {
                   </AnimatePresence>
                 </motion.div>
 
-                {/* --- PHONE SECTION WITH OTP --- */}
+                {/* --- UPDATED PHONE SECTION WITH OTP --- */}
                 <motion.div variants={itemVariants}>
-                  <Label>Phone Number</Label>
+                  <Label htmlFor="number">Phone Number</Label>
                   <div className="flex gap-2">
                     <div className="flex items-center flex-1">
-                        <span className="px-3 py-2 bg-gray-900/50 rounded-l-md border border-r-0 border-input text-sm text-muted-foreground h-10 flex items-center">+91</span>
-                        <Input
+                      <span className="px-3 py-2 bg-gray-900/50 rounded-l-md border border-r-0 border-input text-sm text-muted-foreground h-10 flex items-center">
+                        +91
+                      </span>
+                      <Input
+                        id="number"
                         type="text"
                         placeholder="9876543210"
                         value={formData.number}
                         onChange={(e) => {
-                            const val = e.target.value.replace(/\D/g, "");
-                            if (val.length <= 10) setFormData({ ...formData, number: val });
+                          const val = e.target.value.replace(/\D/g, "");
+                          if (val.length <= 10)
+                            setFormData({ ...formData, number: val });
                         }}
                         disabled={isLoading || verification.phone.isVerified}
-                        className={`rounded-l-none bg-gray-900/50 ${verification.phone.isVerified ? "border-green-500 text-green-500" : ""}`}
-                        />
+                        className={`rounded-l-none bg-gray-900/50 ${
+                          verification.phone.isVerified
+                            ? "border-green-500 text-green-500"
+                            : ""
+                        }`}
+                      />
                     </div>
-                     {/* Verify Button or Verified Badge */}
-                     {verification.phone.isVerified ? (
-                       <div className="flex items-center justify-center px-3 bg-green-500/10 border border-green-500 rounded-md">
-                         <CheckCircle2 className="h-5 w-5 text-green-500" />
-                       </div>
+                    {/* Verify Button */}
+                    {verification.phone.isVerified ? (
+                      <div className="flex items-center justify-center px-3 bg-green-500/10 border border-green-500 rounded-md">
+                        <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      </div>
                     ) : (
                       <AnimatePresence>
-                        {phoneRegex.test(formData.number) && !verification.phone.isVerifying && (
-                          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}>
-                            <Button type="button" variant="outline" onClick={startPhoneVerify} className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white">
+                        {phoneRegex.test(formData.number) &&
+                          !verification.phone.isVerifying && (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                            >
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={startPhoneVerify}
+                                className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+                              >
                                 Verify
-                            </Button>
-                          </motion.div>
-                        )}
+                              </Button>
+                            </motion.div>
+                          )}
                       </AnimatePresence>
                     )}
                   </div>
-
-                   {/* Phone OTP Input Area */}
-                   <AnimatePresence>
+                  {/* Phone OTP Input */}
+                  <AnimatePresence>
                     {verification.phone.isVerifying && (
-                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
                         <div className="mt-2 p-3 border border-dashed border-gray-700 rounded-md bg-gray-900/30">
-                          <Label className="text-xs text-muted-foreground mb-1 block">Enter 6-digit OTP sent to mobile</Label>
+                          <Label className="text-xs text-muted-foreground mb-1 block">
+                            Enter 6-digit OTP sent to mobile
+                          </Label>
                           <div className="flex gap-2">
-                            <Input 
-                              type="text" 
-                              placeholder="123456" 
-                              maxLength={6} 
-                              className="text-center tracking-widest"
+                            <Input
+                              type="text"
+                              placeholder="123456"
+                              maxLength={6}
+                              className="text-center tracking-widest bg-gray-900/50"
                               value={verification.phone.otp}
-                              onChange={(e) => setVerification(prev => ({...prev, phone: {...prev.phone, otp: e.target.value.replace(/\D/g, '')}}))}
+                              onChange={(e) =>
+                                setVerification((prev) => ({
+                                  ...prev,
+                                  phone: {
+                                    ...prev.phone,
+                                    otp: e.target.value.replace(/\D/g, ""),
+                                  },
+                                }))
+                              }
                             />
-                            <Button type="button" size="sm" onClick={confirmPhoneOtp} className="bg-green-600 hover:bg-green-700 text-white">
-                                Confirm
+                            <Button
+                              type="button"
+                              size="sm"
+                              onClick={confirmPhoneOtp}
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                            >
+                              Confirm
                             </Button>
                           </div>
                         </div>
@@ -477,32 +619,125 @@ const Signup = () => {
 
                 {/* Password Section */}
                 <motion.div variants={itemVariants}>
-                  <Label>Password</Label>
-                  <Input type="password" placeholder="••••••••" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required disabled={isLoading} className="bg-gray-900/50" />
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                    required
+                    disabled={isLoading}
+                    className="bg-gray-900/50"
+                  />
                   <AnimatePresence>
                     {formData.password && (
-                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-2 space-y-2">
-                        <div className="flex gap-1 h-1.5">{[1, 2, 3, 4].map((l) => (<div key={l} className="h-full flex-1 rounded-full bg-gray-800 overflow-hidden"><motion.div initial={{ width: "0%" }} animate={{ width: strength >= l ? "100%" : "0%", backgroundColor: strength >= l ? (l===1?"rgb(239 68 68)": l===2 && strength<=2?"rgb(239 68 68)": l<=2 && strength>=3?"rgb(234 179 8)": l===3 && strength===3?"rgb(234 179 8)":"rgb(34 197 94)") : "transparent" }} className="h-full w-full" transition={{ duration: 0.3 }} /></div>))}</div>
-                        <div className="flex justify-between items-center text-xs"><span className={`font-medium ${strength <= 2 ? "text-red-500" : strength === 3 ? "text-yellow-500" : "text-green-500"}`}>Strength: {getStrengthText(strength)} {strength <= 2 && " (Too Weak)"}</span></div>
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="mt-2 space-y-2"
+                      >
+                        <div className="flex gap-1 h-1.5">
+                          {[1, 2, 3, 4].map((l) => (
+                            <div
+                              key={l}
+                              className="h-full flex-1 rounded-full bg-gray-800 overflow-hidden"
+                            >
+                              <motion.div
+                                initial={{ width: "0%" }}
+                                animate={{
+                                  width: strength >= l ? "100%" : "0%",
+                                  backgroundColor:
+                                    strength >= l
+                                      ? l === 1
+                                        ? "rgb(239 68 68)"
+                                        : l === 2 && strength <= 2
+                                        ? "rgb(239 68 68)"
+                                        : l <= 2 && strength >= 3
+                                        ? "rgb(234 179 8)"
+                                        : l === 3 && strength === 3
+                                        ? "rgb(234 179 8)"
+                                        : "rgb(34 197 94)"
+                                      : "transparent",
+                                }}
+                                className="h-full w-full"
+                                transition={{ duration: 0.3 }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                        <div className="flex justify-between items-center text-xs">
+                          <span
+                            className={`font-medium ${
+                              strength <= 2
+                                ? "text-red-500"
+                                : strength === 3
+                                ? "text-yellow-500"
+                                : "text-green-500"
+                            }`}
+                          >
+                            Strength: {getStrengthText(strength)}{" "}
+                            {strength <= 2 && " (Too Weak)"}
+                          </span>
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </motion.div>
 
                 <motion.div variants={itemVariants}>
-                  <Label>Confirm Password</Label>
-                  <Input type="password" placeholder="••••••••" value={formData.confirmPassword} onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} required disabled={isLoading} className="bg-gray-900/50" />
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                    required
+                    disabled={isLoading}
+                    className="bg-gray-900/50"
+                  />
                 </motion.div>
 
-                <motion.div variants={itemVariants} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                  <Button type="submit" className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white border-0" disabled={isLoading}>
-                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
+                <motion.div
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white border-0"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <ShieldCheck className="mr-2 h-4 w-4" />
+                    )}
                     {isLoading ? "Creating Account..." : "Sign Up"}
                   </Button>
                 </motion.div>
               </motion.form>
 
-              <div className="mt-6 text-center"><p className="text-sm text-muted-foreground">Already have an account? <Link to="/login" className="text-red-500 hover:text-red-400 hover:underline font-semibold">Login</Link></p></div>
+              <div className="mt-6 text-center">
+                <p className="text-sm text-muted-foreground">
+                  Already have an account?{" "}
+                  <Link
+                    to="/login"
+                    className="text-red-500 hover:text-red-400 hover:underline font-semibold"
+                  >
+                    Login
+                  </Link>
+                </p>
+              </div>
             </CardContent>
           </Card>
         </motion.div>
