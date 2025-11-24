@@ -36,7 +36,7 @@ const testimonials = [
     preAccio: "B.Com", // Placeholder Education
     image: "https://lh3.googleusercontent.com/a-/ALV-UjVg9u82-OP6b9tgeYLydpOTyHai-4TKfkDQ6DG5qqItYmHUqro8=w45-h45-p-rp-mo-br100", // Placeholder Photo
     quote: "For a person with a background in a non-technical field, TDCS trained me and helped me in improving my technical skills perfectly and land the job I had dreamed of!",
-    company: "https://upload.wikimedia.org/wikipedia/commons/e/e0/KPMG_logo.svg", // Placeholder Company
+    company: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThje25YcSfr7Con9VidIf-8UKqeLv1TzrAsg&s", // Placeholder Company
   },
   {
     name: "Aninda Khan",
