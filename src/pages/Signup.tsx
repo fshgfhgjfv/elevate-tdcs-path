@@ -506,7 +506,7 @@ const Signup = () => {
                     <Input
                       id="number"
                       type="text"
-                      placeholder="6-9xxxxxxxxx"
+                      placeholder="10-digit-number"
                       value={formData.number}
                       onChange={(e) => {
                         // Input filtering: Only allow digits
