@@ -81,36 +81,27 @@ const GoogleIcon = (props) => (
    Password strength utils
    =========================== */
 const getPasswordStrength = (password) => {
-  // returns object { score: 0..4, label, color }
   let score = 0;
   if (!password || password.length === 0) return { score: 0, label: "", color: "" };
-
   if (password.length >= 8) score++;
   if (/[A-Z]/.test(password)) score++;
   if (/[0-9]/.test(password)) score++;
   if (/[^A-Za-z0-9]/.test(password)) score++;
-
   if (score <= 1) return { score, label: "Weak", color: "red" };
   if (score === 2) return { score, label: "Fair", color: "orange" };
-  if (score === 3) return { score: "3", label: "Good", color: "yellowgreen" };
+  if (score === 3) return { score: 3, label: "Good", color: "yellowgreen" };
   return { score: 4, label: "Strong", color: "green" };
 };
 
 /* ===========================
-   Email & phone validators
+   Validators
    =========================== */
-const emailIsValid = (email) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
+const emailIsValid = (email) => /^[a-zA-Z0-9]+@gmail\.com$/.test(email);
 const phoneIsValid = (phone) => /^[0-9]{10}$/.test(phone);
 
-/* ===========================
-   Main Component
-   =========================== */
 const Signup = () => {
   const navigate = useNavigate();
 
-  // form state
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -119,12 +110,19 @@ const Signup = () => {
     confirmPassword: "",
   });
 
-  // UI & validation state
   const [isLoading, setIsLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [passwordStrength, setPasswordStrength] = useState({ score: 0, label: "", color: "" });
 
-  // animation: 3D card
+  // Phone OTP
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpInput, setOtpInput] = useState(["", "", "", "", "", ""]);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otpTimer, setOtpTimer] = useState(60);
+  const [generatedOTP, setGeneratedOTP] = useState("");
+  const otpRef = useRef([]);
+
+  // 3D animation
   const cardRef = useRef(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -138,10 +136,17 @@ const Signup = () => {
   const glareOpacitySpring = useSpring(glareOpacity, { stiffness: 400, damping: 30 });
 
   useEffect(() => {
-    // redirect if a user is already stored
     const u = localStorage.getItem("tdcs_user");
     if (u) navigate("/dashboard");
   }, [navigate]);
+
+  useEffect(() => {
+    let timer;
+    if (otpSent && otpTimer > 0) {
+      timer = setTimeout(() => setOtpTimer(otpTimer - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [otpSent, otpTimer]);
 
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
@@ -159,9 +164,7 @@ const Signup = () => {
     glareOpacity.set(0);
   };
 
-  /* -------------------------
-     GOOGLE LOGIN (POPUP)
-     ------------------------- */
+  // Google login
   const googleLogin = useGoogleLogin({
     flow: "implicit",
     onSuccess: async (tokenResponse) => {
@@ -170,19 +173,15 @@ const Signup = () => {
         const r = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
           headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
         });
-
         if (!r.ok) throw new Error("Failed to fetch Google user info");
-
         const info = await r.json();
         if (!info.email) {
           toast.error("Google account does not provide an email");
           setIsLoading(false);
           return;
         }
-
         const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
         let user = users.find((u) => u.email === info.email);
-
         if (!user) {
           user = {
             id: info.sub,
@@ -194,7 +193,6 @@ const Signup = () => {
           users.push(user);
           localStorage.setItem("tdcs_users", JSON.stringify(users));
         }
-
         localStorage.setItem("tdcs_user", JSON.stringify(user));
         toast.success("Logged in with Google!");
         navigate("/dashboard");
@@ -205,39 +203,60 @@ const Signup = () => {
         setIsLoading(false);
       }
     },
-    onError: () => {
-      toast.error("Google Sign-In failed.");
-    },
+    onError: () => toast.error("Google Sign-In failed."),
   });
 
-  /* -------------------------
-     FORM VALIDATION & SUBMIT
-     ------------------------- */
+  const handlePasswordChange = (value) => {
+    setFormData((s) => ({ ...s, password: value }));
+    setPasswordStrength(getPasswordStrength(value));
+  };
+
+  const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+  const sendOTP = () => {
+    if (!phoneIsValid(formData.number)) {
+      toast.error("Enter a valid 10-digit phone number first");
+      return;
+    }
+    const otp = generateOTP();
+    setGeneratedOTP(otp);
+    setOtpSent(true);
+    setOtpTimer(60);
+    setOtpInput(["", "", "", "", "", ""]);
+    setOtpVerified(false);
+    toast.success(`OTP sent to +91${formData.number} (demo: ${otp})`);
+  };
+  const handleOtpChange = (index, value) => {
+    if (!/^\d?$/.test(value)) return;
+    const newOtp = [...otpInput];
+    newOtp[index] = value;
+    setOtpInput(newOtp);
+    if (value && index < 5) otpRef.current[index + 1]?.focus();
+    if (newOtp.join("").length === 6) {
+      if (newOtp.join("") === generatedOTP) {
+        setOtpVerified(true);
+        toast.success("Phone verified!");
+      } else {
+        setOtpVerified(false);
+        toast.error("Incorrect OTP");
+      }
+    } else setOtpVerified(false);
+  };
+
   const validateForm = () => {
     const errors = {};
-
-    // name
     if (!formData.name.trim()) errors.name = "Please enter your full name";
     else if (formData.name.trim().length < 3) errors.name = "Name must be at least 3 characters";
-
-    // email
     if (!formData.email) errors.email = "Please enter your email";
-    else if (!emailIsValid(formData.email)) errors.email = "Enter a valid email address";
-
-    // phone
+    else if (!emailIsValid(formData.email)) errors.email = "Enter a valid Gmail address";
     if (!formData.number) errors.number = "Please enter your 10-digit phone number";
     else if (!phoneIsValid(formData.number)) errors.number = "Phone number must be 10 digits";
-
-    // password
+    else if (!otpVerified) errors.number = "Please verify your phone via OTP";
     if (!formData.password) errors.password = "Please create a password";
-    else {
-      const strength = getPasswordStrength(formData.password);
-      if (strength.score < 2) errors.password = "Password is too weak (use 8+ chars, upper, number, symbol)";
-    }
-
-    // confirm
+    else if (getPasswordStrength(formData.password).score < 2)
+      errors.password = "Password is too weak (use 8+ chars, upper, number, symbol)";
     if (!formData.confirmPassword) errors.confirmPassword = "Please confirm your password";
-    else if (formData.password !== formData.confirmPassword) errors.confirmPassword = "Passwords do not match";
+    else if (formData.password !== formData.confirmPassword)
+      errors.confirmPassword = "Passwords do not match";
 
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
@@ -246,14 +265,11 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
-
     if (!validateForm()) {
       toast.error("Please fix the highlighted errors");
       setIsLoading(false);
       return;
     }
-
-    // check existing users
     const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
     if (users.find((u) => u.email === formData.email)) {
       toast.error("An account with this email already exists");
@@ -261,58 +277,37 @@ const Signup = () => {
       setIsLoading(false);
       return;
     }
-
     const newUser = {
       id: Date.now().toString(),
       name: formData.name.trim(),
       email: formData.email.trim(),
       number: `+91${formData.number}`,
-      password: formData.password, // demo only: never store plaintext passwords in production
+      password: formData.password,
     };
-
     users.push(newUser);
     localStorage.setItem("tdcs_users", JSON.stringify(users));
     const { password, ...safe } = newUser;
     localStorage.setItem("tdcs_user", JSON.stringify(safe));
-
     toast.success("Account created successfully!");
     setIsLoading(false);
     navigate("/dashboard");
   };
 
-  /* -------------------------
-     password input change handler (live strength)
-     ------------------------- */
-  const handlePasswordChange = (value) => {
-    setFormData((s) => ({ ...s, password: value }));
-    const strength = getPasswordStrength(value);
-    setPasswordStrength(strength);
-  };
-
-  /* -------------------------
-     helper for rendering strength bar
-     ------------------------- */
   const renderStrengthBar = () => {
     const segments = 4;
     const active = Math.min(Number(passwordStrength.score) || 0, segments);
     const segs = [];
-
     for (let i = 1; i <= segments; i++) {
       const isActive = i <= active;
       let bg = "bg-gray-200";
       if (isActive) {
-        // make color progressive
         if (active === 1) bg = "bg-red-500";
         else if (active === 2) bg = "bg-orange-400";
         else if (active === 3) bg = "bg-yellow-400";
         else bg = "bg-green-500";
       }
       segs.push(
-        <div
-          key={i}
-          className={`${bg} h-1 rounded-sm transition-all duration-200`}
-          style={{ flex: 1, marginRight: i === segments ? 0 : 6 }}
-        />
+        <div key={i} className={`${bg} h-1 rounded-sm transition-all duration-200`} style={{ flex: 1, marginRight: i === segments ? 0 : 6 }} />
       );
     }
     return <div className="flex gap-1 mt-2">{segs}</div>;
@@ -320,7 +315,7 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
-      {/* Floating icons (subtle) */}
+      {/* Floating icons */}
       <div className="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
         {tools.map((tool) => (
           <motion.img
@@ -328,10 +323,7 @@ const Signup = () => {
             src={tool.src}
             alt={tool.alt}
             className="absolute h-16 w-16 md:h-24 md:w-24 opacity-10"
-            style={{
-              top: tool.y,
-              ...(tool.side === "left" ? { left: "8%" } : { right: "8%" }),
-            }}
+            style={{ top: tool.y, ...(tool.side === "left" ? { left: "8%" } : { right: "8%" }) }}
             variants={iconVariants}
             initial="hidden"
             custom={tool.side}
@@ -339,14 +331,7 @@ const Signup = () => {
               opacity: 0.12,
               x: 0,
               y: [tool.y, tool.y + 18, tool.y],
-              transition: {
-                type: "spring",
-                stiffness: 80,
-                damping: 12,
-                delay: tool.delay,
-                repeat: Infinity,
-                repeatType: "reverse",
-              },
+              transition: { type: "spring", stiffness: 80, damping: 12, delay: tool.delay, repeat: Infinity, repeatType: "reverse" },
             }}
           />
         ))}
@@ -363,32 +348,19 @@ const Signup = () => {
           transition={{ duration: 0.45 }}
           className="max-w-md mx-auto"
         >
-          <Card
-            className="shadow-lg border"
-            style={{
-              transform: "translateZ(60px)",
-              transformStyle: "preserve-3d",
-              position: "relative",
-            }}
-          >
-            {/* Glare */}
+          <Card className="shadow-lg border" style={{ transform: "translateZ(60px)", transformStyle: "preserve-3d", position: "relative" }}>
             <motion.div
               className="pointer-events-none absolute inset-0 rounded-[inherit]"
               style={{
                 opacity: glareOpacitySpring,
-                background: useTransform(
-                  [glareX, glareY],
-                  ([gx, gy]) => `radial-gradient(800px circle at ${gx} ${gy}, rgba(255,255,255,0.18), transparent 70%)`
-                ),
+                background: useTransform([glareX, glareY], ([gx, gy]) => `radial-gradient(800px circle at ${gx} ${gy}, rgba(255,255,255,0.18), transparent 70%)`),
                 zIndex: 1,
               }}
             />
-
             <CardHeader style={{ position: "relative", zIndex: 2 }}>
               <CardTitle className="text-3xl">Create Account</CardTitle>
               <CardDescription>Sign up to start your learning journey</CardDescription>
             </CardHeader>
-
             <CardContent style={{ position: "relative", zIndex: 2 }}>
               {/* Social buttons */}
               <div className="flex flex-col sm:flex-row gap-3 mb-4">
@@ -399,19 +371,10 @@ const Signup = () => {
                   disabled={isLoading}
                   aria-label="Sign up with Google"
                 >
-                  {isLoading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <GoogleIcon className="mr-2 h-4 w-4" />
-                  )}
+                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GoogleIcon className="mr-2 h-4 w-4" />}
                   Continue with Google
                 </Button>
-
-                <Button
-                  variant="outline"
-                  className="w-full flex items-center justify-center gap-2"
-                  onClick={() => toast.info("GitHub sign-in not implemented in demo")}
-                >
+                <Button variant="outline" className="w-full flex items-center justify-center gap-2" onClick={() => toast.info("GitHub sign-in not implemented in demo")}>
                   <Github className="mr-2 h-4 w-4" /> GitHub
                 </Button>
               </div>
@@ -421,7 +384,6 @@ const Signup = () => {
                 <span className="bg-card px-2 text-muted-foreground">Or sign up with email</span>
               </div>
 
-              {/* FORM */}
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Name */}
                 <div>
@@ -430,16 +392,11 @@ const Signup = () => {
                     id="name"
                     placeholder="Enter your full name"
                     value={formData.name}
-                    onChange={(e) => {
-                      setFormData({ ...formData, name: e.target.value });
-                      setFieldErrors({ ...fieldErrors, name: undefined });
-                    }}
+                    onChange={(e) => { setFormData({ ...formData, name: e.target.value }); setFieldErrors({ ...fieldErrors, name: undefined }); }}
                     aria-invalid={!!fieldErrors.name}
                     aria-describedby={fieldErrors.name ? "name-error" : undefined}
                   />
-                  {fieldErrors.name && (
-                    <p id="name-error" className="text-xs text-red-600 mt-1">{fieldErrors.name}</p>
-                  )}
+                  {fieldErrors.name && <p id="name-error" className="text-xs text-red-600 mt-1">{fieldErrors.name}</p>}
                 </div>
 
                 {/* Email */}
@@ -448,27 +405,20 @@ const Signup = () => {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Enter your email address"
+                    placeholder="Enter your Gmail address"
                     value={formData.email}
-                    onChange={(e) => {
-                      setFormData({ ...formData, email: e.target.value });
-                      setFieldErrors({ ...fieldErrors, email: undefined });
-                    }}
+                    onChange={(e) => { setFormData({ ...formData, email: e.target.value }); setFieldErrors({ ...fieldErrors, email: undefined }); }}
                     aria-invalid={!!fieldErrors.email}
                     aria-describedby={fieldErrors.email ? "email-error" : undefined}
                   />
-                  {fieldErrors.email && (
-                    <p id="email-error" className="text-xs text-red-600 mt-1">{fieldErrors.email}</p>
-                  )}
+                  {fieldErrors.email && <p id="email-error" className="text-xs text-red-600 mt-1">{fieldErrors.email}</p>}
                 </div>
 
-                {/* Phone */}
+                {/* Phone + OTP */}
                 <div>
                   <Label htmlFor="number">Phone Number</Label>
-                  <div className="flex">
-                    <span className="px-3 py-2 bg-muted rounded-l-md border border-r-0 border-input text-sm text-muted-foreground">
-                      +91
-                    </span>
+                  <div className="flex items-center gap-2">
+                    <span className="px-3 py-2 bg-muted rounded-l-md border border-r-0 border-input text-sm text-muted-foreground">+91</span>
                     <Input
                       id="number"
                       type="text"
@@ -479,15 +429,24 @@ const Signup = () => {
                         const onlyDigits = e.target.value.replace(/\D/g, "");
                         setFormData({ ...formData, number: onlyDigits });
                         setFieldErrors({ ...fieldErrors, number: undefined });
+                        setOtpSent(false);
                       }}
                       className="rounded-l-none"
                       aria-invalid={!!fieldErrors.number}
                       aria-describedby={fieldErrors.number ? "number-error" : undefined}
                     />
+                    <Button type="button" className="ml-2" disabled={otpSent || !phoneIsValid(formData.number)} onClick={sendOTP}>
+                      {otpSent ? `Resend in ${otpTimer}s` : "Send OTP"}
+                    </Button>
                   </div>
-                  {fieldErrors.number && (
-                    <p id="number-error" className="text-xs text-red-600 mt-1">{fieldErrors.number}</p>
+                  {otpSent && (
+                    <div className="flex gap-1 mt-2">
+                      {otpInput.map((digit, idx) => (
+                        <Input key={idx} ref={(el) => (otpRef.current[idx] = el)} type="text" maxLength={1} value={digit} onChange={(e) => handleOtpChange(idx, e.target.value)} className="w-10 text-center" />
+                      ))}
+                    </div>
                   )}
+                  {fieldErrors.number && <p id="number-error" className="text-xs text-red-600 mt-1">{fieldErrors.number}</p>}
                 </div>
 
                 {/* Password */}
@@ -498,14 +457,10 @@ const Signup = () => {
                     type="password"
                     placeholder="Create a strong password (8+ chars, include upper, number, symbol)"
                     value={formData.password}
-                    onChange={(e) => {
-                      handlePasswordChange(e.target.value);
-                      setFieldErrors({ ...fieldErrors, password: undefined });
-                    }}
+                    onChange={(e) => { handlePasswordChange(e.target.value); setFieldErrors({ ...fieldErrors, password: undefined }); }}
                     aria-invalid={!!fieldErrors.password}
                     aria-describedby={fieldErrors.password ? "password-error" : undefined}
                   />
-                  {/* strength bar and label */}
                   {passwordStrength.label && (
                     <div className="mt-2">
                       {renderStrengthBar()}
@@ -514,9 +469,7 @@ const Signup = () => {
                       </p>
                     </div>
                   )}
-                  {fieldErrors.password && (
-                    <p id="password-error" className="text-xs text-red-600 mt-1">{fieldErrors.password}</p>
-                  )}
+                  {fieldErrors.password && <p id="password-error" className="text-xs text-red-600 mt-1">{fieldErrors.password}</p>}
                 </div>
 
                 {/* Confirm Password */}
@@ -527,19 +480,13 @@ const Signup = () => {
                     type="password"
                     placeholder="Re-enter your password"
                     value={formData.confirmPassword}
-                    onChange={(e) => {
-                      setFormData({ ...formData, confirmPassword: e.target.value });
-                      setFieldErrors({ ...fieldErrors, confirmPassword: undefined });
-                    }}
+                    onChange={(e) => { setFormData({ ...formData, confirmPassword: e.target.value }); setFieldErrors({ ...fieldErrors, confirmPassword: undefined }); }}
                     aria-invalid={!!fieldErrors.confirmPassword}
                     aria-describedby={fieldErrors.confirmPassword ? "confirm-error" : undefined}
                   />
-                  {fieldErrors.confirmPassword && (
-                    <p id="confirm-error" className="text-xs text-red-600 mt-1">{fieldErrors.confirmPassword}</p>
-                  )}
+                  {fieldErrors.confirmPassword && <p id="confirm-error" className="text-xs text-red-600 mt-1">{fieldErrors.confirmPassword}</p>}
                 </div>
 
-                {/* Submit */}
                 <div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Sign Up"}
