@@ -38,25 +38,26 @@ import SimpleAdminPanel from "./pages/admin/SimpleAdminPanel";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-// ⭐ NEW COMPONENT → Redirect to Home on Refresh
+// ⭐ NEW COMPONENT → Redirect to Home on Refresh (exclude auth pages)
 export const RefreshRedirect = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
-      if (location.pathname !== "/") {
+      const skipPaths = ["/", "/signup", "/login"];
+      if (!skipPaths.includes(location.pathname)) {
         navigate("/", { replace: true });
       }
     }
-  }, []);
+  }, [location.pathname, navigate]);
 
   return null;
 };
 
 const queryClient = new QueryClient();
 
-// ⭐ ADD THIS
+// ⭐ GOOGLE LOGIN
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const App = () => (
@@ -65,11 +66,8 @@ const App = () => (
       <Toaster />
       <Sonner />
 
-      {/* ⭐ GOOGLE LOGIN FIX WRAPPER ADDED */}
       <GoogleOAuthProvider clientId="736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com">
-
         <BrowserRouter>
-          {/* ⭐ Added here */}
           <RefreshRedirect />
 
           <ScrollToTop />
@@ -118,10 +116,7 @@ const App = () => (
 
           <Footer />
         </BrowserRouter>
-
       </GoogleOAuthProvider>
-      {/* ⭐ END GOOGLE WRAPPER */}
-
     </TooltipProvider>
   </QueryClientProvider>
 );
