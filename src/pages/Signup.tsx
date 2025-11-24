@@ -18,90 +18,94 @@ import {
 } from "framer-motion";
 import { toast } from "sonner";
 import { Loader2, Github } from "lucide-react";
-import { useGoogleLogin } from "@react-oauth/google";
+// --- 1. IMPORT GOOGLE OAUTH PROVIDER & HOOK ---
+import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
-/* ===========================
-   Floating tools & animations
-   =========================== */
+// --- 2. SET GOOGLE CLIENT ID ---
+// IMPORTANT: The Client Secret MUST NOT be used in frontend code.
+// It is for your backend server ONLY.
+const googleClientId =
+  "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
+
+// --- Define Floating Tools & Animations ---
 const tools = [
   {
     src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
     alt: "Kali Linux",
-    side: "left",
+    side: "left" as "left" | "right",
     delay: 0.2,
     y: 150,
   },
   {
     src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1",
     alt: "Burp Suite",
-    side: "left",
+    side: "left" as "left" | "right",
     delay: 0.4,
     y: 350,
   },
   {
     src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true",
     alt: "Wireshark",
-    side: "right",
+    side: "right" as "left" | "right",
     delay: 0.3,
     y: 120,
   },
   {
     src: "https://assets.tryhackme.com/img/modules/metasploit.png",
-    alt: "Metasploit",
-    side: "right",
+    alt: "Nmap", // Alt text was incorrect, this is Metasploit logo
+    side: "right" as "left" | "right",
     delay: 0.5,
     y: 320,
   },
+  {
+    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
+    alt: "Metasploit",
+    side: "left" as "left" | "right",
+    delay: 0.6,
+    y: 500,
+  },
 ];
 
+// Variants for the initial slide-in
 const iconVariants = {
-  hidden: (side) => ({
+  hidden: (side: "left" | "right") => ({
     opacity: 0,
-    x: side === "left" ? -100 : 100,
+    x: side === "left" ? -100 : 100, // Come from off-screen
     scale: 0.5,
   }),
 };
+// --- End Floating Tools ---
 
-/* ===========================
-   Small Google SVG
-   =========================== */
-const GoogleIcon = (props) => (
-  <svg {...props} viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+// --- Google Icon Helper ---
+const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    {...props}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 48 48"
+  >
     <path
       fill="#FFC107"
-      d="M43.6 20.1H42v-.1H24v8h11.3c-1.7 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12 0-6.6 5.4-12 12-12 3.1 0 5.8 1.2 8 3L43.6 8C39 4 32.8 2 24 2 12.9 2 4 10.9 4 22c0 11.1 8.9 20 20 20 11.1 0 20-8.9 20-20 0-1.3-.1-2.6-.4-3.9z"
+      d="M43.611,20.083H42V20H24v8h11.303c-1.659,4.696-6.142,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
     />
-    <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 18.9 12 24 12c3.1 0 5.8 1.2 8 3L43.6 8C39 4 32.8 2 24 2 16.3 2 9.7 6.3 6.3 14.7z" />
-    <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.7-3.3-11.3-7.9l-6.5 5C9.5 41.2 16.3 44 24 44z" />
-    <path fill="#1976D2" d="M43.6 20.1H42v-.1H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C41.4 34.5 44 29.6 44 24c0-1.3-.1-2.6-.4-3.9z" />
+    <path
+      fill="#FF3D00"
+      d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
+    />
+    <path
+      fill="#4CAF50"
+      d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.16,0-9.658-3.302-11.303-7.918l-6.522,5.023C9.505,41.246,16.227,44,24,44z"
+    />
+    <path
+      fill="#1976D2"
+      d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C41.383,34.463,44,29.625,44,24C44,22.659,43.862,21.35,43.611,20.083z"
+    />
   </svg>
 );
-
-/* ===========================
-   Password strength utils
-   =========================== */
-const getPasswordStrength = (password) => {
-  let score = 0;
-  if (!password || password.length === 0) return { score: 0, label: "", color: "" };
-  if (password.length >= 8) score++;
-  if (/[A-Z]/.test(password)) score++;
-  if (/[0-9]/.test(password)) score++;
-  if (/[^A-Za-z0-9]/.test(password)) score++;
-  if (score <= 1) return { score, label: "Weak", color: "red" };
-  if (score === 2) return { score, label: "Fair", color: "orange" };
-  if (score === 3) return { score: 3, label: "Good", color: "yellowgreen" };
-  return { score: 4, label: "Strong", color: "green" };
-};
-
-/* ===========================
-   Validators
-   =========================== */
-const emailIsValid = (email) => /^[a-zA-Z0-9]+@gmail\.com$/.test(email);
-const phoneIsValid = (phone) => /^[0-9]{10}$/.test(phone);
+// --- End Google Icon ---
 
 const Signup = () => {
   const navigate = useNavigate();
-
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -110,394 +114,480 @@ const Signup = () => {
     confirmPassword: "",
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState({});
-  const [passwordStrength, setPasswordStrength] = useState({ score: 0, label: "", color: "" });
+  useEffect(() => {
+    // Redirect if already logged in
+    const user = localStorage.getItem("tdcs_user");
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
-  // Phone OTP
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpInput, setOtpInput] = useState(["", "", "", "", "", ""]);
-  const [otpVerified, setOtpVerified] = useState(false);
-  const [otpTimer, setOtpTimer] = useState(60);
-  const [generatedOTP, setGeneratedOTP] = useState("");
-  const otpRef = useRef([]);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  // 3D animation
-  const cardRef = useRef(null);
+    const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
+    const { name, email, number, password, confirmPassword } = formData;
+
+    // Client-side validation
+    if (!name || !email || !number || !password || !confirmPassword) {
+      toast.error("Please fill in all fields");
+      setIsLoading(false);
+      return;
+    }
+    if (!email.includes("@")) {
+      toast.error("Please enter a valid email");
+      setIsLoading(false);
+      return;
+    }
+    if (!/^[0-9]{10}$/.test(number)) {
+      toast.error("Please enter a valid 10-digit phone number");
+      setIsLoading(false);
+      return;
+    }
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      setIsLoading(false);
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast.error("Passwords don't match");
+      setIsLoading(false);
+      return;
+    }
+    if (users.find((u: any) => u.email === email)) {
+      toast.error("User with this email already exists");
+      setIsLoading(false);
+      return;
+    }
+
+    // Simulate API delay for animation
+    setTimeout(() => {
+      // Create new user
+      const newUser = {
+        id: Date.now().toString(),
+        name,
+        email,
+        number: `+91${number}`,
+        password, // Note: Storing plain text passwords is a security risk
+      };
+      users.push(newUser);
+      localStorage.setItem("tdcs_users", JSON.stringify(users));
+      const { password: _, ...userWithoutPassword } = newUser;
+      localStorage.setItem("tdcs_user", JSON.stringify(userWithoutPassword));
+
+      toast.success("Account created successfully!");
+      setIsLoading(false);
+      navigate("/dashboard");
+    }, 1000);
+  };
+
+  // --- 3. GOOGLE SIGNUP HANDLERS ---
+  const handleGoogleSuccess = async (tokenResponse: any) => {
+    setIsLoading(true);
+    try {
+      // Fetch user info from Google
+      const userInfoResponse = await fetch(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+        }
+      );
+
+      if (!userInfoResponse.ok) {
+        throw new Error("Failed to fetch user info from Google");
+      }
+
+      const userInfo = await userInfoResponse.json();
+      const { email, name, sub: googleId } = userInfo;
+
+      if (!email) {
+        toast.error("Google account must have a verified email.");
+        setIsLoading(false);
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
+      let user = users.find((u: any) => u.email === email);
+      let isNewUser = false;
+
+      if (!user) {
+        // New user - register them
+        user = {
+          id: googleId, // Use Google ID as unique ID
+          name,
+          email,
+          number: "", // Google doesn't provide this
+          isGoogleUser: true, // Flag for Google login
+        };
+        users.push(user);
+        localStorage.setItem("tdcs_users", JSON.stringify(users));
+        isNewUser = true;
+      }
+
+      // Log the user in
+      // Note: We don't have/need a password for Google users
+      const { password: _, ...userToLogin } = user;
+      localStorage.setItem("tdcs_user", JSON.stringify(userToLogin));
+
+      toast.success(
+        isNewUser ? "Account created successfully!" : "Logged in successfully!"
+      );
+      setIsLoading(false);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+      toast.error("Google Sign-In failed. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    console.error("Google Sign-In Error");
+    toast.error("Google Sign-In failed.");
+    setIsLoading(false);
+  };
+
+  // Initialize the Google login hook
+  const googleLogin = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: handleGoogleError,
+  });
+
+  const handleGitHubSignup = (provider: string) => {
+    toast.info(`Sign up with ${provider} is not implemented in this demo.`);
+  };
+
+  // --- 3D Card Tilt Animation Hooks ---
+  const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+
+  // Spring-ify the mouse values for smoother movement
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["12deg", "-12deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-12deg", "12deg"]);
+
+  // Increased tilt angle (from 10deg to 20deg)
+  const rotateX = useTransform(
+    mouseYSpring,
+    [-0.5, 0.5],
+    ["20deg", "-20deg"] // More dramatic tilt
+  );
+  const rotateY = useTransform(
+    mouseXSpring,
+    [-0.5, 0.5],
+    ["-20deg", "20deg"] // More dramatic tilt
+  );
+
+  // NEW: Glare Effect Hooks
   const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ["0%", "100%"]);
   const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ["0%", "100%"]);
   const glareOpacity = useMotionValue(0);
-  const glareOpacitySpring = useSpring(glareOpacity, { stiffness: 400, damping: 30 });
+  const glareOpacitySpring = useSpring(glareOpacity, {
+    stiffness: 400,
+    damping: 30,
+  });
+  // --- End 3D Card ---
 
-  useEffect(() => {
-    const u = localStorage.getItem("tdcs_user");
-    if (u) navigate("/dashboard");
-  }, [navigate]);
-
-  useEffect(() => {
-    let timer;
-    if (otpSent && otpTimer > 0) {
-      timer = setTimeout(() => setOtpTimer(otpTimer - 1), 1000);
-    }
-    return () => clearTimeout(timer);
-  }, [otpSent, otpTimer]);
-
-  const handleMouseMove = (e) => {
+  // --- Mouse Handlers ---
+  const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
-    const xPct = (e.clientX - rect.left) / rect.width - 0.5;
-    const yPct = (e.clientY - rect.top) / rect.height - 0.5;
+    const width = rect.width;
+    const height = rect.height;
+    const xPct = (e.clientX - rect.left) / width - 0.5;
+    const yPct = (e.clientY - rect.top) / height - 0.5;
     x.set(xPct);
     y.set(yPct);
-    glareOpacity.set(0.15);
+    glareOpacity.set(0.15); // Show glare on move
   };
-
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
-    glareOpacity.set(0);
+    glareOpacity.set(0); // Hide glare on leave
   };
+  // --- End Mouse Handlers ---
 
-  // Google login
-  const googleLogin = useGoogleLogin({
-    flow: "implicit",
-    onSuccess: async (tokenResponse) => {
-      setIsLoading(true);
-      try {
-        const r = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-        });
-        if (!r.ok) throw new Error("Failed to fetch Google user info");
-        const info = await r.json();
-        if (!info.email) {
-          toast.error("Google account does not provide an email");
-          setIsLoading(false);
-          return;
-        }
-        const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
-        let user = users.find((u) => u.email === info.email);
-        if (!user) {
-          user = {
-            id: info.sub,
-            name: info.name || "",
-            email: info.email,
-            number: "",
-            isGoogleUser: true,
-          };
-          users.push(user);
-          localStorage.setItem("tdcs_users", JSON.stringify(users));
-        }
-        localStorage.setItem("tdcs_user", JSON.stringify(user));
-        toast.success("Logged in with Google!");
-        navigate("/dashboard");
-      } catch (err) {
-        console.error(err);
-        toast.error("Google Sign-In failed.");
-      } finally {
-        setIsLoading(false);
-      }
+  // --- Staggered Form Animation ---
+  const formVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
     },
-    onError: () => toast.error("Google Sign-In failed."),
-  });
-
-  const handlePasswordChange = (value) => {
-    setFormData((s) => ({ ...s, password: value }));
-    setPasswordStrength(getPasswordStrength(value));
   };
 
-  const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
-  const sendOTP = () => {
-    if (!phoneIsValid(formData.number)) {
-      toast.error("Enter a valid 10-digit phone number first");
-      return;
-    }
-    const otp = generateOTP();
-    setGeneratedOTP(otp);
-    setOtpSent(true);
-    setOtpTimer(60);
-    setOtpInput(["", "", "", "", "", ""]);
-    setOtpVerified(false);
-    toast.success(`OTP sent to +91${formData.number} (demo: ${otp})`);
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
   };
-  const handleOtpChange = (index, value) => {
-    if (!/^\d?$/.test(value)) return;
-    const newOtp = [...otpInput];
-    newOtp[index] = value;
-    setOtpInput(newOtp);
-    if (value && index < 5) otpRef.current[index + 1]?.focus();
-    if (newOtp.join("").length === 6) {
-      if (newOtp.join("") === generatedOTP) {
-        setOtpVerified(true);
-        toast.success("Phone verified!");
-      } else {
-        setOtpVerified(false);
-        toast.error("Incorrect OTP");
-      }
-    } else setOtpVerified(false);
-  };
-
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.name.trim()) errors.name = "Please enter your full name";
-    else if (formData.name.trim().length < 3) errors.name = "Name must be at least 3 characters";
-    if (!formData.email) errors.email = "Please enter your email";
-    else if (!emailIsValid(formData.email)) errors.email = "Enter a valid Gmail address";
-    if (!formData.number) errors.number = "Please enter your 10-digit phone number";
-    else if (!phoneIsValid(formData.number)) errors.number = "Phone number must be 10 digits";
-    else if (!otpVerified) errors.number = "Please verify your phone via OTP";
-    if (!formData.password) errors.password = "Please create a password";
-    else if (getPasswordStrength(formData.password).score < 2)
-      errors.password = "Password is too weak (use 8+ chars, upper, number, symbol)";
-    if (!formData.confirmPassword) errors.confirmPassword = "Please confirm your password";
-    else if (formData.password !== formData.confirmPassword)
-      errors.confirmPassword = "Passwords do not match";
-
-    setFieldErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    if (!validateForm()) {
-      toast.error("Please fix the highlighted errors");
-      setIsLoading(false);
-      return;
-    }
-    const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
-    if (users.find((u) => u.email === formData.email)) {
-      toast.error("An account with this email already exists");
-      setFieldErrors({ email: "Email already registered" });
-      setIsLoading(false);
-      return;
-    }
-    const newUser = {
-      id: Date.now().toString(),
-      name: formData.name.trim(),
-      email: formData.email.trim(),
-      number: `+91${formData.number}`,
-      password: formData.password,
-    };
-    users.push(newUser);
-    localStorage.setItem("tdcs_users", JSON.stringify(users));
-    const { password, ...safe } = newUser;
-    localStorage.setItem("tdcs_user", JSON.stringify(safe));
-    toast.success("Account created successfully!");
-    setIsLoading(false);
-    navigate("/dashboard");
-  };
-
-  const renderStrengthBar = () => {
-    const segments = 4;
-    const active = Math.min(Number(passwordStrength.score) || 0, segments);
-    const segs = [];
-    for (let i = 1; i <= segments; i++) {
-      const isActive = i <= active;
-      let bg = "bg-gray-200";
-      if (isActive) {
-        if (active === 1) bg = "bg-red-500";
-        else if (active === 2) bg = "bg-orange-400";
-        else if (active === 3) bg = "bg-yellow-400";
-        else bg = "bg-green-500";
-      }
-      segs.push(
-        <div key={i} className={`${bg} h-1 rounded-sm transition-all duration-200`} style={{ flex: 1, marginRight: i === segments ? 0 : 6 }} />
-      );
-    }
-    return <div className="flex gap-1 mt-2">{segs}</div>;
-  };
+  // --- End Staggered ---
 
   return (
     <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
-      {/* Floating icons */}
-      <div className="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      {/* --- Floating Tools --- */}
+      <div
+        className="absolute inset-0 -z-10 overflow-hidden"
+        aria-hidden="true"
+      >
         {tools.map((tool) => (
           <motion.img
             key={tool.alt}
             src={tool.src}
             alt={tool.alt}
-            className="absolute h-16 w-16 md:h-24 md:w-24 opacity-10"
-            style={{ top: tool.y, ...(tool.side === "left" ? { left: "8%" } : { right: "8%" }) }}
+            className="absolute h-16 w-16 md:h-24 md:w-24"
+            style={{
+              top: tool.y,
+              ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }),
+            }}
             variants={iconVariants}
             initial="hidden"
             custom={tool.side}
             animate={{
-              opacity: 0.12,
+              opacity: 0.1,
               x: 0,
-              y: [tool.y, tool.y + 18, tool.y],
-              transition: { type: "spring", stiffness: 80, damping: 12, delay: tool.delay, repeat: Infinity, repeatType: "reverse" },
+              scale: 1,
+              y: [tool.y, tool.y + 20, tool.y], // Bob up and down
+              transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 10,
+                delay: tool.delay,
+                y: {
+                  duration: 2 + Math.random() * 1,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeInOut",
+                },
+              },
             }}
           />
         ))}
       </div>
+      {/* --- End Floating Tools --- */}
 
       <div className="container mx-auto px-4">
         <motion.div
           ref={cardRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          style={{ transformStyle: "preserve-3d", rotateX, rotateY }}
-          initial={{ opacity: 0, y: 16 }}
+          style={{
+            transformStyle: "preserve-3d",
+            rotateX,
+            rotateY,
+          }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
+          transition={{ duration: 0.5 }}
           className="max-w-md mx-auto"
         >
-          <Card className="shadow-lg border" style={{ transform: "translateZ(60px)", transformStyle: "preserve-3d", position: "relative" }}>
+          {/* --- CARD UPDATED HERE --- */}
+          <Card
+            className="shadow-glow-lg dark border border-red-600"
+            style={{
+              transform: "translateZ(100px)", // Increased depth
+              transformStyle: "preserve-3d",
+              // This ensures the children (glare, header, content) stack correctly
+              position: "relative",
+            }}
+          >
+            {/* --- NEW: GLARE ELEMENT --- */}
+            {/* This div sits on top of the card's background but below the content */}
             <motion.div
               className="pointer-events-none absolute inset-0 rounded-[inherit]"
               style={{
                 opacity: glareOpacitySpring,
-                background: useTransform([glareX, glareY], ([gx, gy]) => `radial-gradient(800px circle at ${gx} ${gy}, rgba(255,255,255,0.18), transparent 70%)`),
-                zIndex: 1,
+                background: useTransform(
+                  [glareX, glareY],
+                  ([latestX, latestY]) =>
+                    `radial-gradient(800px circle at ${latestX} ${latestY}, rgba(255, 255, 255, 0.2), transparent 80%)`
+                ),
+                zIndex: 1, // Sit above card bg (0) but below content (2)
               }}
             />
-            <CardHeader style={{ position: "relative", zIndex: 2 }}>
-              <CardTitle className="text-3xl">Create Account</CardTitle>
-              <CardDescription>Sign up to start your learning journey</CardDescription>
+
+            {/* --- UPDATE CARD SECTIONS --- */}
+            <CardHeader
+              style={{ position: "relative", zIndex: 2 }} // Ensure content is above glare
+            >
+              <CardTitle className="text-3xl gradient-text">
+                Create Account
+              </CardTitle>
+              <CardDescription>
+                Sign up to start your learning journey
+              </CardDescription>
             </CardHeader>
-            <CardContent style={{ position: "relative", zIndex: 2 }}>
-              {/* Social buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 mb-4">
-                <Button
-                  variant="outline"
-                  className="w-full flex items-center justify-center gap-2"
-                  onClick={() => googleLogin()}
-                  disabled={isLoading}
-                  aria-label="Sign up with Google"
+            <CardContent
+              style={{ position: "relative", zIndex: 2 }} // Ensure content is above glare
+            >
+              <motion.form
+                onSubmit={handleSubmit}
+                className="space-y-4"
+                variants={formVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                {/* --- 4. SOCIAL LOGINS --- */}
+                <motion.div
+                  variants={itemVariants}
+                  className="flex flex-col sm:flex-row gap-3"
                 >
-                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GoogleIcon className="mr-2 h-4 w-4" />}
-                  Continue with Google
-                </Button>
-                <Button variant="outline" className="w-full flex items-center justify-center gap-2" onClick={() => toast.info("GitHub sign-in not implemented in demo")}>
-                  <Github className="mr-2 h-4 w-4" /> GitHub
-                </Button>
-              </div>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => googleLogin()} // <<< 4. CALL GOOGLE LOGIN HOOK
+                    type="button"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <GoogleIcon className="mr-2 h-4 w-4" />
+                    )}
+                    Sign up with Google
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => handleGitHubSignup("GitHub")}
+                    type="button"
+                    disabled={isLoading}
+                  >
+                    <Github className="mr-2 h-4 w-4" />
+                    Sign up with GitHub
+                  </Button>
+                </motion.div>
 
-              {/* Divider */}
-              <div className="relative my-4 text-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Or sign up with email</span>
-              </div>
+                {/* --- 5. DIVIDER --- */}
+                <motion.div variants={itemVariants} className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">
+                      Or sign up with email
+                    </span>
+                  </div>
+                </motion.div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Name */}
-                <div>
+                {/* --- Form Fields --- */}
+                <motion.div variants={itemVariants}>
                   <Label htmlFor="name">Full Name</Label>
                   <Input
                     id="name"
-                    placeholder="Enter your full name"
+                    type="text"
+                    placeholder="John Doe"
                     value={formData.name}
-                    onChange={(e) => { setFormData({ ...formData, name: e.target.value }); setFieldErrors({ ...fieldErrors, name: undefined }); }}
-                    aria-invalid={!!fieldErrors.name}
-                    aria-describedby={fieldErrors.name ? "name-error" : undefined}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    required
+                    disabled={isLoading}
                   />
-                  {fieldErrors.name && <p id="name-error" className="text-xs text-red-600 mt-1">{fieldErrors.name}</p>}
-                </div>
+                </motion.div>
 
-                {/* Email */}
-                <div>
+                <motion.div variants={itemVariants}>
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Enter your Gmail address"
+                    placeholder="your@email.com"
                     value={formData.email}
-                    onChange={(e) => { setFormData({ ...formData, email: e.target.value }); setFieldErrors({ ...fieldErrors, email: undefined }); }}
-                    aria-invalid={!!fieldErrors.email}
-                    aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    required
+                    disabled={isLoading}
                   />
-                  {fieldErrors.email && <p id="email-error" className="text-xs text-red-600 mt-1">{fieldErrors.email}</p>}
-                </div>
+                </motion.div>
 
-                {/* Phone + OTP */}
-                <div>
+                <motion.div variants={itemVariants}>
                   <Label htmlFor="number">Phone Number</Label>
-                  <div className="flex items-center gap-2">
-                    <span className="px-3 py-2 bg-muted rounded-l-md border border-r-0 border-input text-sm text-muted-foreground">+91</span>
+                  <div className="flex items-center">
+                    <span className="px-3 py-2 bg-muted rounded-l-md border border-r-0 border-input text-sm text-muted-foreground">
+                      +91
+                    </span>
                     <Input
                       id="number"
                       type="text"
-                      maxLength={10}
-                      placeholder="Enter your 10-digit phone number"
+                      placeholder="10-digit number"
                       value={formData.number}
                       onChange={(e) => {
-                        const onlyDigits = e.target.value.replace(/\D/g, "");
-                        setFormData({ ...formData, number: onlyDigits });
-                        setFieldErrors({ ...fieldErrors, number: undefined });
-                        setOtpSent(false);
+                        const value = e.target.value.replace(/\D/g, "");
+                        if (value.length <= 10) {
+                          setFormData({ ...formData, number: value });
+                        }
                       }}
                       className="rounded-l-none"
-                      aria-invalid={!!fieldErrors.number}
-                      aria-describedby={fieldErrors.number ? "number-error" : undefined}
+                      required
+                      disabled={isLoading}
                     />
-                    <Button type="button" className="ml-2" disabled={otpSent || !phoneIsValid(formData.number)} onClick={sendOTP}>
-                      {otpSent ? `Resend in ${otpTimer}s` : "Send OTP"}
-                    </Button>
                   </div>
-                  {otpSent && (
-                    <div className="flex gap-1 mt-2">
-                      {otpInput.map((digit, idx) => (
-                        <Input key={idx} ref={(el) => (otpRef.current[idx] = el)} type="text" maxLength={1} value={digit} onChange={(e) => handleOtpChange(idx, e.target.value)} className="w-10 text-center" />
-                      ))}
-                    </div>
-                  )}
-                  {fieldErrors.number && <p id="number-error" className="text-xs text-red-600 mt-1">{fieldErrors.number}</p>}
-                </div>
+                </motion.div>
 
-                {/* Password */}
-                <div>
+                <motion.div variants={itemVariants}>
                   <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
                     type="password"
-                    placeholder="Create a strong password (8+ chars, include upper, number, symbol)"
+                    placeholder="••••••••"
                     value={formData.password}
-                    onChange={(e) => { handlePasswordChange(e.target.value); setFieldErrors({ ...fieldErrors, password: undefined }); }}
-                    aria-invalid={!!fieldErrors.password}
-                    aria-describedby={fieldErrors.password ? "password-error" : undefined}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                    required
+                    disabled={isLoading}
                   />
-                  {passwordStrength.label && (
-                    <div className="mt-2">
-                      {renderStrengthBar()}
-                      <p className="text-xs font-semibold mt-1" style={{ color: passwordStrength.color }}>
-                        {passwordStrength.label} password
-                      </p>
-                    </div>
-                  )}
-                  {fieldErrors.password && <p id="password-error" className="text-xs text-red-600 mt-1">{fieldErrors.password}</p>}
-                </div>
+                </motion.div>
 
-                {/* Confirm Password */}
-                <div>
+                <motion.div variants={itemVariants}>
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <Input
                     id="confirmPassword"
                     type="password"
-                    placeholder="Re-enter your password"
+                    placeholder="••••••••"
                     value={formData.confirmPassword}
-                    onChange={(e) => { setFormData({ ...formData, confirmPassword: e.target.value }); setFieldErrors({ ...fieldErrors, confirmPassword: undefined }); }}
-                    aria-invalid={!!fieldErrors.confirmPassword}
-                    aria-describedby={fieldErrors.confirmPassword ? "confirm-error" : undefined}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                    required
+                    disabled={isLoading}
                   />
-                  {fieldErrors.confirmPassword && <p id="confirm-error" className="text-xs text-red-600 mt-1">{fieldErrors.confirmPassword}</p>}
-                </div>
+                </motion.div>
 
-                <div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Sign Up"}
+                <motion.div
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Button
+                    type="submit"
+                    variant="gradient"
+                    className="w-full"
+                    disabled={isLoading}
+                  >
+                    {isLoading && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    {isLoading ? "Signing Up..." : "Sign Up"}
                   </Button>
-                </div>
-              </form>
+                </motion.div>
+              </motion.form>
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-muted-foreground">
                   Already have an account?{" "}
-                  <Link to="/login" className="text-primary hover:underline font-semibold">Login</Link>
+                  <Link
+                    to="/login"
+                    className="text-primary hover:underline font-semibold"
+                  >
+                    Login
+                  </Link>
                 </p>
               </div>
             </CardContent>
@@ -508,4 +598,12 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+// --- 5. WRAP COMPONENT IN PROVIDER ---
+// This ensures the useGoogleLogin() hook has access to the client ID
+const SignupWithGoogleAuth = () => (
+  <GoogleOAuthProvider clientId={googleClientId}>
+    <Signup />
+  </GoogleOAuthProvider>
+);
+
+export default SignupWithGoogleAuth;
