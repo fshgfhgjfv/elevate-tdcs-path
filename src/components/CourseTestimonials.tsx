@@ -50,7 +50,7 @@ const testimonials = [
     name: "Kabita Mondal",
     role: "Application Developer @Thoughtworks",
     preAccio: "M.Sc in CS",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
+    image: "https://lh3.googleusercontent.com/a-/ALV-UjWqB6KP5Lc-T7C1POzxL-r-J-wKad79kZfJjPnI-qjeS6xb7rRR=w45-h45-p-rp-mo-br100",
     quote: "Low CGPA in college was a constant worry. TDCS made me realise the importance of making real-time projects. In just 5 months, I mastered and landed a great job.",
     company: "https://www.thoughtworks.com/content/dam/thoughtworks/images/photography/brand/thoughtworks-logo.svg",
   },
