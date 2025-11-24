@@ -15,15 +15,13 @@ import {
   useMotionValue,
   useTransform,
   useSpring,
+  AnimatePresence,
 } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, Github } from "lucide-react";
-// --- 1. IMPORT GOOGLE OAUTH PROVIDER & HOOK ---
+import { Loader2, Github, Check, X } from "lucide-react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
-// --- 2. SET GOOGLE CLIENT ID ---
-// IMPORTANT: The Client Secret MUST NOT be used in frontend code.
-// It is for your backend server ONLY.
+// --- CONFIGURATION ---
 const googleClientId =
   "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
 
@@ -52,7 +50,7 @@ const tools = [
   },
   {
     src: "https://assets.tryhackme.com/img/modules/metasploit.png",
-    alt: "Nmap", // Alt text was incorrect, this is Metasploit logo
+    alt: "Nmap", 
     side: "right" as "left" | "right",
     delay: 0.5,
     y: 320,
@@ -66,23 +64,17 @@ const tools = [
   },
 ];
 
-// Variants for the initial slide-in
 const iconVariants = {
   hidden: (side: "left" | "right") => ({
     opacity: 0,
-    x: side === "left" ? -100 : 100, // Come from off-screen
+    x: side === "left" ? -100 : 100,
     scale: 0.5,
   }),
 };
-// --- End Floating Tools ---
 
 // --- Google Icon Helper ---
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    {...props}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 48 48"
-  >
+  <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
     <path
       fill="#FFC107"
       d="M43.611,20.083H42V20H24v8h11.303c-1.659,4.696-6.142,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
@@ -101,7 +93,6 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     />
   </svg>
 );
-// --- End Google Icon ---
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -114,8 +105,45 @@ const Signup = () => {
     confirmPassword: "",
   });
 
+  // --- Password Strength Logic ---
+  const [strength, setStrength] = useState(0);
+
   useEffect(() => {
-    // Redirect if already logged in
+    const pass = formData.password;
+    let score = 0;
+    if (!pass) {
+      setStrength(0);
+      return;
+    }
+
+    if (pass.length > 5) score += 1; // Base length
+    if (pass.length > 10) score += 1; // Good length
+    if (/[A-Z]/.test(pass)) score += 1; // Uppercase
+    if (/[0-9]/.test(pass)) score += 1; // Number
+    if (/[^A-Za-z0-9]/.test(pass)) score += 1; // Special char
+
+    setStrength(score);
+  }, [formData.password]);
+
+  const getStrengthColor = (s: number) => {
+    if (s === 0) return "bg-muted";
+    if (s <= 2) return "bg-red-500";
+    if (s === 3) return "bg-yellow-500";
+    if (s >= 4) return "bg-green-500";
+    return "bg-muted";
+  };
+
+  const getStrengthText = (s: number) => {
+    if (s === 0) return "";
+    if (s <= 2) return "Weak";
+    if (s === 3) return "Medium";
+    if (s >= 4) return "Strong";
+    if (s === 5) return "Very Strong";
+    return "";
+  };
+  // --- End Password Strength Logic ---
+
+  useEffect(() => {
     const user = localStorage.getItem("tdcs_user");
     if (user) {
       navigate("/dashboard");
@@ -129,7 +157,6 @@ const Signup = () => {
     const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
     const { name, email, number, password, confirmPassword } = formData;
 
-    // Client-side validation
     if (!name || !email || !number || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
       setIsLoading(false);
@@ -161,15 +188,13 @@ const Signup = () => {
       return;
     }
 
-    // Simulate API delay for animation
     setTimeout(() => {
-      // Create new user
       const newUser = {
         id: Date.now().toString(),
         name,
         email,
         number: `+91${number}`,
-        password, // Note: Storing plain text passwords is a security risk
+        password,
       };
       users.push(newUser);
       localStorage.setItem("tdcs_users", JSON.stringify(users));
@@ -182,11 +207,10 @@ const Signup = () => {
     }, 1000);
   };
 
-  // --- 3. GOOGLE SIGNUP HANDLERS ---
+  // --- Google Signup ---
   const handleGoogleSuccess = async (tokenResponse: any) => {
     setIsLoading(true);
     try {
-      // Fetch user info from Google
       const userInfoResponse = await fetch(
         "https://www.googleapis.com/oauth2/v3/userinfo",
         {
@@ -212,21 +236,18 @@ const Signup = () => {
       let isNewUser = false;
 
       if (!user) {
-        // New user - register them
         user = {
-          id: googleId, // Use Google ID as unique ID
+          id: googleId,
           name,
           email,
-          number: "", // Google doesn't provide this
-          isGoogleUser: true, // Flag for Google login
+          number: "",
+          isGoogleUser: true,
         };
         users.push(user);
         localStorage.setItem("tdcs_users", JSON.stringify(users));
         isNewUser = true;
       }
 
-      // Log the user in
-      // Note: We don't have/need a password for Google users
       const { password: _, ...userToLogin } = user;
       localStorage.setItem("tdcs_user", JSON.stringify(userToLogin));
 
@@ -248,7 +269,6 @@ const Signup = () => {
     setIsLoading(false);
   };
 
-  // Initialize the Google login hook
   const googleLogin = useGoogleLogin({
     onSuccess: handleGoogleSuccess,
     onError: handleGoogleError,
@@ -258,28 +278,14 @@ const Signup = () => {
     toast.info(`Sign up with ${provider} is not implemented in this demo.`);
   };
 
-  // --- 3D Card Tilt Animation Hooks ---
+  // --- 3D Card Animations ---
   const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-
-  // Spring-ify the mouse values for smoother movement
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
-
-  // Increased tilt angle (from 10deg to 20deg)
-  const rotateX = useTransform(
-    mouseYSpring,
-    [-0.5, 0.5],
-    ["20deg", "-20deg"] // More dramatic tilt
-  );
-  const rotateY = useTransform(
-    mouseXSpring,
-    [-0.5, 0.5],
-    ["-20deg", "20deg"] // More dramatic tilt
-  );
-
-  // NEW: Glare Effect Hooks
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["20deg", "-20deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-20deg", "20deg"]);
   const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ["0%", "100%"]);
   const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ["0%", "100%"]);
   const glareOpacity = useMotionValue(0);
@@ -287,9 +293,7 @@ const Signup = () => {
     stiffness: 400,
     damping: 30,
   });
-  // --- End 3D Card ---
 
-  // --- Mouse Handlers ---
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
@@ -299,23 +303,19 @@ const Signup = () => {
     const yPct = (e.clientY - rect.top) / height - 0.5;
     x.set(xPct);
     y.set(yPct);
-    glareOpacity.set(0.15); // Show glare on move
+    glareOpacity.set(0.15);
   };
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
-    glareOpacity.set(0); // Hide glare on leave
+    glareOpacity.set(0);
   };
-  // --- End Mouse Handlers ---
 
-  // --- Staggered Form Animation ---
   const formVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.1 },
     },
   };
 
@@ -323,7 +323,6 @@ const Signup = () => {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
-  // --- End Staggered ---
 
   return (
     <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
@@ -349,7 +348,7 @@ const Signup = () => {
               opacity: 0.1,
               x: 0,
               scale: 1,
-              y: [tool.y, tool.y + 20, tool.y], // Bob up and down
+              y: [tool.y, tool.y + 20, tool.y],
               transition: {
                 type: "spring",
                 stiffness: 100,
@@ -366,7 +365,6 @@ const Signup = () => {
           />
         ))}
       </div>
-      {/* --- End Floating Tools --- */}
 
       <div className="container mx-auto px-4">
         <motion.div
@@ -383,18 +381,14 @@ const Signup = () => {
           transition={{ duration: 0.5 }}
           className="max-w-md mx-auto"
         >
-          {/* --- CARD UPDATED HERE --- */}
           <Card
-            className="shadow-glow-lg dark border border-red-600"
+            className="shadow-glow-lg dark border border-red-600/50 bg-black/80 backdrop-blur-sm"
             style={{
-              transform: "translateZ(100px)", // Increased depth
+              transform: "translateZ(100px)",
               transformStyle: "preserve-3d",
-              // This ensures the children (glare, header, content) stack correctly
               position: "relative",
             }}
           >
-            {/* --- NEW: GLARE ELEMENT --- */}
-            {/* This div sits on top of the card's background but below the content */}
             <motion.div
               className="pointer-events-none absolute inset-0 rounded-[inherit]"
               style={{
@@ -404,24 +398,19 @@ const Signup = () => {
                   ([latestX, latestY]) =>
                     `radial-gradient(800px circle at ${latestX} ${latestY}, rgba(255, 255, 255, 0.2), transparent 80%)`
                 ),
-                zIndex: 1, // Sit above card bg (0) but below content (2)
+                zIndex: 1,
               }}
             />
 
-            {/* --- UPDATE CARD SECTIONS --- */}
-            <CardHeader
-              style={{ position: "relative", zIndex: 2 }} // Ensure content is above glare
-            >
-              <CardTitle className="text-3xl gradient-text">
+            <CardHeader style={{ position: "relative", zIndex: 2 }}>
+              <CardTitle className="text-3xl bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
                 Create Account
               </CardTitle>
               <CardDescription>
                 Sign up to start your learning journey
               </CardDescription>
             </CardHeader>
-            <CardContent
-              style={{ position: "relative", zIndex: 2 }} // Ensure content is above glare
-            >
+            <CardContent style={{ position: "relative", zIndex: 2 }}>
               <motion.form
                 onSubmit={handleSubmit}
                 className="space-y-4"
@@ -429,7 +418,6 @@ const Signup = () => {
                 initial="hidden"
                 animate="visible"
               >
-                {/* --- 4. SOCIAL LOGINS --- */}
                 <motion.div
                   variants={itemVariants}
                   className="flex flex-col sm:flex-row gap-3"
@@ -437,7 +425,7 @@ const Signup = () => {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => googleLogin()} // <<< 4. CALL GOOGLE LOGIN HOOK
+                    onClick={() => googleLogin()}
                     type="button"
                     disabled={isLoading}
                   >
@@ -446,7 +434,7 @@ const Signup = () => {
                     ) : (
                       <GoogleIcon className="mr-2 h-4 w-4" />
                     )}
-                    Sign up with Google
+                    Google
                   </Button>
                   <Button
                     variant="outline"
@@ -456,23 +444,21 @@ const Signup = () => {
                     disabled={isLoading}
                   >
                     <Github className="mr-2 h-4 w-4" />
-                    Sign up with GitHub
+                    GitHub
                   </Button>
                 </motion.div>
 
-                {/* --- 5. DIVIDER --- */}
                 <motion.div variants={itemVariants} className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
+                    <span className="w-full border-t border-gray-700" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-muted-foreground">
-                      Or sign up with email
+                    <span className="bg-black px-2 text-muted-foreground">
+                      Or email
                     </span>
                   </div>
                 </motion.div>
 
-                {/* --- Form Fields --- */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="name">Full Name</Label>
                   <Input
@@ -485,6 +471,7 @@ const Signup = () => {
                     }
                     required
                     disabled={isLoading}
+                    className="bg-gray-900/50"
                   />
                 </motion.div>
 
@@ -500,13 +487,14 @@ const Signup = () => {
                     }
                     required
                     disabled={isLoading}
+                    className="bg-gray-900/50"
                   />
                 </motion.div>
 
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="number">Phone Number</Label>
                   <div className="flex items-center">
-                    <span className="px-3 py-2 bg-muted rounded-l-md border border-r-0 border-input text-sm text-muted-foreground">
+                    <span className="px-3 py-2 bg-gray-900/50 rounded-l-md border border-r-0 border-input text-sm text-muted-foreground h-10 flex items-center">
                       +91
                     </span>
                     <Input
@@ -520,7 +508,7 @@ const Signup = () => {
                           setFormData({ ...formData, number: value });
                         }
                       }}
-                      className="rounded-l-none"
+                      className="rounded-l-none bg-gray-900/50"
                       required
                       disabled={isLoading}
                     />
@@ -539,7 +527,100 @@ const Signup = () => {
                     }
                     required
                     disabled={isLoading}
+                    className="bg-gray-900/50"
                   />
+                  {/* --- PASSWORD STRENGTH METER --- */}
+                  <AnimatePresence>
+                    {formData.password && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="mt-2 space-y-2"
+                      >
+                        {/* Strength Bars */}
+                        <div className="flex gap-1 h-1.5">
+                          {[1, 2, 3, 4].map((level) => (
+                            <div
+                              key={level}
+                              className="h-full flex-1 rounded-full bg-gray-800 overflow-hidden"
+                            >
+                              <motion.div
+                                initial={{ width: "0%" }}
+                                animate={{
+                                  width: strength >= level ? "100%" : "0%",
+                                  backgroundColor:
+                                    strength >= level
+                                      ? // Helper function to determine color based on CURRENT total strength, not bar index
+                                        level === 1
+                                        ? "rgb(239 68 68)" // Red
+                                        : level === 2 && strength <= 2
+                                        ? "rgb(239 68 68)"
+                                        : level <= 2 && strength >= 3
+                                        ? "rgb(234 179 8)" // Yellow
+                                        : level === 3 && strength === 3
+                                        ? "rgb(234 179 8)"
+                                        : "rgb(34 197 94)" // Green
+                                      : "transparent",
+                                }}
+                                className={`h-full w-full ${getStrengthColor(
+                                  strength
+                                )}`}
+                                transition={{ duration: 0.3 }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Status Text */}
+                        <div className="flex justify-between items-center text-xs">
+                          <span
+                            className={`font-medium ${
+                              strength <= 2
+                                ? "text-red-500"
+                                : strength === 3
+                                ? "text-yellow-500"
+                                : "text-green-500"
+                            }`}
+                          >
+                            Strength: {getStrengthText(strength)}
+                          </span>
+
+                          {/* Optional: Requirement Checklist */}
+                          <div className="flex gap-2 text-[10px] text-muted-foreground">
+                            <span
+                              className={
+                                formData.password.length >= 6
+                                  ? "text-green-500"
+                                  : ""
+                              }
+                            >
+                              6+ chars
+                            </span>
+                            <span
+                              className={
+                                /[0-9]/.test(formData.password)
+                                  ? "text-green-500"
+                                  : ""
+                              }
+                            >
+                              Num
+                            </span>
+                            <span
+                              className={
+                                /[^A-Za-z0-9]/.test(formData.password)
+                                  ? "text-green-500"
+                                  : ""
+                              }
+                            >
+                              Sym
+                            </span>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  {/* --- END METER --- */}
                 </motion.div>
 
                 <motion.div variants={itemVariants}>
@@ -557,6 +638,7 @@ const Signup = () => {
                     }
                     required
                     disabled={isLoading}
+                    className="bg-gray-900/50"
                   />
                 </motion.div>
 
@@ -567,8 +649,7 @@ const Signup = () => {
                 >
                   <Button
                     type="submit"
-                    variant="gradient"
-                    className="w-full"
+                    className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white border-0"
                     disabled={isLoading}
                   >
                     {isLoading && (
@@ -584,7 +665,7 @@ const Signup = () => {
                   Already have an account?{" "}
                   <Link
                     to="/login"
-                    className="text-primary hover:underline font-semibold"
+                    className="text-red-500 hover:text-red-400 hover:underline font-semibold"
                   >
                     Login
                   </Link>
@@ -598,8 +679,6 @@ const Signup = () => {
   );
 };
 
-// --- 5. WRAP COMPONENT IN PROVIDER ---
-// This ensures the useGoogleLogin() hook has access to the client ID
 const SignupWithGoogleAuth = () => (
   <GoogleOAuthProvider clientId={googleClientId}>
     <Signup />
