@@ -20,7 +20,7 @@ const testimonials: Testimonial[] = [
     quoteTitle: "Exceptional Talent Pipeline",
     quoteText: "We hired rockstar developers from TDCS! The candidates are enjoying high ownership - having sound fundamentals and first principal thinking. The best part is they require minimal on-job training.",
     authorName: "Dibyajit Ghosh",
-    authorTitle: "Co-founder & CTO",
+    authorTitle: "Co-founder & CEO",
     authorAvatar: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhhQ9heh07dWNTxnm6dhyphenhyphen2rzfxjmA_xS3UXPh3sBCY_B2ywNCfyr8QXWKLsur3PJKzLo-pUsoGmIfTmGl8m7cGmUezdk_RvStMnzxjIstX1S-V6gc2PrG8WkudchJv_c0LuVu0xbO7mUnWh5mWZHMe9THz3dwqCLTN0-2bAoI0k_rynUr6vk2xDdSKi0bM-/s539/WhatsApp_Image_2025-10-26_at_15.56.54_d2e7dc94-removebg-preview.png",
     linkedinUrl: "#"
   },
@@ -29,7 +29,7 @@ const testimonials: Testimonial[] = [
     quoteTitle: "Best Off-Campus Partner",
     quoteText: "TDCS has become our exclusive off-campus partner for hiring entry-level developers. Their assessment to selection ratio is unbelievable. The students are all-rounders and require little on-job training.",
     authorName: "Shivam Shing",
-    authorTitle: "Sr. Director Engineering",
+    authorTitle: "Chief Operating Officer",
     authorAvatar: "https://blogger.googleusercontent.com/img/a/AVvXsEgrwmLkO5Feodxq5QaY_atrGnsO9pqgfFM05kadDK8NB_24j-cIBsML47l20CtYES_Zfa4jUVR24_u4po_QnjcsO4yiRZUlpESCdAb2JVdbzkhp3gaU55kpGn_v-EUQaxkosCtzSR3-0eyjtW4m9gkglNME7wzxffg-A0kX98SqspAZNX1Aep3Wf-OgGpoP",
     linkedinUrl: "#"
   },
@@ -38,7 +38,7 @@ const testimonials: Testimonial[] = [
     quoteTitle: "Unparalleled Value Addition",
     quoteText: "PayGlocal today has the best engineers on board because of TDCS. The value they add to a student's career and the company's hiring needs is unparalleled. It's become a ritual for us to ping TDCS for new openings.",
     authorName: "Tushar Bhakta",
-    authorTitle: "Co-founder & CTO",
+    authorTitle: "Chief Marketing Officer",
     authorAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80",
     linkedinUrl: "#"
   }
