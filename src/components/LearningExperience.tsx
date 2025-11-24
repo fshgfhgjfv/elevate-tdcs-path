@@ -4,22 +4,22 @@ import { motion } from "framer-motion";
 
 const experiences = [
   {
-    imgSrc: "/images/modern-classroom.jpg",
+    imgSrc: "https://your-google-image-link-1.jpg",
     title: "Modern Classrooms",
     description: "State-of-the-art classrooms with interactive lectures taught by industry professionals.",
   },
   {
-    imgSrc: "/images/learn-by-doing.jpg",
+    imgSrc: "https://your-google-image-link-2.jpg",
     title: "Learn By Doing",
     description: "Environment for intense practical & applied learning that prepare you for real-world challenges.",
   },
   {
-    imgSrc: "/images/student-practice-area.jpg",
+    imgSrc: "https://your-google-image-link-3.jpg",
     title: "Student Practice Area",
     description: "Go-to zone for practice, collaborations & self-improvement.",
   },
   {
-    imgSrc: "/images/peer-to-peer-learning.jpg",
+    imgSrc: "https://your-google-image-link-4.jpg",
     title: "Peer to Peer Learning",
     description: "Collaborative learning that helps you grow with your batchmates.",
   },
