@@ -18,13 +18,11 @@ import {
 } from "framer-motion";
 import { toast } from "sonner";
 import { Loader2, Github } from "lucide-react";
-
-// --- GOOGLE LOGIN IMPORT ---
 import { useGoogleLogin } from "@react-oauth/google";
 
-// GOOGLE ICON
+// ✔ FIXED GOOGLE ICON (full SVG)
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <svg {...props} viewBox="0 0 48 48">
     <path
       fill="#FFC107"
       d="M43.611,20.083H42V20H24v8h11.303c-1.659..."
@@ -81,6 +79,8 @@ const iconVariants = {
 const Signup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+
+  // Form state
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -95,6 +95,7 @@ const Signup = () => {
     if (user) navigate("/dashboard");
   }, [navigate]);
 
+  // Email signup
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -154,7 +155,7 @@ const Signup = () => {
     }, 1000);
   };
 
-  // --- GOOGLE LOGIN SUCCESS HANDLER ---
+  // ⭐ GOOGLE LOGIN SUCCESS
   const handleGoogleSuccess = async (tokenResponse: any) => {
     setIsLoading(true);
     try {
@@ -198,16 +199,16 @@ const Signup = () => {
     toast.error("Google Sign-In failed.");
   };
 
-  // --- GOOGLE LOGIN (POPUP MODE, FIXED) ---
+  // ⭐ GOOGLE LOGIN POPUP (NO REDIRECTS)
   const googleLogin = useGoogleLogin({
     onSuccess: handleGoogleSuccess,
     onError: handleGoogleError,
-    flow: "implicit", // <<< FIX: Popup mode only, no redirects
+    flow: "implicit", // ✔ FIXED — works with popup only
   });
 
   const handleGitHubSignup = () => toast.info("GitHub sign-in not implemented.");
 
-  // UI ANIMATION (unchanged)
+  // --- Animation setup (unchanged) ---
   const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -365,6 +366,7 @@ const Signup = () => {
                   </Button>
                 </motion.div>
 
+                {/* Divider */}
                 <motion.div variants={itemVariants} className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
@@ -376,6 +378,7 @@ const Signup = () => {
                   </div>
                 </motion.div>
 
+                {/* Name */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="name">Full Name</Label>
                   <Input
@@ -391,6 +394,7 @@ const Signup = () => {
                   />
                 </motion.div>
 
+                {/* Email */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -406,6 +410,7 @@ const Signup = () => {
                   />
                 </motion.div>
 
+                {/* Phone */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="number">Phone Number</Label>
                   <div className="flex items-center">
@@ -433,6 +438,7 @@ const Signup = () => {
                   </div>
                 </motion.div>
 
+                {/* Password */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="password">Password</Label>
                   <Input
@@ -448,6 +454,7 @@ const Signup = () => {
                   />
                 </motion.div>
 
+                {/* Confirm Password */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <Input
@@ -466,6 +473,7 @@ const Signup = () => {
                   />
                 </motion.div>
 
+                {/* Submit */}
                 <motion.div
                   variants={itemVariants}
                   whileHover={{ scale: 1.03 }}
@@ -504,5 +512,4 @@ const Signup = () => {
   );
 };
 
-// --- THIS IS THE CORRECT FINAL EXPORT ---
 export default Signup;
