@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /
+
+# Send ALL routes to index.html
+RewriteRule ^index\.html$ - [L]
+RewriteRule ^.*$ /index.html [L]
