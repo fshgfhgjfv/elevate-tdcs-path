@@ -11,7 +11,7 @@ const testimonials = [
     preAccio: "B.Tech",
     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_JiiwmCLRbJUO0pW--Up0dl5OY1vLyXgHzw&s",
     quote: "The whole training is designed keeping each and every student and their educational and professional past in mind. The batch managers keep track of our progress every month.",
-    company: "https://upload.wikimedia.org/wikipedia/commons/c/ca/Walmart_logo.svg",
+    company: "https://logolook.net/wp-content/uploads/2024/02/Mahindra-and-Mahindra-Logo-2000.png",
   },
   {
     name: "Pradyot Verma",
