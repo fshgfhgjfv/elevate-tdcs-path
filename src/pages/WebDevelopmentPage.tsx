@@ -7,7 +7,7 @@ import { ArrowLeft, Check, ChevronDown, Code, Cpu, Globe, Layers, Zap } from "lu
 
 // ✅ Import your specific component
 // If this path is slightly different in your project, please adjust it.
-import ScrollingTestimonials from "@/components/ScrollingTestimonials"; 
+
 
 export default function WebDevelopmentPage() {
   const navigate = useNavigate();
