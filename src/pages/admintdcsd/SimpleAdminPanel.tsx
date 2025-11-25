@@ -1,393 +1,282 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Shield, LogOut, BookOpen, FileText, DollarSign, Loader2 } from 'lucide-react';
+import { 
+  Shield, LogOut, BookOpen, FileText, DollarSign, 
+  Loader2, Wifi, Users, MoreVertical, Edit, Trash2 
+} from 'lucide-react';
 
-// --- MOCK UTILITIES AND CLIENTS (Required for Single-File Execution) ---
+// --- 1. MOCK DATA & UTILITIES ---
 
-// 1. Mock useToast hook
+// specific mock data based on your request
+const MOCK_COURSES = [
+  { 
+    id: 1, 
+    title: "Cyber Master's Pro Lite", 
+    description: "Foundational ethical hacking & network security program for beginners.", 
+    price: 499, 
+    mode: "Live Online",
+    students: 120,
+    slug: "cyber-lite", 
+    published: true, 
+    created_at: new Date().toISOString() 
+  },
+  { 
+    id: 2, 
+    title: "Cyber Master's Pro Black Hat", 
+    description: "Advanced program covering exploit dev, malware analysis, red teaming & advanced pentesting.", 
+    price: 19999, 
+    mode: "Live Online",
+    students: 45,
+    slug: "black-hat-pro", 
+    published: true, 
+    created_at: new Date().toISOString() 
+  },
+  { 
+    id: 3, 
+    title: "Bug Hunting & Penetration Testing", 
+    description: "Professional bug bounty hunting methodologies and web application penetration testing.", 
+    price: 6999, 
+    mode: "Live Online",
+    students: 85,
+    slug: "bug-bounty", 
+    published: true, 
+    created_at: new Date().toISOString() 
+  },
+];
+
 const useToast = () => {
   const toast = (props) => {
-    const message = props.title + (props.description ? ": " + props.description : "");
-    const style = props.variant === "destructive" ? "bg-red-500 text-white" : "bg-green-500 text-white";
-    console.log(`[TOAST]: ${message}`);
-    
-    // Simple UI notification replacement for alert/toast
+    const style = props.variant === "destructive" ? "bg-red-600" : "bg-emerald-600";
     const notification = document.createElement('div');
-    notification.className = `fixed bottom-4 right-4 p-4 rounded-lg shadow-xl z-50 transition-transform duration-300 transform translate-x-0 ${style}`;
-    notification.textContent = message;
+    notification.className = `fixed bottom-4 right-4 p-4 rounded-lg shadow-2xl z-50 text-white flex flex-col gap-1 min-w-[300px] animate-slideIn ${style}`;
+    notification.innerHTML = `<span class="font-bold">${props.title}</span><span class="text-sm opacity-90">${props.description || ''}</span>`;
     document.body.appendChild(notification);
-
     setTimeout(() => {
-      notification.classList.add('translate-x-full');
-      notification.addEventListener('transitionend', () => notification.remove());
+      notification.style.opacity = '0';
+      setTimeout(() => notification.remove(), 300);
     }, 3000);
   };
   return { toast };
 };
 
-// 2. Mock Supabase Client
-// We must mock the full asynchronous behavior of the Supabase methods.
-const MOCK_ADMIN_EMAIL = "admin@tdcs.com";
-const MOCK_ADMIN_PASSWORD = "password123";
-const MOCK_ADMIN_ID = "admin-user-123";
-const MOCK_COURSES = [
-  { id: 1, title: "Cyber Master's Pro Lite", description: "Deep dive into state management and performance.", price: 499, slug: "react-hooks", published: true, created_at: new Date(Date.now() - 86400000).toISOString() },
-  { id: 2, title: "Cyber Master's Pro Black Hat", description: "Build stunning, responsive interfaces faster.", price:19999, slug: "tailwind-mastery", published: false, created_at: new Date(Date.now() - 172800000).toISOString() },
-  { id: 3, title: "Bug Bounty & Penetration Testing", description: "Authentication and database setup.", price: 6999, slug: "supabase-backend", published: true, created_at: new Date(Date.now() - 259200000).toISOString() },
-];
-
+// Mock Auth Client
 const mockSupabase = {
     auth: {
-        async getSession() {
-            // Simulate persistent session check (e.g., from local storage)
-            const mockSession = localStorage.getItem('mockSupabaseSession');
-            if (mockSession) {
-                return { data: { session: JSON.parse(mockSession) } };
+        signInWithPassword: async ({ email, password }) => {
+            await new Promise(r => setTimeout(r, 800)); // Fake delay
+            if (email === "admin@tdcs.com" && password === "password123") {
+                return { data: { user: { id: "admin-1", email } }, error: null };
             }
-            return { data: { session: null } };
+            return { data: null, error: { message: "Invalid credentials" } };
         },
-        async signInWithPassword({ email, password }) {
-            await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-            if (email === MOCK_ADMIN_EMAIL && password === MOCK_ADMIN_PASSWORD) {
-                const session = { user: { id: MOCK_ADMIN_ID, email } };
-                localStorage.setItem('mockSupabaseSession', JSON.stringify(session));
-                return { data: session, error: null };
-            }
-            return { data: null, error: new Error("Invalid login credentials.") };
-        },
-        async signOut() {
-            await new Promise(resolve => setTimeout(resolve, 200));
-            localStorage.removeItem('mockSupabaseSession');
+        signOut: async () => {
+            await new Promise(r => setTimeout(r, 300));
             return { error: null };
         }
     },
-    from: (tableName) => ({
+    from: (table) => ({
         select: () => ({
-            order: () => ({
-                // Mock for the 'courses' table query
-                async then(resolve, reject) {
-                    await new Promise(r => setTimeout(r, 500));
-                    if (tableName === "courses") {
-                        resolve({ data: MOCK_COURSES, error: null });
-                    } else if (tableName === "user_roles") {
-                         // Mock role check
-                        const session = JSON.parse(localStorage.getItem('mockSupabaseSession') || 'null');
-                        if (session?.user?.id === MOCK_ADMIN_ID) {
-                            resolve({ data: [{ role: "admin" }], error: null });
-                        } else {
-                            resolve({ data: null, error: null });
-                        }
-                    } else {
-                        reject(new Error("Mock table not found."));
-                    }
-                }
-            }),
-            // Mock for select().eq().eq().single() used in role check
-            eq: () => ({
-                eq: () => ({
-                    single: async () => {
-                        await new Promise(r => setTimeout(r, 100));
-                        const session = JSON.parse(localStorage.getItem('mockSupabaseSession') || 'null');
-                        if (session?.user?.id === MOCK_ADMIN_ID) {
-                            return { data: { role: "admin" }, error: null };
-                        } else {
-                            return { data: null, error: null };
-                        }
-                    }
-                })
-            })
+            order: async () => ({ data: MOCK_COURSES, error: null })
         })
     })
 };
 
-// --- COMPONENT LOGIC STARTS HERE ---
+// --- 2. COMPONENTS ---
 
-const AdminLogin = ({ email, setEmail, password, setPassword, handleLogin, isLoading }) => (
-    <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-md w-full">
-            <div className="p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-primary/50">
-                <div className="text-center mb-6">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
-                        <Shield className="w-8 h-8 text-white" />
+const LoginScreen = ({ handleLogin, isLoading }) => {
+    const [email, setEmail] = useState("admin@tdcs.com");
+    const [password, setPassword] = useState("password123");
+
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
+            <div className="max-w-md w-full bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-2xl">
+                <div className="text-center mb-8">
+                    <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Shield className="w-8 h-8 text-blue-500" />
                     </div>
-                    <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Admin Login</h1>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Access the content management system.</p>
+                    <h1 className="text-2xl font-bold text-white">TDCS Admin Portal</h1>
+                    <p className="text-gray-400 text-sm mt-2">Enter credentials to manage courses</p>
                 </div>
-                <form onSubmit={handleLogin} className="space-y-6">
+                <form onSubmit={(e) => { e.preventDefault(); handleLogin(email, password); }} className="space-y-4">
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Email
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            placeholder="admin@tdcs.com (Try: admin@tdcs.com)"
+                        <label className="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
+                        <input 
+                            type="email" 
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white placeholder-gray-400"
+                            onChange={e => setEmail(e.target.value)}
+                            className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                         />
                     </div>
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Password
-                        </label>
-                        <input
-                            id="password"
-                            type="password"
-                            placeholder="•••••••• (Try: password123)"
+                        <label className="block text-sm font-medium text-gray-400 mb-1">Password</label>
+                        <input 
+                            type="password" 
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white placeholder-gray-400"
+                            onChange={e => setPassword(e.target.value)}
+                            className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                         />
                     </div>
-                    <button
-                        type="submit"
-                        className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                    <button 
                         disabled={isLoading}
+                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-3 rounded-lg transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center"
                     >
-                        {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Login"}
+                        {isLoading ? <Loader2 className="animate-spin w-5 h-5" /> : "Sign In to Dashboard"}
                     </button>
                 </form>
+            </div>
+        </div>
+    );
+};
+
+const CourseCard = ({ course }) => (
+    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+        {/* Card Header / Image Placeholder */}
+        <div className="h-32 bg-gradient-to-br from-slate-800 to-slate-900 p-6 relative">
+            <div className="absolute top-4 left-4">
+                <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 backdrop-blur-sm border border-red-500/30 text-red-100 text-xs font-bold uppercase tracking-wider">
+                    <Wifi className="w-3 h-3 animate-pulse" />
+                    {course.mode}
+                </span>
+            </div>
+            <div className="absolute top-4 right-4">
+                <button className="p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors">
+                    <MoreVertical className="w-4 h-4" />
+                </button>
+            </div>
+        </div>
+
+        {/* Card Body */}
+        <div className="p-6">
+            <div className="flex justify-between items-start mb-4">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white leading-tight group-hover:text-blue-500 transition-colors">
+                    {course.title}
+                </h3>
+            </div>
+            
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-6 line-clamp-2 min-h-[40px]">
+                {course.description}
+            </p>
+
+            {/* Stats Row */}
+            <div className="flex items-center gap-4 mb-6 text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center gap-1.5">
+                    <Users className="w-4 h-4 text-blue-500" />
+                    <span>{course.students} Enrolled</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                    <BookOpen className="w-4 h-4 text-purple-500" />
+                    <span>{course.slug}</span>
+                </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+                <div>
+                    <span className="text-xs text-gray-500 uppercase font-semibold">Price</span>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                        ₹{course.price.toLocaleString()}
+                    </div>
+                </div>
+                <div className="flex gap-2">
+                    <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors">
+                        <Edit className="w-5 h-5" />
+                    </button>
+                    <button className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold rounded-lg hover:opacity-90 transition-opacity">
+                        View Details
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 );
 
+// --- 3. MAIN APP ---
 
-// Main App Component
 export default function App() {
-    // MODIFIED: Starting isAuthenticated as true to load dashboard immediately
-    const [isAuthenticated, setIsAuthenticated] = useState(true); 
-    const [isLoading, setIsLoading] = useState(true);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [view, setView] = useState('login'); // Start at login
+    const [isLoading, setIsLoading] = useState(false);
     const [courses, setCourses] = useState([]);
     const { toast } = useToast();
 
-    // MODIFIED: Starting view as 'dashboard'
-    const [view, setView] = useState('dashboard'); 
-
-    const loadCourses = useCallback(async () => {
-        try {
-            setIsLoading(true);
-            const { data, error } = await mockSupabase
-                .from("courses")
-                .select("*")
-                .order("created_at", { ascending: false });
-
-            if (error) throw error;
-            setCourses(data || []);
-        } catch (error) {
-            toast({
-                title: "Error loading courses",
-                description: error.message,
-                variant: "destructive",
-            });
-        } finally {
-            setIsLoading(false);
-        }
-    }, [toast]);
-
-    const checkAuth = useCallback(async () => {
-        // This function is now effectively disabled for instant viewing
-        // but remains here for a proper future implementation.
-        try {
-            const { data: { session } } = await mockSupabase.auth.getSession();
-            if (session?.user) {
-                const { data: roles } = await mockSupabase
-                    .from("user_roles")
-                    .select("role")
-                    .eq("user_id", session.user.id)
-                    .eq("role", "admin")
-                    .single();
-
-                if (roles) {
-                    setIsAuthenticated(true);
-                    setView('dashboard');
-                    await loadCourses();
-                } else {
-                    setIsAuthenticated(false);
-                    setView('login');
-                }
-            } else {
-                setIsAuthenticated(false);
-                setView('login');
-            }
-        } catch (error) {
-            console.error("Auth check error:", error);
-            setIsAuthenticated(false);
-            setView('login');
-        } finally {
-            setIsLoading(false);
-        }
-    }, [loadCourses]);
-
-    useEffect(() => {
-        // MODIFIED: Directly call loadCourses since isAuthenticated is now true by default
-        loadCourses();
-    }, [loadCourses]);
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
+    const handleLogin = async (email, password) => {
         setIsLoading(true);
-
-        try {
-            const { data, error } = await mockSupabase.auth.signInWithPassword({
-                email,
-                password,
-            });
-
-            if (error) throw error;
-
-            // Mock check if user has admin role
-            const { data: roles } = await mockSupabase
-                .from("user_roles")
-                .select("role")
-                .eq("user_id", data.user.id)
-                .eq("role", "admin")
-                .single();
-
-            if (!roles) {
-                await mockSupabase.auth.signOut();
-                throw new Error("Access denied. Admin role required.");
-            }
-
-            setIsAuthenticated(true);
+        const { error } = await mockSupabase.auth.signInWithPassword({ email, password });
+        
+        if (error) {
+            toast({ title: "Access Denied", description: error.message, variant: "destructive" });
+            setIsLoading(false);
+        } else {
+            toast({ title: "Welcome Admin", description: "Loading dashboard data..." });
+            // Simulate data fetch
+            const { data } = await mockSupabase.from('courses').select().order();
+            setCourses(data);
             setView('dashboard');
-            await loadCourses();
-            toast({
-                title: "Welcome Admin!",
-                description: "Successfully logged in to admin panel (Mocked)",
-            });
-        } catch (error) {
-            toast({
-                title: "Login failed",
-                description: error.message || "An unknown error occurred.",
-                variant: "destructive",
-            });
-            setIsAuthenticated(false);
-        } finally {
             setIsLoading(false);
         }
     };
 
     const handleLogout = async () => {
-        // NOTE: Logging out will take you back to the login page.
+        setIsLoading(true);
         await mockSupabase.auth.signOut();
-        setIsAuthenticated(false);
         setView('login');
-        toast({
-            title: "Logged out",
-            description: "Successfully logged out from admin panel (Mocked)",
-        });
+        setIsLoading(false);
+        toast({ title: "Logged Out", description: "See you next time." });
     };
 
-    if (isLoading && view !== 'login') {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-                <div className="text-center">
-                    <Loader2 className="animate-spin h-12 w-12 text-indigo-500 mx-auto mb-4" />
-                    <p className="text-lg font-medium text-gray-700 dark:text-gray-300">Loading Dashboard...</p>
-                </div>
-            </div>
-        );
+    if (view === 'login') {
+        return <LoginScreen handleLogin={handleLogin} isLoading={isLoading} />;
     }
 
-    if (!isAuthenticated) {
-        return (
-            <AdminLogin 
-                email={email} 
-                setEmail={setEmail} 
-                password={password} 
-                setPassword={setPassword} 
-                handleLogin={handleLogin} 
-                isLoading={isLoading} 
-            />
-        );
-    }
-
-    // --- Admin Dashboard View ---
     return (
-        <div className="min-h-screen pt-12 pb-12 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
-            {/* Consolidated global styles and animations in one standard <style> block */}
-            <style>{`
-                .gradient-text {
-                    background-image: linear-gradient(45deg, #4f46e5, #9333ea);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
-                    color: transparent;
-                }
-                @keyframes fadeInUp {
-                    from { opacity: 0; transform: translateY(20px); }
-                    to { opacity: 1; transform: translateY(0); }
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 font-sans">
+             {/* Global Animation Styles */}
+             <style>{`
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
                 }
             `}</style>
-            <div className="container mx-auto max-w-7xl">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                    <div>
-                        <h1 className="text-4xl font-bold gradient-text">Admin Dashboard</h1>
-                        <p className="text-gray-500 dark:text-gray-400 mt-2">Manage your courses and content (Mock Data)</p>
-                    </div>
-                    <button 
-                        className="mt-4 sm:mt-0 flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-gray-700 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
-                        onClick={handleLogout}
-                    >
-                        <LogOut className="mr-2 h-4 w-4" />
-                        Logout
-                    </button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {courses.length === 0 ? (
-                        <div className="col-span-full p-12 text-center bg-white dark:bg-gray-800 rounded-xl shadow-md">
-                            <p className="text-gray-500 dark:text-gray-400">No courses found in database</p>
+            
+            {/* Top Navigation */}
+            <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-4 sticky top-0 z-40">
+                <div className="max-w-7xl mx-auto flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-blue-600 p-2 rounded-lg">
+                            <Shield className="w-5 h-5 text-white" />
                         </div>
-                    ) : (
-                        courses.map((course, index) => (
-                            <div
-                                key={course.id}
-                                className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl"
-                                style={{ animation: `fadeInUp 0.5s ease-out ${index * 0.1}s forwards`, opacity: 0 }}
-                            >
-                                {/* Removed the <style jsx> block from here as keyframes are now global */}
-                                <div className="flex items-start justify-between gap-2 mb-4">
-                                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white line-clamp-2">
-                                        {course.title}
-                                    </h2>
-                                    {course.published && (
-                                        <span className="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 shadow-sm">
-                                            Published
-                                        </span>
-                                    )}
-                                </div>
-                                
-                                <div className="space-y-3 text-sm border-t pt-4">
-                                    <div className="flex items-start gap-3 text-gray-600 dark:text-gray-400">
-                                        <FileText className="h-4 w-4 mt-1 flex-shrink-0 text-indigo-500" />
-                                        <span className="line-clamp-2">{course.description || "No description provided."}</span>
-                                    </div>
-                                    <div className="flex items-center gap-3 text-gray-600 dark:text-gray-400">
-                                        <DollarSign className="h-4 w-4 flex-shrink-0 text-purple-500" />
-                                        <span>Price: <span className="font-bold text-lg text-gray-900 dark:text-white">₹{course.price ? course.price.toLocaleString() : "0"}</span></span>
-                                    </div>
-                                    <div className="flex items-center gap-3 text-gray-600 dark:text-gray-400">
-                                        <BookOpen className="h-4 w-4 flex-shrink-0 text-indigo-500" />
-                                        <span className="font-mono text-xs">{course.slug}</span>
-                                    </div>
-                                </div>
-
-                                <div className="pt-4 mt-4 border-t border-gray-100 dark:border-gray-700">
-                                    <p className="text-xs text-gray-400 dark:text-gray-500">
-                                        Created: {new Date(course.created_at).toLocaleDateString()}
-                                    </p>
-                                </div>
-                            </div>
-                        ))
-                    )}
+                        <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                            TDCS<span className="text-blue-600">.Admin</span>
+                        </span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <div className="hidden sm:flex flex-col items-end mr-2">
+                            <span className="text-sm font-semibold text-gray-900 dark:text-white">Admin User</span>
+                            <span className="text-xs text-gray-500">admin@tdcs.com</span>
+                        </div>
+                        <button 
+                            onClick={handleLogout}
+                            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 dark:bg-red-900/10 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors"
+                        >
+                            <LogOut className="w-4 h-4" />
+                            <span>Logout</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </nav>
+
+            {/* Dashboard Content */}
+            <main className="max-w-7xl mx-auto px-6 py-8">
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Course Management</h1>
+                    <p className="text-gray-500 dark:text-gray-400">Manage your active training programs and student pricing.</p>
+                </div>
+
+                {/* Grid Layout for the 3 Blocks */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {courses.map((course) => (
+                        <CourseCard key={course.id} course={course} />
+                    ))}
+                </div>
+            </main>
         </div>
     );
 }
