@@ -29,10 +29,13 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 import HardwareServices from "./pages/HardwareServices";
-import WebsiteDevelopment from "./pages/website-development";
+import WebsiteDevelopment from "./pages/website-development"; // This is likely your main Service Listing page
 
-// ✅ NEW: Pages
+// ✅ NEW: Specific Service Detail Pages
 import WebsiteSecurityDetails from "./pages/WebsiteSecurityDetails";
+import PenetrationTestingPage from "./pages/PenetrationTestingPage";
+import WebDevelopmentPage from "./pages/WebDevelopmentPage";
+
 import SimpleAdminPanel from "./pages/admintdcsd/SimpleAdminPanel";
 
 const queryClient = new QueryClient();
@@ -71,14 +74,22 @@ const App = () => (
           <Route path="/verify-certificate" element={<VerifyCertificate />} />
           <Route path="/certificate-download" element={<CertificateDownload />} />
 
-          {/* 🧰 Services */}
+          {/* 🧰 Services - Main Listing Pages */}
           <Route path="/services" element={<Services />} />
           <Route path="/services/software" element={<Services />} />
           <Route path="/services/hardware" element={<HardwareServices />} />
           <Route path="/services/legal" element={<AdvocateConstruction />} />
+          
+          {/* Main Listing for Web Dev & Security */}
           <Route path="/services/website-development" element={<WebsiteDevelopment />} />
-          {/* ✅ NEW ROUTE: Website Security Page */}
+
+          {/* ✅ NEW ROUTES: Specific Detail Pages */}
+          {/* These match the slugs used in the listing page navigate() calls */}
           <Route path="/services/website-security" element={<WebsiteSecurityDetails />} />
+          <Route path="/services/penetration-testing" element={<PenetrationTestingPage />} />
+          <Route path="/services/web-development" element={<WebDevelopmentPage />} />
+          
+          {/* Generic fallback for other services */}
           <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
           {/* 🛠️ Admin Panel */}
