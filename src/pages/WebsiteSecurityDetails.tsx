@@ -1,162 +1,190 @@
+import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Shield, Lock, Activity, Eye, Server, Zap, CheckCircle2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowLeft, CheckCircle2, ShieldAlert, Code, Terminal } from "lucide-react";
 
-export default function WebsiteSecurityDetails() {
+// --- EXPANDED DATA SOURCE ---
+// In a real app, this might come from a database or CMS.
+const serviceData: Record<string, any> = {
+  "penetration-testing": {
+    title: "Penetration Testing & VAPT",
+    subtitle: "Ethical Hacking to Fortify Your Defenses",
+    description: "We simulate real-world cyberattacks on your infrastructure to identify weak points before malicious hackers do. Our VAPT (Vulnerability Assessment and Penetration Testing) follows OWASP standards.",
+    price: "Starting at ₹2999",
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1000",
+    icon: <Terminal className="w-12 h-12 text-red-500 mb-4" />,
+    features: [
+      "Full Web & Mobile App Scanning",
+      "Network Infrastructure Stress Test",
+      "Detailed Vulnerability Report (PDF)",
+      "Remediation Support & Retesting",
+      "OWASP Top 10 Compliance Check",
+    ],
+    process: [
+      { step: "01", name: "Reconnaissance", desc: "Gathering intelligence about target systems." },
+      { step: "02", name: "Scanning", desc: "Automated and manual discovery of vulnerabilities." },
+      { step: "03", name: "Exploitation", desc: "Attempting to breach security to prove risks." },
+      { step: "04", name: "Reporting", desc: "Comprehensive documentation of fixes." },
+    ]
+  },
+  "web-development": {
+    title: "Custom Web Development",
+    subtitle: "High-Performance, Secure React Applications",
+    description: "We build pixel-perfect, responsive, and secure websites tailored to your business goals. We specialize in the MERN stack (MongoDB, Express, React, Node) and Next.js.",
+    price: "Starting at ₹4999",
+    image: "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&q=80&w=1000",
+    icon: <Code className="w-12 h-12 text-blue-500 mb-4" />,
+    features: [
+      "Custom UI/UX Design (Figma)",
+      "SEO Optimized Architecture",
+      "Fast Loading Speeds (Core Web Vitals)",
+      "Secure API Integration",
+      "Admin Dashboard Setup",
+    ],
+    process: [
+      { step: "01", name: "Discovery", desc: "Understanding your brand and requirements." },
+      { step: "02", name: "Design", desc: "Wireframing and prototyping the UI." },
+      { step: "03", name: "Development", desc: "Coding with clean, scalable practices." },
+      { step: "04", name: "Launch", desc: "Testing, deployment, and handover." },
+    ]
+  },
+  "website-security": {
+    title: "Website Security Shield",
+    subtitle: "24/7 Monitoring & Malware Removal",
+    description: "Don't let your website go down. We provide continuous security monitoring, SSL configuration, and instant malware removal services.",
+    price: "Starting at ₹1999",
+    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&q=80&w=1000",
+    icon: <ShieldAlert className="w-12 h-12 text-emerald-500 mb-4" />,
+    features: [
+      "24/7 Uptime Monitoring",
+      "DDoS Protection Setup",
+      "Malware Scanning & Removal",
+      "Firewall Configuration (WAF)",
+      "Weekly Security Audits",
+    ],
+    process: [
+        { step: "01", name: "Audit", desc: "Scanning current site health." },
+        { step: "02", name: "Hardening", desc: "Patching immediate holes." },
+        { step: "03", name: "Monitor", desc: "Setting up real-time alerts." },
+        { step: "04", name: "Maintain", desc: "Regular updates and backups." },
+    ]
+  }
+};
+
+export default function ServiceDetail() {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  
+  // Look up the data based on the URL
+  const service = serviceData[slug || ""];
+
+  // Handle "Page Not Found" if the slug doesn't match our data
+  if (!service) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center space-y-4">
+        <h1 className="text-2xl font-bold">Service Not Found</h1>
+        <Button onClick={() => navigate("/")}>Go Home</Button>
+      </div>
+    );
+  }
+
   return (
-    <section className="container mx-auto px-4 py-20 space-y-20">
-      {/* HERO SECTION */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center space-y-4 max-w-3xl mx-auto"
-      >
-        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          Website Security Solutions
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          Protect your website from hackers, DDoS attacks, malware, and data breaches — with 24/7 monitoring and advanced defense systems.
-        </p>
-        <Button size="lg" className="gradient-primary mt-4">Get a Free Security Audit</Button>
-      </motion.div>
-
-      {/* VIDEO / DEMO SECTION */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7 }}
-        className="rounded-2xl overflow-hidden shadow-lg max-w-4xl mx-auto"
-      >
-        <iframe
-          className="w-full h-64 md:h-96"
-          src="https://youtu.be/pZVUjbrSpQ8?si=Ln11VRIZoBJzejEI"
-          title="Website Security Demo"
-          allowFullScreen
+    <div className="min-h-screen bg-background pb-20">
+      {/* --- HERO HEADER --- */}
+      <div className="relative h-[50vh] w-full overflow-hidden">
+        <div className="absolute inset-0 bg-black/60 z-10" />
+        <img 
+          src={service.image} 
+          alt={service.title} 
+          className="w-full h-full object-cover"
         />
-      </motion.div>
-
-      {/* FEATURES GRID */}
-      <div className="space-y-10">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-3xl font-bold text-center"
-        >
-          🔒 Key Security Features
-        </motion.h2>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[
-            { icon: Lock, title: "SSL/TLS Encryption", desc: "End-to-end data encryption for all communication." },
-            { icon: Shield, title: "Firewall Protection", desc: "Blocks malicious traffic and unauthorized access." },
-            { icon: Activity, title: "Real-time Threat Detection", desc: "24/7 AI monitoring for suspicious activity." },
-            { icon: Eye, title: "Vulnerability Scans", desc: "Automated scans to detect and patch exploits." },
-            { icon: Server, title: "Secure Server Hardening", desc: "Optimized configurations to prevent breaches." },
-            { icon: Zap, title: "DDoS Prevention", desc: "Advanced protection against large-scale attacks." },
-          ].map((feature, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 200 }}
-              className="rounded-2xl bg-gradient-to-b from-background to-muted p-6 shadow-sm hover:shadow-lg transition-all"
-            >
-              <feature.icon className="w-8 h-8 text-primary mb-4" />
-              <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
-              <p className="text-sm text-muted-foreground">{feature.desc}</p>
-            </motion.div>
-          ))}
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+             {service.icon}
+             <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 tracking-tight">
+               {service.title}
+             </h1>
+             <p className="text-xl text-gray-200 font-medium max-w-2xl mx-auto">
+               {service.subtitle}
+             </p>
+          </motion.div>
         </div>
       </div>
 
-      {/* PRICING SECTION */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="space-y-10"
-      >
-        <h2 className="text-3xl font-bold text-center">💰 Pricing Plans</h2>
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {[
-            { title: "Basic", price: "1999", features: ["SSL Setup", "Weekly Scan", "Firewall Config"] },
-            { title: "Pro", price: "2999", features: ["24/7 Monitoring", "DDoS Protection", "Monthly Report"] },
-            { title: "Enterprise", price: "4999", features: ["Dedicated Security Expert", "Advanced AI Protection", "Priority Support"] },
-          ].map((plan, i) => (
-            <motion.div
-              key={plan.title}
-              whileHover={{ scale: 1.05 }}
-              className="rounded-2xl border p-6 bg-background/80 backdrop-blur-md text-center hover:shadow-xl transition-all"
-            >
-              <h3 className="text-xl font-bold mb-2">{plan.title}</h3>
-              <p className="text-3xl font-bold mb-4 text-primary">{plan.price}</p>
-              <ul className="space-y-2 mb-4">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-center justify-center gap-2 text-sm">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" /> {f}
-                  </li>
-                ))}
-              </ul>
-              <Button variant="default" className="gradient-primary">Choose Plan</Button>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
+      <div className="container mx-auto px-4 -mt-16 relative z-30">
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="grid md:grid-cols-3 gap-8"
+        >
+            {/* --- MAIN CONTENT LEFT --- */}
+            <div className="md:col-span-2 space-y-8">
+                <Card className="p-8 border-border/50 shadow-xl bg-card">
+                    <h2 className="text-2xl font-bold mb-4">About This Service</h2>
+                    <p className="text-muted-foreground leading-relaxed text-lg">
+                        {service.description}
+                    </p>
 
-      {/* WHY CHOOSE US */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center space-y-6 max-w-3xl mx-auto"
-      >
-        <h2 className="text-3xl font-bold">🌐 Why Choose Us?</h2>
-        <p className="text-muted-foreground">
-          We combine experience, automation, and proactive defense strategies to ensure your website stays protected around the clock.
-        </p>
-        <div className="grid md:grid-cols-3 gap-8 mt-10">
-          {[
-            "24/7 Expert Support",
-            "ISO-Certified Security Standards",
-            "AI-Driven Threat Detection",
-          ].map((item, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.05 }}
-              className="p-6 rounded-2xl bg-muted hover:bg-muted/70 transition-all"
-            >
-              <h4 className="font-semibold">{item}</h4>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
+                    <h3 className="text-xl font-bold mt-8 mb-6">What We Will Do</h3>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                        {service.features.map((feature: string, i: number) => (
+                            <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-muted/40">
+                                <CheckCircle2 className="w-5 h-5 text-primary mt-1 shrink-0" />
+                                <span className="text-sm font-medium">{feature}</span>
+                            </div>
+                        ))}
+                    </div>
+                </Card>
 
-      {/* FAQ SECTION */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-3xl mx-auto"
-      >
-        <h2 className="text-3xl font-bold text-center mb-6">❓ Frequently Asked Questions</h2>
-        <Accordion type="single" collapsible className="space-y-4">
-          {[
-            { q: "Is my website really at risk?", a: "Yes — even small websites are targeted by bots and hackers daily. Security is essential." },
-            { q: "Do you monitor 24/7?", a: "Yes, all Pro and Enterprise plans include continuous AI-based threat monitoring." },
-            { q: "Can you secure eCommerce or WordPress sites?", a: "Absolutely. We specialize in securing CMS platforms and online stores." },
-            { q: "Do I need technical knowledge?", a: "No — our team handles everything from setup to maintenance for you." },
-          ].map((faq, i) => (
-            <AccordionItem key={i} value={`item-${i}`}>
-              <AccordionTrigger>{faq.q}</AccordionTrigger>
-              <AccordionContent>{faq.a}</AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </motion.div>
-    </section>
+                {/* --- PROCESS STEPS --- */}
+                <div className="space-y-6">
+                    <h3 className="text-2xl font-bold">How It Works</h3>
+                    <div className="grid gap-4">
+                        {service.process?.map((step: any, i: number) => (
+                            <div key={i} className="flex gap-4 items-center p-4 border border-border/40 rounded-xl bg-muted/10">
+                                <span className="text-4xl font-bold text-muted-foreground/20">{step.step}</span>
+                                <div>
+                                    <h4 className="font-bold text-lg">{step.name}</h4>
+                                    <p className="text-sm text-muted-foreground">{step.desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* --- SIDEBAR RIGHT --- */}
+            <div className="space-y-6">
+                <Card className="p-6 border-primary/20 bg-primary/5 sticky top-24">
+                    <h3 className="text-lg font-semibold mb-2">Pricing</h3>
+                    <div className="text-3xl font-bold text-primary mb-6">{service.price}</div>
+                    
+                    <div className="space-y-3">
+                        <Button size="lg" className="w-full font-bold">
+                            Book Consultation
+                        </Button>
+                        <Button 
+                            variant="outline" 
+                            size="lg" 
+                            className="w-full"
+                            onClick={() => navigate(-1)} // Go back
+                        >
+                            <ArrowLeft className="w-4 h-4 mr-2" /> Back
+                        </Button>
+                    </div>
+                    <p className="text-xs text-center text-muted-foreground mt-4">
+                        *Final price depends on project scope.
+                    </p>
+                </Card>
+            </div>
+        </motion.div>
+      </div>
+    </div>
   );
 }
