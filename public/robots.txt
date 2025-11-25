@@ -23,9 +23,6 @@ Disallow: /
 User-agent: Amazonbot
 Disallow: /
 
-# ===============================
-# Sensitive or Private Paths
-# ===============================
 User-agent: *
 Disallow: /admintdcs01097s
 Allow: /
