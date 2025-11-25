@@ -4,7 +4,7 @@ import {
   MoreVertical, Edit, Wifi, Loader2, CheckCircle, Lock, AlertTriangle 
 } from 'lucide-react';
 
-// --- 1. MOCK DATA & UTILITIES ---
+// --- 1. MOCK DATA (Content Only) ---
 
 const MOCK_COURSES = [
   { 
@@ -60,8 +60,8 @@ const useToast = () => {
 // --- 2. COMPONENTS ---
 
 const LoginScreen = ({ handleLogin, isLoading }) => {
-    // Credentials State
-    const [email, setEmail] = useState("admin@tdcs.com");
+    // --- STATE: Start Empty for Security ---
+    const [email, setEmail] = useState(""); 
     const [password, setPassword] = useState("");
     const [securityCode, setSecurityCode] = useState("");
     
@@ -73,10 +73,10 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
     const [failedAttempts, setFailedAttempts] = useState(0);
     const [lockoutTimer, setLockoutTimer] = useState(0);
 
-    // Hardcoded constraints
-    const CORRECT_CODE = "710003";
+    // --- CONFIGURATION ---
+    // In a real production app, these values are stored in Environment Variables (Backend), not here.
     const MAX_ATTEMPTS = 4;
-    const LOCKOUT_DURATION = 120; // 2 minutes in seconds
+    const LOCKOUT_DURATION = 120; // 2 minutes
 
     // Timer Logic
     useEffect(() => {
@@ -86,8 +86,7 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
                 setLockoutTimer((prev) => prev - 1);
             }, 1000);
         } else if (lockoutTimer === 0 && failedAttempts >= MAX_ATTEMPTS) {
-            // Reset after timer finishes
-            setFailedAttempts(0);
+            setFailedAttempts(0); // Reset after penalty
         }
         return () => clearInterval(interval);
     }, [lockoutTimer, failedAttempts]);
@@ -95,38 +94,46 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
     const handleVerifyEmail = () => {
         if(!email) return;
         setVerifyingEmail(true);
-        // Simulate network check
+        
+        // Simulating API Latency
         setTimeout(() => {
             setVerifyingEmail(false);
-            setIsEmailVerified(true);
+            // In a real app, this is where you'd check if email exists in DB
+            setIsEmailVerified(true); 
         }, 800);
     };
 
     const onSubmit = (e) => {
         e.preventDefault();
 
-        // Check if locked out
+        // 1. Check Lockout
         if (lockoutTimer > 0) return;
 
-        // Validation Logic
-        if (securityCode !== CORRECT_CODE || password !== "password123") {
+        // 2. Validate Credentials (Simulating Backend Verification)
+        // Note: For this demo to work, we compare here. In production, send data to API.
+        const isValidUser = (
+            email === "admin@tdcs.com" && 
+            securityCode === "710003" && 
+            password === "password123"
+        );
+
+        if (!isValidUser) {
             const newAttempts = failedAttempts + 1;
             setFailedAttempts(newAttempts);
 
             if (newAttempts >= MAX_ATTEMPTS) {
-                setLockoutTimer(LOCKOUT_DURATION); // Start 2 min timer
+                setLockoutTimer(LOCKOUT_DURATION); 
             } else {
-                // Shake effect or simple alert could go here
-                alert(`Wrong Credentials! Attempt ${newAttempts}/${MAX_ATTEMPTS}`);
+                // We show a generic error to not reveal which part is wrong
+                alert(`Authentication Failed. Attempt ${newAttempts}/${MAX_ATTEMPTS}`);
             }
             return;
         }
 
-        // If success
-        handleLogin(email, password);
+        // 3. Success
+        handleLogin();
     };
 
-    // Format seconds to MM:SS
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
@@ -141,12 +148,12 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
                 {lockoutTimer > 0 && (
                     <div className="absolute inset-0 bg-gray-900/95 z-50 flex flex-col items-center justify-center text-center p-6 animate-fadeIn">
                         <Lock className="w-16 h-16 text-red-500 mb-4 animate-bounce" />
-                        <h2 className="text-2xl font-bold text-white mb-2">Account Locked</h2>
-                        <p className="text-gray-400 mb-6">Too many failed attempts.</p>
+                        <h2 className="text-2xl font-bold text-white mb-2">System Locked</h2>
+                        <p className="text-gray-400 mb-6">Security Protocol Activated.</p>
                         <div className="text-4xl font-mono font-bold text-red-500 bg-red-500/10 px-6 py-3 rounded-xl border border-red-500/20">
                             {formatTime(lockoutTimer)}
                         </div>
-                        <p className="text-xs text-gray-500 mt-4">Please wait before trying again.</p>
+                        <p className="text-xs text-gray-500 mt-4">Wait for timer to expire.</p>
                     </div>
                 )}
 
@@ -154,23 +161,23 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
                     <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Shield className="w-8 h-8 text-blue-500" />
                     </div>
-                    <h1 className="text-2xl font-bold text-white">TDCS Admin Portal</h1>
-                    <p className="text-gray-400 text-sm mt-2">Secure Gateway</p>
+                    <h1 className="text-2xl font-bold text-white">Authorized Access Only</h1>
+                    <p className="text-gray-400 text-sm mt-2">TDCS Secure Admin Portal</p>
                 </div>
 
                 <form onSubmit={onSubmit} className="space-y-5">
                     
                     {/* 1. Email + Verify Button */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">Email Identifier</label>
                         <div className="flex gap-2">
                             <input 
                                 type="email" 
                                 value={email}
                                 disabled={isEmailVerified}
                                 onChange={e => setEmail(e.target.value)}
-                                className={`flex-1 bg-gray-950 border ${isEmailVerified ? 'border-green-500/50 text-green-400' : 'border-gray-800 text-white'} rounded-lg p-3 outline-none transition-all`}
-                                placeholder="admin@tdcs.com"
+                                className={`flex-1 bg-gray-950 border ${isEmailVerified ? 'border-green-500/50 text-green-400' : 'border-gray-800 text-white'} rounded-lg p-3 outline-none transition-all placeholder-gray-600`}
+                                placeholder="Enter registered email"
                             />
                             {!isEmailVerified ? (
                                 <button 
@@ -194,15 +201,15 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
                         <div className="animate-slideDown space-y-5">
                             <div>
                                 <label className="block text-sm font-medium text-blue-400 mb-1 flex items-center gap-2">
-                                    <Lock className="w-3 h-3" /> Security Code
+                                    <Lock className="w-3 h-3" /> Security PIN
                                 </label>
                                 <input 
-                                    type="text" 
+                                    type="password" 
                                     value={securityCode}
-                                    onChange={e => setSecurityCode(e.target.value)} // Keep as string to handle leading zeros easily or number
+                                    onChange={e => setSecurityCode(e.target.value)}
                                     maxLength={6}
-                                    placeholder="Enter 6-digit code (710003)"
-                                    className="w-full bg-gray-950 border border-blue-500/30 rounded-lg p-3 text-white text-center font-mono text-lg tracking-[0.2em] focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder:tracking-normal placeholder:text-sm"
+                                    placeholder="• • • • • •"
+                                    className="w-full bg-gray-950 border border-blue-500/30 rounded-lg p-3 text-white text-center font-mono text-lg tracking-[0.5em] focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder:tracking-widest"
                                 />
                             </div>
 
@@ -213,16 +220,16 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
                                     type="password" 
                                     value={password}
                                     onChange={e => setPassword(e.target.value)}
-                                    placeholder="••••••••"
-                                    className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                    placeholder="Enter your password"
+                                    className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder-gray-600"
                                 />
                             </div>
 
-                            {/* Error Message for attempts */}
+                            {/* Error Warning */}
                             {failedAttempts > 0 && (
                                 <div className="flex items-center gap-2 text-red-400 text-sm bg-red-900/20 p-3 rounded-lg border border-red-900/50">
                                     <AlertTriangle className="w-4 h-4" />
-                                    <span>{failedAttempts} failed attempts. Lockout at 4.</span>
+                                    <span>Warning: {MAX_ATTEMPTS - failedAttempts} attempts remaining.</span>
                                 </div>
                             )}
 
@@ -231,7 +238,7 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
                                 disabled={isLoading}
                                 className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center shadow-lg shadow-blue-900/20"
                             >
-                                {isLoading ? <Loader2 className="animate-spin w-5 h-5" /> : "Sign In"}
+                                {isLoading ? <Loader2 className="animate-spin w-5 h-5" /> : "Authenticate"}
                             </button>
                         </div>
                     )}
@@ -303,18 +310,15 @@ export default function App() {
     const [courses, setCourses] = useState([]);
     const { toast } = useToast();
 
-    // Mock Supabase Auth
-    const handleLogin = async (email, password) => {
+    // Mock Authentication Logic
+    const handleLogin = async () => {
         setIsLoading(true);
-        // Simulate network request
-        await new Promise(r => setTimeout(r, 1000));
-
-        // NOTE: We already validated the Code and Password in the LoginScreen component
-        // So here we just fetch data and redirect.
+        // Simulate Network Request
+        await new Promise(r => setTimeout(r, 1500));
         
-        toast({ title: "Welcome Admin", description: "Security check passed." });
+        toast({ title: "Authenticated", description: "Access Granted to Admin Panel." });
         
-        // Mock Data Load
+        // Load Data
         setCourses(MOCK_COURSES);
         setView('dashboard');
         setIsLoading(false);
@@ -325,7 +329,7 @@ export default function App() {
         await new Promise(r => setTimeout(r, 500));
         setView('login');
         setIsLoading(false);
-        toast({ title: "Logged Out", description: "Session ended." });
+        toast({ title: "Logged Out", description: "Secure session terminated." });
     };
 
     if (view === 'login') {
@@ -371,8 +375,8 @@ export default function App() {
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="hidden sm:flex flex-col items-end mr-2">
-                            <span className="text-sm font-semibold text-gray-900 dark:text-white">Admin User</span>
-                            <span className="text-xs text-gray-500">Entery Your Email</span>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-white">Administrator</span>
+                            <span className="text-xs text-gray-500">Secure Session</span>
                         </div>
                         <button 
                             onClick={handleLogout}
