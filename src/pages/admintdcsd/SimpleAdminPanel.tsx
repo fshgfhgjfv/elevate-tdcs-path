@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { 
-  Shield, LogOut, BookOpen, FileText, DollarSign, 
-  Loader2, Wifi, Users, MoreVertical, Edit, Trash2 
+  Shield, LogOut, BookOpen, Users, 
+  MoreVertical, Edit, Wifi, Loader2, CheckCircle, Lock, AlertTriangle 
 } from 'lucide-react';
 
 // --- 1. MOCK DATA & UTILITIES ---
 
-// specific mock data based on your request
 const MOCK_COURSES = [
   { 
     id: 1, 
@@ -58,69 +57,184 @@ const useToast = () => {
   return { toast };
 };
 
-// Mock Auth Client
-const mockSupabase = {
-    auth: {
-        signInWithPassword: async ({ email, password }) => {
-            await new Promise(r => setTimeout(r, 800)); // Fake delay
-            if (email === "admin@tdcs.com" && password === "password123") {
-                return { data: { user: { id: "admin-1", email } }, error: null };
-            }
-            return { data: null, error: { message: "Invalid credentials" } };
-        },
-        signOut: async () => {
-            await new Promise(r => setTimeout(r, 300));
-            return { error: null };
-        }
-    },
-    from: (table) => ({
-        select: () => ({
-            order: async () => ({ data: MOCK_COURSES, error: null })
-        })
-    })
-};
-
 // --- 2. COMPONENTS ---
 
 const LoginScreen = ({ handleLogin, isLoading }) => {
+    // Credentials State
     const [email, setEmail] = useState("admin@tdcs.com");
-    const [password, setPassword] = useState("password123");
+    const [password, setPassword] = useState("");
+    const [securityCode, setSecurityCode] = useState("");
+    
+    // UI State
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
+    const [verifyingEmail, setVerifyingEmail] = useState(false);
+    
+    // Lockout State
+    const [failedAttempts, setFailedAttempts] = useState(0);
+    const [lockoutTimer, setLockoutTimer] = useState(0);
+
+    // Hardcoded constraints
+    const CORRECT_CODE = "710003";
+    const MAX_ATTEMPTS = 4;
+    const LOCKOUT_DURATION = 120; // 2 minutes in seconds
+
+    // Timer Logic
+    useEffect(() => {
+        let interval;
+        if (lockoutTimer > 0) {
+            interval = setInterval(() => {
+                setLockoutTimer((prev) => prev - 1);
+            }, 1000);
+        } else if (lockoutTimer === 0 && failedAttempts >= MAX_ATTEMPTS) {
+            // Reset after timer finishes
+            setFailedAttempts(0);
+        }
+        return () => clearInterval(interval);
+    }, [lockoutTimer, failedAttempts]);
+
+    const handleVerifyEmail = () => {
+        if(!email) return;
+        setVerifyingEmail(true);
+        // Simulate network check
+        setTimeout(() => {
+            setVerifyingEmail(false);
+            setIsEmailVerified(true);
+        }, 800);
+    };
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+
+        // Check if locked out
+        if (lockoutTimer > 0) return;
+
+        // Validation Logic
+        if (securityCode !== CORRECT_CODE || password !== "password123") {
+            const newAttempts = failedAttempts + 1;
+            setFailedAttempts(newAttempts);
+
+            if (newAttempts >= MAX_ATTEMPTS) {
+                setLockoutTimer(LOCKOUT_DURATION); // Start 2 min timer
+            } else {
+                // Shake effect or simple alert could go here
+                alert(`Wrong Credentials! Attempt ${newAttempts}/${MAX_ATTEMPTS}`);
+            }
+            return;
+        }
+
+        // If success
+        handleLogin(email, password);
+    };
+
+    // Format seconds to MM:SS
+    const formatTime = (seconds) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
-            <div className="max-w-md w-full bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-2xl">
+            <div className="max-w-md w-full bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+                
+                {/* Lockout Overlay */}
+                {lockoutTimer > 0 && (
+                    <div className="absolute inset-0 bg-gray-900/95 z-50 flex flex-col items-center justify-center text-center p-6 animate-fadeIn">
+                        <Lock className="w-16 h-16 text-red-500 mb-4 animate-bounce" />
+                        <h2 className="text-2xl font-bold text-white mb-2">Account Locked</h2>
+                        <p className="text-gray-400 mb-6">Too many failed attempts.</p>
+                        <div className="text-4xl font-mono font-bold text-red-500 bg-red-500/10 px-6 py-3 rounded-xl border border-red-500/20">
+                            {formatTime(lockoutTimer)}
+                        </div>
+                        <p className="text-xs text-gray-500 mt-4">Please wait before trying again.</p>
+                    </div>
+                )}
+
                 <div className="text-center mb-8">
                     <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Shield className="w-8 h-8 text-blue-500" />
                     </div>
                     <h1 className="text-2xl font-bold text-white">TDCS Admin Portal</h1>
-                    <p className="text-gray-400 text-sm mt-2">Enter credentials to manage courses</p>
+                    <p className="text-gray-400 text-sm mt-2">Secure Gateway</p>
                 </div>
-                <form onSubmit={(e) => { e.preventDefault(); handleLogin(email, password); }} className="space-y-4">
+
+                <form onSubmit={onSubmit} className="space-y-5">
+                    
+                    {/* 1. Email + Verify Button */}
                     <div>
                         <label className="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
-                        <input 
-                            type="email" 
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                            className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                        />
+                        <div className="flex gap-2">
+                            <input 
+                                type="email" 
+                                value={email}
+                                disabled={isEmailVerified}
+                                onChange={e => setEmail(e.target.value)}
+                                className={`flex-1 bg-gray-950 border ${isEmailVerified ? 'border-green-500/50 text-green-400' : 'border-gray-800 text-white'} rounded-lg p-3 outline-none transition-all`}
+                                placeholder="admin@tdcs.com"
+                            />
+                            {!isEmailVerified ? (
+                                <button 
+                                    type="button"
+                                    onClick={handleVerifyEmail}
+                                    disabled={!email || verifyingEmail}
+                                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 min-w-[80px] flex items-center justify-center"
+                                >
+                                    {verifyingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : "Verify"}
+                                </button>
+                            ) : (
+                                <div className="flex items-center justify-center px-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                                    <CheckCircle className="w-5 h-5 text-green-500" />
+                                </div>
+                            )}
+                        </div>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Password</label>
-                        <input 
-                            type="password" 
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                        />
-                    </div>
-                    <button 
-                        disabled={isLoading}
-                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-3 rounded-lg transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center"
-                    >
-                        {isLoading ? <Loader2 className="animate-spin w-5 h-5" /> : "Sign In to Dashboard"}
-                    </button>
+
+                    {/* 2. Security Code (Appears after Verify) */}
+                    {isEmailVerified && (
+                        <div className="animate-slideDown space-y-5">
+                            <div>
+                                <label className="block text-sm font-medium text-blue-400 mb-1 flex items-center gap-2">
+                                    <Lock className="w-3 h-3" /> Security Code
+                                </label>
+                                <input 
+                                    type="text" 
+                                    value={securityCode}
+                                    onChange={e => setSecurityCode(e.target.value)} // Keep as string to handle leading zeros easily or number
+                                    maxLength={6}
+                                    placeholder="Enter 6-digit code (710003)"
+                                    className="w-full bg-gray-950 border border-blue-500/30 rounded-lg p-3 text-white text-center font-mono text-lg tracking-[0.2em] focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder:tracking-normal placeholder:text-sm"
+                                />
+                            </div>
+
+                            {/* 3. Password */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-400 mb-1">Password</label>
+                                <input 
+                                    type="password" 
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                />
+                            </div>
+
+                            {/* Error Message for attempts */}
+                            {failedAttempts > 0 && (
+                                <div className="flex items-center gap-2 text-red-400 text-sm bg-red-900/20 p-3 rounded-lg border border-red-900/50">
+                                    <AlertTriangle className="w-4 h-4" />
+                                    <span>{failedAttempts} failed attempts. Lockout at 4.</span>
+                                </div>
+                            )}
+
+                            <button 
+                                type="submit"
+                                disabled={isLoading}
+                                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center shadow-lg shadow-blue-900/20"
+                            >
+                                {isLoading ? <Loader2 className="animate-spin w-5 h-5" /> : "Sign In"}
+                            </button>
+                        </div>
+                    )}
                 </form>
             </div>
         </div>
@@ -129,7 +243,6 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
 
 const CourseCard = ({ course }) => (
     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 group">
-        {/* Card Header / Image Placeholder */}
         <div className="h-32 bg-gradient-to-br from-slate-800 to-slate-900 p-6 relative">
             <div className="absolute top-4 left-4">
                 <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 backdrop-blur-sm border border-red-500/30 text-red-100 text-xs font-bold uppercase tracking-wider">
@@ -143,20 +256,15 @@ const CourseCard = ({ course }) => (
                 </button>
             </div>
         </div>
-
-        {/* Card Body */}
         <div className="p-6">
             <div className="flex justify-between items-start mb-4">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white leading-tight group-hover:text-blue-500 transition-colors">
                     {course.title}
                 </h3>
             </div>
-            
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-6 line-clamp-2 min-h-[40px]">
                 {course.description}
             </p>
-
-            {/* Stats Row */}
             <div className="flex items-center gap-4 mb-6 text-sm text-gray-500 dark:text-gray-400">
                 <div className="flex items-center gap-1.5">
                     <Users className="w-4 h-4 text-blue-500" />
@@ -167,8 +275,6 @@ const CourseCard = ({ course }) => (
                     <span>{course.slug}</span>
                 </div>
             </div>
-
-            {/* Footer */}
             <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
                 <div>
                     <span className="text-xs text-gray-500 uppercase font-semibold">Price</span>
@@ -192,48 +298,64 @@ const CourseCard = ({ course }) => (
 // --- 3. MAIN APP ---
 
 export default function App() {
-    const [view, setView] = useState('login'); // Start at login
+    const [view, setView] = useState('login'); 
     const [isLoading, setIsLoading] = useState(false);
     const [courses, setCourses] = useState([]);
     const { toast } = useToast();
 
+    // Mock Supabase Auth
     const handleLogin = async (email, password) => {
         setIsLoading(true);
-        const { error } = await mockSupabase.auth.signInWithPassword({ email, password });
+        // Simulate network request
+        await new Promise(r => setTimeout(r, 1000));
+
+        // NOTE: We already validated the Code and Password in the LoginScreen component
+        // So here we just fetch data and redirect.
         
-        if (error) {
-            toast({ title: "Access Denied", description: error.message, variant: "destructive" });
-            setIsLoading(false);
-        } else {
-            toast({ title: "Welcome Admin", description: "Loading dashboard data..." });
-            // Simulate data fetch
-            const { data } = await mockSupabase.from('courses').select().order();
-            setCourses(data);
-            setView('dashboard');
-            setIsLoading(false);
-        }
+        toast({ title: "Welcome Admin", description: "Security check passed." });
+        
+        // Mock Data Load
+        setCourses(MOCK_COURSES);
+        setView('dashboard');
+        setIsLoading(false);
     };
 
     const handleLogout = async () => {
         setIsLoading(true);
-        await mockSupabase.auth.signOut();
+        await new Promise(r => setTimeout(r, 500));
         setView('login');
         setIsLoading(false);
-        toast({ title: "Logged Out", description: "See you next time." });
+        toast({ title: "Logged Out", description: "Session ended." });
     };
 
     if (view === 'login') {
-        return <LoginScreen handleLogin={handleLogin} isLoading={isLoading} />;
+        return (
+            <>
+                <style>{`
+                    @keyframes slideDown {
+                        from { opacity: 0; transform: translateY(-10px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    @keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    .animate-slideDown { animation: slideDown 0.4s ease-out forwards; }
+                    .animate-fadeIn { animation: fadeIn 0.3s ease-out forwards; }
+                `}</style>
+                <LoginScreen handleLogin={handleLogin} isLoading={isLoading} />
+            </>
+        );
     }
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 font-sans">
-             {/* Global Animation Styles */}
-             <style>{`
+            <style>{`
                 @keyframes slideIn {
                     from { transform: translateX(100%); opacity: 0; }
                     to { transform: translateX(0); opacity: 1; }
                 }
+                .animate-slideIn { animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
             `}</style>
             
             {/* Top Navigation */}
@@ -270,7 +392,6 @@ export default function App() {
                     <p className="text-gray-500 dark:text-gray-400">Manage your active training programs and student pricing.</p>
                 </div>
 
-                {/* Grid Layout for the 3 Blocks */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {courses.map((course) => (
                         <CourseCard key={course.id} course={course} />
