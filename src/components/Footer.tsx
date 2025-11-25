@@ -34,7 +34,7 @@ export const Footer = () => {
   const resources = [
     { name: "Verify Certificate", path: "/verify-certificate" },
     { name: "Careers", path: "/careers" },
-    { name: "Blog", path: "/blog" },
+    { name: "Blog", path: "https://tdcs.org.in/" }, // Updated to external URL
     { name: "Partnerships", path: "/partnerships" },
     { name: "Terms & Conditions", path: "/terms" },
     { name: "Privacy Policy", path: "/privacy" },
@@ -59,16 +59,34 @@ export const Footer = () => {
             </p>
 
             <div className="flex gap-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="https://www.facebook.com/people/TDCS-Technologies-Private-Limited/100091972036488/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
                 <Facebook size={20} />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="https://x.com/TDCSOrgani13451"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
                 <Twitter size={20} />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
                 <Linkedin size={20} />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="https://www.instagram.com/tdcstechnologies/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
                 <Instagram size={20} />
               </a>
             </div>
@@ -97,12 +115,24 @@ export const Footer = () => {
             <ul className="space-y-2">
               {resources.map((item) => (
                 <li key={item.path}>
-                  <Link
-                    to={item.path}
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {item.name}
-                  </Link>
+                  {/* Conditional rendering: <a> for external links, <Link> for internal */}
+                  {item.path.startsWith("http") ? (
+                    <a
+                      href={item.path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {item.name}
+                    </a>
+                  ) : (
+                    <Link
+                      to={item.path}
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {item.name}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -124,7 +154,7 @@ export const Footer = () => {
               <li className="flex items-center gap-2 text-muted-foreground">
                 <Phone size={18} className="text-primary" />
                 <a
-                  href="tel:+911234567890"
+                  href="tel:+919564730432"
                   className="hover:text-primary transition-colors"
                 >
                   +91 95647 30432
