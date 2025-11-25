@@ -1,18 +1,18 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
   ArrowLeft, ShieldAlert, Terminal, Lock, CheckCircle, 
-  Server, Star, ChevronDown, Cpu, Crosshair, Check, 
-  Siren, Fingerprint, Activity
+  Server, Star, ChevronDown, Activity, Crosshair, Check, 
+  Siren, Fingerprint, FileWarning, Eye, Unlock
 } from "lucide-react";
 
 // --- UTILITY: LINKS ---
 const CALENDLY_LINK = "https://calendly.com/rudranarayanswain/30min";
 
-// --- UTILITY: CSS FOR MARQUEE (INJECTED) ---
+// --- UTILITY: CSS ---
 const marqueeStyle = `
   @keyframes scroll {
     0% { transform: translateX(0); }
@@ -29,7 +29,7 @@ const marqueeStyle = `
   }
 `;
 
-// --- UTILITY COMPONENT: SECURITY GRID BACKGROUND ---
+// --- COMPONENT: SECURITY GRID BACKGROUND ---
 const SecurityGrid = () => (
   <div className="absolute inset-0 z-0 pointer-events-none bg-slate-950">
     <div className="absolute inset-0 bg-[linear-gradient(to_right,#ef44440a_1px,transparent_1px),linear-gradient(to_bottom,#ef44440a_1px,transparent_1px)] bg-[size:40px_40px]" />
@@ -42,56 +42,84 @@ const SecurityGrid = () => (
 // --- COMPONENT: TERMINAL TYPEWRITER EFFECT ---
 const TerminalText = ({ text, isActive }: { text: string; isActive: boolean }) => {
   const words = text.split(" ");
-  
   const container = {
     hidden: { opacity: 0 },
-    visible: (i = 1) => ({
-      opacity: 1,
-      transition: { staggerChildren: 0.03, delayChildren: 0.04 * i },
-    }),
+    visible: (i = 1) => ({ opacity: 1, transition: { staggerChildren: 0.03, delayChildren: 0.04 * i } }),
   };
-
   const child = {
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        type: "spring",
-        damping: 12,
-        stiffness: 100,
-      },
-    },
-    hidden: {
-      opacity: 0,
-      x: 20,
-      transition: {
-        type: "spring",
-        damping: 12,
-        stiffness: 100,
-      },
-    },
+    visible: { opacity: 1, x: 0 },
+    hidden: { opacity: 0, x: 20 },
   };
 
   if (!isActive) return null;
 
   return (
-    <motion.div
-      style={{ overflow: "hidden", display: "flex", flexWrap: "wrap" }}
-      variants={container}
-      initial="hidden"
-      animate="visible"
-    >
+    <motion.div style={{ display: "flex", flexWrap: "wrap" }} variants={container} initial="hidden" animate="visible">
       {words.map((word, index) => (
         <motion.span variants={child} style={{ marginRight: "5px" }} key={index} className="text-slate-300 font-mono text-sm">
           {word}
         </motion.span>
       ))}
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
-        className="inline-block w-2 h-4 bg-red-500 ml-1"
-      />
+      <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }} className="inline-block w-2 h-4 bg-red-500 ml-1" />
+    </motion.div>
+  );
+};
+
+// --- COMPONENT: DECLASSIFIED OPERATION CARD (PREVIOUS PROJECTS) ---
+const OperationCard = ({ op, index }: { op: any, index: number }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1 }}
+      className="group relative h-[320px] bg-slate-900 border border-slate-800 hover:border-red-500/50 transition-colors rounded-lg overflow-hidden cursor-crosshair"
+    >
+      {/* Background Tech Pattern */}
+      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-700 via-slate-950 to-slate-950" />
+      
+      {/* Header */}
+      <div className="p-6 border-b border-slate-800 flex justify-between items-center relative z-10 bg-slate-900/80 backdrop-blur">
+        <div className="flex items-center gap-2">
+           <FileWarning className="w-4 h-4 text-red-500" />
+           <span className="font-mono text-xs text-red-500 tracking-widest uppercase">Classified // Lvl 4</span>
+        </div>
+        <span className="font-mono text-xs text-slate-500">Case #{op.id}</span>
+      </div>
+
+      {/* Content Container */}
+      <div className="p-6 relative h-full">
+         
+         {/* BLURRED STATE (Default) */}
+         <div className="absolute inset-0 p-6 flex flex-col justify-center items-center text-center transition-all duration-500 group-hover:opacity-0 group-hover:scale-105 z-20 backdrop-blur-sm bg-slate-950/20">
+            <h3 className="text-2xl font-black text-slate-700 uppercase mb-2 tracking-tighter">Top Secret</h3>
+            <div className="border-2 border-red-900 text-red-900 font-bold text-xl px-4 py-2 -rotate-12 opacity-50">
+              REDACTED
+            </div>
+            <p className="mt-4 text-xs text-slate-600 font-mono">Hover to Declassify</p>
+         </div>
+
+         {/* REVEALED STATE (Hover) */}
+         <div className="relative z-10 transition-all duration-500 opacity-30 blur-sm grayscale group-hover:opacity-100 group-hover:blur-0 group-hover:grayscale-0">
+            <h3 className="text-xl font-bold text-white mb-1">{op.target}</h3>
+            <p className="text-xs text-slate-500 mb-4 font-mono uppercase">{op.industry}</p>
+            
+            <div className="space-y-3">
+              <div>
+                <span className="text-[10px] uppercase text-red-500 font-bold tracking-wider">Vulnerability</span>
+                <p className="text-sm text-slate-300 font-mono leading-tight">{op.vuln}</p>
+              </div>
+              
+              <div>
+                <span className="text-[10px] uppercase text-green-500 font-bold tracking-wider">Impact</span>
+                <p className="text-sm text-slate-300 font-mono leading-tight">{op.impact}</p>
+              </div>
+            </div>
+
+            <div className="absolute -bottom-12 right-0">
+               <Unlock className="w-16 h-16 text-red-900/20" />
+            </div>
+         </div>
+      </div>
     </motion.div>
   );
 };
@@ -100,58 +128,24 @@ const TerminalText = ({ text, isActive }: { text: string; isActive: boolean }) =
 const AdvancedFAQItem = ({ faq, index, isOpen, toggle }: { faq: any, index: number, isOpen: boolean, toggle: () => void }) => {
   return (
     <motion.div 
-      initial={false}
       animate={isOpen ? "open" : "closed"}
-      className={`group border rounded-lg overflow-hidden transition-all duration-500 ${
-        isOpen 
-          ? 'bg-slate-900/80 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.2)]' 
-          : 'bg-slate-900/30 border-slate-800 hover:border-slate-600'
-      }`}
+      className={`group border rounded-lg overflow-hidden transition-all duration-500 ${isOpen ? 'bg-slate-900/80 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.2)]' : 'bg-slate-900/30 border-slate-800 hover:border-slate-600'}`}
     >
-      <button
-        onClick={toggle}
-        className="relative w-full text-left p-5 flex justify-between items-center z-10"
-      >
+      <button onClick={toggle} className="relative w-full text-left p-5 flex justify-between items-center z-10">
         <div className="flex items-center gap-4">
-          <span className={`font-mono text-xs font-bold px-2 py-1 rounded transition-colors ${isOpen ? 'bg-red-500 text-black' : 'bg-slate-800 text-slate-500'}`}>
-            0{index + 1}
-          </span>
-          <span className={`font-bold transition-colors duration-300 ${isOpen ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>
-            {faq.q}
-          </span>
+          <span className={`font-mono text-xs font-bold px-2 py-1 rounded transition-colors ${isOpen ? 'bg-red-500 text-black' : 'bg-slate-800 text-slate-500'}`}>0{index + 1}</span>
+          <span className={`font-bold transition-colors duration-300 ${isOpen ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>{faq.q}</span>
         </div>
-        
-        {/* Animated Chevron */}
         <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? 'bg-red-500/20 rotate-180' : 'bg-slate-800 group-hover:bg-slate-700'}`}>
           <ChevronDown className={`w-4 h-4 transition-colors ${isOpen ? 'text-red-500' : 'text-slate-400'}`} />
         </div>
       </button>
-
-      {/* Answer Container */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
-            className="relative overflow-hidden"
-          >
-            {/* Scanline Effect */}
-            <motion.div 
-              initial={{ top: 0 }}
-              animate={{ top: "100%" }}
-              transition={{ duration: 1.5, repeat: 0 }}
-              className="absolute left-0 w-full h-px bg-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.8)] z-20 pointer-events-none"
-            />
-            
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="relative overflow-hidden">
+            <motion.div initial={{ top: 0 }} animate={{ top: "100%" }} transition={{ duration: 1.5, repeat: 0 }} className="absolute left-0 w-full h-px bg-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.8)] z-20 pointer-events-none" />
             <div className="p-5 pt-0 border-l-2 border-red-500 ml-5 mb-5 relative">
-              <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-red-500/20 border border-red-500 flex items-center justify-center">
-                <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
-              </div>
-              <div className="pl-4 pt-2">
-                 <TerminalText text={faq.a} isActive={isOpen} />
-              </div>
+              <div className="pl-4 pt-2"><TerminalText text={faq.a} isActive={isOpen} /></div>
             </div>
           </motion.div>
         )}
@@ -161,81 +155,46 @@ const AdvancedFAQItem = ({ faq, index, isOpen, toggle }: { faq: any, index: numb
 };
 
 // --- COMPONENT: HUNTER CARD ---
-const HunterCard = ({ tester, index }: { tester: any, index: number }) => {
+const HunterCard = ({ tester }: { tester: any }) => {
   return (
     <div className="group relative h-[500px] w-full rounded-xl overflow-hidden border border-red-900/30 bg-slate-900 shadow-2xl">
       <div className="absolute inset-0 h-full w-full">
          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent z-10" />
-         <img 
-            src={tester.image} 
-            alt={tester.name} 
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-40" 
-         />
+         <img src={tester.image} alt={tester.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-40" />
          <div className="absolute bottom-0 left-0 w-full p-6 z-20 translate-y-0 transition-transform duration-500 group-hover:translate-y-full">
-            <div className="flex items-center gap-2 mb-2">
-                <Badge variant="outline" className="border-red-500/50 text-red-500 bg-red-950/30 animate-pulse">
-                    ACTIVE OPERATOR
-                </Badge>
-            </div>
+            <div className="flex items-center gap-2 mb-2"><Badge variant="outline" className="border-red-500/50 text-red-500 bg-red-950/30 animate-pulse">ACTIVE OPERATOR</Badge></div>
             <h3 className="text-3xl font-bold text-white font-mono uppercase tracking-tighter">{tester.name}</h3>
             <p className="text-red-400 font-mono text-sm tracking-widest uppercase">{tester.role}</p>
          </div>
       </div>
-
       <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-md p-8 flex flex-col justify-center border-r-2 border-red-600 transform -translate-x-full transition-transform duration-500 ease-in-out group-hover:translate-x-0 z-30">
-         <div className="absolute top-4 right-4">
-            <Fingerprint className="w-12 h-12 text-red-900/20" />
-         </div>
+         <div className="absolute top-4 right-4"><Fingerprint className="w-12 h-12 text-red-900/20" /></div>
          <div className="relative z-10">
            <h3 className="text-2xl font-bold text-white mb-1 font-mono">{tester.name}</h3>
-           <p className="text-red-500 text-xs uppercase tracking-widest mb-6 border-b border-red-900/50 pb-4">
-             Classified Profile
-           </p>
+           <p className="text-red-500 text-xs uppercase tracking-widest mb-6 border-b border-red-900/50 pb-4">Classified Profile</p>
            <div className="space-y-6">
-             <div>
-                <h4 className="text-slate-500 text-xs uppercase mb-2 flex items-center gap-2">
-                    <Crosshair className="w-3 h-3 text-red-500" /> Specialty
-                </h4>
-                <p className="text-slate-200 font-medium">{tester.specialty}</p>
-             </div>
-             <div>
-                <h4 className="text-slate-500 text-xs uppercase mb-2 flex items-center gap-2">
-                    <Terminal className="w-3 h-3 text-red-500" /> Bio
-                </h4>
-                <p className="text-slate-400 text-sm leading-relaxed font-mono">"{tester.bio}"</p>
-             </div>
+             <div><h4 className="text-slate-500 text-xs uppercase mb-2 flex items-center gap-2"><Crosshair className="w-3 h-3 text-red-500" /> Specialty</h4><p className="text-slate-200 font-medium">{tester.specialty}</p></div>
+             <div><h4 className="text-slate-500 text-xs uppercase mb-2 flex items-center gap-2"><Terminal className="w-3 h-3 text-red-500" /> Bio</h4><p className="text-slate-400 text-sm leading-relaxed font-mono">"{tester.bio}"</p></div>
              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-red-900/30">
-                <div className="bg-red-950/10 p-3 rounded border border-red-900/20">
-                    <div className="text-2xl font-bold text-white font-mono">{tester.stats.bugs}</div>
-                    <div className="text-[10px] text-red-400 uppercase">Vulnerabilities</div>
-                </div>
-                <div className="bg-red-950/10 p-3 rounded border border-red-900/20">
-                    <div className="text-2xl font-bold text-white font-mono">{tester.stats.criticals}</div>
-                    <div className="text-[10px] text-red-400 uppercase">Critical Severity</div>
-                </div>
+                <div className="bg-red-950/10 p-3 rounded border border-red-900/20"><div className="text-2xl font-bold text-white font-mono">{tester.stats.bugs}</div><div className="text-[10px] text-red-400 uppercase">Vulnerabilities</div></div>
+                <div className="bg-red-950/10 p-3 rounded border border-red-900/20"><div className="text-2xl font-bold text-white font-mono">{tester.stats.criticals}</div><div className="text-[10px] text-red-400 uppercase">Critical Severity</div></div>
              </div>
            </div>
-           <div className="mt-6 flex flex-wrap gap-2">
-            {tester.certs.map((cert: string) => (
-              <span key={cert} className="px-2 py-1 bg-slate-800 rounded text-[10px] font-mono text-slate-300 border border-slate-700">
-                {cert}
-              </span>
-            ))}
-          </div>
          </div>
       </div>
     </div>
   );
 }
 
-// --- COMPONENT: INFINITE TESTIMONIALS ---
+// --- COMPONENT: INFINITE TESTIMONIALS (SECURITY STYLE) ---
 const InfiniteTestimonials = ({ direction = "normal" }: { direction?: "normal" | "reverse" }) => {
+    // UPDATED: Security/Pentester specific testimonials
     const reviews = [
-        { name: "Rajesh K.", company: "FinTech Solutions", text: "Found a critical gateway flaw in 48 hours. Lifesavers." },
-        { name: "Sarah J.", company: "HealthVault", text: "The report actually told us how to fix the issues step-by-step." },
-        { name: "Amit P.", company: "E-Com Express", text: "Knowing exactly who is testing our systems gave us immense confidence." },
-        { name: "David L.", company: "SaaSify.io", text: "Mobile app pentest revealed API vulnerabilities we missed." },
-        { name: "Elena R.", company: "CryptoGuard", text: "Advanced persistent threat simulation was eye-opening." },
+        { name: "CISO", company: "Major Fintech", text: "TDCS treated our system like a real APT group would. The RCE they found saved us a fortune." },
+        { name: "Head of Eng.", company: "SaaS Platform", text: "Their reporting isn't just generic scanner output. It's manual, logic-based destruction." },
+        { name: "Director", company: "HealthData Inc.", text: "Rudra and his team bypassed 2 layers of enterprise WAFs. Shocked and impressed." },
+        { name: "CTO", company: "E-Comm Giant", text: "The IDOR vulnerability they discovered in our API was completely invisible to our internal team." },
+        { name: "SecOps Lead", company: "Blockchain Startup", text: "Professional Red Teaming. They owned our admin panel in 48 hours without tripping alerts." },
     ];
     const extendedReviews = [...reviews, ...reviews, ...reviews];
 
@@ -243,17 +202,22 @@ const InfiniteTestimonials = ({ direction = "normal" }: { direction?: "normal" |
         <div className="relative flex overflow-x-hidden group mb-4">
             <div className={`flex gap-4 ${direction === 'reverse' ? 'animate-scroll-reverse' : 'animate-scroll'}`}>
                 {extendedReviews.map((review, i) => (
-                    <div key={i} className="w-[400px] bg-slate-900/50 border border-slate-800 p-6 rounded-sm flex-shrink-0 hover:border-red-500/30 transition-colors backdrop-blur-sm">
+                    <div key={i} className="w-[450px] bg-slate-900/50 border border-slate-800 p-6 rounded-sm flex-shrink-0 hover:border-red-500/30 transition-colors backdrop-blur-sm">
                         <div className="flex justify-between items-start mb-4">
                             <div className="flex gap-1">
                                 {[1,2,3,4,5].map(s => <Star key={s} className="w-3 h-3 fill-red-600 text-red-600" />)}
                             </div>
                             <Lock className="w-3 h-3 text-slate-600" />
                         </div>
-                        <p className="text-slate-300 text-sm mb-4 font-mono leading-relaxed">"{review.text}"</p>
+                        <p className="text-slate-300 text-sm mb-4 font-mono leading-relaxed text-left">
+                            <span className="text-red-500 mr-2">$</span>
+                            "{review.text}"
+                        </p>
                         <div className="flex items-center gap-3 border-t border-slate-800/50 pt-3">
-                            <div className="w-8 h-8 bg-red-900/20 rounded-full flex items-center justify-center font-bold text-xs text-red-500 border border-red-900/30">{review.name[0]}</div>
-                            <div>
+                            <div className="w-8 h-8 bg-red-900/20 rounded-full flex items-center justify-center font-bold text-xs text-red-500 border border-red-900/30">
+                                <UserIcon name={review.name} />
+                            </div>
+                            <div className="text-left">
                                 <p className="text-sm font-bold text-white">{review.name}</p>
                                 <p className="text-xs text-slate-500 uppercase">{review.company}</p>
                             </div>
@@ -267,7 +231,44 @@ const InfiniteTestimonials = ({ direction = "normal" }: { direction?: "normal" |
     );
 };
 
-// --- DATA ---
+const UserIcon = ({name}: {name: string}) => {
+    return <span>{name[0]}</span>
+}
+
+
+// --- DATA: PREVIOUS OPERATIONS (CASE STUDIES) ---
+const operations = [
+  {
+    id: "OP-402",
+    target: "National Banking API",
+    industry: "FinTech",
+    vuln: "IDOR leading to Full Account Takeover",
+    impact: "Secured $50M+ in potential fraud losses."
+  },
+  {
+    id: "OP-339",
+    target: "Govt Health Portal",
+    industry: "Healthcare",
+    vuln: "SQL Injection (Blind) in Search",
+    impact: "Prevented leak of 2M+ Patient Records."
+  },
+  {
+    id: "OP-511",
+    target: "Logistics Cloud",
+    industry: "Enterprise SaaS",
+    vuln: "Remote Code Execution (RCE)",
+    impact: "Patched critical infrastructure entry point."
+  },
+  {
+    id: "OP-104",
+    target: "Crypto Exchange",
+    industry: "Web3",
+    vuln: "Race Condition in Withdrawal",
+    impact: "Stopped unlimited fund draining exploit."
+  }
+];
+
+// --- DATA: TESTERS ---
 const testers = [
   {
     id: 1,
@@ -429,6 +430,26 @@ export default function PenetrationTestingPage() {
         </div>
       </div>
 
+      {/* --- NEW SECTION: DECLASSIFIED OPERATIONS (PREVIOUS PROJECTS) --- */}
+      <div className="py-32 relative bg-slate-950">
+         <div className="container mx-auto px-4 relative z-10">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-5xl font-bold mb-4 font-mono uppercase flex justify-center items-center gap-3">
+                 <Eye className="text-red-600 animate-pulse" /> Declassified <span className="text-red-600">Ops</span>
+              </h2>
+              <p className="text-slate-400 max-w-xl mx-auto font-mono text-sm">
+                // HOVER OVER FILES TO DECRYPT MISSION DETAILS
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-4 gap-6 max-w-7xl mx-auto">
+               {operations.map((op, i) => (
+                  <OperationCard key={i} op={op} index={i} />
+               ))}
+            </div>
+         </div>
+      </div>
+
       {/* --- ELITE OPERATORS --- */}
       <div className="py-32 relative">
         <div className="container mx-auto px-4 relative z-10">
@@ -438,7 +459,7 @@ export default function PenetrationTestingPage() {
           </div>
           <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
             {testers.map((tester, i) => (
-              <HunterCard key={tester.id} tester={tester} index={i} />
+              <HunterCard key={tester.id} tester={tester} />
             ))}
           </div>
         </div>
@@ -448,7 +469,7 @@ export default function PenetrationTestingPage() {
       <div className="py-24 bg-slate-900/30 border-y border-slate-800">
         <div className="container mx-auto px-4 mb-12 text-center">
             <h2 className="text-3xl font-bold font-mono uppercase flex items-center justify-center gap-3">
-                <Server className="text-red-500" /> Mission Reports
+                <Server className="text-red-500" /> Mission Debriefs
             </h2>
         </div>
         <InfiniteTestimonials direction="normal" />
