@@ -1,12 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
   ArrowLeft, Check, ChevronDown, Code, Cpu, 
-  Globe, Layers, Zap, Star, ExternalLink, Terminal 
+  Layers, Zap, Star, ExternalLink, Terminal, X 
 } from "lucide-react";
+
+// --- UTILITY: LINKS ---
+const CALENDLY_LINK = "https://calendly.com/rudranarayanswain/30min";
 
 // --- UTILITY COMPONENT: BACKGROUND GRID ---
 const BackgroundGrid = () => (
@@ -17,7 +20,6 @@ const BackgroundGrid = () => (
 );
 
 // --- COMPONENT: SPOTLIGHT PROJECT CARD ---
-// Adds a mouse-following glow effect
 const SpotlightCard = ({ project, index }: { project: any, index: number }) => {
   const divRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -41,7 +43,6 @@ const SpotlightCard = ({ project, index }: { project: any, index: number }) => {
       onMouseLeave={() => setOpacity(0)}
       className="relative group rounded-2xl overflow-hidden bg-[#121214] border border-white/10"
     >
-      {/* Spotlight Gradient */}
       <div
         className="pointer-events-none absolute -inset-px transition opacity-0 duration-300 group-hover:opacity-100 z-10"
         style={{
@@ -49,8 +50,6 @@ const SpotlightCard = ({ project, index }: { project: any, index: number }) => {
           background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(99,102,241,0.15), transparent 40%)`,
         }}
       />
-      
-      {/* Image Area */}
       <div className="h-56 overflow-hidden relative z-0">
         <div className="absolute inset-0 bg-gradient-to-t from-[#121214] to-transparent z-10 opacity-60" />
         <img 
@@ -64,8 +63,6 @@ const SpotlightCard = ({ project, index }: { project: any, index: number }) => {
            </Badge>
         </div>
       </div>
-
-      {/* Content */}
       <div className="p-6 relative z-20">
         <div className="flex justify-between items-start mb-3">
             <h3 className="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">{project.title}</h3>
@@ -89,7 +86,6 @@ const DeveloperCard = ({ dev, index }: { dev: any, index: number }) => {
   return (
     <div className="group h-[420px] w-full [perspective:1000px]">
       <div className="relative h-full w-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-        
         {/* Front Face */}
         <div className="absolute inset-0 h-full w-full rounded-2xl [backface-visibility:hidden] border border-white/10 bg-[#121214] shadow-xl flex flex-col items-center justify-center p-8 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-50" />
@@ -104,17 +100,13 @@ const DeveloperCard = ({ dev, index }: { dev: any, index: number }) => {
               <div className="p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"><Cpu className="w-5 h-5 text-gray-400" /></div>
           </div>
         </div>
-
         {/* Back Face */}
         <div className="absolute inset-0 h-full w-full rounded-2xl [backface-visibility:hidden] [transform:rotateY(180deg)] bg-[#0c0c0e] border border-indigo-500/30 p-8 flex flex-col justify-center text-center relative overflow-hidden">
-           {/* Decorative Elements */}
            <div className="absolute -right-10 -top-10 w-40 h-40 bg-indigo-600/20 blur-[50px] rounded-full pointer-events-none" />
            <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-purple-600/10 blur-[50px] rounded-full pointer-events-none" />
-           
            <Terminal className="w-8 h-8 text-indigo-500 mx-auto mb-4" />
            <h3 className="text-xl font-bold text-white mb-4">Core Competencies</h3>
            <p className="text-gray-300 text-sm mb-8 leading-relaxed italic">"{dev.bio}"</p>
-           
            <div className="flex flex-wrap justify-center gap-2">
             {dev.skills.map((skill: string) => (
               <span key={skill} className="px-3 py-1 bg-indigo-900/20 rounded-full text-xs text-indigo-200 border border-indigo-500/20">
@@ -128,7 +120,7 @@ const DeveloperCard = ({ dev, index }: { dev: any, index: number }) => {
   );
 }
 
-// --- COMPONENT: INFINITE TESTIMONIALS (Marquee) ---
+// --- COMPONENT: INFINITE TESTIMONIALS ---
 const InfiniteTestimonials = () => {
     const reviews = [
         { name: "John D.", company: "TechFlow", text: "They completely transformed our backend architecture." },
@@ -136,7 +128,6 @@ const InfiniteTestimonials = () => {
         { name: "Mike R.", company: "FinServe", text: "Security was our top concern, and they delivered flawlessly." },
         { name: "Emily W.", company: "Artsy", text: "A truly creative team that understands modern UX." },
     ];
-
     return (
         <div className="relative flex overflow-x-hidden group">
             <div className="animate-marquee whitespace-nowrap flex gap-8">
@@ -156,12 +147,21 @@ const InfiniteTestimonials = () => {
                     </div>
                 ))}
             </div>
-             {/* Gradients to fade edges */}
             <div className="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-[#0a0a0a] to-transparent z-10" />
             <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-[#0a0a0a] to-transparent z-10" />
         </div>
     );
 };
+
+// --- DATA: QUOTES FOR POPUP ---
+const webDevQuotes = [
+  "Websites promote you 24/7: No employee will do that.",
+  "Digital presence is the new storefront. Make yours count.",
+  "Good design is obvious. Great design is transparent.",
+  "Your website is the center of your digital ecosystem.",
+  "It's not just code, it's business logic made visible.",
+  "Investment in UX is investment in customer retention."
+];
 
 // --- DATA ---
 const projects = [
@@ -223,6 +223,22 @@ const faqs = [
 export default function WebDevelopmentPage() {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  
+  // States for the Quote Modal
+  const [isQuoteOpen, setIsQuoteOpen] = useState(false);
+  const [activeQuote, setActiveQuote] = useState("");
+
+  // Handler: Open Calendly
+  const handleCalendly = () => {
+    window.open(CALENDLY_LINK, "_blank");
+  };
+
+  // Handler: Open Quote Modal (Picks one random quote)
+  const handleOpenQuote = () => {
+    const random = webDevQuotes[Math.floor(Math.random() * webDevQuotes.length)];
+    setActiveQuote(random);
+    setIsQuoteOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-indigo-500/30 overflow-x-hidden font-sans relative">
@@ -257,7 +273,12 @@ export default function WebDevelopmentPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-5 justify-center">
-              <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-14 text-lg rounded-full shadow-[0_0_40px_-10px_rgba(79,70,229,0.5)] border border-indigo-500/50">
+              {/* UPDATED: Calendly Link */}
+              <Button 
+                size="lg" 
+                onClick={handleCalendly}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-14 text-lg rounded-full shadow-[0_0_40px_-10px_rgba(79,70,229,0.5)] border border-indigo-500/50"
+              >
                 Start Your Project
               </Button>
               <Button size="lg" variant="outline" onClick={() => navigate(-1)} className="bg-transparent border-white/10 text-gray-300 hover:bg-white/5 hover:text-white px-8 h-14 text-lg rounded-full backdrop-blur-sm">
@@ -289,9 +310,7 @@ export default function WebDevelopmentPage() {
 
       {/* --- MEET THE DEVELOPERS --- */}
       <section className="py-32 relative overflow-hidden bg-[#0c0c0e]">
-        {/* Subtle separator line */}
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-indigo-900/50 to-transparent" />
-        
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="text-center mb-20">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">The Minds Behind the Code</h2>
@@ -369,11 +388,20 @@ export default function WebDevelopmentPage() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Button size="xl" className="bg-white text-black hover:bg-gray-200 font-bold px-10 h-14 rounded-full text-lg shadow-xl">
+                {/* UPDATED: Get Quote Button */}
+                <Button 
+                  size="xl" 
+                  onClick={handleOpenQuote}
+                  className="bg-white text-black hover:bg-gray-200 font-bold px-10 h-14 rounded-full text-lg shadow-xl"
+                >
                   Get Your Quote
                 </Button>
+                
                 <div className="flex items-center gap-4 text-sm text-gray-500 mt-4 sm:mt-0 px-4">
-                   <span className="flex items-center"><Check className="w-4 h-4 text-indigo-500 mr-2" /> Free Consultation</span>
+                   {/* UPDATED: Free Consultation Clickable */}
+                   <button onClick={handleCalendly} className="flex items-center hover:text-indigo-400 transition-colors">
+                     <Check className="w-4 h-4 text-indigo-500 mr-2" /> Free Consultation
+                   </button>
                    <span className="flex items-center"><Check className="w-4 h-4 text-indigo-500 mr-2" /> No Obligation</span>
                 </div>
               </div>
@@ -381,6 +409,56 @@ export default function WebDevelopmentPage() {
           </div>
         </div>
       </section>
+
+      {/* --- QUOTE MODAL (POPUP) --- */}
+      <AnimatePresence>
+        {isQuoteOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg bg-[#121214] border border-white/10 rounded-2xl p-8 shadow-2xl overflow-hidden"
+            >
+              {/* Decorative Glow */}
+              <div className="absolute -top-10 -left-10 w-32 h-32 bg-indigo-500/20 blur-[60px] rounded-full" />
+              
+              {/* Close Button */}
+              <button 
+                onClick={() => setIsQuoteOpen(false)}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="relative z-10 text-center">
+                <div className="mx-auto w-12 h-12 bg-indigo-500/20 rounded-full flex items-center justify-center mb-6">
+                   <Zap className="w-6 h-6 text-indigo-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-indigo-300 mb-2 uppercase tracking-wider">Insight of the moment</h3>
+                <div className="h-px w-16 bg-gradient-to-r from-transparent via-gray-600 to-transparent mx-auto mb-6" />
+                
+                <p className="text-2xl font-bold text-white mb-8 leading-snug">
+                  "{activeQuote}"
+                </p>
+
+                <Button 
+                  onClick={handleCalendly}
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-6 text-lg"
+                >
+                  Discuss this project
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }
