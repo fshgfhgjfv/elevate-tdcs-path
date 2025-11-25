@@ -11,11 +11,27 @@ import {
 // --- UTILITY: LINKS ---
 const CALENDLY_LINK = "https://calendly.com/rudranarayanswain/30min";
 
+// --- UTILITY: CSS FOR MARQUEE (INJECTED) ---
+// This ensures the scrolling works without needing tailwind.config.js changes
+const marqueeStyle = `
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-scroll {
+    animation: scroll 30s linear infinite;
+  }
+  .animate-scroll-reverse {
+    animation: scroll 30s linear infinite reverse;
+  }
+`;
+
 // --- UTILITY COMPONENT: BACKGROUND GRID ---
 const BackgroundGrid = () => (
   <div className="absolute inset-0 z-0 pointer-events-none">
     <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
     <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-indigo-500 opacity-20 blur-[100px]" />
+    <style>{marqueeStyle}</style>
   </div>
 );
 
@@ -81,11 +97,12 @@ const SpotlightCard = ({ project, index }: { project: any, index: number }) => {
   );
 };
 
-// --- COMPONENT: 3D FLIP CARD ---
+// --- COMPONENT: 3D FLIP CARD (FIXED LAYOUT) ---
 const DeveloperCard = ({ dev, index }: { dev: any, index: number }) => {
   return (
     <div className="group h-[420px] w-full [perspective:1000px]">
       <div className="relative h-full w-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+        
         {/* Front Face */}
         <div className="absolute inset-0 h-full w-full rounded-2xl [backface-visibility:hidden] border border-white/10 bg-[#121214] shadow-xl flex flex-col items-center justify-center p-8 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-50" />
@@ -100,39 +117,51 @@ const DeveloperCard = ({ dev, index }: { dev: any, index: number }) => {
               <div className="p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"><Cpu className="w-5 h-5 text-gray-400" /></div>
           </div>
         </div>
-        {/* Back Face */}
-        <div className="absolute inset-0 h-full w-full rounded-2xl [backface-visibility:hidden] [transform:rotateY(180deg)] bg-[#0c0c0e] border border-indigo-500/30 p-8 flex flex-col justify-center text-center relative overflow-hidden">
+
+        {/* Back Face - FIXED: Added overflow-hidden and flex centering to prevent 'going down' */}
+        <div className="absolute inset-0 h-full w-full rounded-2xl [backface-visibility:hidden] [transform:rotateY(180deg)] bg-[#0c0c0e] border border-indigo-500/30 p-8 flex flex-col items-center justify-center text-center relative overflow-hidden">
+           {/* Background Glows */}
            <div className="absolute -right-10 -top-10 w-40 h-40 bg-indigo-600/20 blur-[50px] rounded-full pointer-events-none" />
            <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-purple-600/10 blur-[50px] rounded-full pointer-events-none" />
-           <Terminal className="w-8 h-8 text-indigo-500 mx-auto mb-4" />
-           <h3 className="text-xl font-bold text-white mb-4">Core Competencies</h3>
-           <p className="text-gray-300 text-sm mb-8 leading-relaxed italic">"{dev.bio}"</p>
-           <div className="flex flex-wrap justify-center gap-2">
-            {dev.skills.map((skill: string) => (
-              <span key={skill} className="px-3 py-1 bg-indigo-900/20 rounded-full text-xs text-indigo-200 border border-indigo-500/20">
-                {skill}
-              </span>
-            ))}
-          </div>
+           
+           <div className="relative z-10 flex flex-col items-center h-full justify-center">
+             <Terminal className="w-8 h-8 text-indigo-500 mb-4" />
+             <h3 className="text-xl font-bold text-white mb-4">Core Competencies</h3>
+             <p className="text-gray-300 text-sm mb-6 leading-relaxed italic line-clamp-4">
+               "{dev.bio}"
+             </p>
+             <div className="flex flex-wrap justify-center gap-2">
+              {dev.skills.map((skill: string) => (
+                <span key={skill} className="px-3 py-1 bg-indigo-900/20 rounded-full text-xs text-indigo-200 border border-indigo-500/20">
+                  {skill}
+                </span>
+              ))}
+            </div>
+           </div>
         </div>
       </div>
     </div>
   );
 }
 
-// --- COMPONENT: INFINITE TESTIMONIALS ---
-const InfiniteTestimonials = () => {
+// --- COMPONENT: INFINITE TESTIMONIALS (DOUBLE ROW) ---
+const InfiniteTestimonials = ({ direction = "normal" }: { direction?: "normal" | "reverse" }) => {
     const reviews = [
         { name: "John D.", company: "TechFlow", text: "They completely transformed our backend architecture." },
         { name: "Sarah M.", company: "EcoLabs", text: "The 3D visualizations doubled our conversion rate." },
         { name: "Mike R.", company: "FinServe", text: "Security was our top concern, and they delivered flawlessly." },
         { name: "Emily W.", company: "Artsy", text: "A truly creative team that understands modern UX." },
+        { name: "David K.", company: "BuildIt", text: "Scalable code that has saved us thousands in server costs." },
     ];
+    
+    // Duplicate reviews to ensure seamless loop
+    const extendedReviews = [...reviews, ...reviews, ...reviews];
+
     return (
-        <div className="relative flex overflow-x-hidden group">
-            <div className="animate-marquee whitespace-nowrap flex gap-8">
-                {[...reviews, ...reviews, ...reviews].map((review, i) => (
-                    <div key={i} className="w-[350px] bg-[#151518] border border-gray-800 p-6 rounded-xl flex-shrink-0">
+        <div className="relative flex overflow-x-hidden group mb-6">
+            <div className={`flex gap-6 ${direction === 'reverse' ? 'animate-scroll-reverse' : 'animate-scroll'}`}>
+                {extendedReviews.map((review, i) => (
+                    <div key={i} className="w-[350px] bg-[#151518] border border-gray-800 p-6 rounded-xl flex-shrink-0 hover:border-indigo-500/50 transition-colors">
                         <div className="flex gap-1 mb-3">
                             {[1,2,3,4,5].map(s => <Star key={s} className="w-4 h-4 fill-yellow-500 text-yellow-500" />)}
                         </div>
@@ -153,7 +182,7 @@ const InfiniteTestimonials = () => {
     );
 };
 
-// --- DATA: QUOTES FOR POPUP ---
+// --- DATA: QUOTES ---
 const webDevQuotes = [
   "Websites promote you 24/7: No employee will do that.",
   "Digital presence is the new storefront. Make yours count.",
@@ -228,12 +257,10 @@ export default function WebDevelopmentPage() {
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
   const [activeQuote, setActiveQuote] = useState("");
 
-  // Handler: Open Calendly
   const handleCalendly = () => {
     window.open(CALENDLY_LINK, "_blank");
   };
 
-  // Handler: Open Quote Modal (Picks one random quote)
   const handleOpenQuote = () => {
     const random = webDevQuotes[Math.floor(Math.random() * webDevQuotes.length)];
     setActiveQuote(random);
@@ -273,7 +300,6 @@ export default function WebDevelopmentPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-5 justify-center">
-              {/* UPDATED: Calendly Link */}
               <Button 
                 size="lg" 
                 onClick={handleCalendly}
@@ -289,15 +315,15 @@ export default function WebDevelopmentPage() {
         </div>
       </section>
 
-      {/* --- REAL PROJECTS SHOWCASE --- */}
+      {/* --- REAL PROJECTS SHOWCASE (CENTERED HEADER) --- */}
       <section className="py-32 relative bg-[#0a0a0a]">
         <div className="container mx-auto px-6 max-w-7xl relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div>
-              <h2 className="text-3xl md:text-5xl font-bold mb-6">Selected Works</h2>
-              <p className="text-gray-400 max-w-md text-lg">Real-world applications delivering tangible business results for our clients.</p>
-            </div>
-            <Button variant="link" className="text-indigo-400 p-0 hover:text-indigo-300 text-lg">View All Projects &rarr;</Button>
+          
+          {/* Centered Header Section */}
+          <div className="text-center mb-16 max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">Selected Works</h2>
+            <p className="text-gray-400 text-lg mb-6">Real-world applications delivering tangible business results for our clients.</p>
+            <Button variant="link" className="text-indigo-400 text-lg hover:text-indigo-300">View All Projects &rarr;</Button>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -308,10 +334,12 @@ export default function WebDevelopmentPage() {
         </div>
       </section>
 
-      {/* --- MEET THE DEVELOPERS --- */}
+      {/* --- MEET THE DEVELOPERS (CENTERED HEADER + FIXED CARDS) --- */}
       <section className="py-32 relative overflow-hidden bg-[#0c0c0e]">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-indigo-900/50 to-transparent" />
         <div className="container mx-auto px-6 max-w-7xl">
+          
+          {/* Centered Header Section */}
           <div className="text-center mb-20">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">The Minds Behind the Code</h2>
             <p className="text-gray-400 text-lg">Hover over a card to reveal their core expertise.</p>
@@ -325,12 +353,17 @@ export default function WebDevelopmentPage() {
         </div>
       </section>
 
-      {/* --- TESTIMONIALS --- */}
+      {/* --- TESTIMONIALS (DOUBLE ROW: L-R & R-L) --- */}
       <section className="py-24 bg-[#0a0a0a] border-y border-white/5">
         <div className="container mx-auto px-6 mb-12 text-center">
           <h2 className="text-3xl font-bold mb-4">Trusted by Industry Leaders</h2>
         </div>
-        <InfiniteTestimonials />
+        
+        {/* Row 1: Normal Direction (Right to Left) */}
+        <InfiniteTestimonials direction="normal" />
+        
+        {/* Row 2: Reverse Direction (Left to Right) */}
+        <InfiniteTestimonials direction="reverse" />
       </section>
 
       {/* --- FAQ --- */}
@@ -378,7 +411,6 @@ export default function WebDevelopmentPage() {
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
           <div className="relative rounded-3xl p-12 overflow-hidden border border-white/10 bg-[#0F0F11] text-center">
-            {/* Gradient Glow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-[600px] bg-indigo-600/20 blur-[120px] rounded-full pointer-events-none" />
             
             <div className="relative z-10">
@@ -388,7 +420,6 @@ export default function WebDevelopmentPage() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                {/* UPDATED: Get Quote Button */}
                 <Button 
                   size="xl" 
                   onClick={handleOpenQuote}
@@ -398,7 +429,6 @@ export default function WebDevelopmentPage() {
                 </Button>
                 
                 <div className="flex items-center gap-4 text-sm text-gray-500 mt-4 sm:mt-0 px-4">
-                   {/* UPDATED: Free Consultation Clickable */}
                    <button onClick={handleCalendly} className="flex items-center hover:text-indigo-400 transition-colors">
                      <Check className="w-4 h-4 text-indigo-500 mr-2" /> Free Consultation
                    </button>
@@ -410,7 +440,7 @@ export default function WebDevelopmentPage() {
         </div>
       </section>
 
-      {/* --- QUOTE MODAL (POPUP) --- */}
+      {/* --- QUOTE MODAL --- */}
       <AnimatePresence>
         {isQuoteOpen && (
           <motion.div 
@@ -425,10 +455,8 @@ export default function WebDevelopmentPage() {
               exit={{ scale: 0.9, y: 20 }}
               className="relative w-full max-w-lg bg-[#121214] border border-white/10 rounded-2xl p-8 shadow-2xl overflow-hidden"
             >
-              {/* Decorative Glow */}
               <div className="absolute -top-10 -left-10 w-32 h-32 bg-indigo-500/20 blur-[60px] rounded-full" />
               
-              {/* Close Button */}
               <button 
                 onClick={() => setIsQuoteOpen(false)}
                 className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
@@ -458,7 +486,6 @@ export default function WebDevelopmentPage() {
           </motion.div>
         )}
       </AnimatePresence>
-
     </div>
   );
 }
