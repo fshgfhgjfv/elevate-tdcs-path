@@ -1,120 +1,221 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   ArrowLeft, ShieldAlert, Terminal, Lock, FileWarning, 
   CheckCircle, Server, User, Star, Code, ChevronDown, 
-  Cpu, Crosshair, Quote, Check
+  Cpu, Crosshair, Quote, Check, Search, Siren, Fingerprint
 } from "lucide-react";
 
-// --- DATA: TESTERS ---
+// --- UTILITY: LINKS ---
+const CALENDLY_LINK = "https://calendly.com/rudranarayanswain/30min";
+
+// --- UTILITY: CSS FOR MARQUEE (INJECTED) ---
+const marqueeStyle = `
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-scroll {
+    animation: scroll 30s linear infinite;
+  }
+  .animate-scroll-reverse {
+    animation: scroll 30s linear infinite reverse;
+  }
+`;
+
+// --- UTILITY COMPONENT: SECURITY GRID BACKGROUND ---
+const SecurityGrid = () => (
+  <div className="absolute inset-0 z-0 pointer-events-none bg-slate-950">
+    {/* Grid Pattern */}
+    <div className="absolute inset-0 bg-[linear-gradient(to_right,#ef44440a_1px,transparent_1px),linear-gradient(to_bottom,#ef44440a_1px,transparent_1px)] bg-[size:40px_40px]" />
+    
+    {/* Red Glow Center */}
+    <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[500px] w-[500px] rounded-full bg-red-900/10 blur-[120px]" />
+    
+    {/* Scanline Effect */}
+    <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none" />
+    
+    <style>{marqueeStyle}</style>
+  </div>
+);
+
+// --- COMPONENT: HUNTER CARD (SLIDE-IN EFFECT) ---
+const HunterCard = ({ tester, index }: { tester: any, index: number }) => {
+  return (
+    <div className="group relative h-[500px] w-full rounded-xl overflow-hidden border border-red-900/30 bg-slate-900 shadow-2xl">
+      
+      {/* --- DEFAULT VIEW (Image & Identity) --- */}
+      <div className="absolute inset-0 h-full w-full">
+         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent z-10" />
+         <img 
+            src={tester.image} 
+            alt={tester.name} 
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-40" 
+         />
+         
+         {/* Identity Overlay */}
+         <div className="absolute bottom-0 left-0 w-full p-6 z-20 translate-y-0 transition-transform duration-500 group-hover:translate-y-full">
+            <div className="flex items-center gap-2 mb-2">
+                <Badge variant="outline" className="border-red-500/50 text-red-500 bg-red-950/30 animate-pulse">
+                    ACTIVE OPERATOR
+                </Badge>
+            </div>
+            <h3 className="text-3xl font-bold text-white font-mono uppercase tracking-tighter">{tester.name}</h3>
+            <p className="text-red-400 font-mono text-sm tracking-widest uppercase">{tester.role}</p>
+         </div>
+      </div>
+
+      {/* --- HOVER OVERLAY (Slides in from Left) --- */}
+      <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-md p-8 flex flex-col justify-center border-r-2 border-red-600 transform -translate-x-full transition-transform duration-500 ease-in-out group-hover:translate-x-0 z-30">
+         <div className="absolute top-4 right-4">
+            <Fingerprint className="w-12 h-12 text-red-900/20" />
+         </div>
+
+         <div className="relative z-10">
+           <h3 className="text-2xl font-bold text-white mb-1 font-mono">{tester.name}</h3>
+           <p className="text-red-500 text-xs uppercase tracking-widest mb-6 border-b border-red-900/50 pb-4">
+             Classified Profile
+           </p>
+           
+           <div className="space-y-6">
+             <div>
+                <h4 className="text-slate-500 text-xs uppercase mb-2 flex items-center gap-2">
+                    <Crosshair className="w-3 h-3 text-red-500" /> Specialty
+                </h4>
+                <p className="text-slate-200 font-medium">{tester.specialty}</p>
+             </div>
+
+             <div>
+                <h4 className="text-slate-500 text-xs uppercase mb-2 flex items-center gap-2">
+                    <Terminal className="w-3 h-3 text-red-500" /> Bio
+                </h4>
+                <p className="text-slate-400 text-sm leading-relaxed font-mono">
+                  "{tester.bio}"
+                </p>
+             </div>
+
+             {/* Stats Grid */}
+             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-red-900/30">
+                <div className="bg-red-950/10 p-3 rounded border border-red-900/20">
+                    <div className="text-2xl font-bold text-white font-mono">{tester.stats.bugs}</div>
+                    <div className="text-[10px] text-red-400 uppercase">Vulnerabilities</div>
+                </div>
+                <div className="bg-red-950/10 p-3 rounded border border-red-900/20">
+                    <div className="text-2xl font-bold text-white font-mono">{tester.stats.criticals}</div>
+                    <div className="text-[10px] text-red-400 uppercase">Critical Severity</div>
+                </div>
+             </div>
+           </div>
+           
+           <div className="mt-6 flex flex-wrap gap-2">
+            {tester.certs.map((cert: string) => (
+              <span key={cert} className="px-2 py-1 bg-slate-800 rounded text-[10px] font-mono text-slate-300 border border-slate-700">
+                {cert}
+              </span>
+            ))}
+          </div>
+         </div>
+      </div>
+    </div>
+  );
+}
+
+// --- COMPONENT: INFINITE TESTIMONIALS (Security Style) ---
+const InfiniteTestimonials = ({ direction = "normal" }: { direction?: "normal" | "reverse" }) => {
+    const reviews = [
+        { name: "Rajesh Kumar", company: "FinTech Solutions", text: "Found a critical gateway flaw in 48 hours. Lifesavers." },
+        { name: "Sarah Jenkins", company: "HealthVault Cloud", text: "The report actually told us how to fix the issues step-by-step." },
+        { name: "Amit Patel", company: "E-Com Express", text: "Knowing exactly who is testing our systems gave us immense confidence." },
+        { name: "David L.", company: "SaaSify.io", text: "Mobile app pentest revealed API vulnerabilities we missed." },
+        { name: "Elena R.", company: "CryptoGuard", text: "Advanced persistent threat simulation was eye-opening." },
+    ];
+    
+    const extendedReviews = [...reviews, ...reviews, ...reviews];
+
+    return (
+        <div className="relative flex overflow-x-hidden group mb-4">
+            <div className={`flex gap-4 ${direction === 'reverse' ? 'animate-scroll-reverse' : 'animate-scroll'}`}>
+                {extendedReviews.map((review, i) => (
+                    <div key={i} className="w-[400px] bg-slate-900/50 border border-slate-800 p-6 rounded-sm flex-shrink-0 hover:border-red-500/30 transition-colors backdrop-blur-sm">
+                        <div className="flex justify-between items-start mb-4">
+                            <div className="flex gap-1">
+                                {[1,2,3,4,5].map(s => <Star key={s} className="w-3 h-3 fill-red-600 text-red-600" />)}
+                            </div>
+                            <Lock className="w-3 h-3 text-slate-600" />
+                        </div>
+                        <p className="text-slate-300 text-sm mb-4 font-mono leading-relaxed">"{review.text}"</p>
+                        <div className="flex items-center gap-3 border-t border-slate-800/50 pt-3">
+                            <div className="w-8 h-8 bg-red-900/20 rounded-full flex items-center justify-center font-bold text-xs text-red-500 border border-red-900/30">{review.name[0]}</div>
+                            <div>
+                                <p className="text-sm font-bold text-white">{review.name}</p>
+                                <p className="text-xs text-slate-500 uppercase">{review.company}</p>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <div className="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-slate-950 to-transparent z-10" />
+            <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-slate-950 to-transparent z-10" />
+        </div>
+    );
+};
+
+// --- DATA ---
 const testers = [
   {
     id: 1,
     name: "Rudra Narayan",
-    role: "Senior Penetration Tester", // Updated Role
-    // Updated Image
+    role: "Senior Penetration Tester",
     image: "https://blogger.googleusercontent.com/img/a/AVvXsEh-jgwTQ5FLXjpgEyZC5KPC0L9QkHlNAGMsuc_1GVpFzUrxBJJamCvkj716z2BaVYYryPyJjctPxHvlyDbdR9_P7C1vilIjcUwJvhXCEsDjR6PeaSbzAUugjGWvqd74zS8pPvD4_A4XaPNN4JpBN9U5et8vhWx13FjTjyNWJ1L-sNkSmmPVX-dqEF8pZ2qE", 
-    specialty: "Network Infrastructure & Cloud Security",
+    specialty: "Network & Cloud Security",
     certs: ["OSCP", "CEH", "CISSP"],
-    bio: "Lead operator for TDCS Technologies. Expert in simulating advanced persistent threats (APT) and Red Teaming. Has secured critical infrastructure for enterprise clients.",
+    bio: "Lead operator for TDCS. Expert in simulating advanced persistent threats (APT) and Red Teaming.",
     stats: { bugs: "500+", criticals: "120+" }
   },
   {
     id: 2,
     name: "Aisha Verma", 
     role: "Security Researcher",
-    // Placeholder for second card
-    image: "https://placehold.co/400x500/1e293b/eab308?text=Aisha+Img",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop",
     specialty: "Web App & Mobile Security",
-    certs: ["OSEP", "Burp Suite Certified"],
-    bio: "Specializes in logic flaws and zero-day exploits in SaaS platforms. A master of bypassing WAFs and API security testing.",
+    certs: ["OSEP", "Burp Certified"],
+    bio: "Specializes in logic flaws and zero-day exploits in SaaS platforms. Master of API security.",
     stats: { bugs: "350+", criticals: "90+" }
   }
 ];
 
-// --- DATA: PRICING PLANS ---
 const plans = [
   {
     name: "Basic Audit",
     price: "₹14,999",
     desc: "Essential vulnerability scanning for small websites.",
-    features: [
-      "Automated Vulnerability Scan",
-      "Basic Manual Verification",
-      "OWASP Top 10 Check",
-      "PDF Summary Report",
-      "Email Support"
-    ],
+    features: ["Automated Vulnerability Scan", "OWASP Top 10 Check", "PDF Summary Report", "Email Support"],
     recommended: false
   },
   {
     name: "Pro Penetration",
     price: "₹29,999",
-    desc: "Deep manual testing for business-critical applications.",
-    features: [
-      "Everything in Basic",
-      "Deep Manual Exploitation",
-      "Business Logic Error Testing",
-      "API Security Testing",
-      "Detailed PoC & Remediation",
-      "1 Re-test Free"
-    ],
+    desc: "Deep manual testing for business-critical apps.",
+    features: ["Manual Exploitation", "Business Logic Testing", "API Security Testing", "Detailed Remediation"],
     recommended: true
   },
   {
-    name: "Black Hat Simulation",
+    name: "Red Team Sim",
     price: "Custom",
-    desc: "Full-scale Red Team attack on all infrastructure.",
-    features: [
-      "Full Red Team Operation",
-      "Social Engineering (Phishing)",
-      "Network & Cloud Penetration",
-      "DoS Stress Testing",
-      "Executive Presentation",
-      "24/7 Priority Support"
-    ],
+    desc: "Full-scale attack simulation on infrastructure.",
+    features: ["Full Red Team Operation", "Social Engineering", "DoS Stress Testing", "24/7 Priority Support"],
     recommended: false
   }
 ];
 
-// --- DATA: TESTIMONIALS ---
-const testimonials = [
-  {
-    name: "Rajesh Kumar",
-    company: "FinTech Solutions Pvt Ltd",
-    text: "We thought we were secure until the team ran their audit. Found a critical gateway flaw in 48 hours. Lifesavers.",
-    rating: 5
-  },
-  {
-    name: "Sarah Jenkins",
-    company: "HealthVault Cloud",
-    text: "Professional and thorough. The report actually told us how to fix the issues step-by-step.",
-    rating: 5
-  },
-  {
-    name: "Amit Patel",
-    company: "E-Com Express",
-    text: "Knowing exactly who is testing our systems gave us immense confidence. Stellar work.",
-    rating: 5
-  },
-    {
-    name: "David L.",
-    company: "SaaSify.io",
-    text: "Their mobile app pentest revealed API vulnerabilities we completely missed internally. Worth every penny.",
-    rating: 5
-  },
-];
-const duplicatedTestimonials = [...testimonials, ...testimonials];
-
-// --- DATA: FAQ ---
+// --- EXPANDED FAQ DATA ---
 const faqs = [
   {
     q: "Will penetration testing take my site offline?",
-    a: "NEGATIVE. We perform non-destructive testing standard. However, during stress testing (DoS simulation), we coordinate strictly with your IT team to ensure zero downtime for users."
+    a: "NEGATIVE. We perform non-destructive testing as standard. However, during stress testing (DoS simulation), we coordinate strictly with your IT team to ensure zero downtime for users."
   },
   {
     q: "How long does a typical audit take?",
@@ -123,76 +224,28 @@ const faqs = [
   {
     q: "Do you provide a fix for the bugs found?",
     a: "AFFIRMATIVE. We don't just break things. Our final report includes code-level remediation guides, configuration patches, and a re-test period to verify your fixes."
+  },
+  {
+    q: "Is my data safe during the testing process?",
+    a: "ABSOLUTE PRIORITY. We operate under strict NDA. All data found during exploitation is redacted in reports. We use encrypted channels for all communication and report delivery."
+  },
+  {
+    q: "What is the difference between Vulnerability Scan and Pentest?",
+    a: "DISTINCTION: A Scan is automated and finds known surface issues. A Pentest is manual, human-led, and uses logic to chain vulnerabilities together to simulate a real hacker attack."
+  },
+  {
+    q: "Do you offer re-testing after we patch?",
+    a: "YES. The Pro and Red Team plans include one round of complimentary re-testing to ensure all identified critical vulnerabilities have been successfully mitigated."
   }
 ];
 
-// --- SUB-COMPONENT: CLICK FLIP CARD ---
-const TesterCard = ({ tester }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
-
-  return (
-    <div 
-      className="w-full h-[500px] cursor-pointer perspective-1000"
-      onClick={() => setIsFlipped(!isFlipped)}
-    >
-      <motion.div
-        className="w-full h-full relative preserve-3d"
-        initial={false}
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.6, ease: "easeInOut" }}
-        style={{ transformStyle: "preserve-3d" }}
-      >
-        {/* FRONT */}
-        <div className="absolute w-full h-full backface-hidden rounded-xl overflow-hidden border border-slate-800 bg-slate-900 shadow-2xl">
-          <div className="h-3/4 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10" />
-            <img src={tester.image} alt={tester.name} className="w-full h-full object-cover" />
-            
-            {/* Click Hint */}
-            <div className="absolute top-4 right-4 z-30 bg-black/50 backdrop-blur px-3 py-1 rounded-full text-xs text-white border border-white/20">
-              Click to View Profile
-            </div>
-          </div>
-          <div className="h-1/4 p-6 flex flex-col justify-center relative z-20 bg-slate-900 border-t border-slate-800">
-            <h3 className="text-2xl font-bold text-white">{tester.name}</h3>
-            <p className="text-red-500 font-mono text-sm">{tester.role}</p>
-          </div>
-        </div>
-
-        {/* BACK */}
-        <div 
-          className="absolute w-full h-full backface-hidden rounded-xl overflow-hidden border border-red-500/50 bg-slate-950 p-8 flex flex-col justify-center items-center text-center shadow-[0_0_30px_rgba(239,68,68,0.2)]"
-          style={{ transform: "rotateY(180deg)" }}
-        >
-          <User className="w-16 h-16 text-red-500 mb-6 animate-pulse" />
-          <h3 className="text-2xl font-bold text-white mb-2">{tester.name}</h3>
-          <h4 className="text-red-400 text-sm font-mono mb-6">{tester.specialty}</h4>
-          
-          <p className="text-slate-300 text-sm mb-8 leading-relaxed">"{tester.bio}"</p>
-          
-          <div className="grid grid-cols-2 gap-4 w-full">
-            <div className="bg-slate-900/50 p-3 rounded-lg border border-slate-800">
-              <div className="text-2xl font-bold text-white">{tester.stats.bugs}</div>
-              <div className="text-xs text-slate-500 uppercase tracking-widest">Bugs Found</div>
-            </div>
-            <div className="bg-slate-900/50 p-3 rounded-lg border border-slate-800">
-              <div className="text-2xl font-bold text-red-500">{tester.stats.criticals}</div>
-              <div className="text-xs text-slate-500 uppercase tracking-widest">Criticals</div>
-            </div>
-          </div>
-          <p className="mt-6 text-xs text-slate-500">(Click again to flip back)</p>
-        </div>
-      </motion.div>
-    </div>
-  );
-};
-
+// --- MAIN PAGE COMPONENT ---
 export default function PenetrationTestingPage() {
   const navigate = useNavigate();
   const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
 
   const handleCalendly = () => {
-    window.open("https://calendly.com/rudranarayanswain/30min", "_blank");
+    window.open(CALENDLY_LINK, "_blank");
   };
 
   const toggleAccordion = (index: number) => {
@@ -200,57 +253,63 @@ export default function PenetrationTestingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50 font-sans selection:bg-red-500/30 overflow-x-hidden">
+    <div className="min-h-screen bg-slate-950 text-slate-50 font-sans selection:bg-red-500/30 overflow-x-hidden relative">
+      <SecurityGrid />
       
       {/* --- HERO SECTION --- */}
-      <div className="relative pt-24 pb-20 px-4 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-900/20 via-slate-950 to-slate-950 z-0" />
-        
-        <div className="container mx-auto relative z-10 text-center max-w-4xl">
+      <div className="relative pt-32 pb-24 px-4 overflow-hidden">
+        <div className="container mx-auto relative z-10 text-center max-w-5xl">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-red-500/30 bg-red-500/10 text-red-400 text-sm mb-6"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-red-500/30 bg-red-950/20 text-red-400 text-sm mb-8 backdrop-blur-md"
           >
-            <ShieldAlert className="w-4 h-4" /> Cyber Defense Unit
+            <ShieldAlert className="w-4 h-4 animate-pulse" /> 
+            <span className="font-mono tracking-widest uppercase">Cyber Defense Unit // Active</span>
           </motion.div>
           
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-6">
-            Penetration <span className="text-red-500 text-shadow-glow">Testing</span>
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter mb-8 uppercase">
+            Penetration <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">Testing</span>
           </h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-8">
-            Identify vulnerabilities before they are exploited. Professional VAPT services for Web, Mobile, and Cloud.
+          
+          <p className="text-xl md:text-2xl text-slate-400 max-w-2xl mx-auto mb-12 font-light">
+            Identify vulnerabilities before they are exploited. 
+            <span className="block mt-2 text-slate-300 font-medium">Professional VAPT for Web, Mobile, and Cloud.</span>
           </p>
           
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            {/* ZOOMING BUTTONS */}
+          <div className="flex flex-col sm:flex-row justify-center gap-6">
+            {/* PULSING RED BUTTON */}
             <motion.div
               animate={{ scale: [1, 1.05, 1] }}
               transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
             >
-              <Button onClick={handleCalendly} size="lg" className="bg-red-600 hover:bg-red-700 text-white font-bold text-lg shadow-[0_0_20px_rgba(220,38,38,0.5)]">
-                Start Security Audit
+              <Button 
+                onClick={handleCalendly} 
+                size="lg" 
+                className="bg-red-600 hover:bg-red-700 text-white font-bold text-lg px-8 h-14 shadow-[0_0_40px_-10px_rgba(220,38,38,0.6)] rounded-full border border-red-500/50"
+              >
+                <Terminal className="mr-2 w-5 h-5" /> Start Security Audit
               </Button>
             </motion.div>
 
-            <motion.div
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut", delay: 0.5 }}
+            <Button 
+                variant="outline" 
+                size="lg" 
+                onClick={() => navigate(-1)} 
+                className="bg-transparent border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white h-14 rounded-full px-8 text-lg"
             >
-              <Button variant="outline" size="lg" onClick={handleCalendly} className="border-slate-700 text-slate-300 hover:bg-slate-900 hover:text-white text-lg">
-                Get Free Consultation
-              </Button>
-            </motion.div>
+              <ArrowLeft className="mr-2 w-5 h-5" /> Back to HQ
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* --- PRICING / PLANS SECTION --- */}
-      <div className="py-20 bg-slate-900/30 border-y border-slate-800">
+      {/* --- PRICING SECTION --- */}
+      <div className="py-24 border-y border-slate-900 bg-slate-950/50 backdrop-blur-sm">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Strategic Defense <span className="text-red-500">Plans</span></h2>
-            <p className="text-slate-400">Choose the level of depth required for your security architecture.</p>
+            <h2 className="text-3xl font-bold mb-4 font-mono uppercase tracking-tight">Strategic Defense <span className="text-red-600">Plans</span></h2>
+            <p className="text-slate-400">Choose the level of clearance required for your security architecture.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -260,28 +319,28 @@ export default function PenetrationTestingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.2 }}
-                className={`relative rounded-2xl p-8 border ${plan.recommended ? 'border-red-500 bg-red-950/10 shadow-[0_0_30px_rgba(239,68,68,0.15)]' : 'border-slate-800 bg-slate-950'} flex flex-col`}
+                className={`relative rounded-xl p-8 border flex flex-col ${plan.recommended ? 'border-red-500 bg-red-950/10 shadow-[0_0_30px_rgba(220,38,38,0.1)]' : 'border-slate-800 bg-slate-900/50'}`}
               >
                 {plan.recommended && (
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                    Most Popular
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest shadow-lg">
+                    Recommended
                   </div>
                 )}
-                <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
-                <div className="text-3xl font-bold text-red-400 mb-4">{plan.price}</div>
-                <p className="text-slate-400 text-sm mb-6">{plan.desc}</p>
+                <h3 className="text-xl font-bold text-white mb-2 font-mono uppercase">{plan.name}</h3>
+                <div className="text-3xl font-bold text-red-500 mb-4">{plan.price}</div>
+                <p className="text-slate-400 text-sm mb-6 border-b border-slate-800 pb-6">{plan.desc}</p>
                 
                 <ul className="space-y-4 mb-8 flex-1">
                   {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm text-slate-300">
-                      <Check className="w-5 h-5 text-red-500 shrink-0" />
+                    <li key={i} className="flex items-start gap-3 text-sm text-slate-300 font-mono">
+                      <CheckCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                       {feature}
                     </li>
                   ))}
                 </ul>
 
-                <Button onClick={handleCalendly} className={`w-full ${plan.recommended ? 'bg-red-600 hover:bg-red-700' : 'bg-slate-800 hover:bg-slate-700'}`}>
-                  Choose Plan
+                <Button onClick={handleCalendly} className={`w-full rounded-sm font-bold tracking-wide uppercase ${plan.recommended ? 'bg-red-600 hover:bg-red-700' : 'bg-slate-800 hover:bg-slate-700'}`}>
+                  Deploy
                 </Button>
               </motion.div>
             ))}
@@ -289,76 +348,51 @@ export default function PenetrationTestingPage() {
         </div>
       </div>
 
-      {/* --- MEET THE HUNTERS (CLICK TO FLIP) --- */}
-      <div className="bg-slate-950 py-24 relative">
+      {/* --- ELITE OPERATORS (SLIDE-IN EFFECT) --- */}
+      <div className="py-32 relative">
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Elite <span className="text-red-500">Operators</span></h2>
-            <p className="text-slate-400 max-w-xl mx-auto">Click on an agent's card to reveal their classified profile and clearance level.</p>
+          <div className="text-center mb-20">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 font-mono uppercase">Elite <span className="text-red-600">Operators</span></h2>
+            <p className="text-slate-400 max-w-xl mx-auto">Hover over an agent's card to reveal their classified profile.</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
-            {testers.map(tester => (
-              <TesterCard key={tester.id} tester={tester} />
+            {testers.map((tester, i) => (
+              <HunterCard key={tester.id} tester={tester} index={i} />
             ))}
           </div>
         </div>
       </div>
 
-      {/* --- SCROLLING TESTIMONIALS --- */}
-      <div className="py-24 bg-slate-900/20 relative overflow-hidden border-t border-slate-800">
+      {/* --- SCROLLING TESTIMONIALS (BI-DIRECTIONAL) --- */}
+      <div className="py-24 bg-slate-900/30 border-y border-slate-800">
         <div className="container mx-auto px-4 mb-12 text-center">
-           <h2 className="text-3xl font-bold">Mission Reports</h2>
+            <h2 className="text-3xl font-bold font-mono uppercase flex items-center justify-center gap-3">
+                <Server className="text-red-500" /> Mission Reports
+            </h2>
         </div>
-        
-        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-slate-950 to-transparent z-20 pointer-events-none"></div>
-        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-slate-950 to-transparent z-20 pointer-events-none"></div>
-
-        <div className="flex overflow-hidden">
-          <motion.div 
-            className="flex gap-6 flex-nowrap"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ ease: "linear", duration: 25, repeat: Infinity }}
-          >
-            {duplicatedTestimonials.map((t, i) => (
-              <div key={i} className="w-[350px] md:w-[400px] flex-shrink-0 bg-slate-900 border border-slate-800 p-6 rounded-xl relative">
-                <div className="flex gap-1 text-red-500 mb-4">
-                  {[...Array(t.rating)].map((_, r) => <Star key={r} size={14} fill="currentColor" />)}
-                </div>
-                <p className="text-slate-300 text-sm mb-6 italic">"{t.text}"</p>
-                <div className="flex items-center gap-3 border-t border-slate-800 pt-4">
-                  <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-slate-500 border border-slate-700">
-                    {t.name[0]}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-sm text-white">{t.name}</h4>
-                    <p className="text-xs text-slate-500">{t.company}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </motion.div>
-        </div>
+        <InfiniteTestimonials direction="normal" />
+        <InfiniteTestimonials direction="reverse" />
       </div>
 
-      {/* --- FAQ --- */}
+      {/* --- EXPANDED FAQ --- */}
       <div className="py-24 container mx-auto px-4 max-w-3xl">
-        <h2 className="text-3xl font-bold text-center mb-12 flex items-center justify-center gap-3">
-          <Cpu className="text-red-500" /> System Protocols (FAQ)
+        <h2 className="text-3xl font-bold text-center mb-16 flex items-center justify-center gap-3 font-mono uppercase">
+          <Cpu className="text-red-500" /> System Protocols
         </h2>
         
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <div key={index} className="border border-slate-800 rounded-lg bg-slate-900/50">
+            <div key={index} className="border border-slate-800 rounded-lg bg-slate-900/40 overflow-hidden">
               <button
                 onClick={() => toggleAccordion(index)}
-                className={`w-full text-left p-4 flex justify-between items-center transition-all ${activeAccordion === index ? 'text-red-400' : 'text-slate-200'}`}
+                className={`w-full text-left p-5 flex justify-between items-center transition-colors hover:bg-slate-900 ${activeAccordion === index ? 'bg-slate-900 border-b border-slate-800' : ''}`}
               >
-                <span className="font-mono font-bold flex gap-3 items-center">
-                  <span className="text-slate-500 text-xs">0{index + 1}_</span>
+                <span className="font-mono font-bold flex gap-4 items-center text-slate-200">
+                  <span className="text-red-500 text-xs font-bold">0{index + 1} //</span>
                   {faq.q}
                 </span>
-                <ChevronDown className={`transition-transform duration-300 ${activeAccordion === index ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`text-slate-500 transition-transform duration-300 ${activeAccordion === index ? 'rotate-180 text-red-500' : ''}`} />
               </button>
               
               <AnimatePresence>
@@ -367,9 +401,8 @@ export default function PenetrationTestingPage() {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    className="border-t border-slate-800"
                   >
-                    <div className="p-4 text-slate-400 font-mono text-sm leading-relaxed bg-black/20">
+                    <div className="p-5 text-slate-400 font-mono text-sm leading-relaxed border-l-2 border-red-600 bg-black/20">
                       {faq.a}
                     </div>
                   </motion.div>
@@ -380,18 +413,27 @@ export default function PenetrationTestingPage() {
         </div>
       </div>
       
-      {/* --- FOOTER CTA --- */}
-      <div className="container mx-auto px-4 py-24 text-center border-t border-slate-800">
-        <h2 className="text-4xl font-bold mb-6">Ready to Secure Your Future?</h2>
+      {/* --- FOOTER CTA (PULSING RED) --- */}
+      <div className="container mx-auto px-4 py-24 text-center border-t border-slate-800 bg-gradient-to-b from-slate-950 to-red-950/10">
+        <h2 className="text-4xl font-bold mb-8 uppercase tracking-tight">Ready to Secure Your Future?</h2>
         <motion.div
           animate={{ scale: [1, 1.05, 1] }}
-          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
           className="inline-block"
         >
-          <Button onClick={handleCalendly} size="xl" className="bg-white text-slate-950 hover:bg-gray-200 font-bold px-10 py-6 text-lg rounded-full">
-              <Terminal className="mr-2 w-5 h-5" /> Get Free Consultation
+          <Button 
+            onClick={handleCalendly} 
+            size="xl" 
+            className="bg-red-600 hover:bg-red-700 text-white font-bold px-12 py-8 text-xl rounded-full shadow-[0_0_50px_-10px_rgba(220,38,38,0.8)] border border-red-400"
+          >
+              <Siren className="mr-3 w-6 h-6 animate-pulse" /> Get Free Consultation
           </Button>
         </motion.div>
+        
+        <div className="mt-8 text-slate-500 font-mono text-xs flex justify-center gap-6">
+            <span className="flex items-center gap-2"><Check className="w-3 h-3 text-red-500" /> ENCRYPTED COMM CHANNEL</span>
+            <span className="flex items-center gap-2"><Check className="w-3 h-3 text-red-500" /> 24/7 RESPONSE UNIT</span>
+        </div>
       </div>
     </div>
   );
