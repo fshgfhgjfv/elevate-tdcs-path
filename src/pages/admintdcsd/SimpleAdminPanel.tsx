@@ -220,7 +220,7 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
                         </div>
                         {emailError && (
                              <p className="text-red-500 text-xs mt-2 flex items-center gap-1">
-                                <XCircle className="w-3 h-3" /> Email not found in admin database.
+                                <XCircle className="w-3 h-3" /> Email not found in database.
                              </p>
                         )}
                     </div>
