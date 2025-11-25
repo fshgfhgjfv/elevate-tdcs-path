@@ -5,14 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
   ArrowLeft, Check, ChevronDown, Code, Cpu, 
-  Layers, Zap, Star, ExternalLink, Terminal, X 
+  Layers, Zap, Star, ExternalLink, Terminal, X, User 
 } from "lucide-react";
 
 // --- UTILITY: LINKS ---
 const CALENDLY_LINK = "https://calendly.com/rudranarayanswain/30min";
 
 // --- UTILITY: CSS FOR MARQUEE (INJECTED) ---
-// This ensures the scrolling works without needing tailwind.config.js changes
 const marqueeStyle = `
   @keyframes scroll {
     0% { transform: translateX(0); }
@@ -97,54 +96,57 @@ const SpotlightCard = ({ project, index }: { project: any, index: number }) => {
   );
 };
 
-// --- COMPONENT: 3D FLIP CARD (FIXED LAYOUT) ---
+// --- COMPONENT: DEVELOPER CARD (SLIDE FROM LEFT) ---
+// UPDATED: No 3D flip. Simple hover slide effect.
 const DeveloperCard = ({ dev, index }: { dev: any, index: number }) => {
   return (
-    <div className="group h-[420px] w-full [perspective:1000px]">
-      <div className="relative h-full w-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-        
-        {/* Front Face */}
-        <div className="absolute inset-0 h-full w-full rounded-2xl [backface-visibility:hidden] border border-white/10 bg-[#121214] shadow-xl flex flex-col items-center justify-center p-8 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-50" />
-          <div className="w-32 h-32 rounded-full p-1 bg-gradient-to-br from-indigo-500 to-purple-600 mb-6">
+    <div className="group relative h-[400px] w-full rounded-2xl overflow-hidden border border-white/10 bg-[#121214] shadow-lg">
+      
+      {/* --- DEFAULT VIEW (Image & Name) --- */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center p-8 transition-all duration-500 group-hover:scale-95 group-hover:opacity-30">
+          <div className="w-32 h-32 rounded-full p-1 bg-gradient-to-br from-indigo-500 to-purple-600 mb-6 shadow-xl">
              <img src={dev.image} alt={dev.name} className="w-full h-full object-cover rounded-full border-4 border-[#121214]" />
           </div>
-          <h3 className="text-2xl font-bold text-white mb-1">{dev.name}</h3>
-          <p className="text-indigo-400 font-medium mb-6">{dev.role}</p>
-          <div className="flex gap-4">
-              <div className="p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"><Code className="w-5 h-5 text-gray-400" /></div>
-              <div className="p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"><Layers className="w-5 h-5 text-gray-400" /></div>
-              <div className="p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"><Cpu className="w-5 h-5 text-gray-400" /></div>
+          <h3 className="text-2xl font-bold text-white mb-2">{dev.name}</h3>
+          <p className="text-indigo-400 font-medium tracking-wide">{dev.role}</p>
+          
+          {/* Decorative Icons */}
+          <div className="mt-8 flex gap-4 opacity-50">
+             <Code className="w-5 h-5 text-gray-400" />
+             <Cpu className="w-5 h-5 text-gray-400" />
           </div>
-        </div>
-
-        {/* Back Face - FIXED: Added overflow-hidden and flex centering to prevent 'going down' */}
-        <div className="absolute inset-0 h-full w-full rounded-2xl [backface-visibility:hidden] [transform:rotateY(180deg)] bg-[#0c0c0e] border border-indigo-500/30 p-8 flex flex-col items-center justify-center text-center relative overflow-hidden">
-           {/* Background Glows */}
-           <div className="absolute -right-10 -top-10 w-40 h-40 bg-indigo-600/20 blur-[50px] rounded-full pointer-events-none" />
-           <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-purple-600/10 blur-[50px] rounded-full pointer-events-none" />
-           
-           <div className="relative z-10 flex flex-col items-center h-full justify-center">
-             <Terminal className="w-8 h-8 text-indigo-500 mb-4" />
-             <h3 className="text-xl font-bold text-white mb-4">Core Competencies</h3>
-             <p className="text-gray-300 text-sm mb-6 leading-relaxed italic line-clamp-4">
-               "{dev.bio}"
-             </p>
-             <div className="flex flex-wrap justify-center gap-2">
-              {dev.skills.map((skill: string) => (
-                <span key={skill} className="px-3 py-1 bg-indigo-900/20 rounded-full text-xs text-indigo-200 border border-indigo-500/20">
-                  {skill}
-                </span>
-              ))}
-            </div>
-           </div>
-        </div>
       </div>
+
+      {/* --- HOVER OVERLAY (Slides in from Left) --- */}
+      <div className="absolute inset-0 bg-[#0c0c0e]/95 backdrop-blur-md p-8 flex flex-col justify-center text-center transform -translate-x-full transition-transform duration-500 ease-in-out group-hover:translate-x-0 border-r border-indigo-500/30">
+         <div className="relative z-10">
+           <div className="w-12 h-12 bg-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-indigo-400">
+             <User className="w-6 h-6" />
+           </div>
+           
+           <h3 className="text-xl font-bold text-white mb-2">{dev.name}</h3>
+           <div className="h-px w-10 bg-indigo-500 mx-auto mb-4" />
+           
+           <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-3">Core Competencies</h4>
+           <p className="text-gray-300 text-sm mb-6 leading-relaxed italic">
+             "{dev.bio}"
+           </p>
+           
+           <div className="flex flex-wrap justify-center gap-2">
+            {dev.skills.map((skill: string) => (
+              <span key={skill} className="px-3 py-1 bg-white/5 hover:bg-white/10 transition-colors rounded-full text-xs text-indigo-300 border border-white/10">
+                {skill}
+              </span>
+            ))}
+          </div>
+         </div>
+      </div>
+      
     </div>
   );
 }
 
-// --- COMPONENT: INFINITE TESTIMONIALS (DOUBLE ROW) ---
+// --- COMPONENT: INFINITE TESTIMONIALS ---
 const InfiniteTestimonials = ({ direction = "normal" }: { direction?: "normal" | "reverse" }) => {
     const reviews = [
         { name: "John D.", company: "TechFlow", text: "They completely transformed our backend architecture." },
@@ -154,7 +156,6 @@ const InfiniteTestimonials = ({ direction = "normal" }: { direction?: "normal" |
         { name: "David K.", company: "BuildIt", text: "Scalable code that has saved us thousands in server costs." },
     ];
     
-    // Duplicate reviews to ensure seamless loop
     const extendedReviews = [...reviews, ...reviews, ...reviews];
 
     return (
@@ -315,11 +316,9 @@ export default function WebDevelopmentPage() {
         </div>
       </section>
 
-      {/* --- REAL PROJECTS SHOWCASE (CENTERED HEADER) --- */}
+      {/* --- REAL PROJECTS SHOWCASE --- */}
       <section className="py-32 relative bg-[#0a0a0a]">
         <div className="container mx-auto px-6 max-w-7xl relative z-10">
-          
-          {/* Centered Header Section */}
           <div className="text-center mb-16 max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">Selected Works</h2>
             <p className="text-gray-400 text-lg mb-6">Real-world applications delivering tangible business results for our clients.</p>
@@ -334,12 +333,11 @@ export default function WebDevelopmentPage() {
         </div>
       </section>
 
-      {/* --- MEET THE DEVELOPERS (CENTERED HEADER + FIXED CARDS) --- */}
+      {/* --- MEET THE DEVELOPERS (UPDATED CARD STYLE) --- */}
       <section className="py-32 relative overflow-hidden bg-[#0c0c0e]">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-indigo-900/50 to-transparent" />
         <div className="container mx-auto px-6 max-w-7xl">
           
-          {/* Centered Header Section */}
           <div className="text-center mb-20">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">The Minds Behind the Code</h2>
             <p className="text-gray-400 text-lg">Hover over a card to reveal their core expertise.</p>
@@ -353,16 +351,12 @@ export default function WebDevelopmentPage() {
         </div>
       </section>
 
-      {/* --- TESTIMONIALS (DOUBLE ROW: L-R & R-L) --- */}
+      {/* --- TESTIMONIALS --- */}
       <section className="py-24 bg-[#0a0a0a] border-y border-white/5">
         <div className="container mx-auto px-6 mb-12 text-center">
           <h2 className="text-3xl font-bold mb-4">Trusted by Industry Leaders</h2>
         </div>
-        
-        {/* Row 1: Normal Direction (Right to Left) */}
         <InfiniteTestimonials direction="normal" />
-        
-        {/* Row 2: Reverse Direction (Left to Right) */}
         <InfiniteTestimonials direction="reverse" />
       </section>
 
