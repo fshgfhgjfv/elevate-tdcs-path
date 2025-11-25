@@ -227,7 +227,7 @@ const developers = [
     skills: ["System Design", "AWS", "Node.js"],
   },
   {
-    name: "Sarah Jenkins",
+    name: "Rudra Narayan Swain",
     role: "Full-Stack Developer",
     image: "https://blogger.googleusercontent.com/img/a/AVvXsEh-jgwTQ5FLXjpgEyZC5KPC0L9QkHlNAGMsuc_1GVpFzUrxBJJamCvkj716z2BaVYYryPyJjctPxHvlyDbdR9_P7C1vilIjcUwJvhXCEsDjR6PeaSbzAUugjGWvqd74zS8pPvD4_A4XaPNN4JpBN9U5et8vhWx13FjTjyNWJ1L-sNkSmmPVX-dqEF8pZ2qE",
     bio: "Bridging the gap between design and code. Expert in animations.",
