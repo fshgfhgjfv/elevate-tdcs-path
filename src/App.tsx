@@ -82,7 +82,7 @@ const App = () => (
           <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
           {/* 🛠️ Admin Panel */}
-          <Route path="/admin" element={<SimpleAdminPanel />} />
+          <Route path="/admintdcsd" element={<SimpleAdminPanel />} />
 
           {/* 🚫 404 Fallback */}
           <Route path="*" element={<NotFound />} />
