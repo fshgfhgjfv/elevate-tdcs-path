@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { 
   Shield, LogOut, BookOpen, Users, 
-  MoreVertical, Edit, Wifi, Loader2, CheckCircle, Lock, AlertTriangle 
+  MoreVertical, Edit, Wifi, Loader2, CheckCircle, Lock, AlertTriangle, XCircle 
 } from 'lucide-react';
 
 // --- 1. MOCK DATA (Content Only) ---
@@ -60,7 +60,7 @@ const useToast = () => {
 // --- 2. COMPONENTS ---
 
 const LoginScreen = ({ handleLogin, isLoading }) => {
-    // --- STATE: Start Empty for Security ---
+    // --- STATE ---
     const [email, setEmail] = useState(""); 
     const [password, setPassword] = useState("");
     const [securityCode, setSecurityCode] = useState("");
@@ -68,13 +68,18 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
     // UI State
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [verifyingEmail, setVerifyingEmail] = useState(false);
-    
+    const [emailError, setEmailError] = useState(false); // To show red border
+    const { toast } = useToast();
+
     // Lockout State
     const [failedAttempts, setFailedAttempts] = useState(0);
     const [lockoutTimer, setLockoutTimer] = useState(0);
 
     // --- CONFIGURATION ---
-    // In a real production app, these values are stored in Environment Variables (Backend), not here.
+    const AUTHORIZED_EMAIL = "admin@tdcs.com";
+    const AUTHORIZED_CODE = "710003";
+    const AUTHORIZED_PASS = "password123";
+    
     const MAX_ATTEMPTS = 4;
     const LOCKOUT_DURATION = 120; // 2 minutes
 
@@ -91,15 +96,26 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
         return () => clearInterval(interval);
     }, [lockoutTimer, failedAttempts]);
 
+    // --- LOGIC: STRICT EMAIL CHECK ---
     const handleVerifyEmail = () => {
         if(!email) return;
         setVerifyingEmail(true);
+        setEmailError(false);
         
         // Simulating API Latency
         setTimeout(() => {
             setVerifyingEmail(false);
-            // In a real app, this is where you'd check if email exists in DB
-            setIsEmailVerified(true); 
+            
+            // STRICT VALIDATION: ONLY admin@tdcs.com is allowed
+            if (email.trim() === AUTHORIZED_EMAIL) {
+                setIsEmailVerified(true);
+                setEmailError(false);
+                toast({ title: "Email Verified", description: "Please enter your security PIN." });
+            } else {
+                setIsEmailVerified(false);
+                setEmailError(true);
+                toast({ title: "Access Denied", description: "This email is not authorized for admin access.", variant: "destructive" });
+            }
         }, 800);
     };
 
@@ -109,12 +125,11 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
         // 1. Check Lockout
         if (lockoutTimer > 0) return;
 
-        // 2. Validate Credentials (Simulating Backend Verification)
-        // Note: For this demo to work, we compare here. In production, send data to API.
+        // 2. Validate Credentials 
         const isValidUser = (
-            email === "admin@tdcs.com" && 
-            securityCode === "710003" && 
-            password === "password123"
+            email.trim() === AUTHORIZED_EMAIL && 
+            securityCode === AUTHORIZED_CODE && 
+            password === AUTHORIZED_PASS
         );
 
         if (!isValidUser) {
@@ -123,9 +138,9 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
 
             if (newAttempts >= MAX_ATTEMPTS) {
                 setLockoutTimer(LOCKOUT_DURATION); 
+                toast({ title: "System Locked", description: "Too many failed attempts.", variant: "destructive" });
             } else {
-                // We show a generic error to not reveal which part is wrong
-                alert(`Authentication Failed. Attempt ${newAttempts}/${MAX_ATTEMPTS}`);
+                toast({ title: "Authentication Failed", description: `Invalid credentials. Attempt ${newAttempts}/${MAX_ATTEMPTS}`, variant: "destructive" });
             }
             return;
         }
@@ -175,8 +190,15 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
                                 type="email" 
                                 value={email}
                                 disabled={isEmailVerified}
-                                onChange={e => setEmail(e.target.value)}
-                                className={`flex-1 bg-gray-950 border ${isEmailVerified ? 'border-green-500/50 text-green-400' : 'border-gray-800 text-white'} rounded-lg p-3 outline-none transition-all placeholder-gray-600`}
+                                onChange={e => {
+                                    setEmail(e.target.value);
+                                    setEmailError(false); // Clear error on typing
+                                }}
+                                className={`flex-1 bg-gray-950 border ${
+                                    isEmailVerified ? 'border-green-500/50 text-green-400' : 
+                                    emailError ? 'border-red-500 text-red-400' : 
+                                    'border-gray-800 text-white'
+                                } rounded-lg p-3 outline-none transition-all placeholder-gray-600`}
                                 placeholder="Enter registered email"
                             />
                             {!isEmailVerified ? (
@@ -184,7 +206,9 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
                                     type="button"
                                     onClick={handleVerifyEmail}
                                     disabled={!email || verifyingEmail}
-                                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 min-w-[80px] flex items-center justify-center"
+                                    className={`px-4 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 min-w-[80px] flex items-center justify-center ${
+                                        emailError ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-blue-600 hover:bg-blue-500 text-white'
+                                    }`}
                                 >
                                     {verifyingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : "Verify"}
                                 </button>
@@ -194,9 +218,14 @@ const LoginScreen = ({ handleLogin, isLoading }) => {
                                 </div>
                             )}
                         </div>
+                        {emailError && (
+                             <p className="text-red-500 text-xs mt-2 flex items-center gap-1">
+                                <XCircle className="w-3 h-3" /> Email not found in admin database.
+                             </p>
+                        )}
                     </div>
 
-                    {/* 2. Security Code (Appears after Verify) */}
+                    {/* 2. Security Code (Appears ONLY after Verify) */}
                     {isEmailVerified && (
                         <div className="animate-slideDown space-y-5">
                             <div>
