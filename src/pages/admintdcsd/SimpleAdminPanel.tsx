@@ -372,7 +372,7 @@ export default function App() {
                     <div className="flex items-center gap-4">
                         <div className="hidden sm:flex flex-col items-end mr-2">
                             <span className="text-sm font-semibold text-gray-900 dark:text-white">Admin User</span>
-                            <span className="text-xs text-gray-500">admin@tdcs.com</span>
+                            <span className="text-xs text-gray-500">Entery Your Email</span>
                         </div>
                         <button 
                             onClick={handleLogout}
