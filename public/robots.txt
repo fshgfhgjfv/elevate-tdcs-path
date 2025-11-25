@@ -11,7 +11,5 @@ User-agent: facebookexternalhit
 Allow: /
 
 User-agent: *
-Disallow: /admintdcs010
 Allow: /
-
 
