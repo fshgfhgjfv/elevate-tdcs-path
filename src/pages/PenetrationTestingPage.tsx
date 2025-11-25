@@ -1,12 +1,12 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
-  ArrowLeft, ShieldAlert, Terminal, Lock, FileWarning, 
-  CheckCircle, Server, User, Star, Code, ChevronDown, 
-  Cpu, Crosshair, Quote, Check, Search, Siren, Fingerprint
+  ArrowLeft, ShieldAlert, Terminal, Lock, CheckCircle, 
+  Server, Star, ChevronDown, Cpu, Crosshair, Check, 
+  Siren, Fingerprint, Activity
 } from "lucide-react";
 
 // --- UTILITY: LINKS ---
@@ -24,30 +24,146 @@ const marqueeStyle = `
   .animate-scroll-reverse {
     animation: scroll 30s linear infinite reverse;
   }
+  .text-glow {
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+  }
 `;
 
 // --- UTILITY COMPONENT: SECURITY GRID BACKGROUND ---
 const SecurityGrid = () => (
   <div className="absolute inset-0 z-0 pointer-events-none bg-slate-950">
-    {/* Grid Pattern */}
     <div className="absolute inset-0 bg-[linear-gradient(to_right,#ef44440a_1px,transparent_1px),linear-gradient(to_bottom,#ef44440a_1px,transparent_1px)] bg-[size:40px_40px]" />
-    
-    {/* Red Glow Center */}
     <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[500px] w-[500px] rounded-full bg-red-900/10 blur-[120px]" />
-    
-    {/* Scanline Effect */}
     <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none" />
-    
     <style>{marqueeStyle}</style>
   </div>
 );
 
-// --- COMPONENT: HUNTER CARD (SLIDE-IN EFFECT) ---
+// --- COMPONENT: TERMINAL TYPEWRITER EFFECT ---
+const TerminalText = ({ text, isActive }: { text: string; isActive: boolean }) => {
+  const words = text.split(" ");
+  
+  const container = {
+    hidden: { opacity: 0 },
+    visible: (i = 1) => ({
+      opacity: 1,
+      transition: { staggerChildren: 0.03, delayChildren: 0.04 * i },
+    }),
+  };
+
+  const child = {
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 100,
+      },
+    },
+    hidden: {
+      opacity: 0,
+      x: 20,
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 100,
+      },
+    },
+  };
+
+  if (!isActive) return null;
+
+  return (
+    <motion.div
+      style={{ overflow: "hidden", display: "flex", flexWrap: "wrap" }}
+      variants={container}
+      initial="hidden"
+      animate="visible"
+    >
+      {words.map((word, index) => (
+        <motion.span variants={child} style={{ marginRight: "5px" }} key={index} className="text-slate-300 font-mono text-sm">
+          {word}
+        </motion.span>
+      ))}
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+        className="inline-block w-2 h-4 bg-red-500 ml-1"
+      />
+    </motion.div>
+  );
+};
+
+// --- COMPONENT: ADVANCED FAQ ITEM ---
+const AdvancedFAQItem = ({ faq, index, isOpen, toggle }: { faq: any, index: number, isOpen: boolean, toggle: () => void }) => {
+  return (
+    <motion.div 
+      initial={false}
+      animate={isOpen ? "open" : "closed"}
+      className={`group border rounded-lg overflow-hidden transition-all duration-500 ${
+        isOpen 
+          ? 'bg-slate-900/80 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.2)]' 
+          : 'bg-slate-900/30 border-slate-800 hover:border-slate-600'
+      }`}
+    >
+      <button
+        onClick={toggle}
+        className="relative w-full text-left p-5 flex justify-between items-center z-10"
+      >
+        <div className="flex items-center gap-4">
+          <span className={`font-mono text-xs font-bold px-2 py-1 rounded transition-colors ${isOpen ? 'bg-red-500 text-black' : 'bg-slate-800 text-slate-500'}`}>
+            0{index + 1}
+          </span>
+          <span className={`font-bold transition-colors duration-300 ${isOpen ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>
+            {faq.q}
+          </span>
+        </div>
+        
+        {/* Animated Chevron */}
+        <div className={`p-2 rounded-full transition-all duration-300 ${isOpen ? 'bg-red-500/20 rotate-180' : 'bg-slate-800 group-hover:bg-slate-700'}`}>
+          <ChevronDown className={`w-4 h-4 transition-colors ${isOpen ? 'text-red-500' : 'text-slate-400'}`} />
+        </div>
+      </button>
+
+      {/* Answer Container */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
+            className="relative overflow-hidden"
+          >
+            {/* Scanline Effect */}
+            <motion.div 
+              initial={{ top: 0 }}
+              animate={{ top: "100%" }}
+              transition={{ duration: 1.5, repeat: 0 }}
+              className="absolute left-0 w-full h-px bg-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.8)] z-20 pointer-events-none"
+            />
+            
+            <div className="p-5 pt-0 border-l-2 border-red-500 ml-5 mb-5 relative">
+              <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-red-500/20 border border-red-500 flex items-center justify-center">
+                <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
+              </div>
+              <div className="pl-4 pt-2">
+                 <TerminalText text={faq.a} isActive={isOpen} />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
+
+// --- COMPONENT: HUNTER CARD ---
 const HunterCard = ({ tester, index }: { tester: any, index: number }) => {
   return (
     <div className="group relative h-[500px] w-full rounded-xl overflow-hidden border border-red-900/30 bg-slate-900 shadow-2xl">
-      
-      {/* --- DEFAULT VIEW (Image & Identity) --- */}
       <div className="absolute inset-0 h-full w-full">
          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent z-10" />
          <img 
@@ -55,8 +171,6 @@ const HunterCard = ({ tester, index }: { tester: any, index: number }) => {
             alt={tester.name} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-40" 
          />
-         
-         {/* Identity Overlay */}
          <div className="absolute bottom-0 left-0 w-full p-6 z-20 translate-y-0 transition-transform duration-500 group-hover:translate-y-full">
             <div className="flex items-center gap-2 mb-2">
                 <Badge variant="outline" className="border-red-500/50 text-red-500 bg-red-950/30 animate-pulse">
@@ -68,18 +182,15 @@ const HunterCard = ({ tester, index }: { tester: any, index: number }) => {
          </div>
       </div>
 
-      {/* --- HOVER OVERLAY (Slides in from Left) --- */}
       <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-md p-8 flex flex-col justify-center border-r-2 border-red-600 transform -translate-x-full transition-transform duration-500 ease-in-out group-hover:translate-x-0 z-30">
          <div className="absolute top-4 right-4">
             <Fingerprint className="w-12 h-12 text-red-900/20" />
          </div>
-
          <div className="relative z-10">
            <h3 className="text-2xl font-bold text-white mb-1 font-mono">{tester.name}</h3>
            <p className="text-red-500 text-xs uppercase tracking-widest mb-6 border-b border-red-900/50 pb-4">
              Classified Profile
            </p>
-           
            <div className="space-y-6">
              <div>
                 <h4 className="text-slate-500 text-xs uppercase mb-2 flex items-center gap-2">
@@ -87,17 +198,12 @@ const HunterCard = ({ tester, index }: { tester: any, index: number }) => {
                 </h4>
                 <p className="text-slate-200 font-medium">{tester.specialty}</p>
              </div>
-
              <div>
                 <h4 className="text-slate-500 text-xs uppercase mb-2 flex items-center gap-2">
                     <Terminal className="w-3 h-3 text-red-500" /> Bio
                 </h4>
-                <p className="text-slate-400 text-sm leading-relaxed font-mono">
-                  "{tester.bio}"
-                </p>
+                <p className="text-slate-400 text-sm leading-relaxed font-mono">"{tester.bio}"</p>
              </div>
-
-             {/* Stats Grid */}
              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-red-900/30">
                 <div className="bg-red-950/10 p-3 rounded border border-red-900/20">
                     <div className="text-2xl font-bold text-white font-mono">{tester.stats.bugs}</div>
@@ -109,7 +215,6 @@ const HunterCard = ({ tester, index }: { tester: any, index: number }) => {
                 </div>
              </div>
            </div>
-           
            <div className="mt-6 flex flex-wrap gap-2">
             {tester.certs.map((cert: string) => (
               <span key={cert} className="px-2 py-1 bg-slate-800 rounded text-[10px] font-mono text-slate-300 border border-slate-700">
@@ -123,16 +228,15 @@ const HunterCard = ({ tester, index }: { tester: any, index: number }) => {
   );
 }
 
-// --- COMPONENT: INFINITE TESTIMONIALS (Security Style) ---
+// --- COMPONENT: INFINITE TESTIMONIALS ---
 const InfiniteTestimonials = ({ direction = "normal" }: { direction?: "normal" | "reverse" }) => {
     const reviews = [
-        { name: "Rajesh Kumar", company: "FinTech Solutions", text: "Found a critical gateway flaw in 48 hours. Lifesavers." },
-        { name: "Sarah Jenkins", company: "HealthVault Cloud", text: "The report actually told us how to fix the issues step-by-step." },
-        { name: "Amit Patel", company: "E-Com Express", text: "Knowing exactly who is testing our systems gave us immense confidence." },
+        { name: "Rajesh K.", company: "FinTech Solutions", text: "Found a critical gateway flaw in 48 hours. Lifesavers." },
+        { name: "Sarah J.", company: "HealthVault", text: "The report actually told us how to fix the issues step-by-step." },
+        { name: "Amit P.", company: "E-Com Express", text: "Knowing exactly who is testing our systems gave us immense confidence." },
         { name: "David L.", company: "SaaSify.io", text: "Mobile app pentest revealed API vulnerabilities we missed." },
         { name: "Elena R.", company: "CryptoGuard", text: "Advanced persistent threat simulation was eye-opening." },
     ];
-    
     const extendedReviews = [...reviews, ...reviews, ...reviews];
 
     return (
@@ -211,32 +315,12 @@ const plans = [
   }
 ];
 
-// --- EXPANDED FAQ DATA ---
 const faqs = [
-  {
-    q: "Will penetration testing take my site offline?",
-    a: "NEGATIVE. We perform non-destructive testing as standard. However, during stress testing (DoS simulation), we coordinate strictly with your IT team to ensure zero downtime for users."
-  },
-  {
-    q: "How long does a typical audit take?",
-    a: "VARIABLE. Small web apps take 3-5 days. Complex enterprise networks can take 2-3 weeks. We provide a timeline estimate after the initial reconnaissance phase."
-  },
-  {
-    q: "Do you provide a fix for the bugs found?",
-    a: "AFFIRMATIVE. We don't just break things. Our final report includes code-level remediation guides, configuration patches, and a re-test period to verify your fixes."
-  },
-  {
-    q: "Is my data safe during the testing process?",
-    a: "ABSOLUTE PRIORITY. We operate under strict NDA. All data found during exploitation is redacted in reports. We use encrypted channels for all communication and report delivery."
-  },
-  {
-    q: "What is the difference between Vulnerability Scan and Pentest?",
-    a: "DISTINCTION: A Scan is automated and finds known surface issues. A Pentest is manual, human-led, and uses logic to chain vulnerabilities together to simulate a real hacker attack."
-  },
-  {
-    q: "Do you offer re-testing after we patch?",
-    a: "YES. The Pro and Red Team plans include one round of complimentary re-testing to ensure all identified critical vulnerabilities have been successfully mitigated."
-  }
+  { q: "Will penetration testing take my site offline?", a: "NEGATIVE. We perform non-destructive testing as standard. However, during stress testing (DoS simulation), we coordinate strictly with your IT team to ensure zero downtime." },
+  { q: "How long does a typical audit take?", a: "VARIABLE. Small web apps take 3-5 days. Complex enterprise networks can take 2-3 weeks. We provide a timeline estimate after the initial reconnaissance phase." },
+  { q: "Do you provide a fix for the bugs found?", a: "AFFIRMATIVE. We don't just break things. Our final report includes code-level remediation guides, configuration patches, and a re-test period to verify your fixes." },
+  { q: "Is my data safe during the testing process?", a: "ABSOLUTE PRIORITY. We operate under strict NDA. All data found during exploitation is redacted in reports. We use encrypted channels for all communication." },
+  { q: "What is the difference between Vulnerability Scan and Pentest?", a: "DISTINCTION: A Scan is automated and finds known surface issues. A Pentest is manual, human-led, and uses logic to chain vulnerabilities together to simulate a real hacker attack." },
 ];
 
 // --- MAIN PAGE COMPONENT ---
@@ -269,7 +353,7 @@ export default function PenetrationTestingPage() {
           </motion.div>
           
           <h1 className="text-5xl md:text-8xl font-black tracking-tighter mb-8 uppercase">
-            Penetration <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">Testing</span>
+            Penetration <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800 text-glow">Testing</span>
           </h1>
           
           <p className="text-xl md:text-2xl text-slate-400 max-w-2xl mx-auto mb-12 font-light">
@@ -278,7 +362,6 @@ export default function PenetrationTestingPage() {
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center gap-6">
-            {/* PULSING RED BUTTON */}
             <motion.div
               animate={{ scale: [1, 1.05, 1] }}
               transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
@@ -329,7 +412,6 @@ export default function PenetrationTestingPage() {
                 <h3 className="text-xl font-bold text-white mb-2 font-mono uppercase">{plan.name}</h3>
                 <div className="text-3xl font-bold text-red-500 mb-4">{plan.price}</div>
                 <p className="text-slate-400 text-sm mb-6 border-b border-slate-800 pb-6">{plan.desc}</p>
-                
                 <ul className="space-y-4 mb-8 flex-1">
                   {plan.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-slate-300 font-mono">
@@ -338,7 +420,6 @@ export default function PenetrationTestingPage() {
                     </li>
                   ))}
                 </ul>
-
                 <Button onClick={handleCalendly} className={`w-full rounded-sm font-bold tracking-wide uppercase ${plan.recommended ? 'bg-red-600 hover:bg-red-700' : 'bg-slate-800 hover:bg-slate-700'}`}>
                   Deploy
                 </Button>
@@ -348,14 +429,13 @@ export default function PenetrationTestingPage() {
         </div>
       </div>
 
-      {/* --- ELITE OPERATORS (SLIDE-IN EFFECT) --- */}
+      {/* --- ELITE OPERATORS --- */}
       <div className="py-32 relative">
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-20">
             <h2 className="text-3xl md:text-5xl font-bold mb-4 font-mono uppercase">Elite <span className="text-red-600">Operators</span></h2>
             <p className="text-slate-400 max-w-xl mx-auto">Hover over an agent's card to reveal their classified profile.</p>
           </div>
-
           <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
             {testers.map((tester, i) => (
               <HunterCard key={tester.id} tester={tester} index={i} />
@@ -364,7 +444,7 @@ export default function PenetrationTestingPage() {
         </div>
       </div>
 
-      {/* --- SCROLLING TESTIMONIALS (BI-DIRECTIONAL) --- */}
+      {/* --- SCROLLING TESTIMONIALS --- */}
       <div className="py-24 bg-slate-900/30 border-y border-slate-800">
         <div className="container mx-auto px-4 mb-12 text-center">
             <h2 className="text-3xl font-bold font-mono uppercase flex items-center justify-center gap-3">
@@ -375,45 +455,35 @@ export default function PenetrationTestingPage() {
         <InfiniteTestimonials direction="reverse" />
       </div>
 
-      {/* --- EXPANDED FAQ --- */}
-      <div className="py-24 container mx-auto px-4 max-w-3xl">
-        <h2 className="text-3xl font-bold text-center mb-16 flex items-center justify-center gap-3 font-mono uppercase">
-          <Cpu className="text-red-500" /> System Protocols
-        </h2>
+      {/* --- ADVANCED FAQ SECTION --- */}
+      <div className="py-32 container mx-auto px-4 max-w-3xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl font-bold flex items-center justify-center gap-3 font-mono uppercase">
+            <Activity className="text-red-500 animate-pulse" /> System Protocols
+          </h2>
+          <p className="text-slate-500 text-sm mt-2 font-mono">
+            // DECRYPTING COMMON QUERIES...
+          </p>
+        </motion.div>
         
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <div key={index} className="border border-slate-800 rounded-lg bg-slate-900/40 overflow-hidden">
-              <button
-                onClick={() => toggleAccordion(index)}
-                className={`w-full text-left p-5 flex justify-between items-center transition-colors hover:bg-slate-900 ${activeAccordion === index ? 'bg-slate-900 border-b border-slate-800' : ''}`}
-              >
-                <span className="font-mono font-bold flex gap-4 items-center text-slate-200">
-                  <span className="text-red-500 text-xs font-bold">0{index + 1} //</span>
-                  {faq.q}
-                </span>
-                <ChevronDown className={`text-slate-500 transition-transform duration-300 ${activeAccordion === index ? 'rotate-180 text-red-500' : ''}`} />
-              </button>
-              
-              <AnimatePresence>
-                {activeAccordion === index && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                  >
-                    <div className="p-5 text-slate-400 font-mono text-sm leading-relaxed border-l-2 border-red-600 bg-black/20">
-                      {faq.a}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            <AdvancedFAQItem 
+              key={index} 
+              faq={faq} 
+              index={index} 
+              isOpen={activeAccordion === index}
+              toggle={() => toggleAccordion(index)}
+            />
           ))}
         </div>
       </div>
       
-      {/* --- FOOTER CTA (PULSING RED) --- */}
+      {/* --- FOOTER CTA --- */}
       <div className="container mx-auto px-4 py-24 text-center border-t border-slate-800 bg-gradient-to-b from-slate-950 to-red-950/10">
         <h2 className="text-4xl font-bold mb-8 uppercase tracking-tight">Ready to Secure Your Future?</h2>
         <motion.div
@@ -429,7 +499,6 @@ export default function PenetrationTestingPage() {
               <Siren className="mr-3 w-6 h-6 animate-pulse" /> Get Free Consultation
           </Button>
         </motion.div>
-        
         <div className="mt-8 text-slate-500 font-mono text-xs flex justify-center gap-6">
             <span className="flex items-center gap-2"><Check className="w-3 h-3 text-red-500" /> ENCRYPTED COMM CHANNEL</span>
             <span className="flex items-center gap-2"><Check className="w-3 h-3 text-red-500" /> 24/7 RESPONSE UNIT</span>
