@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Rocket, Code, Layout, Smartphone, Zap, Check } from "lucide-react";
+import { ArrowLeft, Rocket, Code, Layout, Smartphone, Zap, Search, PenTool, Server, Globe } from "lucide-react";
 
 export default function WebDevelopmentPage() {
   const navigate = useNavigate();
@@ -16,33 +16,43 @@ export default function WebDevelopmentPage() {
     { name: "Framer", desc: "Smooth Animations" },
   ];
 
+  const processSteps = [
+    { icon: <Search className="w-6 h-6" />, title: "Discovery", desc: "We analyze your goals, target audience, and competitors." },
+    { icon: <PenTool className="w-6 h-6" />, title: "UI/UX Design", desc: "Wireframing and high-fidelity prototypes in Figma." },
+    { icon: <Server className="w-6 h-6" />, title: "Development", desc: "Clean, scalable coding with the latest secure frameworks." },
+    { icon: <Globe className="w-6 h-6" />, title: "Launch", desc: "SEO setup, performance testing, and live deployment." },
+  ];
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       
       {/* --- HERO SECTION --- */}
       <div className="relative pt-32 pb-20 px-4">
         {/* Background Gradients */}
-        <div className="absolute top-0 right-0 w-1/3 h-1/2 bg-blue-500/10 blur-[100px] -z-10" />
-        <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-indigo-500/10 blur-[100px] -z-10" />
+        <div className="absolute top-0 right-0 w-1/3 h-1/2 bg-blue-500/10 blur-[120px] -z-10" />
+        <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-indigo-500/10 blur-[120px] -z-10" />
 
-        <div className="container mx-auto max-w-5xl">
+        <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <motion.div
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
             >
-                <div className="text-blue-600 font-bold tracking-wide mb-2 uppercase text-sm">Full Stack Solutions</div>
-                <h1 className="text-5xl font-extrabold leading-tight mb-6">
+                <div className="inline-block px-3 py-1 mb-4 rounded-full bg-blue-500/10 text-blue-600 font-bold tracking-wide uppercase text-xs border border-blue-500/20">
+                    Full Stack Solutions
+                </div>
+                <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-6">
                   Websites that <br/>
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
                     Drive Business.
                   </span>
                 </h1>
-                <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+                <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-lg">
                   We don't just write code; we build digital experiences. From lightning-fast landing pages to complex web applications, we ensure security, speed, and scalability.
                 </p>
-                <div className="flex gap-4">
-                    <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                <div className="flex flex-wrap gap-4">
+                    <Button size="lg" className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20">
                         View Portfolio
                     </Button>
                     <Button variant="outline" size="lg" onClick={() => navigate(-1)}>
@@ -53,17 +63,18 @@ export default function WebDevelopmentPage() {
 
             {/* Visual Right Side */}
             <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
                 className="relative"
             >
-                <div className="relative bg-card border border-border shadow-2xl rounded-2xl p-4 md:p-8">
+                <div className="relative bg-card/80 backdrop-blur-sm border border-border/50 shadow-2xl rounded-2xl p-4 md:p-8 hover:border-blue-500/30 transition-colors">
                     {/* Mock Code Block */}
-                    <div className="space-y-3 font-mono text-sm">
-                        <div className="flex gap-2 mb-4">
-                            <div className="w-3 h-3 rounded-full bg-red-400" />
-                            <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                            <div className="w-3 h-3 rounded-full bg-green-400" />
+                    <div className="space-y-3 font-mono text-sm leading-relaxed">
+                        <div className="flex gap-2 mb-6">
+                            <div className="w-3 h-3 rounded-full bg-red-400/80" />
+                            <div className="w-3 h-3 rounded-full bg-yellow-400/80" />
+                            <div className="w-3 h-3 rounded-full bg-green-400/80" />
                         </div>
                         <p className="text-blue-500">import <span className="text-foreground">Success</span> from <span className="text-green-500">'./YourBusiness'</span>;</p>
                         <p className="text-purple-500">const <span className="text-yellow-500">Website</span> = () ={">"} {"{"}</p>
@@ -78,33 +89,37 @@ export default function WebDevelopmentPage() {
                     </div>
                 </div>
                 {/* Floating Badge */}
-                <div className="absolute -bottom-6 -right-6 bg-white dark:bg-slate-800 shadow-lg p-4 rounded-xl flex items-center gap-3 border border-border">
-                    <div className="bg-green-100 dark:bg-green-900 p-2 rounded-full">
+                <motion.div 
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                  className="absolute -bottom-6 -right-6 bg-background shadow-xl p-4 rounded-xl flex items-center gap-3 border border-border"
+                >
+                    <div className="bg-green-100 dark:bg-green-900/50 p-2 rounded-full">
                         <Zap className="w-6 h-6 text-green-600 dark:text-green-400" />
                     </div>
                     <div>
-                        <div className="font-bold">99/100</div>
-                        <div className="text-xs text-muted-foreground">Performance Score</div>
+                        <div className="font-bold text-lg">99/100</div>
+                        <div className="text-xs text-muted-foreground font-medium">Performance Score</div>
                     </div>
-                </div>
+                </motion.div>
             </motion.div>
           </div>
         </div>
       </div>
 
       {/* --- TECH STACK GRID --- */}
-      <div className="bg-muted/30 py-20">
+      <div className="border-y border-border/40 bg-muted/20 py-20">
         <div className="container mx-auto px-4">
             <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold mb-4">Our Technology Stack</h2>
-                <p className="text-muted-foreground">We use the latest tools to ensure your site is future-proof.</p>
+                <p className="text-muted-foreground max-w-2xl mx-auto">We rely on a modern, type-safe ecosystem to ensure your site is fast, secure, and easy to scale.</p>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 {techStack.map((tech) => (
-                    <Card key={tech.name} className="hover:border-blue-500/50 transition-colors cursor-default">
+                    <Card key={tech.name} className="hover:border-blue-500/40 hover:bg-blue-500/5 transition-all cursor-default group">
                         <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full">
-                            <Code className="w-8 h-8 text-blue-500 mb-3 opacity-80" />
+                            <Code className="w-8 h-8 text-muted-foreground group-hover:text-blue-500 mb-3 transition-colors" />
                             <h3 className="font-bold text-sm">{tech.name}</h3>
                             <p className="text-xs text-muted-foreground mt-1">{tech.desc}</p>
                         </CardContent>
@@ -114,42 +129,75 @@ export default function WebDevelopmentPage() {
         </div>
       </div>
 
+      {/* --- PROCESS TIMELINE (NEW) --- */}
+      <div className="container mx-auto px-4 py-24">
+         <h2 className="text-3xl font-bold text-center mb-16">How We Build</h2>
+         <div className="grid md:grid-cols-4 gap-8 relative">
+            {/* Connector Line (Desktop) */}
+            <div className="hidden md:block absolute top-6 left-0 w-full h-0.5 bg-border -z-10" />
+            
+            {processSteps.map((step, i) => (
+                <div key={i} className="relative pt-6 md:pt-0">
+                    <div className="w-12 h-12 bg-background border-2 border-blue-600 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 z-10 relative">
+                        {step.icon}
+                    </div>
+                    <div className="text-center px-2">
+                        <h3 className="font-bold text-lg mb-2">{step.title}</h3>
+                        <p className="text-sm text-muted-foreground">{step.desc}</p>
+                    </div>
+                </div>
+            ))}
+         </div>
+      </div>
+
       {/* --- FEATURES --- */}
-      <div className="container mx-auto px-4 py-20">
+      <div className="bg-slate-50 dark:bg-slate-900/20 py-20">
+        <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Why Choose Us?</h2>
           <div className="grid md:grid-cols-3 gap-8">
-              <div className="space-y-4">
-                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-blue-600">
+              <Card className="border-none shadow-none bg-transparent">
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-blue-600 mb-4">
                       <Layout className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-bold">Responsive Design</h3>
-                  <p className="text-muted-foreground">Looks perfect on mobile, tablet, and desktop screens.</p>
-              </div>
-              <div className="space-y-4">
-                  <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center text-indigo-600">
+                  <h3 className="text-xl font-bold mb-2">Responsive Design</h3>
+                  <p className="text-muted-foreground">Your site will adapt flawlessly to mobile, tablet, and desktop screens.</p>
+              </Card>
+              <Card className="border-none shadow-none bg-transparent">
+                  <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center text-indigo-600 mb-4">
                       <Rocket className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-bold">Speed Optimized</h3>
-                  <p className="text-muted-foreground">We aim for sub-second load times using Next.js caching.</p>
-              </div>
-              <div className="space-y-4">
-                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center text-purple-600">
+                  <h3 className="text-xl font-bold mb-2">Speed Optimized</h3>
+                  <p className="text-muted-foreground">We achieve sub-second load times using advanced caching and CDN strategies.</p>
+              </Card>
+              <Card className="border-none shadow-none bg-transparent">
+                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center text-purple-600 mb-4">
                       <Smartphone className="w-6 h-6" />
                   </div>
-                  <h3 className="text-xl font-bold">SEO Ready</h3>
-                  <p className="text-muted-foreground">Built with semantic HTML and meta tags to rank higher on Google.</p>
-              </div>
+                  <h3 className="text-xl font-bold mb-2">SEO Ready</h3>
+                  <p className="text-muted-foreground">Built with semantic HTML, meta tags, and sitemaps to rank higher on Google.</p>
+              </Card>
           </div>
+        </div>
       </div>
 
       {/* --- PRICING CTA --- */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-16">
-          <div className="container mx-auto px-4 text-center">
-              <h2 className="text-3xl font-bold mb-4">Ready to Build Your Vision?</h2>
-              <p className="text-blue-100 mb-8 max-w-2xl mx-auto">Packages include free domain setup, 1 year of hosting, and SSL security.</p>
-              <Button size="lg" variant="secondary" className="font-bold text-blue-600">
-                  Request a Quote (Starts at ₹4999)
-              </Button>
+      <div className="relative py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 -z-10" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 -z-10" />
+        
+        <div className="container mx-auto px-4 text-center text-white">
+              <h2 className="text-4xl font-bold mb-6">Ready to Launch?</h2>
+              <p className="text-blue-100 mb-10 max-w-2xl mx-auto text-lg">
+                Stop losing customers to slow, outdated websites. Get a modern platform that converts visitors into buyers.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="xl" variant="secondary" className="font-bold text-blue-700 h-14 px-8 text-lg">
+                    Request a Quote (Starts at ₹4999)
+                </Button>
+                <Button size="xl" variant="outline" className="border-white text-white hover:bg-white/10 hover:text-white h-14 px-8 text-lg bg-transparent">
+                    Schedule Free Call
+                </Button>
+              </div>
           </div>
       </div>
     </div>
