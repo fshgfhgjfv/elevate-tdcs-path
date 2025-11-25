@@ -33,7 +33,7 @@ import WebsiteDevelopment from "./pages/website-development";
 
 // ✅ NEW: Pages
 import WebsiteSecurityDetails from "./pages/WebsiteSecurityDetails";
-import SimpleAdminPanel from "./pages/admin/SimpleAdminPanel";
+import SimpleAdminPanel from "./pages/admintdcsd/SimpleAdminPanel";
 
 const queryClient = new QueryClient();
 
