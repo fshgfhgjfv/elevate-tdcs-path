@@ -339,7 +339,7 @@ export default function PenetrationTestingPage() {
               </Button>
             </motion.div>
             <Button variant="outline" size="lg" onClick={() => navigate(-1)} className="bg-transparent border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white h-14 rounded-full px-8 text-lg">
-              <ArrowLeft className="mr-2 w-5 h-5" /> Back to HQ
+              <ArrowLeft className="mr-2 w-5 h-5" /> Back to H
             </Button>
           </div>
         </div>
