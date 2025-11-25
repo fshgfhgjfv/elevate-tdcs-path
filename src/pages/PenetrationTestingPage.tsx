@@ -7,16 +7,18 @@ import { Badge } from "@/components/ui/badge";
 import { 
   ArrowLeft, ShieldAlert, Terminal, Lock, FileWarning, 
   CheckCircle, Server, User, Star, Code, ChevronDown, 
-  Cpu, Crosshair 
+  Cpu, Crosshair, Quote
 } from "lucide-react";
 
 // --- DATA: TESTERS ---
+// NOTE: Replace the 'image' URLs with your actual image hosted URLs.
 const testers = [
   {
     id: 1,
     name: "Rudra Narayan",
     role: "Lead Penetration Tester",
-    image: "/api/placeholder/400/400", // Replace with real image
+    // REPLACE WITH YOUR REAL IMAGE URL
+    image: "https://placehold.co/400x500/1e293b/ef4444?text=Rudra+Img", 
     specialty: "Network Infrastructure & Cloud Security",
     certs: ["OSCP", "CEH", "CISSP"],
     bio: "Expert in simulating advanced persistent threats (APT). Has uncovered critical vulnerabilities in Fortune 500 networks.",
@@ -24,9 +26,10 @@ const testers = [
   },
   {
     id: 2,
-    name: "Aisha Verma", // Example Name
+    name: "Aisha Verma", 
     role: "Senior Security Researcher",
-    image: "/api/placeholder/400/400", // Replace with real image
+     // REPLACE WITH REAL IMAGE URL
+    image: "https://placehold.co/400x500/1e293b/eab308?text=Aisha+Img",
     specialty: "Web App & Mobile Security",
     certs: ["OSEP", "Burp Suite Certified"],
     bio: "Specializes in logic flaws and zero-day exploits in SaaS platforms. A master of bypassing WAFs.",
@@ -39,22 +42,32 @@ const testimonials = [
   {
     name: "Rajesh Kumar",
     company: "FinTech Solutions Pvt Ltd",
-    text: "We thought we were secure until TDCS ran their audit. They found a critical payment gateway flaw in 48 hours. Absolute lifesavers.",
+    text: "We thought we were secure until the team ran their audit. Found a critical gateway flaw in 48 hours. Lifesavers.",
     rating: 5
   },
   {
     name: "Sarah Jenkins",
     company: "HealthVault Cloud",
-    text: "Professional, stealthy, and thorough. The report wasn't just technical jargon; it actually told us how to fix the issues step-by-step.",
+    text: "Professional and thorough. The report actually told us how to fix the issues step-by-step.",
     rating: 5
   },
   {
     name: "Amit Patel",
     company: "E-Com Express",
-    text: "The flip-card team transparency gave us confidence. Knowing exactly who is testing our systems made a huge difference.",
+    text: "Knowing exactly who is testing our systems gave us immense confidence. Stellar work.",
     rating: 5
-  }
+  },
+    {
+    name: "David L.",
+    company: "SaaSify.io",
+    text: "Their mobile app pentest revealed API vulnerabilities we completely missed internally. Worth every penny.",
+    rating: 5
+  },
 ];
+
+// Duplicate testimonials for seamless looping
+const duplicatedTestimonials = [...testimonials, ...testimonials];
+
 
 // --- DATA: FAQ ---
 const faqs = [
@@ -76,62 +89,55 @@ const faqs = [
   }
 ];
 
-// --- SUB-COMPONENT: FLIP CARD ---
+// --- SUB-COMPONENT: ROBUST CSS FLIP CARD ---
+// Uses CSS group-hover for a cleaner, non-mirroring flip
 const TesterCard = ({ tester }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
-
   return (
-    <div 
-      className="w-full h-[450px] cursor-pointer perspective-1000 group"
-      onMouseEnter={() => setIsFlipped(true)}
-      onMouseLeave={() => setIsFlipped(false)}
-    >
-      <motion.div
-        className="w-full h-full relative preserve-3d transition-all duration-700"
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        style={{ transformStyle: "preserve-3d" }}
-      >
-        {/* FRONT */}
-        <div className="absolute w-full h-full backface-hidden rounded-xl overflow-hidden border border-slate-800 bg-slate-900 shadow-2xl">
-          <div className="h-2/3 bg-slate-800 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10" />
-            <img src={tester.image} alt={tester.name} className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" />
+    // Outer container defines dimensions and perspective
+    <div className="w-full h-[450px] bg-transparent cursor-pointer group perspective-1000">
+       {/* Inner container holds the 3D transform state */}
+      <div className="relative w-full h-full text-center transition-transform duration-700 transform-style-3d group-hover:rotate-y-180 shadow-2xl rounded-xl">
+        
+        {/* --- FRONT SIDE --- */}
+        <div className="absolute inset-0 w-full h-full backface-hidden bg-slate-900 border border-slate-800 rounded-xl overflow-hidden z-20">
+          <div className="h-3/4 relative overflow-hidden">
+             <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10" />
+             {/* Ensure object-cover is used for proper image sizing */}
+             <img src={tester.image} alt={tester.name} className="w-full h-full object-cover opacity-90 group-hover:scale-110 transition-transform duration-700" />
           </div>
-          <div className="h-1/3 p-6 flex flex-col justify-center relative z-20">
-            <h3 className="text-2xl font-bold text-white">{tester.name}</h3>
-            <p className="text-red-400 font-mono text-sm">{tester.role}</p>
-            <div className="mt-3 flex gap-2">
+          <div className="h-1/4 p-4 flex flex-col justify-center relative z-20 bg-slate-900/80 backdrop-blur-md absolute bottom-0 w-full text-left border-t border-slate-800">
+            <h3 className="text-xl font-bold text-white">{tester.name}</h3>
+            <p className="text-red-400 font-mono text-xs mb-2">{tester.role}</p>
+             <div className="flex flex-wrap gap-1">
               {tester.certs.map(c => (
-                <Badge key={c} variant="outline" className="text-[10px] border-slate-600 text-slate-400">{c}</Badge>
+                <Badge key={c} variant="outline" className="text-[10px] border-slate-600 text-slate-400 px-1 py-0">{c}</Badge>
               ))}
             </div>
-            <div className="absolute top-[-20px] right-6 bg-red-600 rounded-full p-2">
-              <Crosshair className="w-6 h-6 text-white" />
-            </div>
           </div>
+           <div className="absolute top-4 right-4 bg-red-600/80 backdrop-blur rounded-full p-2 z-30">
+              <Crosshair className="w-5 h-5 text-white" />
+            </div>
         </div>
 
-        {/* BACK */}
-        <div 
-          className="absolute w-full h-full backface-hidden rounded-xl overflow-hidden border border-red-500/50 bg-slate-950 p-8 flex flex-col justify-center items-center text-center shadow-[0_0_30px_rgba(239,68,68,0.2)]"
-          style={{ transform: "rotateY(180deg)" }}
-        >
+        {/* --- BACK SIDE --- */}
+        {/* Key: rotate-y-180 initially, solid background color, and backface-hidden */}
+        <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-slate-950 border border-red-500/50 rounded-xl p-8 flex flex-col justify-center items-center shadow-[inset_0_0_30px_rgba(239,68,68,0.2)] z-10">
           <User className="w-12 h-12 text-red-500 mb-4 animate-pulse" />
-          <h3 className="text-xl font-bold text-white mb-2">{tester.specialty}</h3>
-          <p className="text-slate-400 text-sm mb-6 leading-relaxed">{tester.bio}</p>
+          <h3 className="text-lg font-bold text-white mb-2">{tester.specialty}</h3>
+          <p className="text-slate-400 text-sm mb-8 leading-relaxed">{tester.bio}</p>
           
-          <div className="grid grid-cols-2 gap-4 w-full">
-            <div className="bg-slate-900/50 p-3 rounded-lg border border-slate-800">
-              <div className="text-2xl font-bold text-white">{tester.stats.bugs}</div>
-              <div className="text-xs text-slate-500 uppercase tracking-widest">Bugs Found</div>
+          <div className="grid grid-cols-2 gap-4 w-full font-mono">
+            <div className="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+              <div className="text-xl font-bold text-white">{tester.stats.bugs}</div>
+              <div className="text-[10px] text-slate-500 uppercase tracking-widest">Vulnerabilities</div>
             </div>
-            <div className="bg-slate-900/50 p-3 rounded-lg border border-slate-800">
-              <div className="text-2xl font-bold text-red-500">{tester.stats.criticals}</div>
-              <div className="text-xs text-slate-500 uppercase tracking-widest">Criticals</div>
+            <div className="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+              <div className="text-xl font-bold text-red-500">{tester.stats.criticals}</div>
+              <div className="text-[10px] text-slate-500 uppercase tracking-widest">Criticals</div>
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
@@ -154,7 +160,7 @@ export default function PenetrationTestingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50 font-sans selection:bg-red-500/30">
+    <div className="min-h-screen bg-slate-950 text-slate-50 font-sans selection:bg-red-500/30 overflow-x-hidden">
       
       {/* --- HERO SECTION --- */}
       <div className="relative pt-24 pb-20 px-4 overflow-hidden">
@@ -187,70 +193,18 @@ export default function PenetrationTestingPage() {
         </div>
       </div>
 
-      {/* --- TERMINAL / PROCESS SECTION --- */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Left: Info */}
-          <div className="space-y-8">
-            <h2 className="text-3xl font-bold border-l-4 border-red-500 pl-4">
-              How We Breach (Ethically)
-            </h2>
-            <div className="space-y-6">
-              {[
-                { title: "Reconnaissance", desc: "Gathering intel: IP addresses, employee emails, tech stack." },
-                { title: "Scanning", desc: "Using automated tools to find open ports and weak endpoints." },
-                { title: "Exploitation", desc: "Manual attempts to inject payloads (SQLi, XSS) to gain access." },
-                { title: "Reporting", desc: "Detailed PDF report with proof-of-concept and fix guides." }
-              ].map((step, i) => (
-                <div key={i} className="flex gap-4">
-                  <div className="w-8 h-8 rounded-full bg-red-900/30 flex items-center justify-center text-red-400 font-bold shrink-0 border border-red-500/20">
-                    {i + 1}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-lg text-slate-200">{step.title}</h4>
-                    <p className="text-slate-400 text-sm">{step.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right: Mock Terminal UI */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            className="rounded-xl overflow-hidden border border-slate-800 bg-slate-950 shadow-2xl relative"
-          >
-            <div className="absolute inset-0 bg-grid-white/[0.02] bg-[length:20px_20px]" />
-            <div className="bg-slate-900 px-4 py-2 flex gap-2 items-center border-b border-slate-800 relative z-10">
-              <div className="w-3 h-3 rounded-full bg-red-500" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500" />
-              <div className="w-3 h-3 rounded-full bg-green-500" />
-              <span className="ml-2 text-xs text-slate-400 font-mono">root@kali-linux:~</span>
-            </div>
-            <div className="p-6 font-mono text-sm space-y-2 relative z-10 h-[300px] overflow-y-auto custom-scrollbar">
-              <div className="text-green-400">$ nmap -sC -sV target-site.com</div>
-              <div className="text-slate-300">Starting Nmap 7.92...</div>
-              <div className="text-slate-300">Scanning ports...</div>
-              <div className="text-yellow-400">DISCOVERED: Port 80/tcp (http) - VULNERABLE</div>
-              <div className="text-yellow-400">DISCOVERED: Port 22/tcp (ssh) - WEAK CRYPTO</div>
-              <div className="text-green-400 animate-pulse">$ initiating exploit_module_7...</div>
-              <div className="text-slate-500">Payload injected. Access granted.</div>
-              <div className="text-red-500 font-bold">ROOT SHELL ACQUIRED #</div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* --- MEET THE HUNTERS (FLIP CARDS) --- */}
-      <div className="bg-slate-900/50 py-20 border-y border-slate-800">
-        <div className="container mx-auto px-4">
+       {/* --- MEET THE HUNTERS (FIXED FLIP CARDS) --- */}
+       <div className="bg-slate-900/30 py-24 border-b border-slate-800 relative">
+         {/* Subtle background grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Elite <span className="text-red-500">Operators</span></h2>
-            <p className="text-slate-400">Hover over the cards to reveal agent clearance details.</p>
+            <p className="text-slate-400 max-w-xl mx-auto">Our lead penetration testers are certified experts in simulating real-world attacks. Hover to view clearance details.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
             {testers.map(tester => (
               <TesterCard key={tester.id} tester={tester} />
             ))}
@@ -258,41 +212,59 @@ export default function PenetrationTestingPage() {
         </div>
       </div>
 
-      {/* --- TESTIMONIALS --- */}
-      <div className="py-20 container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">Mission Reports</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {testimonials.map((t, i) => (
-            <motion.div 
-              key={i}
-              whileHover={{ y: -5 }}
-              className="bg-slate-900 border border-slate-800 p-6 rounded-xl relative"
-            >
-              <div className="absolute top-[-10px] left-6">
-                <div className="bg-slate-950 border border-slate-800 p-2 rounded-full text-yellow-500 flex gap-1">
-                  {[...Array(t.rating)].map((_, r) => <Star key={r} size={12} fill="currentColor" />)}
+      {/* --- CONTINUOUS SCROLLING TESTIMONIALS --- */}
+      <div className="py-24 bg-slate-950 relative overflow-hidden">
+        <div className="container mx-auto px-4 mb-12 text-center">
+           <h2 className="text-3xl font-bold">Mission Reports</h2>
+           <p className="text-slate-400 mt-2">What clients say after the smoke clears.</p>
+        </div>
+        
+        {/* Gradient Masks for smooth fade effect on edges */}
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-slate-950 to-transparent z-20 pointer-events-none"></div>
+        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-slate-950 to-transparent z-20 pointer-events-none"></div>
+
+        {/* Scroller Container */}
+        <div className="flex overflow-hidden">
+          {/* Animated Track */}
+          <motion.div 
+            className="flex gap-6 flex-nowrap"
+            // Animate from 0% to -50% because the content is doubled. 
+            // When it reaches -50%, it instantly resets to 0% (which looks identical), creating a perfect loop.
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ 
+              ease: "linear", 
+              duration: 25, // Adjust speed here (higher = slower)
+              repeat: Infinity 
+            }}
+          >
+            {duplicatedTestimonials.map((t, i) => (
+              <div 
+                key={i}
+                className="w-[350px] md:w-[400px] flex-shrink-0 bg-slate-900/60 border border-slate-800 p-6 rounded-xl relative backdrop-blur-sm"
+              >
+                <Quote className="absolute top-4 right-4 text-slate-800 w-10 h-10" />
+                <div className="flex gap-1 text-red-500 mb-4">
+                  {[...Array(t.rating)].map((_, r) => <Star key={r} size={14} fill="currentColor" />)}
+                </div>
+                <p className="text-slate-300 text-sm mb-6 italic leading-relaxed">"{t.text}"</p>
+                <div className="flex items-center gap-3 border-t border-slate-800/50 pt-4">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center font-bold text-slate-400 border border-slate-700">
+                    {t.name[0]}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-white">{t.name}</h4>
+                    <p className="text-xs text-slate-500">{t.company}</p>
+                  </div>
                 </div>
               </div>
-              <p className="text-slate-300 text-sm mb-6 mt-4 italic">"{t.text}"</p>
-              <div className="flex items-center gap-3 border-t border-slate-800 pt-4">
-                <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-slate-500">
-                  {t.name[0]}
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-white">{t.name}</h4>
-                  <p className="text-xs text-slate-500">{t.company}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+            ))}
+          </motion.div>
         </div>
       </div>
 
+
       {/* --- MIND BLOWING FAQ --- */}
-      <div className="py-20 bg-slate-950 relative overflow-hidden">
-        {/* Matrix background effect hint */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] opacity-20 pointer-events-none"></div>
-        
+      <div className="py-24 bg-slate-900/50 relative overflow-hidden border-t border-slate-800">
         <div className="container mx-auto px-4 max-w-3xl relative z-10">
           <h2 className="text-3xl font-bold text-center mb-12 flex items-center justify-center gap-3">
             <Cpu className="text-red-500" /> System Protocols (FAQ)
@@ -302,17 +274,17 @@ export default function PenetrationTestingPage() {
             {faqs.map((faq, index) => (
               <div 
                 key={index}
-                className="border border-slate-800 rounded-lg bg-slate-900/80 backdrop-blur-sm overflow-hidden"
+                className="border border-slate-800 rounded-lg bg-slate-900/80 backdrop-blur-sm overflow-hidden hover:border-red-500/30 transition-colors"
               >
                 <button
                   onClick={() => toggleAccordion(index)}
-                  className={`w-full text-left p-4 flex justify-between items-center transition-colors ${activeAccordion === index ? 'bg-red-900/20 text-red-400' : 'text-slate-200 hover:bg-slate-800'}`}
+                  className={`w-full text-left p-4 flex justify-between items-center transition-all ${activeAccordion === index ? 'bg-red-950/30 text-red-100' : 'text-slate-200 hover:bg-slate-800'}`}
                 >
-                  <span className="font-mono font-bold flex gap-3 items-center">
-                    <span className="text-slate-500 text-xs">0{index + 1} //</span>
+                  <span className="font-mono font-bold flex gap-3 items-center flex-1">
+                    <span className="text-red-600/70 text-xs">0{index + 1}_</span>
                     {faq.q}
                   </span>
-                  <ChevronDown className={`transition-transform duration-300 ${activeAccordion === index ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`text-slate-500 transition-transform duration-300 ${activeAccordion === index ? 'rotate-180 text-red-500' : ''}`} />
                 </button>
                 
                 <AnimatePresence>
@@ -321,10 +293,10 @@ export default function PenetrationTestingPage() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-red-900/30"
+                      className="border-t border-red-900/20"
                     >
-                      <div className="p-4 text-slate-400 font-mono text-sm leading-relaxed bg-slate-950/50">
-                        <span className="text-green-500 mr-2">{">"}</span>
+                      <div className="p-4 text-slate-300 font-mono text-sm leading-relaxed bg-black/30 shadow-inner">
+                        <span className="text-green-500 mr-2 font-bold">{">"}</span>
                         {faq.a}
                       </div>
                     </motion.div>
@@ -335,50 +307,12 @@ export default function PenetrationTestingPage() {
           </div>
         </div>
       </div>
-
-      {/* --- TARGET VECTORS --- */}
-      <div className="bg-slate-900 py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Target Scope</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card className="bg-slate-950 border-red-900/30 hover:border-red-500/50 transition-colors">
-              <CardContent className="p-6 flex flex-col items-center text-center">
-                <Server className="w-12 h-12 text-red-500 mb-4" />
-                <h3 className="font-bold text-lg mb-2 text-white">Network Infrastructure</h3>
-                <p className="text-slate-400 text-sm">Firewalls, routers, and server misconfigurations.</p>
-              </CardContent>
-            </Card>
-            <Card className="bg-slate-950 border-red-900/30 hover:border-red-500/50 transition-colors">
-              <CardContent className="p-6 flex flex-col items-center text-center">
-                <Lock className="w-12 h-12 text-red-500 mb-4" />
-                <h3 className="font-bold text-lg mb-2 text-white">Web Applications</h3>
-                <p className="text-slate-400 text-sm">OWASP Top 10: Injections, Broken Auth, XSS.</p>
-              </CardContent>
-            </Card>
-            <Card className="bg-slate-950 border-red-900/30 hover:border-red-500/50 transition-colors">
-              <CardContent className="p-6 flex flex-col items-center text-center">
-                <FileWarning className="w-12 h-12 text-red-500 mb-4" />
-                <h3 className="font-bold text-lg mb-2 text-white">Mobile Apps</h3>
-                <p className="text-slate-400 text-sm">Decompiling APKS, API security, and local storage.</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="mt-12 flex flex-wrap justify-center gap-3">
-             {vulnerabilities.map(v => (
-               <Badge key={v} variant="outline" className="border-red-500/40 text-red-300 px-3 py-1 bg-red-950/10">
-                 <CheckCircle className="w-3 h-3 mr-1" /> {v}
-               </Badge>
-             ))}
-          </div>
-        </div>
-      </div>
-
-      {/* --- PRICING CTA --- */}
-      <div className="container mx-auto px-4 py-20 text-center">
-        <h2 className="text-3xl font-bold mb-4">Secure Your Assets Now</h2>
-        <p className="text-slate-400 mb-8">Vulnerability Assessments starting at <span className="text-white font-bold text-xl">₹2,999</span></p>
-        <Button onClick={handleCalendly} size="xl" className="bg-white text-slate-950 hover:bg-gray-200 font-bold px-8 py-6 text-lg rounded-full shadow-[0_0_40px_rgba(255,255,255,0.2)] transition-all hover:scale-105">
+      
+      {/* --- FOOTER CTA --- */}
+      <div className="container mx-auto px-4 py-24 text-center border-t border-slate-800">
+        <h2 className="text-4xl font-bold mb-6">Secure Your Assets Now</h2>
+        <p className="text-slate-400 mb-8 max-w-md mx-auto">Don't wait for a breach to take action. Schedule your comprehensive security assessment today.</p>
+        <Button onClick={handleCalendly} size="xl" className="bg-red-600 hover:bg-red-700 text-white font-bold px-10 py-6 text-lg rounded-full shadow-[0_0_30px_rgba(220,38,38,0.4)] transition-all hover:scale-105">
             <Terminal className="mr-2 w-5 h-5" /> Get Free Consultation
         </Button>
       </div>
