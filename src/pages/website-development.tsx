@@ -1,28 +1,23 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, useScroll, useTransform, useSpring, useMotionTemplate, useMotionValue } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionTemplate, useMotionValue } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { 
-  Accordion, 
-  AccordionContent, 
-  AccordionItem, 
-  AccordionTrigger 
-} from "@/components/ui/accordion";
-import { 
-  ExternalLink, 
-  ShieldCheck, 
-  Code, 
-  Crosshair, 
   ArrowRight, 
-  Zap,
-  Cpu,
-  Globe
+  Shield, 
+  Zap, 
+  Globe, 
+  Lock, 
+  Server, 
+  Smartphone,
+  CheckCircle2,
+  Star
 } from "lucide-react";
 
-// --- 1. SPECIAL COMPONENTS ---
+// --- 1. UTILITY COMPONENTS ---
 
-// A. Mouse-tracking Spotlight Card
-function SpotlightCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+// A. Mouse-tracking Spotlight Card (Refined)
+function SpotlightCard({ children, className = "", spotlightColor = "rgba(56, 189, 248, 0.25)" }: any) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -34,191 +29,182 @@ function SpotlightCard({ children, className = "" }: { children: React.ReactNode
 
   return (
     <div
-      className={`group relative border border-white/10 bg-gray-900/50 overflow-hidden ${className}`}
+      className={`group relative border border-white/10 bg-gray-900/40 overflow-hidden ${className}`}
       onMouseMove={handleMouseMove}
     >
       <motion.div
-        className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
+        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100 z-10"
         style={{
           background: useMotionTemplate`
             radial-gradient(
-              650px circle at ${mouseX}px ${mouseY}px,
-              rgba(56, 189, 248, 0.15),
+              500px circle at ${mouseX}px ${mouseY}px,
+              ${spotlightColor},
               transparent 80%
             )
           `,
         }}
       />
-      <div className="relative h-full">{children}</div>
+      <div className="relative h-full z-20">{children}</div>
     </div>
   );
 }
 
-// B. Animated Grid Background
-const BackgroundGrid = () => (
-  <div className="fixed inset-0 z-[-1] pointer-events-none bg-black">
-    <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-    <motion.div 
-      animate={{ 
-        opacity: [0.3, 0.5, 0.3], 
-        scale: [1, 1.1, 1],
-      }} 
-      transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[120px]" 
-    />
-    <motion.div 
-      animate={{ 
-        opacity: [0.2, 0.4, 0.2], 
-        x: [0, 50, 0]
-      }} 
-      transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[120px]" 
-    />
-  </div>
-);
+// B. Infinite Marquee Component
+const Marquee = ({ children, direction = "left", speed = 25 }: { children: React.ReactNode, direction?: "left"|"right", speed?: number }) => {
+  return (
+    <div className="flex overflow-hidden select-none gap-8 mask-linear-fade">
+      <motion.div
+        initial={{ x: direction === "left" ? 0 : "-100%" }}
+        animate={{ x: direction === "left" ? "-100%" : 0 }}
+        transition={{ duration: speed, repeat: Infinity, ease: "linear" }}
+        className="flex flex-shrink-0 gap-8 items-center"
+      >
+        {children}
+        {children} {/* Duplicate for seamless loop */}
+      </motion.div>
+      <motion.div
+        initial={{ x: direction === "left" ? 0 : "-100%" }}
+        animate={{ x: direction === "left" ? "-100%" : 0 }}
+        transition={{ duration: speed, repeat: Infinity, ease: "linear" }}
+        className="flex flex-shrink-0 gap-8 items-center"
+      >
+        {children}
+        {children}
+      </motion.div>
+    </div>
+  );
+};
 
 // --- DATA ---
+
 const services = [
   {
-    name: "Cyber Defense",
-    slug: "security",
-    desc: "Military-grade encryption and active threat monitoring.",
-    price: "₹1,999/mo",
-    icon: <ShieldCheck className="w-8 h-8 text-cyan-400" />,
-    color: "from-cyan-500/20 to-blue-500/5"
+    title: "Enterprise Security",
+    desc: "24/7 Threat monitoring and firewall protection.",
+    icon: <Shield className="w-6 h-6 text-emerald-400" />
   },
   {
-    name: "Offensive Security",
-    slug: "pentest",
-    desc: "Ethical hacking to find holes before the bad guys do.",
-    price: "₹2,999/scan",
-    icon: <Crosshair className="w-8 h-8 text-red-400" />,
-    color: "from-red-500/20 to-orange-500/5"
+    title: "Rapid Development",
+    desc: "Next.js applications deployed on Edge networks.",
+    icon: <Zap className="w-6 h-6 text-yellow-400" />
   },
   {
-    name: "Full-Stack Dev",
-    slug: "dev",
-    desc: "High-performance React/Next.js applications.",
-    price: "₹4,999/project",
-    icon: <Code className="w-8 h-8 text-violet-400" />,
-    color: "from-violet-500/20 to-purple-500/5"
-  },
-];
-
-const projects = [
-  {
-    title: "Finexa Vault",
-    tag: "Fintech",
-    img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
-    glow: "shadow-cyan-500/20"
-  },
-  {
-    title: "EduVerse AI",
-    tag: "EdTech",
-    img: "https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?auto=format&fit=crop&q=80&w=800",
-    glow: "shadow-purple-500/20"
-  },
-  {
-    title: "Nova MedLink",
-    tag: "Health",
-    img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800",
-    glow: "shadow-emerald-500/20"
+    title: "Cloud Infrastructure",
+    desc: "Scalable AWS/Azure architecture management.",
+    icon: <Server className="w-6 h-6 text-blue-400" />
   }
 ];
 
-export default function HighTechLanding() {
+const testimonials = [
+  { name: "Sarah J.", role: "CTO, FintechGlobal", text: "They secured our entire banking infrastructure in weeks." },
+  { name: "Mark D.", role: "Founder, EduTech", text: "The fastest dev team we've ever worked with." },
+  { name: "Elena R.", role: "Director, HealthPlus", text: "Zero downtime during our migration. Incredible." },
+  { name: "David K.", role: "VP, CyberSafe", text: "Their penetration testing found critical bugs others missed." },
+];
+
+const brands = ["Finexa", "Google", "Amazon", "Stripe", "Vercel", "Microsoft"];
+
+export default function AgencyLanding() {
   const navigate = useNavigate();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref });
-  const yParallax = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <div ref={ref} className="relative min-h-screen bg-black text-white selection:bg-cyan-500/30 overflow-x-hidden font-sans">
-      <BackgroundGrid />
+    <div ref={ref} className="relative min-h-screen bg-[#030303] text-white font-sans selection:bg-indigo-500/30">
+      
+      {/* Scroll Progress Bar */}
+      <motion.div style={{ scaleX }} className="fixed top-0 left-0 right-0 h-1 bg-indigo-500 origin-left z-50" />
 
-      <div className="container mx-auto px-4 py-20 relative z-10 space-y-32">
-        
-        {/* --- HERO SECTION --- */}
-        <section className="relative flex flex-col items-center justify-center text-center min-h-[60vh]">
-          
-          {/* Floating Icons Background */}
-          <div className="absolute inset-0 pointer-events-none">
-            <motion.div animate={{ y: [-10, 10, -10] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="absolute top-10 left-[10%] opacity-20"><Cpu size={40} /></motion.div>
-            <motion.div animate={{ y: [15, -15, 15] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} className="absolute bottom-20 right-[15%] opacity-20"><Globe size={50} /></motion.div>
-            <motion.div animate={{ y: [-20, 0, -20] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} className="absolute top-1/2 left-[80%] opacity-20"><Zap size={30} /></motion.div>
+      {/* --- BACKGROUND EFFECTS --- */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-[128px]" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-[128px]" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
+      </div>
+
+      {/* --- NAVBAR --- */}
+      <nav className="fixed top-0 w-full z-40 border-b border-white/5 bg-black/50 backdrop-blur-xl">
+        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2 font-bold text-xl tracking-tighter">
+            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <Lock className="w-4 h-4 text-white" />
+            </div>
+            TDCS<span className="text-indigo-400">.SECURE</span>
           </div>
+          <div className="hidden md:flex gap-8 text-sm font-medium text-gray-400">
+            <a href="#" className="hover:text-white transition-colors">Services</a>
+            <a href="#" className="hover:text-white transition-colors">Work</a>
+            <a href="#" className="hover:text-white transition-colors">Security</a>
+          </div>
+          <Button size="sm" className="bg-white text-black hover:bg-gray-200 rounded-full px-6 font-semibold">
+            Book Audit
+          </Button>
+        </div>
+      </nav>
 
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-sm text-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.2)]"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-            </span>
-            System Online: v2.5.0
-          </motion.div>
+      <div className="relative z-10 pt-32 space-y-32 pb-20">
 
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-6xl md:text-8xl font-black tracking-tighter mb-6"
-          >
-            <span className="text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">CODE.</span>
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]"> SECURE.</span>
-            <br />
-            <span className="text-white/80">DOMINATE.</span>
-          </motion.h1>
-
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="text-lg text-gray-400 max-w-2xl mb-10 leading-relaxed"
-          >
-            We forge digital fortresses. Experience the perfect synthesis of 
-            <span className="text-cyan-400 font-semibold"> aesthetic engineering</span> and 
-            <span className="text-red-400 font-semibold"> offensive security</span>.
-          </motion.p>
-
+        {/* --- HERO SECTION --- */}
+        <section className="container mx-auto px-6 text-center">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="flex flex-wrap justify-center gap-4"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-6"
           >
-            <Button className="h-14 px-8 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-lg shadow-[0_0_40px_rgba(6,182,212,0.4)] hover:shadow-[0_0_60px_rgba(6,182,212,0.6)] transition-all duration-300 transform hover:-translate-y-1">
-              Initialize Project
-            </Button>
-            <Button variant="outline" className="h-14 px-8 rounded-full border-white/20 hover:bg-white/10 text-white backdrop-blur-md">
-              View Directives
-            </Button>
+            <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+            Accepting High-Risk Security Contracts
           </motion.div>
+          
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">
+            Digital Assets.<br /> Secured & Scaled.
+          </h1>
+          
+          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+            We are the agency that builds high-performance platforms and fortifies them with military-grade cybersecurity.
+          </p>
+
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button className="h-12 px-8 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20">
+              Start Project
+            </Button>
+            <Button variant="outline" className="h-12 px-8 rounded-full border-white/10 text-white hover:bg-white/5">
+              View Case Studies
+            </Button>
+          </div>
         </section>
 
-        {/* --- GLOWING SERVICES --- */}
-        <section>
-          <div className="flex items-center gap-4 mb-12">
-            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-gray-700"></div>
-            <h2 className="text-3xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">CORE MODULES</h2>
-            <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-gray-700"></div>
-          </div>
+        {/* --- BRAND STRIP --- */}
+        <section className="border-y border-white/5 bg-black/30 backdrop-blur-sm py-10 overflow-hidden">
+          <p className="text-center text-xs text-gray-500 mb-6 uppercase tracking-widest font-semibold">Trusted by industry leaders</p>
+          <Marquee speed={40}>
+            {brands.map((brand, i) => (
+              <span key={i} className="text-2xl font-bold text-gray-700 mx-8 uppercase tracking-tighter hover:text-white transition-colors cursor-default">
+                {brand}
+              </span>
+            ))}
+          </Marquee>
+        </section>
 
+        {/* --- SERVICES GRID --- */}
+        <section className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12">
+            <div>
+              <h2 className="text-3xl font-bold mb-2">Our Capabilities</h2>
+              <p className="text-gray-400">Full-cycle digital production.</p>
+            </div>
+          </div>
+          
           <div className="grid md:grid-cols-3 gap-6">
             {services.map((s, i) => (
-              <SpotlightCard key={i} className="rounded-2xl">
-                <div className={`h-full p-8 bg-gradient-to-b ${s.color} backdrop-blur-sm flex flex-col`}>
-                  <div className="mb-6 p-4 rounded-xl bg-black/40 w-fit border border-white/5 shadow-inner">
+              <SpotlightCard key={i} className="rounded-3xl h-64">
+                <div className="h-full p-8 flex flex-col justify-between bg-black/20">
+                  <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10">
                     {s.icon}
                   </div>
-                  <h3 className="text-2xl font-bold mb-2 text-white">{s.name}</h3>
-                  <p className="text-gray-400 mb-6 flex-grow">{s.desc}</p>
-                  <div className="flex items-center justify-between border-t border-white/10 pt-4">
-                    <span className="font-mono text-cyan-400">{s.price}</span>
-                    <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-transform" />
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">{s.title}</h3>
+                    <p className="text-sm text-gray-400">{s.desc}</p>
                   </div>
                 </div>
               </SpotlightCard>
@@ -226,80 +212,125 @@ export default function HighTechLanding() {
           </div>
         </section>
 
-        {/* --- HOLOGRAPHIC PROJECTS --- */}
-        <section className="relative">
-          <motion.div style={{ y: yParallax }} className="absolute -top-20 -right-20 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-          
-          <h2 className="text-4xl font-bold mb-12 text-center text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">DEPLOYED SYSTEMS</h2>
-
-          <div className="grid lg:grid-cols-3 gap-8">
-            {projects.map((p, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.2 }}
-                whileHover={{ scale: 1.02 }}
-                className={`group relative rounded-2xl overflow-hidden border border-white/10 bg-gray-900 ${p.glow} hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] transition-all duration-500`}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 opacity-80" />
-                
-                {/* Image with Glitch Effect on Hover (Simulated via scale/opacity) */}
-                <div className="h-80 overflow-hidden">
-                  <img 
-                    src={p.img} 
-                    alt={p.title} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:brightness-110" 
-                  />
+        {/* --- BENTO GRID PROJECTS --- */}
+        <section className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold mb-12">Recent Work</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-4 h-[800px] md:h-[600px]">
+            
+            {/* Project 1 - Large Left */}
+            <SpotlightCard className="md:col-span-2 md:row-span-2 rounded-3xl" spotlightColor="rgba(168, 85, 247, 0.2)">
+              <div className="relative h-full group">
+                <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=800" 
+                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40" />
+                <div className="absolute inset-0 flex flex-col justify-end p-8">
+                  <span className="text-purple-400 font-mono text-xs mb-2">FINTECH // 01</span>
+                  <h3 className="text-3xl font-bold">Finexa Bank</h3>
+                  <p className="text-gray-300 mt-2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
+                    Complete backend overhaul with Node.js and banking-grade security protocols.
+                  </p>
                 </div>
+              </div>
+            </SpotlightCard>
 
-                <div className="absolute bottom-0 left-0 right-0 p-6 z-20 translate-y-2 group-hover:translate-y-0 transition-transform">
-                  <span className="text-xs font-mono text-cyan-400 mb-2 block tracking-widest uppercase">
-                     // {p.tag}
-                  </span>
-                  <h3 className="text-2xl font-bold text-white mb-2">{p.title}</h3>
-                  <div className="h-0 group-hover:h-auto overflow-hidden transition-all">
-                    <Button variant="link" className="p-0 text-white/70 hover:text-white h-auto">
-                      Access Terminal <ExternalLink className="w-3 h-3 ml-2" />
-                    </Button>
-                  </div>
+            {/* Project 2 - Top Right */}
+            <SpotlightCard className="md:col-span-2 rounded-3xl" spotlightColor="rgba(34, 197, 94, 0.2)">
+              <div className="relative h-full group flex items-center p-8 gap-6">
+                <div className="flex-1">
+                   <span className="text-emerald-400 font-mono text-xs mb-2 block">HEALTH // 02</span>
+                   <h3 className="text-2xl font-bold">Nova Med</h3>
+                   <p className="text-gray-400 text-sm mt-2">Telemedicine app with WebRTC.</p>
                 </div>
-              </motion.div>
-            ))}
+                <div className="w-32 h-32 bg-emerald-900/20 rounded-full flex items-center justify-center border border-emerald-500/30">
+                  <Smartphone className="w-12 h-12 text-emerald-400" />
+                </div>
+              </div>
+            </SpotlightCard>
+
+            {/* Project 3 - Bottom Right 1 */}
+            <SpotlightCard className="rounded-3xl" spotlightColor="rgba(59, 130, 246, 0.2)">
+              <div className="h-full p-6 flex flex-col justify-between bg-gradient-to-br from-blue-900/20 to-transparent">
+                <Globe className="w-10 h-10 text-blue-400" />
+                <div>
+                   <h3 className="font-bold text-lg">EduVerse</h3>
+                   <p className="text-xs text-gray-400">Global learning platform</p>
+                </div>
+              </div>
+            </SpotlightCard>
+
+            {/* Project 4 - Bottom Right 2 */}
+            <SpotlightCard className="rounded-3xl cursor-pointer group">
+              <div className="h-full flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
+                 <div className="text-center">
+                    <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                      <ArrowRight className="w-5 h-5" />
+                    </div>
+                    <span className="text-sm font-medium">View All Cases</span>
+                 </div>
+              </div>
+            </SpotlightCard>
+            
           </div>
         </section>
 
-        {/* --- FAQ / DATA BANK --- */}
-        <section className="max-w-3xl mx-auto border border-white/10 rounded-3xl p-8 md:p-12 bg-black/40 backdrop-blur-lg relative overflow-hidden">
-          {/* Animated border line */}
-          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50" />
-          
-          <h2 className="text-3xl font-bold mb-8 text-center">DATA BANK</h2>
-          <Accordion type="single" collapsible className="space-y-4">
-            {[
-              "Encryption Standards?",
-              "Deployment Velocity?",
-              "Maintenance Protocols?",
-            ].map((q, i) => (
-              <AccordionItem key={i} value={`item-${i}`} className="border-b border-white/10 px-4 rounded-lg data-[state=open]:bg-white/5 transition-colors">
-                <AccordionTrigger className="hover:no-underline hover:text-cyan-400 font-mono text-lg">
-                  {">"} {q}
-                </AccordionTrigger>
-                <AccordionContent className="text-gray-400 pl-6 border-l-2 border-cyan-500/50">
-                  Data classified. Access granted: Our protocols utilize AES-256 encryption with rotating keys and automated CI/CD pipelines ensuring zero-downtime updates.
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+        {/* --- INFINITE MARQUEE TESTIMONIALS --- */}
+        <section className="py-20 bg-gradient-to-b from-transparent to-indigo-900/10">
+          <div className="container mx-auto px-6 mb-12 text-center">
+             <h2 className="text-4xl font-bold mb-4">Client Success Stories</h2>
+             <p className="text-gray-400">Don't just take our word for it.</p>
+          </div>
+
+          <div className="relative">
+            {/* Gradient masks to fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#030303] to-transparent z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#030303] to-transparent z-10" />
+            
+            <Marquee direction="left" speed={50}>
+              {testimonials.map((t, i) => (
+                <div 
+                  key={i} 
+                  className="w-[400px] bg-white/5 border border-white/10 p-8 rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-colors cursor-pointer group"
+                >
+                  <div className="flex gap-1 mb-4 text-indigo-400">
+                    {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
+                  </div>
+                  <p className="text-lg text-gray-200 mb-6 leading-relaxed">"{t.text}"</p>
+                  <div className="flex items-center gap-3 border-t border-white/10 pt-4">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-xs font-bold">
+                      {t.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm">{t.name}</h4>
+                      <p className="text-xs text-indigo-300">{t.role}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </Marquee>
+          </div>
         </section>
 
-        {/* --- FOOTER CTA --- */}
-        <div className="text-center py-20">
-          <h2 className="text-5xl md:text-9xl font-black text-white/5 tracking-tighter hover:text-white/10 transition-colors cursor-default select-none">
-            TDCS TECH
-          </h2>
-        </div>
+        {/* --- FINAL CTA --- */}
+        <section className="container mx-auto px-6 pb-20">
+          <div className="rounded-[3rem] bg-indigo-600 p-12 md:p-24 text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-overlay" />
+            <div className="absolute -top-24 -left-24 w-96 h-96 bg-purple-500 rounded-full blur-[100px] opacity-50" />
+            
+            <div className="relative z-10 max-w-2xl mx-auto space-y-8">
+              <h2 className="text-4xl md:text-5xl font-bold text-white">Ready to secure your future?</h2>
+              <p className="text-indigo-100 text-lg">
+                Join the 50+ companies who trust TDCS to protect and power their digital infrastructure.
+              </p>
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Button size="lg" className="bg-white text-indigo-600 hover:bg-gray-100 rounded-full h-14 px-8 text-lg font-bold">
+                  Schedule Consultation
+                </Button>
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 rounded-full h-14 px-8 text-lg">
+                  Pricing Plans
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
 
       </div>
     </div>
