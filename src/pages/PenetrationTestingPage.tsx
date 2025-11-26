@@ -264,8 +264,8 @@ const operations = [
 
 const testers = [
   {
-    id: 1, name: "Rudra Narayan", role: "Senior Penetration Tester",
-    image: "https://blogger.googleusercontent.com/img/a/AVvXsEh-jgwTQ5FLXjpgEyZC5KPC0L9QkHlNAGMsuc_1GVpFzUrxBJJamCvkj716z2BaVYYryPyJjctPxHvlyDbdR9_P7C1vilIjcUwJvhXCEsDjR6PeaSbzAUugjGWvqd74zS8pPvD4_A4XaPNN4JpBN9U5et8vhWx13FjTjyNWJ1L-sNkSmmPVX-dqEF8pZ2qE", 
+    id: 1, name: "Dibyajit Ghosh", role: "Senior Penetration Tester",
+    image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg-Q1jY7AiKOLA5Q6pe9U9tJj4BMpWiHF8OnOD0MtXrIURqJhi5GQZxvef07FNC3tiU_qic8_E8XXgI7KcLN6zCyHHjRaY8UY-JPM9F6NcQEs5tkWuhMKWRvBlsOmJWQkEgDH0Vjgninq-wHdYXBEYlKNpa0z_vvhsx-W6PYHIQAzwaGHUCo5e0197_Y-7r/s4096/WhatsApp%20Image%202025-11-16%20at%2021.15.50_b0c7ba51.jpg", 
     specialty: "Network & Cloud Security", certs: ["OSCP", "CEH", "CISSP"],
     bio: "Lead operator for TDCS. Expert in simulating advanced persistent threats (APT) and Red Teaming.", stats: { bugs: "500+", criticals: "120+" }
   },
