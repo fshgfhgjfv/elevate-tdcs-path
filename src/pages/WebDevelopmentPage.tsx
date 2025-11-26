@@ -227,9 +227,9 @@ const developers = [
     skills: ["System Design", "AWS", "Node.js"],
   },
   {
-    name: "Rudra Narayan Swain",
+    name: "Dibyajit Ghosh",
     role: "Full-Stack Developer",
-    image: "https://blogger.googleusercontent.com/img/a/AVvXsEh-jgwTQ5FLXjpgEyZC5KPC0L9QkHlNAGMsuc_1GVpFzUrxBJJamCvkj716z2BaVYYryPyJjctPxHvlyDbdR9_P7C1vilIjcUwJvhXCEsDjR6PeaSbzAUugjGWvqd74zS8pPvD4_A4XaPNN4JpBN9U5et8vhWx13FjTjyNWJ1L-sNkSmmPVX-dqEF8pZ2qE",
+    image: "https://blogger.googleusercontent.com/img/a/AVvXsEjbxWlr1PxTYJY8EWtyjblCXYwoembclXkGjg-DEXHUhTwndaLeBM3u9Xcb00UgJt7wWOatq9x9Vr7EwZ5McvYU_mk1etiJiNWtTfBWQlrJf_wicU7o333C74RWpIuz6ASCtwD9F4euuytXb5kDkwzYQ7pqCSXhtHEwuckwvoR5bgq1FL84amzRlrUZfwTE",
     bio: "Bridging the gap between design and code. Expert in animations.",
     skills: ["AngularJS", "Node.js", "Ruby"],
   },
