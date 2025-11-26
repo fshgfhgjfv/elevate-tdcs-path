@@ -3,12 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform, useMotionTemplate, useMotionValue } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { 
-  Accordion, 
-  AccordionContent, 
-  AccordionItem, 
-  AccordionTrigger 
-} from "@/components/ui/accordion";
-import { 
+  ArrowRight, 
   Shield, 
   Zap, 
   Globe, 
@@ -16,17 +11,12 @@ import {
   Server, 
   Smartphone,
   CheckCircle2,
-  Star,
-  ArrowRight,
-  Calendar,
-  Cpu,
-  Fingerprint,
-  Briefcase
+  Star
 } from "lucide-react";
 
-// --- 1. SPECIAL COMPONENTS ---
+// --- 1. UTILITY COMPONENTS ---
 
-// A. Spotlight Card (With Image Support)
+// A. Mouse-tracking Spotlight Card (Refined)
 function SpotlightCard({ children, className = "", spotlightColor = "rgba(56, 189, 248, 0.25)" }: any) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -39,15 +29,15 @@ function SpotlightCard({ children, className = "", spotlightColor = "rgba(56, 18
 
   return (
     <div
-      className={`group relative border border-white/10 bg-gray-900/80 overflow-hidden ${className}`}
+      className={`group relative border border-white/10 bg-gray-900/40 overflow-hidden ${className}`}
       onMouseMove={handleMouseMove}
     >
       <motion.div
-        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100 z-30"
+        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100 z-10"
         style={{
           background: useMotionTemplate`
             radial-gradient(
-              600px circle at ${mouseX}px ${mouseY}px,
+              500px circle at ${mouseX}px ${mouseY}px,
               ${spotlightColor},
               transparent 80%
             )
@@ -59,291 +49,290 @@ function SpotlightCard({ children, className = "", spotlightColor = "rgba(56, 18
   );
 }
 
-// B. The "Heartbeat" Calendly Button (Blinks & Zooms)
-const CalendlyButton = () => (
-  <motion.a
-    href="https://calendly.com/" // REPLACE WITH YOUR LINK
-    target="_blank"
-    rel="noopener noreferrer"
-    animate={{ 
-      scale: [1, 1.05, 1],
-      boxShadow: [
-        "0 0 0 0px rgba(99, 102, 241, 0.4)",
-        "0 0 0 10px rgba(99, 102, 241, 0)",
-        "0 0 0 0px rgba(99, 102, 241, 0)"
-      ]
-    }}
-    transition={{ 
-      duration: 2, 
-      repeat: Infinity, 
-      ease: "easeInOut" 
-    }}
-    className="relative inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 px-8 rounded-full text-lg z-50 transition-colors"
-  >
-    <Calendar className="w-5 h-5" />
-    Book Priority Audit
-  </motion.a>
-);
+// B. Infinite Marquee Component
+const Marquee = ({ children, direction = "left", speed = 25 }: { children: React.ReactNode, direction?: "left"|"right", speed?: number }) => {
+  return (
+    <div className="flex overflow-hidden select-none gap-8 mask-linear-fade">
+      <motion.div
+        initial={{ x: direction === "left" ? 0 : "-100%" }}
+        animate={{ x: direction === "left" ? "-100%" : 0 }}
+        transition={{ duration: speed, repeat: Infinity, ease: "linear" }}
+        className="flex flex-shrink-0 gap-8 items-center"
+      >
+        {children}
+        {children} {/* Duplicate for seamless loop */}
+      </motion.div>
+      <motion.div
+        initial={{ x: direction === "left" ? 0 : "-100%" }}
+        animate={{ x: direction === "left" ? "-100%" : 0 }}
+        transition={{ duration: speed, repeat: Infinity, ease: "linear" }}
+        className="flex flex-shrink-0 gap-8 items-center"
+      >
+        {children}
+        {children}
+      </motion.div>
+    </div>
+  );
+};
 
 // --- DATA ---
 
 const services = [
   {
-    title: "Cyber Defense",
-    price: "₹1,999/mo",
-    desc: "Military-grade encryption, 24/7 active threat monitoring, and automated firewall management to keep your perimeter secure.",
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
-    features: ["DDoS Protection", "Real-time Alerts", "Malware Removal"],
+    title: "Enterprise Security",
+    desc: "24/7 Threat monitoring and firewall protection.",
     icon: <Shield className="w-6 h-6 text-emerald-400" />
   },
   {
-    title: "Offensive Security",
-    price: "₹2,999/scan",
-    desc: "Ethical hacking simulations to find vulnerabilities in your logic before malicious actors do. Comprehensive reporting included.",
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=800",
-    features: ["Penetration Testing", "Vulnerability Assessment", "Code Audit"],
-    icon: <Lock className="w-6 h-6 text-red-400" />
+    title: "Rapid Development",
+    desc: "Next.js applications deployed on Edge networks.",
+    icon: <Zap className="w-6 h-6 text-yellow-400" />
   },
   {
-    title: "Full-Stack Dev",
-    price: "₹4,999/project",
-    desc: "High-performance React/Next.js applications optimized for speed, SEO, and scalability on global edge networks.",
-    image: "https://images.unsplash.com/photo-1605379399642-870262d3d051?auto=format&fit=crop&q=80&w=800",
-    features: ["Custom UI/UX", "Database Design", "API Integration"],
-    icon: <Cpu className="w-6 h-6 text-blue-400" />
+    title: "Cloud Infrastructure",
+    desc: "Scalable AWS/Azure architecture management.",
+    icon: <Server className="w-6 h-6 text-blue-400" />
   }
 ];
 
-const customServices = [
-  { name: "Blockchain Integration", icon: <Fingerprint /> },
-  { name: "Legacy Migration", icon: <Server /> },
-  { name: "Mobile App Security", icon: <Smartphone /> },
-  { name: "Cloud Architecture", icon: <Globe /> },
+const testimonials = [
+  { name: "Sarah J.", role: "CTO, FintechGlobal", text: "They secured our entire banking infrastructure in weeks." },
+  { name: "Mark D.", role: "Founder, EduTech", text: "The fastest dev team we've ever worked with." },
+  { name: "Elena R.", role: "Director, HealthPlus", text: "Zero downtime during our migration. Incredible." },
+  { name: "David K.", role: "VP, CyberSafe", text: "Their penetration testing found critical bugs others missed." },
 ];
 
-const faqs = [
-  { q: "How long does a typical security audit take?", a: "A standard offensive security scan takes 3-5 days, while full-scale penetration testing can take 2 weeks depending on system complexity." },
-  { q: "Do you offer post-development support?", a: "Yes, all our development packages come with 30 days of free support. We also offer monthly retainers for ongoing maintenance." },
-  { q: "Can you fix a hacked website?", a: "Absolutely. Our Cyber Defense team specializes in disaster recovery and malware removal. We can usually restore sites within 24 hours." },
-  { q: "What stack do you use for development?", a: "We primarily use the MERN stack (MongoDB, Express, React, Node.js) and Next.js for frontend, deployed on Vercel or AWS." },
-  { q: "How is the pricing determined for custom jobs?", a: "Custom jobs are billed based on hourly engineering effort. Book a call with us to get a precise quote." },
-  { q: "Is my data safe during the testing?", a: "We sign strict NDAs before any work begins. All testing is done in a controlled sandbox environment to prevent data loss." },
-];
+const brands = ["Finexa", "Google", "Amazon", "Stripe", "Vercel", "Microsoft"];
 
-export default function EnhancedLanding() {
+export default function AgencyLanding() {
   const navigate = useNavigate();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref });
   const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <div ref={ref} className="relative min-h-screen bg-[#050505] text-white font-sans selection:bg-indigo-500/30 overflow-x-hidden">
+    <div ref={ref} className="relative min-h-screen bg-[#030303] text-white font-sans selection:bg-indigo-500/30">
       
       {/* Scroll Progress Bar */}
-      <motion.div style={{ scaleX }} className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 origin-left z-50" />
+      <motion.div style={{ scaleX }} className="fixed top-0 left-0 right-0 h-1 bg-indigo-500 origin-left z-50" />
 
       {/* --- BACKGROUND EFFECTS --- */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[128px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[128px]" />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-[128px]" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-[128px]" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
       </div>
 
-      {/* --- HERO SECTION --- */}
-      <section className="relative pt-32 pb-20 container mx-auto px-6 text-center z-10">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-sm font-medium mb-8 backdrop-blur-md"
-        >
-          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          Systems Operational
-        </motion.div>
-        
-        <h1 className="text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter mb-8 text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-gray-600">
-          TDCS.TECH
-        </h1>
-        
-        <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
-          The convergence of aesthetic engineering and military-grade cybersecurity. 
-          <span className="text-indigo-400"> We build it. We break it. We secure it.</span>
-        </p>
-
-        <div className="flex flex-col items-center gap-6">
-          <CalendlyButton />
-          <p className="text-sm text-gray-500">Limited slots available for this month</p>
-        </div>
-      </section>
-
-      {/* --- SERVICES WITH IMAGES --- */}
-      <section className="container mx-auto px-6 py-20">
-        <div className="flex items-end justify-between mb-12">
-           <div>
-             <h2 className="text-4xl font-bold mb-2">Primary Modules</h2>
-             <p className="text-gray-400">Choose your deployment package.</p>
-           </div>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {services.map((s, i) => (
-            <SpotlightCard key={i} className="rounded-3xl h-[500px] group cursor-default">
-              {/* Background Image with Gradient Overlay */}
-              <div className="absolute inset-0 z-0">
-                <img src={s.image} alt={s.title} className="w-full h-full object-cover opacity-60 transition-transform duration-700 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/90 to-transparent" />
-              </div>
-
-              {/* Content */}
-              <div className="relative z-10 h-full p-8 flex flex-col justify-end">
-                <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20 mb-6">
-                  {s.icon}
-                </div>
-                
-                <h3 className="text-3xl font-bold mb-2">{s.title}</h3>
-                <p className="text-indigo-400 font-mono text-lg mb-4">{s.price}</p>
-                <p className="text-gray-300 mb-6 line-clamp-3 group-hover:line-clamp-none transition-all">
-                  {s.desc}
-                </p>
-                
-                <ul className="space-y-2 mb-6">
-                  {s.features.map((f, idx) => (
-                    <li key={idx} className="flex items-center gap-2 text-sm text-gray-400">
-                      <CheckCircle2 className="w-4 h-4 text-indigo-500" /> {f}
-                    </li>
-                  ))}
-                </ul>
-
-                <Button className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/10 backdrop-blur-md">
-                  View Details
-                </Button>
-              </div>
-            </SpotlightCard>
-          ))}
-        </div>
-      </section>
-
-      {/* --- CUSTOM SOLUTIONS (New Section) --- */}
-      <section className="bg-gray-900/30 border-y border-white/5 py-24">
-        <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-               <div className="inline-block px-3 py-1 bg-purple-500/10 border border-purple-500/20 rounded-lg text-purple-400 text-xs font-bold mb-4">
-                 BESPOKE DEVELOPMENT
-               </div>
-               <h2 className="text-4xl md:text-5xl font-bold mb-6">Need something custom?</h2>
-               <p className="text-gray-400 text-lg mb-8 leading-relaxed">
-                 Standard packages don't fit? We engineer tailored solutions for enterprise clients. 
-                 From blockchain architectures to legacy system migrations, our engineering team handles complexity.
-               </p>
-               <Button variant="outline" className="border-purple-500 text-purple-400 hover:bg-purple-500/10 h-12 px-6">
-                 Request Custom Quote <ArrowRight className="w-4 h-4 ml-2" />
-               </Button>
+      {/* --- NAVBAR --- */}
+      <nav className="fixed top-0 w-full z-40 border-b border-white/5 bg-black/50 backdrop-blur-xl">
+        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2 font-bold text-xl tracking-tighter">
+            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <Lock className="w-4 h-4 text-white" />
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              {customServices.map((cs, i) => (
-                <div key={i} className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col items-center text-center hover:border-purple-500/30 transition-colors">
-                  <div className="mb-4 text-purple-400 p-3 bg-purple-500/10 rounded-full">
-                    {cs.icon}
-                  </div>
-                  <span className="font-semibold text-sm">{cs.name}</span>
-                </div>
-              ))}
-            </div>
+            TDCS<span className="text-indigo-400">.SECURE</span>
           </div>
+          <div className="hidden md:flex gap-8 text-sm font-medium text-gray-400">
+            <a href="#" className="hover:text-white transition-colors">Services</a>
+            <a href="#" className="hover:text-white transition-colors">Work</a>
+            <a href="#" className="hover:text-white transition-colors">Security</a>
+          </div>
+          <Button size="sm" className="bg-white text-black hover:bg-gray-200 rounded-full px-6 font-semibold">
+            Book Audit
+          </Button>
         </div>
-      </section>
+      </nav>
 
-      {/* --- APPLY / CAREERS (New Section) --- */}
-      <section className="container mx-auto px-6 py-20">
-         <div className="rounded-3xl bg-gradient-to-r from-indigo-900/40 to-black border border-indigo-500/20 p-12 relative overflow-hidden">
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-              <div>
-                <h2 className="text-3xl font-bold mb-2 flex items-center gap-3">
-                  <Briefcase className="text-indigo-400"/> Join the Elite
-                </h2>
-                <p className="text-gray-400 max-w-lg">
-                  Are you a white-hat hacker or a React wizard? We are expanding our remote team. 
-                  High equity, competitive salary, and classified projects.
-                </p>
-              </div>
-              <div className="flex gap-4">
-                <Button className="bg-white text-black hover:bg-gray-200">
-                  Apply Now
-                </Button>
-                <Button variant="ghost" className="text-white hover:bg-white/10">
-                  View Openings
-                </Button>
-              </div>
+      <div className="relative z-10 pt-32 space-y-32 pb-20">
+
+        {/* --- HERO SECTION --- */}
+        <section className="container mx-auto px-6 text-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-6"
+          >
+            <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+            Accepting High-Risk Security Contracts
+          </motion.div>
+          
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">
+            Digital Assets.<br /> Secured & Scaled.
+          </h1>
+          
+          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+            We are the agency that builds high-performance platforms and fortifies them with military-grade cybersecurity.
+          </p>
+
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button className="h-12 px-8 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20">
+              Start Project
+            </Button>
+            <Button variant="outline" className="h-12 px-8 rounded-full border-white/10 text-white hover:bg-white/5">
+              View Case Studies
+            </Button>
+          </div>
+        </section>
+
+        {/* --- BRAND STRIP --- */}
+        <section className="border-y border-white/5 bg-black/30 backdrop-blur-sm py-10 overflow-hidden">
+          <p className="text-center text-xs text-gray-500 mb-6 uppercase tracking-widest font-semibold">Trusted by industry leaders</p>
+          <Marquee speed={40}>
+            {brands.map((brand, i) => (
+              <span key={i} className="text-2xl font-bold text-gray-700 mx-8 uppercase tracking-tighter hover:text-white transition-colors cursor-default">
+                {brand}
+              </span>
+            ))}
+          </Marquee>
+        </section>
+
+        {/* --- SERVICES GRID --- */}
+        <section className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12">
+            <div>
+              <h2 className="text-3xl font-bold mb-2">Our Capabilities</h2>
+              <p className="text-gray-400">Full-cycle digital production.</p>
             </div>
-            {/* Background decoration */}
-            <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-500/20 blur-[80px]" />
-         </div>
-      </section>
-
-      {/* --- EXTENDED FAQ --- */}
-      <section className="max-w-4xl mx-auto px-6 py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Directives & Protocols</h2>
-          <p className="text-gray-500">Frequently asked questions about our operations.</p>
-        </div>
-        
-        <Accordion type="single" collapsible className="space-y-4">
-          {faqs.map((faq, i) => (
-            <AccordionItem key={i} value={`item-${i}`} className="border border-white/10 bg-white/5 rounded-xl px-4 data-[state=open]:border-indigo-500/50 transition-all">
-              <AccordionTrigger className="hover:no-underline py-6 text-lg font-medium">
-                {faq.q}
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-400 pb-6 text-base leading-relaxed">
-                {faq.a}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </section>
-
-      {/* --- FOOTER CTA --- */}
-      <footer className="border-t border-white/10 bg-black pt-20 pb-10">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-6xl font-bold mb-8">Ready to secure your future?</h2>
-          <div className="flex justify-center mb-12">
-            <CalendlyButton />
           </div>
           
-          <div className="grid md:grid-cols-4 gap-8 text-left text-sm text-gray-500 border-t border-white/5 pt-10">
-             <div>
-               <h4 className="text-white font-bold mb-4">TDCS.TECH</h4>
-               <p>Jagatpur, Odisha, India</p>
-               <p>Reg: TDCS Technologies Pvt Ltd</p>
-             </div>
-             <div>
-               <h4 className="text-white font-bold mb-4">Services</h4>
-               <ul className="space-y-2">
-                 <li><a href="#" className="hover:text-indigo-400">Cyber Defense</a></li>
-                 <li><a href="#" className="hover:text-indigo-400">Penetration Testing</a></li>
-                 <li><a href="#" className="hover:text-indigo-400">Web Development</a></li>
-               </ul>
-             </div>
-             <div>
-               <h4 className="text-white font-bold mb-4">Company</h4>
-               <ul className="space-y-2">
-                 <li><a href="#" className="hover:text-indigo-400">About Us</a></li>
-                 <li><a href="#" className="hover:text-indigo-400">Careers</a></li>
-                 <li><a href="#" className="hover:text-indigo-400">Legal</a></li>
-               </ul>
-             </div>
-             <div>
-               <h4 className="text-white font-bold mb-4">Connect</h4>
-               <div className="flex gap-4">
-                 <Globe className="w-5 h-5 hover:text-white cursor-pointer" />
-                 <CheckCircle2 className="w-5 h-5 hover:text-white cursor-pointer" />
-               </div>
-             </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {services.map((s, i) => (
+              <SpotlightCard key={i} className="rounded-3xl h-64">
+                <div className="h-full p-8 flex flex-col justify-between bg-black/20">
+                  <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10">
+                    {s.icon}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">{s.title}</h3>
+                    <p className="text-sm text-gray-400">{s.desc}</p>
+                  </div>
+                </div>
+              </SpotlightCard>
+            ))}
           </div>
-          <p className="mt-12 text-xs text-gray-700">© 2025 TDCS Technologies. All Systems Operational.</p>
-        </div>
-      </footer>
+        </section>
 
+        {/* --- BENTO GRID PROJECTS --- */}
+        <section className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold mb-12">Recent Work</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-4 h-[800px] md:h-[600px]">
+            
+            {/* Project 1 - Large Left */}
+            <SpotlightCard className="md:col-span-2 md:row-span-2 rounded-3xl" spotlightColor="rgba(168, 85, 247, 0.2)">
+              <div className="relative h-full group">
+                <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=800" 
+                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-40" />
+                <div className="absolute inset-0 flex flex-col justify-end p-8">
+                  <span className="text-purple-400 font-mono text-xs mb-2">FINTECH // 01</span>
+                  <h3 className="text-3xl font-bold">Finexa Bank</h3>
+                  <p className="text-gray-300 mt-2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
+                    Complete backend overhaul with Node.js and banking-grade security protocols.
+                  </p>
+                </div>
+              </div>
+            </SpotlightCard>
+
+            {/* Project 2 - Top Right */}
+            <SpotlightCard className="md:col-span-2 rounded-3xl" spotlightColor="rgba(34, 197, 94, 0.2)">
+              <div className="relative h-full group flex items-center p-8 gap-6">
+                <div className="flex-1">
+                   <span className="text-emerald-400 font-mono text-xs mb-2 block">HEALTH // 02</span>
+                   <h3 className="text-2xl font-bold">Nova Med</h3>
+                   <p className="text-gray-400 text-sm mt-2">Telemedicine app with WebRTC.</p>
+                </div>
+                <div className="w-32 h-32 bg-emerald-900/20 rounded-full flex items-center justify-center border border-emerald-500/30">
+                  <Smartphone className="w-12 h-12 text-emerald-400" />
+                </div>
+              </div>
+            </SpotlightCard>
+
+            {/* Project 3 - Bottom Right 1 */}
+            <SpotlightCard className="rounded-3xl" spotlightColor="rgba(59, 130, 246, 0.2)">
+              <div className="h-full p-6 flex flex-col justify-between bg-gradient-to-br from-blue-900/20 to-transparent">
+                <Globe className="w-10 h-10 text-blue-400" />
+                <div>
+                   <h3 className="font-bold text-lg">EduVerse</h3>
+                   <p className="text-xs text-gray-400">Global learning platform</p>
+                </div>
+              </div>
+            </SpotlightCard>
+
+            {/* Project 4 - Bottom Right 2 */}
+            <SpotlightCard className="rounded-3xl cursor-pointer group">
+              <div className="h-full flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
+                 <div className="text-center">
+                    <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                      <ArrowRight className="w-5 h-5" />
+                    </div>
+                    <span className="text-sm font-medium">View All Cases</span>
+                 </div>
+              </div>
+            </SpotlightCard>
+            
+          </div>
+        </section>
+
+        {/* --- INFINITE MARQUEE TESTIMONIALS --- */}
+        <section className="py-20 bg-gradient-to-b from-transparent to-indigo-900/10">
+          <div className="container mx-auto px-6 mb-12 text-center">
+             <h2 className="text-4xl font-bold mb-4">Client Success Stories</h2>
+             <p className="text-gray-400">Don't just take our word for it.</p>
+          </div>
+
+          <div className="relative">
+            {/* Gradient masks to fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#030303] to-transparent z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#030303] to-transparent z-10" />
+            
+            <Marquee direction="left" speed={50}>
+              {testimonials.map((t, i) => (
+                <div 
+                  key={i} 
+                  className="w-[400px] bg-white/5 border border-white/10 p-8 rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-colors cursor-pointer group"
+                >
+                  <div className="flex gap-1 mb-4 text-indigo-400">
+                    {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
+                  </div>
+                  <p className="text-lg text-gray-200 mb-6 leading-relaxed">"{t.text}"</p>
+                  <div className="flex items-center gap-3 border-t border-white/10 pt-4">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-xs font-bold">
+                      {t.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm">{t.name}</h4>
+                      <p className="text-xs text-indigo-300">{t.role}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </Marquee>
+          </div>
+        </section>
+
+        {/* --- FINAL CTA --- */}
+        <section className="container mx-auto px-6 pb-20">
+          <div className="rounded-[3rem] bg-indigo-600 p-12 md:p-24 text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-overlay" />
+            <div className="absolute -top-24 -left-24 w-96 h-96 bg-purple-500 rounded-full blur-[100px] opacity-50" />
+            
+            <div className="relative z-10 max-w-2xl mx-auto space-y-8">
+              <h2 className="text-4xl md:text-5xl font-bold text-white">Ready to secure your future?</h2>
+              <p className="text-indigo-100 text-lg">
+                Join the 50+ companies who trust TDCS to protect and power their digital infrastructure.
+              </p>
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Button size="lg" className="bg-white text-indigo-600 hover:bg-gray-100 rounded-full h-14 px-8 text-lg font-bold">
+                  Schedule Consultation
+                </Button>
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 rounded-full h-14 px-8 text-lg">
+                  Pricing Plans
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
     </div>
   );
 }
