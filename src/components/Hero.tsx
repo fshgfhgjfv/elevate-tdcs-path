@@ -517,7 +517,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             {/* CEO Image (z-0) */}
                             <motion.img
                                 // Placeholder image for CEO
-                                src="https://blogger.googleusercontent.com/img/a/AVvXsEjbxWlr1PxTYJY8EWtyjblCXYwoembclXkGjg-DEXHUhTwndaLeBM3u9Xcb00UgJt7wWOatq9x9Vr7EwZ5McvYU_mk1etiJiNWtTfBWQlrJf_wicU7o333C74RWpIuz6ASCtwD9F4euuytXb5kDkwzYQ7pqCSXhtHEwuckwvoR5bgq1FL84amzRlrUZfwTE"
+                                src="https://blogger.googleusercontent.com/img/a/AVvXsEhSzVolb4WlhIzCqb-NK2ZYkFzDbr6WTVD9BR8yCWkRFrAKMyKGstimmgcYr_vpFeEjKgRSSyirXi51bh0jJNQa9jrhs_VLcV1BKwcdCSV5pyYXNwlaTjpMc95-OnaQJj3ZIYa8Gd7DxFzhBbHiJToZswZp5zR99bW08LP4oI1LZ6CHd6FSaHpKkqbFt2EA"
                                 alt="Dibyajit Ghosh"
                                 className="absolute -right-4 -bottom-3 w-44 h-36 md:w-44 md:h-44 object-cover opacity-80 z-0"
                                 style={{
