@@ -45,7 +45,7 @@ const Dashboard = () => {
     { path: "/", element: <DashboardMyCourses user={user} /> },
     { path: "/leaderboard", element: <DashboardLeaderboard /> },
     { path: "/certificates", element: <DashboardCertificates /> },
-    { path: "/settings", element: <DashboardAccountSettings user={user} setUser={setUser} /> },
+    { path: "/settings", element: <DashboardAccountSettings user={user} setUser={setUser as any} /> },
     { path: "/support", element: <DashboardSupport /> },
   ];
 
