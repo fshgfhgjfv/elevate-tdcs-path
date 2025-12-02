@@ -27,7 +27,7 @@ const pricingData = {
     subtitle: "Starts As low as",
     monthlyPrice: "₹2,833/month",
     originalPrice: "₹1,00,000",
-    discountedPrice: "19,000/-",
+    discountedPrice: "19,999/-",
     features: [
       "Aptitude Training",
       "Soft Skills Training",
