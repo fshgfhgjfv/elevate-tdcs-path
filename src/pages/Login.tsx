@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { HashRouter as Router, Routes, Route, useNavigate, useLocation, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Github, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Github, Eye, EyeOff, Loader2, AlertCircle, Zap, ShieldAlert } from "lucide-react";
 import { Toaster, toast } from "sonner";
 
-// --- Mock UI Components (to make the code self-contained and runnable) ---
+// --- Mock UI Components ---
 
 const cn = (...classes) => classes.filter(Boolean).join(" ");
 
@@ -18,6 +18,7 @@ const Button = React.forwardRef(({ className, variant, size, asChild = false, ..
     ghost: "hover:bg-accent hover:text-accent-foreground",
     link: "text-primary underline-offset-4 hover:underline",
     gradient: "bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600",
+    warning: "bg-amber-100 text-amber-900 hover:bg-amber-200 border border-amber-300",
   };
   return (
     <button
@@ -100,6 +101,7 @@ const Login = () => {
   const location = useLocation();
   const [formData, setFormData] = useState({ emailOrNumber: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [currentOrigin, setCurrentOrigin] = useState("");
 
   useEffect(() => {
     const user = localStorage.getItem("tdcs_user");
@@ -110,6 +112,11 @@ const Login = () => {
 
   // --- Google Sign-In Integration ---
   useEffect(() => {
+    // Set origin for debug display
+    if (typeof window !== 'undefined') {
+        setCurrentOrigin(window.location.origin);
+    }
+
     // 1. Load the Google Script
     const script = document.createElement('script');
     script.src = "https://accounts.google.com/gsi/client";
@@ -121,25 +128,32 @@ const Login = () => {
             window.google.accounts.id.initialize({
                 client_id: "307173285004-8071uag4bomdbomqv4o63i2ksif3ouvq.apps.googleusercontent.com",
                 callback: handleGoogleCallback,
-                auto_select: false // Disable auto-select to prevent automatic logins without interaction
+                auto_select: false,
+                ux_mode: "popup" // Explicitly requesting popup to minimize redirect URI issues
             });
 
-            // 3. Render the Google Button into the div
-            window.google.accounts.id.renderButton(
-                document.getElementById("googleSignInDiv"),
-                { 
-                    theme: "outline", 
-                    size: "large", 
-                    width: "350", // Approximate width to match other buttons
-                    text: "continue_with"
-                } 
-            );
+            // 3. Render the Google Button
+            try {
+                const buttonDiv = document.getElementById("googleSignInDiv");
+                if (buttonDiv) {
+                    window.google.accounts.id.renderButton(
+                        buttonDiv,
+                        { 
+                            theme: "outline", 
+                            size: "large", 
+                            width: "350", 
+                            text: "continue_with"
+                        } 
+                    );
+                }
+            } catch (error) {
+                console.error("Google button render error:", error);
+            }
         }
     };
     document.body.appendChild(script);
 
     return () => {
-        // Cleanup if component unmounts
         try {
             document.body.removeChild(script);
         } catch(e) {}
@@ -150,7 +164,6 @@ const Login = () => {
       if (response.credential) {
           const userPayload = decodeJwt(response.credential);
           if (userPayload) {
-              // Create a user object structure matching your app
               const user = {
                   name: userPayload.name,
                   email: userPayload.email,
@@ -158,24 +171,37 @@ const Login = () => {
                   googleId: userPayload.sub,
                   loginMethod: 'google'
               };
-
-              // Save to local storage (simulating login)
-              localStorage.setItem("tdcs_user", JSON.stringify(user));
-              
-              toast.success(`Welcome back, ${user.name}!`);
-              const from = location.state?.from || "/dashboard";
-              navigate(from);
+              loginUser(user);
           } else {
               toast.error("Failed to process Google Sign-In");
           }
       }
   };
 
+  // --- Bypass for Development ---
+  const handleDevBypass = () => {
+      const mockUser = {
+          name: "Dev User",
+          email: "dev@example.com",
+          picture: null,
+          googleId: "mock-google-id-123",
+          loginMethod: 'google-bypass'
+      };
+      toast.info("Logging in with Dev Bypass...");
+      setTimeout(() => loginUser(mockUser), 800);
+  };
+
+  const loginUser = (user) => {
+      localStorage.setItem("tdcs_user", JSON.stringify(user));
+      toast.success(`Welcome back, ${user.name}!`);
+      const from = location.state?.from || "/dashboard";
+      navigate(from);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate network delay
     setTimeout(() => {
         const { emailOrNumber, password } = formData;
 
@@ -187,15 +213,13 @@ const Login = () => {
     
         const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
     
-        // Detect if input is an email or a phone number
         let user;
         if (emailOrNumber.includes("@")) {
           user = users.find(
             (u) => u.email === emailOrNumber && u.password === password
           );
         } else {
-          // For number, allow 10-digit input or +91XXXXXXXXXX format
-          const normalizedNumber = emailOrNumber.replace(/\D/g, ""); // only digits
+          const normalizedNumber = emailOrNumber.replace(/\D/g, "");
           if (normalizedNumber.length !== 10) {
             toast.error("Please enter a valid 10-digit number");
             setLoading(false);
@@ -209,10 +233,7 @@ const Login = () => {
     
         if (user) {
           const { password: _, ...userWithoutPassword } = user;
-          localStorage.setItem("tdcs_user", JSON.stringify(userWithoutPassword));
-          toast.success("Login successful!");
-          const from = location.state?.from || "/dashboard";
-          navigate(from);
+          loginUser(userWithoutPassword);
         } else {
           toast.error("Invalid credentials (try demo/demo)");
         }
@@ -222,7 +243,6 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden py-16 bg-slate-50 dark:bg-slate-950">
-      {/* Animated gradient background */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-indigo-500/10 to-blue-500/10 blur-3xl"
         animate={{
@@ -269,7 +289,6 @@ const Login = () => {
                 <div className="space-y-2">
                   <Label htmlFor="emailOrNumber">Email or Phone Number</Label>
                   <div className="flex items-center">
-                    {/* +91 Prefix — only visible if typing a number */}
                     {formData.emailOrNumber && !formData.emailOrNumber.includes("@") && (
                       <span className="flex items-center justify-center px-3 h-10 bg-muted rounded-l-md border border-r-0 border-input text-sm text-muted-foreground">
                         +91
@@ -282,7 +301,6 @@ const Login = () => {
                       value={formData.emailOrNumber}
                       onChange={(e) => {
                         const value = e.target.value;
-                        // If number, allow only digits up to 10
                         if (!value.includes("@") && value.length > 0) {
                           const digitsOnly = value.replace(/\D/g, "");
                           if (digitsOnly.length <= 10) {
@@ -341,10 +359,23 @@ const Login = () => {
 
                 {/* OAuth Buttons */}
                 <div className="space-y-4">
-                  {/* GOOGLE SIGN IN CONTAINER */}
-                  <div className="flex justify-center w-full">
+                  {/* Google Button Container */}
+                  <div className="flex justify-center w-full min-h-[44px]">
                      <div id="googleSignInDiv" className="w-full flex justify-center"></div>
                   </div>
+
+                  {/* DEV BYPASS BUTTON - HIGHLIGHTED */}
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button
+                      type="button"
+                      variant="warning"
+                      className="w-full py-3 font-semibold shadow-sm"
+                      onClick={handleDevBypass}
+                    >
+                      <Zap className="h-4 w-4 mr-2" />
+                      ⚡ Dev: Simulate Google Login (Bypass Error)
+                    </Button>
+                  </motion.div>
 
                   <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                     <Button
@@ -359,6 +390,37 @@ const Login = () => {
                   </motion.div>
                 </div>
               </motion.form>
+              
+              {/* DEBUG INFO FOR ORIGIN/URI MISMATCH */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-lg text-xs"
+              >
+                <div className="flex items-start gap-2 text-red-800 dark:text-red-200">
+                   <ShieldAlert className="w-5 h-5 mt-0.5 shrink-0" />
+                   <div className="space-y-2">
+                      <p className="font-bold">Error 400: redirect_uri_mismatch?</p>
+                      <p>
+                        This preview environment generates a random URL (<span className="font-mono bg-red-100 px-1 rounded">...webcontainer-api.io</span>).
+                        Google blocks login attempts from URLs it doesn't recognize.
+                      </p>
+                      <p className="font-semibold text-red-700 dark:text-red-300">
+                        Recommendation: Use the yellow "Dev: Simulate Google Login" button above to bypass this restriction during development.
+                      </p>
+                      
+                      <div className="mt-3 pt-3 border-t border-red-200 dark:border-red-800 opacity-75">
+                          <p className="mb-1">Your current dynamic Origin (blocked by Google):</p>
+                          <div className="relative group">
+                              <code className="block p-2 bg-white dark:bg-black/20 border border-red-200 dark:border-red-800 rounded font-mono break-all select-all">
+                                {currentOrigin}
+                              </code>
+                          </div>
+                      </div>
+                   </div>
+                </div>
+              </motion.div>
 
               <motion.div
                 className="mt-6 text-center space-y-2"
@@ -420,7 +482,14 @@ const Dashboard = () => {
                 </div>
                 <h1 className="text-2xl font-bold">Welcome, {user.name || "User"}!</h1>
                 <p className="text-gray-500">{user.email}</p>
-                <Button onClick={handleLogout} variant="destructive">Logout</Button>
+                {user.loginMethod === 'google-bypass' && (
+                    <div className="inline-block px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium border border-amber-200">
+                        ⚡ Dev Mode: Login Bypassed
+                    </div>
+                )}
+                <div className="pt-4">
+                    <Button onClick={handleLogout} variant="destructive">Logout</Button>
+                </div>
             </Card>
         </div>
     );
