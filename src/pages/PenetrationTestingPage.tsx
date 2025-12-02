@@ -460,7 +460,7 @@ export default function PenetrationTestingPage() {
       <div className="container mx-auto px-4 py-24 text-center border-t border-slate-800 bg-gradient-to-b from-slate-950 to-red-950/10">
         <h2 className="text-4xl font-bold mb-8 uppercase tracking-tight">Ready to Secure Your Future?</h2>
         <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }} className="inline-block">
-          <Button onClick={handleCalendly} size="lg" className="bg-red-600 hover:bg-red-700 text-white font-bold px-12 py-8 text-xl rounded-full shadow-[0_0_50px_-10px_rgba(220,38,38,0.8)] border border-red-400">
+          <Button onClick={handleCalendly} size="xl" className="bg-red-600 hover:bg-red-700 text-white font-bold px-12 py-8 text-xl rounded-full shadow-[0_0_50px_-10px_rgba(220,38,38,0.8)] border border-red-400">
               <Siren className="mr-3 w-6 h-6 animate-pulse" /> Get Free Consultation
           </Button>
         </motion.div>

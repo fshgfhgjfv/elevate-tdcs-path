@@ -415,7 +415,7 @@ export default function WebDevelopmentPage() {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <Button 
-                  size="lg" 
+                  size="xl" 
                   onClick={handleOpenQuote}
                   className="bg-white text-black hover:bg-gray-200 font-bold px-10 h-14 rounded-full text-lg shadow-xl"
                 >

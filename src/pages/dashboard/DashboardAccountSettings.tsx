@@ -50,7 +50,7 @@ import {
 
 interface DashboardAccountSettingsProps {
   user: { name: string; email: string };
-  setUser: React.Dispatch<React.SetStateAction<{ id?: string; name: string; email: string; number?: string } | null>>;
+  setUser: (user: { name: string; email: string } | null) => void;
 }
 
 const DashboardAccountSettings = ({ user, setUser }: DashboardAccountSettingsProps) => {

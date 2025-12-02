@@ -86,6 +86,7 @@ export const CoursePricing = ({ onEnroll, courseId }: CoursePricingProps) => {
             <div className="text-4xl font-bold gradient-text my-4">{pricing.monthlyPrice}</div>
             <div className="space-y-2 text-sm text-muted-foreground">
               <p>Lifetime Access to the Course</p>
+              <p>12 month Zero cost EMI</p>
               <p className="text-primary font-semibold">{pricing.scholarship}</p>
             </div>
             <div className="mt-4">
