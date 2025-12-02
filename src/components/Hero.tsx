@@ -491,7 +491,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                             {/* ---------------------------------- */}
                             
                             {/* CRITICAL FIX: Text wrapper with high z-index (z-20) */}
-                            <div className="relative z-20">
+                            <div className="relative z-40">
                                 {/* FIX: Text size reduced from text-2xl to text-xl */}
                                 <h3 className="text-xl font-extrabold mb-2">Dibyajit Ghosh</h3> 
                                 <p className={`text-lg transition-all ${hoveredCard === 'ceo' ? 'mb-4' : 'mb-6'}`}>
