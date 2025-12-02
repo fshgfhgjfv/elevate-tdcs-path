@@ -265,7 +265,7 @@ const DashboardMyCourses = ({ user }: DashboardMyCoursesProps) => {
                                         variant="outline"
                                         size="sm"
                                         onClick={() =>
-                                          updateProgress(course.courseId, true)
+                                          updateProgress(course.id, true)
                                         }
                                         className="gap-2"
                                       >

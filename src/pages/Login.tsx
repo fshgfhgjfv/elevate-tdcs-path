@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Github } from "lucide-react";
+import { Github, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 // SVG for Google icon
 const GoogleIcon = () => (
@@ -22,37 +23,84 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [formData, setFormData] = useState({ emailOrNumber: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   useEffect(() => {
+    // Check for existing Supabase session
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate("/dashboard");
+      }
+    };
+    checkSession();
+
+    // Also check localStorage for legacy users
     const user = localStorage.getItem("tdcs_user");
     if (user) {
       navigate("/dashboard");
     }
   }, [navigate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Listen for auth state changes
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session) {
+          // Store user info in localStorage for compatibility
+          localStorage.setItem("tdcs_user", JSON.stringify({
+            id: session.user.id,
+            email: session.user.email,
+            name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+          }));
+          navigate("/dashboard");
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const { emailOrNumber, password } = formData;
 
     if (!emailOrNumber || !password) {
       toast.error("Please fill in all fields");
+      setIsLoading(false);
       return;
     }
 
+    // Try Supabase auth first for email login
+    if (emailOrNumber.includes("@")) {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: emailOrNumber,
+        password: password,
+      });
+
+      if (!error) {
+        toast.success("Login successful!");
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    // Fallback to localStorage for legacy users
     const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
 
-    // Detect if input is an email or a phone number
     let user;
     if (emailOrNumber.includes("@")) {
       user = users.find(
         (u: any) => u.email === emailOrNumber && u.password === password
       );
     } else {
-      // For number, allow 10-digit input or +91XXXXXXXXXX format
-      const normalizedNumber = emailOrNumber.replace(/\D/g, ""); // only digits
+      const normalizedNumber = emailOrNumber.replace(/\D/g, "");
       if (normalizedNumber.length !== 10) {
         toast.error("Please enter a valid 10-digit number");
+        setIsLoading(false);
         return;
       }
       const formattedNumber = `+91${normalizedNumber}`;
@@ -69,6 +117,44 @@ const Login = () => {
       navigate(from);
     } else {
       toast.error("Invalid credentials");
+    }
+    setIsLoading(false);
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsGoogleLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+
+      if (error) {
+        toast.error(error.message);
+        setIsGoogleLoading(false);
+      }
+    } catch (error: any) {
+      toast.error("Failed to sign in with Google");
+      setIsGoogleLoading(false);
+    }
+  };
+
+  const handleGitHubLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+
+      if (error) {
+        toast.error(error.message);
+      }
+    } catch (error: any) {
+      toast.error("Failed to sign in with GitHub");
     }
   };
 
@@ -121,7 +207,6 @@ const Login = () => {
                 <div>
                   <Label htmlFor="emailOrNumber">Email or Phone Number</Label>
                   <div className="flex items-center">
-                    {/* +91 Prefix — only visible if typing a number */}
                     {formData.emailOrNumber && !formData.emailOrNumber.includes("@") && (
                       <span className="px-3 py-2 bg-muted rounded-l-md border border-r-0 border-input text-sm text-muted-foreground">
                         +91
@@ -134,7 +219,6 @@ const Login = () => {
                       value={formData.emailOrNumber}
                       onChange={(e) => {
                         const value = e.target.value;
-                        // If number, allow only digits up to 10
                         if (!value.includes("@")) {
                           const digitsOnly = value.replace(/\D/g, "");
                           if (digitsOnly.length <= 10) {
@@ -150,6 +234,7 @@ const Login = () => {
                           : ""
                       }
                       required
+                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -165,6 +250,7 @@ const Login = () => {
                       setFormData({ ...formData, password: e.target.value })
                     }
                     required
+                    disabled={isLoading}
                   />
                 </div>
 
@@ -173,8 +259,16 @@ const Login = () => {
                     type="submit"
                     variant="gradient"
                     className="w-full text-lg py-6 font-semibold shadow-lg"
+                    disabled={isLoading}
                   >
-                    Login
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Logging in...
+                      </>
+                    ) : (
+                      "Login"
+                    )}
                   </Button>
                 </motion.div>
 
@@ -197,9 +291,14 @@ const Login = () => {
                       type="button"
                       variant="outline"
                       className="w-full py-6"
-                      onClick={() => toast.info("Google sign-in coming soon!")}
+                      onClick={handleGoogleLogin}
+                      disabled={isGoogleLoading}
                     >
-                      <GoogleIcon />
+                      {isGoogleLoading ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                      ) : (
+                        <GoogleIcon />
+                      )}
                       <span className="ml-2">Continue with Google</span>
                     </Button>
                   </motion.div>
@@ -209,7 +308,7 @@ const Login = () => {
                       type="button"
                       variant="outline"
                       className="w-full py-6"
-                      onClick={() => toast.info("GitHub sign-in coming soon!")}
+                      onClick={handleGitHubLogin}
                     >
                       <Github className="h-5 w-5" />
                       <span className="ml-2">Continue with GitHub</span>

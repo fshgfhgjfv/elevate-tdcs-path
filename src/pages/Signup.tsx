@@ -18,12 +18,8 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, Github, CheckCircle2, ShieldCheck } from "lucide-react";
-import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
-
-// --- CONFIGURATION ---
-const googleClientId =
-  "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
+import { Loader2, Github, CheckCircle2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 // --- Floating Tools Data ---
 const tools = [
@@ -64,14 +60,6 @@ const tools = [
   },
 ];
 
-const iconVariants = {
-  hidden: (side: "left" | "right") => ({
-    opacity: 0,
-    x: side === "left" ? -100 : 100,
-    scale: 0.5,
-  }),
-};
-
 // --- Google Icon Helper ---
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
@@ -97,6 +85,7 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 const Signup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -133,6 +122,24 @@ const Signup = () => {
     if (/[^A-Za-z0-9]/.test(pass)) score += 1;
     setStrength(score);
   }, [formData.password]);
+
+  // Listen for auth state changes
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session) {
+          localStorage.setItem("tdcs_user", JSON.stringify({
+            id: session.user.id,
+            email: session.user.email,
+            name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+          }));
+          navigate("/dashboard");
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const getStrengthColor = (s: number) => {
     if (s === 0) return "bg-muted";
@@ -192,11 +199,10 @@ const Signup = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
     const { name, email, number, password, confirmPassword } = formData;
 
     if (!name || !email || !number || !password || !confirmPassword) {
@@ -226,13 +232,29 @@ const Signup = () => {
       setIsLoading(false);
       return;
     }
-    if (users.find((u: any) => u.email === email)) {
-      toast.error("User with this email already exists");
-      setIsLoading(false);
-      return;
-    }
 
-    setTimeout(() => {
+    // Try Supabase signup
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+        data: {
+          full_name: name,
+          phone: `+91${number}`,
+        },
+      },
+    });
+
+    if (error) {
+      // Fallback to localStorage for demo
+      const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
+      if (users.find((u: any) => u.email === email)) {
+        toast.error("User with this email already exists");
+        setIsLoading(false);
+        return;
+      }
+
       const newUser = {
         id: Date.now().toString(),
         name,
@@ -247,22 +269,48 @@ const Signup = () => {
       toast.success("Account created successfully!");
       setIsLoading(false);
       navigate("/dashboard");
-    }, 1000);
+    } else {
+      toast.success("Account created! Please check your email for verification.");
+      setIsLoading(false);
+    }
   };
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setIsLoading(true);
-      setTimeout(() => {
-        toast.success("Logged in with Google!");
-        setIsLoading(false);
-        navigate("/dashboard");
-      }, 1000);
-    },
-    onError: () => toast.error("Google Login Failed"),
-  });
+  const handleGoogleSignup = async () => {
+    setIsGoogleLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
 
-  const handleGitHubSignup = (p: string) => toast.info(`${p} not implemented.`);
+      if (error) {
+        toast.error(error.message);
+        setIsGoogleLoading(false);
+      }
+    } catch (error: any) {
+      toast.error("Failed to sign in with Google");
+      setIsGoogleLoading(false);
+    }
+  };
+
+  const handleGitHubSignup = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+
+      if (error) {
+        toast.error(error.message);
+      }
+    } catch (error: any) {
+      toast.error("Failed to sign in with GitHub");
+    }
+  };
 
   // 3D Card Refs
   const cardRef = useRef<HTMLDivElement>(null);
@@ -380,17 +428,21 @@ const Signup = () => {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => googleLogin()}
+                    onClick={handleGoogleSignup}
                     type="button"
-                    disabled={isLoading}
+                    disabled={isLoading || isGoogleLoading}
                   >
-                    <GoogleIcon className="mr-2 h-4 w-4" />
+                    {isGoogleLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <GoogleIcon className="mr-2 h-4 w-4" />
+                    )}
                     Google
                   </Button>
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => handleGitHubSignup("GitHub")}
+                    onClick={handleGitHubSignup}
                     type="button"
                     disabled={isLoading}
                   >
@@ -410,7 +462,7 @@ const Signup = () => {
                   </div>
                 </motion.div>
 
-                {/* --- UPDATED NAME FIELD --- */}
+                {/* --- NAME FIELD --- */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="name">Full Name</Label>
                   <Input
@@ -427,7 +479,7 @@ const Signup = () => {
                   />
                 </motion.div>
 
-                {/* --- UPDATED EMAIL FIELD WITH OTP --- */}
+                {/* --- EMAIL FIELD WITH OTP --- */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="email">Email (Gmail Only)</Label>
                   <div className="flex gap-2">
@@ -447,7 +499,6 @@ const Signup = () => {
                           : ""
                       }`}
                     />
-                    {/* Verify Button */}
                     {verification.email.isVerified ? (
                       <div className="flex items-center justify-center px-3 bg-green-500/10 border border-green-500 rounded-md">
                         <CheckCircle2 className="h-5 w-5 text-green-500" />
@@ -499,16 +550,15 @@ const Signup = () => {
                                   ...prev,
                                   email: {
                                     ...prev.email,
-                                    otp: e.target.value.replace(/\D/g, ""),
+                                    otp: e.target.value,
                                   },
                                 }))
                               }
                             />
                             <Button
                               type="button"
-                              size="sm"
                               onClick={confirmEmailOtp}
-                              className="bg-green-600 hover:bg-green-700 text-white"
+                              className="bg-green-600 hover:bg-green-700"
                             >
                               Confirm
                             </Button>
@@ -519,33 +569,32 @@ const Signup = () => {
                   </AnimatePresence>
                 </motion.div>
 
-                {/* --- UPDATED PHONE SECTION WITH OTP --- */}
+                {/* --- PHONE FIELD WITH OTP --- */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="number">Phone Number</Label>
                   <div className="flex gap-2">
-                    <div className="flex items-center flex-1">
-                      <span className="px-3 py-2 bg-gray-900/50 rounded-l-md border border-r-0 border-input text-sm text-muted-foreground h-10 flex items-center">
-                        +91
-                      </span>
-                      <Input
-                        id="number"
-                        type="text"
-                        placeholder="Enter Mobile Number"
-                        value={formData.number}
-                        onChange={(e) => {
-                          const val = e.target.value.replace(/\D/g, "");
-                          if (val.length <= 10)
-                            setFormData({ ...formData, number: val });
-                        }}
-                        disabled={isLoading || verification.phone.isVerified}
-                        className={`rounded-l-none bg-gray-900/50 ${
-                          verification.phone.isVerified
-                            ? "border-green-500 text-green-500"
-                            : ""
-                        }`}
-                      />
-                    </div>
-                    {/* Verify Button */}
+                    <span className="flex items-center px-3 bg-gray-900/50 border border-input rounded-l-md text-sm text-muted-foreground">
+                      +91
+                    </span>
+                    <Input
+                      id="number"
+                      type="tel"
+                      placeholder="10-digit number"
+                      value={formData.number}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, "");
+                        if (val.length <= 10) {
+                          setFormData({ ...formData, number: val });
+                        }
+                      }}
+                      required
+                      disabled={isLoading || verification.phone.isVerified}
+                      className={`rounded-l-none bg-gray-900/50 ${
+                        verification.phone.isVerified
+                          ? "border-green-500 text-green-500"
+                          : ""
+                      }`}
+                    />
                     {verification.phone.isVerified ? (
                       <div className="flex items-center justify-center px-3 bg-green-500/10 border border-green-500 rounded-md">
                         <CheckCircle2 className="h-5 w-5 text-green-500" />
@@ -583,12 +632,12 @@ const Signup = () => {
                       >
                         <div className="mt-2 p-3 border border-dashed border-gray-700 rounded-md bg-gray-900/30">
                           <Label className="text-xs text-muted-foreground mb-1 block">
-                            Enter 6-digit OTP sent to mobile
+                            Enter 6-digit OTP sent to phone
                           </Label>
                           <div className="flex gap-2">
                             <Input
                               type="text"
-                              placeholder=" Enter 6-digit OTP"
+                              placeholder="Enter Your OTP"
                               maxLength={6}
                               className="text-center tracking-widest bg-gray-900/50"
                               value={verification.phone.otp}
@@ -597,16 +646,15 @@ const Signup = () => {
                                   ...prev,
                                   phone: {
                                     ...prev.phone,
-                                    otp: e.target.value.replace(/\D/g, ""),
+                                    otp: e.target.value,
                                   },
                                 }))
                               }
                             />
                             <Button
                               type="button"
-                              size="sm"
                               onClick={confirmPhoneOtp}
-                              className="bg-green-600 hover:bg-green-700 text-white"
+                              className="bg-green-600 hover:bg-green-700"
                             >
                               Confirm
                             </Button>
@@ -617,7 +665,7 @@ const Signup = () => {
                   </AnimatePresence>
                 </motion.div>
 
-                {/* Password Section */}
+                {/* --- PASSWORD FIELD --- */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="password">Password</Label>
                   <Input
@@ -632,62 +680,27 @@ const Signup = () => {
                     disabled={isLoading}
                     className="bg-gray-900/50"
                   />
-                  <AnimatePresence>
-                    {formData.password && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="mt-2 space-y-2"
-                      >
-                        <div className="flex gap-1 h-1.5">
-                          {[1, 2, 3, 4].map((l) => (
-                            <div
-                              key={l}
-                              className="h-full flex-1 rounded-full bg-gray-800 overflow-hidden"
-                            >
-                              <motion.div
-                                initial={{ width: "0%" }}
-                                animate={{
-                                  width: strength >= l ? "100%" : "0%",
-                                  backgroundColor:
-                                    strength >= l
-                                      ? l === 1
-                                        ? "rgb(239 68 68)"
-                                        : l === 2 && strength <= 2
-                                        ? "rgb(239 68 68)"
-                                        : l <= 2 && strength >= 3
-                                        ? "rgb(234 179 8)"
-                                        : l === 3 && strength === 3
-                                        ? "rgb(234 179 8)"
-                                        : "rgb(34 197 94)"
-                                      : "transparent",
-                                }}
-                                className="h-full w-full"
-                                transition={{ duration: 0.3 }}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                        <div className="flex justify-between items-center text-xs">
-                          <span
-                            className={`font-medium ${
-                              strength <= 2
-                                ? "text-red-500"
-                                : strength === 3
-                                ? "text-yellow-500"
-                                : "text-green-500"
+                  {/* Password Strength Indicator */}
+                  {formData.password && (
+                    <div className="mt-2">
+                      <div className="flex gap-1 mb-1">
+                        {[1, 2, 3, 4, 5].map((i) => (
+                          <div
+                            key={i}
+                            className={`h-1 flex-1 rounded ${
+                              i <= strength ? getStrengthColor(strength) : "bg-muted"
                             }`}
-                          >
-                            Strength: {getStrengthText(strength)}{" "}
-                            {strength <= 2 && " (Too Weak)"}
-                          </span>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                          />
+                        ))}
+                      </div>
+                      <p className={`text-xs ${getStrengthColor(strength).replace("bg-", "text-")}`}>
+                        {getStrengthText(strength)}
+                      </p>
+                    </div>
+                  )}
                 </motion.div>
 
+                {/* --- CONFIRM PASSWORD FIELD --- */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <Input
@@ -696,10 +709,7 @@ const Signup = () => {
                     placeholder="••••••••"
                     value={formData.confirmPassword}
                     onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        confirmPassword: e.target.value,
-                      })
+                      setFormData({ ...formData, confirmPassword: e.target.value })
                     }
                     required
                     disabled={isLoading}
@@ -707,37 +717,34 @@ const Signup = () => {
                   />
                 </motion.div>
 
-                <motion.div
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                >
+                {/* --- SUBMIT BUTTON --- */}
+                <motion.div variants={itemVariants}>
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white border-0"
+                    className="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600"
                     disabled={isLoading}
                   >
                     {isLoading ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating Account...
+                      </>
                     ) : (
-                      <ShieldCheck className="mr-2 h-4 w-4" />
+                      "Create Account"
                     )}
-                    {isLoading ? "Creating Account..." : "Sign Up"}
                   </Button>
                 </motion.div>
-              </motion.form>
 
-              <div className="mt-6 text-center">
-                <p className="text-sm text-muted-foreground">
+                <motion.p
+                  variants={itemVariants}
+                  className="text-center text-sm text-muted-foreground"
+                >
                   Already have an account?{" "}
-                  <Link
-                    to="/login"
-                    className="text-red-500 hover:text-red-400 hover:underline font-semibold"
-                  >
+                  <Link to="/login" className="text-red-500 hover:underline">
                     Login
                   </Link>
-                </p>
-              </div>
+                </motion.p>
+              </motion.form>
             </CardContent>
           </Card>
         </motion.div>
@@ -746,10 +753,4 @@ const Signup = () => {
   );
 };
 
-const SignupWithGoogleAuth = () => (
-  <GoogleOAuthProvider clientId={googleClientId}>
-    <Signup />
-  </GoogleOAuthProvider>
-);
-
-export default SignupWithGoogleAuth;
+export default Signup;
