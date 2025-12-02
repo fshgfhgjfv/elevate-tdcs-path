@@ -43,7 +43,7 @@ const pricingData = {
   "cyber-lite": {
     title: "Cyber Master's Pro Lite",
     subtitle: "Starts As low as",
-    monthlyPrice: "₹250/month",
+    monthlyPrice: "₹499/15days",
     originalPrice: "₹10,000",
     discountedPrice: "₹499",
     features: [
@@ -56,7 +56,7 @@ const pricingData = {
       "Offline Placement Drives",
       "Mock Interviews by Tech and HR Panels",
     ],
-    scholarship: "Additional Scholarships Up To ₹15,000",
+    scholarship: "Additional Scholarships Up To ₹5,000",
   },
 };
 
