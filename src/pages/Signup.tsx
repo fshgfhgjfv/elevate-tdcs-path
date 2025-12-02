@@ -23,7 +23,7 @@ import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
 // --- CONFIGURATION ---
 const googleClientId =
-  "307173285004-8071uag4bomdbomqv4o63i2ksif3ouvq.apps.googleusercontent.com";
+  "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
 
 // --- Floating Tools Data ---
 const tools = [
