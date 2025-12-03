@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { BookOpen, Users, Briefcase, Target, Award } from "lucide-react";
+import { CalendlyModal } from "./CalendlyModal";
 
 const reasons = [
   {
@@ -61,6 +63,8 @@ const cardVariants = {
 };
 
 export const WhyJoinSection = () => {
+  const [isCalendlyOpen, setIsCalendlyOpen] = useState(false);
+
   return (
     <section id="why-join" className="relative py-20 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -127,6 +131,7 @@ export const WhyJoinSection = () => {
                       variant="ghost"
                       size="sm"
                       className="text-primary hover:text-primary hover:bg-primary/10 font-medium"
+                      onClick={() => setIsCalendlyOpen(true)}
                     >
                       Book Session
                     </Button>
@@ -137,6 +142,11 @@ export const WhyJoinSection = () => {
           ))}
         </motion.div>
       </div>
+
+      <CalendlyModal 
+        isOpen={isCalendlyOpen} 
+        onClose={() => setIsCalendlyOpen(false)} 
+      />
     </section>
   );
 };
