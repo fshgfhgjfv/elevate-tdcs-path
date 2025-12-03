@@ -29,7 +29,7 @@ const pricingData = {
     originalPrice: "₹1,00,000",
     discountedPrice: "19,999/-",
     features: [
-      "5-Month Career-Oriented Courses",
+      "06-Month Career-Oriented Courses",
       "Full payment gets special discount + gifts",
       "Pay in full and receive extra discount & rewards",
       "AI-Powered Mock Interviews",
@@ -86,7 +86,7 @@ export const CoursePricing = ({ onEnroll, courseId }: CoursePricingProps) => {
             <div className="text-4xl font-bold gradient-text my-4">{pricing.monthlyPrice}</div>
             <div className="space-y-2 text-sm text-muted-foreground">
               <p>Lifetime Access to the Course</p>
-              <p>12 month Zero cost EMI</p>
+              <p>05 month Zero cost EMI</p>
               <p className="text-primary font-semibold">{pricing.scholarship}</p>
             </div>
             <div className="mt-4">
