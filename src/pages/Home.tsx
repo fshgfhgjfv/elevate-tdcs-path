@@ -214,7 +214,7 @@ const Home = () => {
               >
                 <Card className="shadow-glow hover:shadow-glow-lg transition-all">
                   <CardContent className="p-6 text-center">
-                    <div className="text-4xl mb-2">{tool.icon}</div>
+                    <div className="text-4xl mb-2">{tool.emoji}</div>
                     <p className="text-sm font-semibold">{tool.name}</p>
                   </CardContent>
                 </Card>
