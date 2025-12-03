@@ -29,7 +29,7 @@ const pricingData = {
     originalPrice: "₹1,00,000",
     discountedPrice: "19,999/-",
     features: [
-      "5Months ",
+      "5-Month Career-Oriented Courses",
       "Soft Skills Training",
       "Resume Preparation",
       "AI-Powered Mock Interviews",
