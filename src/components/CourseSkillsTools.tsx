@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 
 const skills = [
- { name: "Kali Linux", img: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg" },
+  { name: "Kali Linux", img: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg" },
   { name: "Metasploit", img: "https://upload.wikimedia.org/wikipedia/commons/8/8f/Metasploit_logo_and_wordmark.png" },
   { name: "Burp Suite", img: "https://portswigger.net/content/images/logos/burp-suite.svg" },
   { name: "Wireshark", img: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Wireshark_icon.svg" },
@@ -11,6 +11,15 @@ const skills = [
   { name: "John the Ripper", img: "https://upload.wikimedia.org/wikipedia/commons/0/04/John_the_Ripper_logo.png" },
   { name: "Aircrack-ng", img: "https://upload.wikimedia.org/wikipedia/commons/9/98/Aircrack-ng-logo.png" },
   { name: "Hydra", img: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Hydra-logo.png" },
+];
+
+const tools = [
+  { name: "VS Code", img: "https://upload.wikimedia.org/wikipedia/commons/9/9a/Visual_Studio_Code_1.35_icon.svg" },
+  { name: "Git", img: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg" },
+  { name: "Docker", img: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Docker_%28container_engine%29_logo.svg" },
+  { name: "Linux", img: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" },
+  { name: "Python", img: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" },
+  { name: "Bash", img: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Bash_Logo_Colored.svg" },
 ];
   
 

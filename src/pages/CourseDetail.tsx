@@ -46,7 +46,9 @@ export default function CourseDetail() {
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     document.body.appendChild(script);
-    return () => document.body.removeChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
 
   const handleEnroll = () => {
@@ -110,7 +112,7 @@ export default function CourseDetail() {
           className="max-w-5xl mx-auto px-6"
         >
           <motion.img
-            src={course.image}
+            src={course.thumbnail}
             alt={course.title}
             className="w-full h-72 object-cover rounded-3xl mb-8 shadow-2xl"
             whileHover={{ scale: 1.05, rotate: 1 }}

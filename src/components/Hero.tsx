@@ -233,7 +233,7 @@ const slideDetailsVariants = {
         height: 'auto',
         transition: {
             duration: 0.3,
-            ease: "easeOut",
+            ease: "easeOut" as const,
         }
     },
 };
