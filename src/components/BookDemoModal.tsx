@@ -10,14 +10,25 @@ export const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
 
   // ✅ Show alert message (toast-style notification)
   const showAlert = (message: string, type: "success" | "error") => {
-    const alertBox = document.getElementById("global-alert-hero");
+    // Check if the global alert element exists, if not, we create a temporary one for the modal context
+    let alertBox = document.getElementById("global-alert-hero");
+    
+    // Fallback if global alert box isn't found in the DOM (self-contained safety)
+    if (!alertBox) {
+        alertBox = document.createElement("div");
+        alertBox.id = "global-alert-hero";
+        document.body.appendChild(alertBox);
+    }
+
     if (alertBox) {
       alertBox.textContent = message;
       alertBox.className = `fixed top-4 right-4 z-[9999] p-4 rounded-lg shadow-xl text-white transition-opacity duration-300 opacity-100 ${
         type === "success" ? "bg-green-600" : "bg-red-600"
       }`;
       setTimeout(() => {
-        alertBox.className = alertBox.className.replace("opacity-100", "opacity-0");
+        if (alertBox) {
+            alertBox.className = alertBox.className.replace("opacity-100", "opacity-0");
+        }
       }, 3000);
     }
   };
@@ -46,9 +57,22 @@ export const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
       return;
     }
 
-    // ✅ Simulate form submission
-    showAlert("Thank you! Our team will contact you soon.", "success");
-    onClose();
+    // ✅ Success: Notify user and redirect to Calendly
+    showAlert("Redirecting to booking page...", "success");
+
+    // Construct Calendly URL with pre-filled data (Name & Email)
+    const calendlyUrl = "https://calendly.com/rudranarayanswain/30min";
+    const params = new URLSearchParams();
+    params.append("name", name);
+    params.append("email", email);
+    // Note: Phone and Course are not standard Calendly pre-fill fields without custom setup, 
+    // but name/email will work automatically.
+
+    // Slight delay to allow the user to read the alert before the new tab opens
+    setTimeout(() => {
+        window.open(`${calendlyUrl}?${params.toString()}`, '_blank');
+        onClose();
+    }, 1500);
   };
 
   return (
@@ -132,7 +156,7 @@ export const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
             type="submit"
             className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition"
           >
-            Submit
+            Submit & Book Slot
           </button>
         </form>
       </div>
