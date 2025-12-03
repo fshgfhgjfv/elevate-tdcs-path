@@ -5,8 +5,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Sparkles } from "lucide-react"; // Assuming you have lucide-react
+import { motion } from "framer-motion";
+import { MessageCircle, Sparkles } from "lucide-react";
 
 const faqs = [
   {
@@ -140,7 +140,7 @@ export const CourseFAQ = () => {
           </Accordion>
         </motion.div>
 
-        {/* CTA Section */}
+        {/* CTA Section - UPDATED WITH WHATSAPP LINK */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -150,13 +150,15 @@ export const CourseFAQ = () => {
         >
           <div className="p-6 rounded-2xl bg-muted/50 border border-border/50 inline-block backdrop-blur-sm">
             <p className="flex flex-col sm:flex-row items-center gap-4 text-muted-foreground">
-              <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <MessageCircle className="w-5 h-5 text-primary" />
+              <span className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
+                <MessageCircle className="w-5 h-5 text-green-600" />
               </span>
               <span>
                 Can&apos;t find the answer you&apos;re looking for?{" "}
                 <a
-                  href="#contact"
+                  href="https://api.whatsapp.com/send/?phone=919564730432&text&type=phone_number&app_absent=0"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-primary font-semibold hover:underline cursor-pointer"
                 >
                   Chat to our friendly team
