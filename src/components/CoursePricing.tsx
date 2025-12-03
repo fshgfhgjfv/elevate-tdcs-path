@@ -31,7 +31,7 @@ const pricingData = {
     features: [
       "5-Month Career-Oriented Courses",
       "Full payment gets special discount + gifts",
-      "Resume Preparation",
+      "Pay in full and receive extra discount & rewards",
       "AI-Powered Mock Interviews",
       "Access to Placement Portal",
       "Access to 300+ Senior Interview Experiences",
