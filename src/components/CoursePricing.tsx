@@ -30,7 +30,7 @@ const pricingData = {
     discountedPrice: "19,999/-",
     features: [
       "5-Month Career-Oriented Courses",
-      "Soft Skills Training",
+      "Full payment gets special discount + gifts",
       "Resume Preparation",
       "AI-Powered Mock Interviews",
       "Access to Placement Portal",
