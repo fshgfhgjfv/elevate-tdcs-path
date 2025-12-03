@@ -181,7 +181,7 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
                 
                 <form onSubmit={handleSubmit} className="p-6 space-y-5">
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Fill out the form to instantly receive a PDF brochure detailing our programs, placements, and pricing and every thing about us.
+                        Fill out the form to instantly receive a PDF brochure detailing our programs, placements, and pricing.
                     </p>
                     
                     <div>
