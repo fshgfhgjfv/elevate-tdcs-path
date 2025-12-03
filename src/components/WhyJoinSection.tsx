@@ -47,116 +47,89 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.15, delayChildren: 0.2 },
+    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
   },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.9 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: { type: "spring" as const, stiffness: 120, damping: 20 },
+    transition: { type: "spring" as const, stiffness: 100, damping: 15 },
   },
 };
 
 export const WhyJoinSection = () => {
   return (
-    <section
-      id="why-join"
-      className="relative py-20 overflow-hidden bg-gradient-to-br from-background via-primary/5 to-secondary/10"
-    >
-      {/* Floating Glow Effect */}
-      <motion.div
-        className="absolute -top-24 left-0 w-72 h-72 bg-primary/30 rounded-full blur-3xl opacity-20"
-        animate={{ y: [0, 20, 0] }}
-        transition={{ duration: 6, repeat: Infinity }}
-      />
-      <motion.div
-        className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/20 rounded-full blur-3xl opacity-20"
-        animate={{ y: [0, -20, 0] }}
-        transition={{ duration: 7, repeat: Infinity }}
-      />
-
-      <div className="container mx-auto px-4 relative">
+    <section id="why-join" className="relative py-20 bg-muted/30">
+      <div className="container mx-auto px-4">
         {/* Heading */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.5 }}
+          className="text-center mb-14"
         >
-          <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
             Why TDCS Technologies?
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+          <p className="text-muted-foreground max-w-xl mx-auto">
             Experience personalized mentorship, real-world learning, and
-            guaranteed placement guidance that sets you apart.
+            guaranteed placement guidance.
           </p>
         </motion.div>
 
-        {/* Cards */}
+        {/* Cards Grid */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
         >
           {reasons.map((reason, index) => (
             <motion.div
               key={index}
               variants={cardVariants}
-              whileHover={{
-                scale: 1.05,
-                rotateX: 3,
-                rotateY: -3,
-                boxShadow:
-                  "0px 10px 25px rgba(147, 197, 253, 0.25), 0 0 30px rgba(59, 130, 246, 0.15)",
-              }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 250, damping: 18 }}
+              whileHover={{ y: -4 }}
+              transition={{ type: "spring" as const, stiffness: 300, damping: 20 }}
             >
-              <Card className="h-full border border-border/30 backdrop-blur-md bg-white/60 hover:bg-white/80 transition-all duration-500 group relative overflow-hidden">
-                {/* Glow pulse background */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-500"
-                  animate={{ opacity: [0.1, 0.3, 0.1] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                />
-                <CardContent className="relative z-10 p-8">
-                  {/* Icon Animation */}
-                  <motion.div
-                    initial={{ y: 10, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    whileHover={{ rotate: 10, scale: 1.2 }}
-                    className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-5 mx-auto shadow-md"
-                  >
-                    <reason.icon className="w-8 h-8 text-white" />
-                  </motion.div>
+              <Card className="h-full border-0 bg-card shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl overflow-hidden">
+                <CardContent className="p-6">
+                  {/* Icon */}
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                    <reason.icon className="w-6 h-6 text-primary" />
+                  </div>
 
-                  <h3 className="text-xl font-bold mb-3 text-center">{reason.title}</h3>
-                  <p className="text-sm text-muted-foreground text-center mb-6">
+                  {/* Title */}
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    {reason.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
                     {reason.description}
                   </p>
 
-                  <div className="border-t border-border/30 pt-4">
-                    <div className="flex items-center justify-between mb-3">
+                  {/* Footer */}
+                  <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                    <div>
                       <span className="text-2xl font-bold gradient-text">
                         {reason.rating}
                       </span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="hover:bg-gradient-to-r hover:from-primary hover:to-secondary hover:text-white transition-all"
-                      >
-                        Book Free Session
-                      </Button>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {reason.badge}
+                      </p>
                     </div>
-                    <p className="text-xs text-muted-foreground">{reason.badge}</p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-primary hover:text-primary hover:bg-primary/10 font-medium"
+                    >
+                      Book Session
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
