@@ -10,6 +10,9 @@ const pricingData = {
     monthlyPrice: "₹999/month",
     originalPrice: "₹30,000",
     discountedPrice: "₹6,999",
+    // Added specific details for this course
+    accessDuration: "Lifetime Access to the Course",
+    emiDetails: "5 month Zero cost EMI",
     features: [
       "Live Bug Hunting Sessions",
       "Access to Private Bug Bounty Platforms",
@@ -28,6 +31,9 @@ const pricingData = {
     monthlyPrice: "₹3,999/month",
     originalPrice: "₹1,00,000",
     discountedPrice: "19,999/-",
+    // Added specific details for this course
+    accessDuration: "1 Year Access + Internship",
+    emiDetails: "12 month Zero cost EMI available",
     features: [
       "06-Month Career-Oriented Courses",
       "Full payment gets special discount + gifts",
@@ -46,6 +52,9 @@ const pricingData = {
     monthlyPrice: "₹499/15days",
     originalPrice: "₹10,000",
     discountedPrice: "₹499",
+    // Added specific details for this course (Note: No EMI for low cost)
+    accessDuration: "Half Months Access to Content",
+    emiDetails: null, // Set to null if not applicable
     features: [
       "Aptitude Training",
       "Soft Skills Training",
@@ -66,7 +75,9 @@ interface CoursePricingProps {
 }
 
 export const CoursePricing = ({ onEnroll, courseId }: CoursePricingProps) => {
+  // Default to blackhat if ID not found to prevent crash
   const pricing = pricingData[courseId as keyof typeof pricingData] || pricingData["cyber-blackhat"];
+
   return (
     <section className="py-16 bg-muted/20" id="pricing">
       <div className="container mx-auto px-4">
@@ -84,11 +95,17 @@ export const CoursePricing = ({ onEnroll, courseId }: CoursePricingProps) => {
             <CardTitle className="text-2xl mb-2">{pricing.title}</CardTitle>
             <p className="text-muted-foreground">{pricing.subtitle}</p>
             <div className="text-4xl font-bold gradient-text my-4">{pricing.monthlyPrice}</div>
+            
             <div className="space-y-2 text-sm text-muted-foreground">
-              <p>Lifetime Access to the Course</p>
-              <p>5 month Zero cost EMI</p>
+              {/* NOW DYNAMIC: Uses the data from the object above */}
+              {pricing.accessDuration && <p>{pricing.accessDuration}</p>}
+              
+              {/* Only renders EMI line if emiDetails is not null */}
+              {pricing.emiDetails && <p>{pricing.emiDetails}</p>}
+              
               <p className="text-primary font-semibold">{pricing.scholarship}</p>
             </div>
+
             <div className="mt-4">
               <span className="text-2xl line-through text-muted-foreground mr-4">{pricing.originalPrice}</span>
               <span className="text-3xl font-bold gradient-text">{pricing.discountedPrice}</span>
