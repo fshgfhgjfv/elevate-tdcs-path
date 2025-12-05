@@ -16,8 +16,9 @@ const PORT = process.env.PORT || 5000;
 
 // CORS Setup
 const allowedOrigins = [
-  "http://localhost:5173",       // React dev server
-  "https://www.tdcstechnologies.com", // live website
+  "http://localhost:5173",
+  "http://localhost:5000",       // add this
+  "https://www.tdcstechnologies.com",
 ];
 
 app.use(
