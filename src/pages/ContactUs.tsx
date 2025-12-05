@@ -18,14 +18,18 @@ const fadeUp = {
 };
 
 export default function ContactUs() {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Use your deployed backend URL or localhost for testing
+  const API_BASE_URL = "https://your-backend-url.com"; // Update this to your backend URL
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Phone validation
@@ -35,9 +39,31 @@ export default function ContactUs() {
       return;
     }
 
-    console.log("Contact form:", formData);
-    toast.success("Message sent successfully! We'll get back to you soon.");
-    setFormData({ name: "", email: "", phone: "", message: "" });
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success("Message sent successfully! We'll get back to you soon.");
+        setFormData({ name: "", email: "", phone: "", message: "" });
+      } else {
+        toast.error(data.error || "Failed to send message. Please try again.");
+      }
+    } catch (error) {
+      console.error("Contact form error:", error);
+      toast.error("Failed to connect to server. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -164,9 +190,10 @@ export default function ContactUs() {
                   <motion.div variants={fadeUp} custom={0.8}>
                     <Button
                       type="submit"
-                      className="w-full py-3 text-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 transition rounded-xl shadow-[0_0_25px_rgba(139,92,246,0.4)]"
+                      disabled={isSubmitting}
+                      className="w-full py-3 text-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 transition rounded-xl shadow-[0_0_25px_rgba(139,92,246,0.4)] disabled:opacity-50"
                     >
-                      Send Message
+                      {isSubmitting ? "Sending..." : "Send Message"}
                     </Button>
                   </motion.div>
                 </form>
