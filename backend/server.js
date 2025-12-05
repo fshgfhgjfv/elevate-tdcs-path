@@ -5,6 +5,8 @@ import cors from "cors";
 
 // Routes
 import contactRoutes from "./routes/contactRoutes.js";
+import enquiryRoutes from "./routes/enquiryRoutes.js";
+import newsletterRoutes from "./routes/newsletterRoutes.js";
 
 dotenv.config();
 
@@ -48,6 +50,12 @@ app.get("/", (req, res) => {
 
 // Contact Form API Route
 app.use("/api/contact", contactRoutes);
+
+// Enquiry Form API Route
+app.use("/api/enquiry", enquiryRoutes);
+
+// Newsletter API Route
+app.use("/api/newsletter", newsletterRoutes);
 
 // 404 Handler
 app.use((req, res) => {
