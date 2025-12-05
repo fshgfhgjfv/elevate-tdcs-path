@@ -2,7 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-// 👇 Note the '.js' extension. This is required in "type": "module"
+
+// 👇 CRITICAL FIX: Point to the 'schemas' folder and add '.js'
 import Contact from './schemas/Contact.js'; 
 
 dotenv.config();
@@ -14,7 +15,7 @@ app.use(express.json());
 app.use(cors());
 
 // Database Connection
-// Ensure your .env file has MONGO_URI, or paste the string directly here for testing
+// Ensure your .env file has MONGO_URI, or replace process.env.MONGO_URI with your connection string string
 const dbUri = process.env.MONGO_URI || "mongodb+srv://TDCS_webpage_db_user:71b7PPdu30xctQfq@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority";
 
 mongoose.connect(dbUri)
@@ -26,6 +27,7 @@ app.post('/api/contact', async (req, res) => {
   try {
     const { name, email, phone, message } = req.body;
 
+    // Create new entry
     const newContact = new Contact({
       name,
       email,
@@ -33,7 +35,9 @@ app.post('/api/contact', async (req, res) => {
       message
     });
 
+    // Save to database
     await newContact.save();
+    
     res.status(201).json({ success: true, message: "Contact saved successfully!" });
   } catch (error) {
     console.error("Error saving contact:", error);
