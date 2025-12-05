@@ -31,7 +31,7 @@ app.use(
 // Middleware
 app.use(express.json());
 
-// MongoDB Connection
+
 mongoose
   .connect(process.env.MONGO_URI, { dbName: "TDCS_Web" })
   .then(() => console.log("MongoDB Connected Successfully"))
