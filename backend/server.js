@@ -1,35 +1,28 @@
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import cors from "cors";
+import dotenv from "dotenv";
 
 // Routes
 import contactRoutes from "./routes/contactRoutes.js";
 import enquiryRoutes from "./routes/enquiryRoutes.js";
 import newsletterRoutes from "./routes/newsletterRoutes.js";
 
-// Load environment variables
-dotenv.config(); // <-- must be called BEFORE using process.env
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS Setup
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5000",       // add this
-  "https://www.tdcstechnologies.com",
-];
-
+// CORS Setup: allow localhost in dev + live domain
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman or curl requests
-      if (!allowedOrigins.includes(origin)) {
-        const msg = `CORS policy: The site ${origin} is not allowed.`;
-        return callback(new Error(msg), false);
+      if (!origin) return callback(null, true); // allow Postman or curl
+      const allowedOrigins = ["https://www.tdcstechnologies.com"];
+      if (origin.includes("localhost") || allowedOrigins.includes(origin)) {
+        return callback(null, true);
       }
-      return callback(null, true);
+      return callback(new Error(`CORS policy: The site ${origin} is not allowed.`), false);
     },
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
