@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 
+// Routes
+import contactRoutes from "./routes/contactRoutes.js";
+
 dotenv.config();
 const app = express();
 
@@ -20,6 +23,9 @@ mongoose
 app.get("/", (req, res) => {
   res.send("Backend Server Running...");
 });
+
+// Contact Form API Route
+app.use("/api/contact", contactRoutes);
 
 // Server Port
 const PORT = process.env.PORT || 5000;
