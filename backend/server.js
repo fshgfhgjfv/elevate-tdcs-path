@@ -12,8 +12,6 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
-// CORS Setup: allow localhost in dev + live domain
 app.use(
   cors({
     origin: function (origin, callback) {
