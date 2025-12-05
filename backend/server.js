@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman or curl
+      if (!origin) return callback(null, true); 
       const allowedOrigins = ["https://www.tdcstechnologies.com"];
       if (origin.includes("localhost") || allowedOrigins.includes(origin)) {
         return callback(null, true);
