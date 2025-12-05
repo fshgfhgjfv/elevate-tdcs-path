@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import axios from "axios"; // 👈 Added axios
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,7 +19,7 @@ const fadeUp = {
 };
 
 export default function ContactUs() {
-const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
@@ -26,13 +27,16 @@ const [formData, setFormData] = useState({
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Use your deployed backend URL or localhost for testing
-  const API_BASE_URL = "https://your-backend-url.com"; // Update this to your backend URL
+  // Automatically detect: local or hosted
+  const API_BASE_URL =
+    import.meta.env.MODE === "development"
+      ? "http://localhost:5000" // local
+      : "https://www.tdcstechnologies.com"; // production
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Phone validation
+    // Phone Validation
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(formData.phone)) {
       toast.error("Please enter a valid 10-digit phone number.");
@@ -40,27 +44,21 @@ const [formData, setFormData] = useState({
     }
 
     setIsSubmitting(true);
-    
+
     try {
-      const response = await fetch(`${API_BASE_URL}/api/contact`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      const { data } = await axios.post(`${API_BASE_URL}/api/contact`, formData, {
+        headers: { "Content-Type": "application/json" },
       });
 
-      const data = await response.json();
-
       if (data.success) {
-        toast.success("Message sent successfully! We'll get back to you soon.");
+        toast.success("Message sent successfully! We’ll get back to you soon.");
         setFormData({ name: "", email: "", phone: "", message: "" });
       } else {
-        toast.error(data.error || "Failed to send message. Please try again.");
+        toast.error(data.message || "Something went wrong. Try again!");
       }
-    } catch (error) {
-      console.error("Contact form error:", error);
-      toast.error("Failed to connect to server. Please try again later.");
+    } catch (error: any) {
+      console.error("❌ Contact form error:", error);
+      toast.error(error.response?.data?.message || "Server error. Try again later.");
     } finally {
       setIsSubmitting(false);
     }
@@ -84,15 +82,10 @@ const [formData, setFormData] = useState({
           </p>
         </motion.div>
 
-        {/* Content Grid */}
+        {/* Main Grid */}
         <div className="grid lg:grid-cols-2 gap-10 max-w-6xl mx-auto">
           {/* Contact Form */}
-          <motion.div
-            variants={fadeUp}
-            custom={0.2}
-            initial="hidden"
-            animate="visible"
-          >
+          <motion.div variants={fadeUp} custom={0.2} initial="hidden" animate="visible">
             <Card className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl">
               <CardHeader>
                 <CardTitle className="text-2xl font-semibold bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">
@@ -103,30 +96,22 @@ const [formData, setFormData] = useState({
                 <form onSubmit={handleSubmit} className="space-y-5">
                   {/* Name */}
                   <motion.div variants={fadeUp} custom={0.3}>
-                    <Label
-                      htmlFor="name"
-                      className="text-white font-medium tracking-wide"
-                    >
+                    <Label htmlFor="name" className="text-white font-medium tracking-wide">
                       Name
                     </Label>
                     <Input
                       id="name"
                       placeholder="Enter your full name"
                       value={formData.name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
-                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 focus:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all rounded-xl"
+                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 transition-all rounded-xl"
                     />
                   </motion.div>
 
                   {/* Email */}
                   <motion.div variants={fadeUp} custom={0.4}>
-                    <Label
-                      htmlFor="email"
-                      className="text-white font-medium tracking-wide"
-                    >
+                    <Label htmlFor="email" className="text-white font-medium tracking-wide">
                       Email
                     </Label>
                     <Input
@@ -134,43 +119,33 @@ const [formData, setFormData] = useState({
                       type="email"
                       placeholder="Enter your email address"
                       value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
-                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 focus:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all rounded-xl"
+                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 transition-all rounded-xl"
                     />
                   </motion.div>
 
                   {/* Phone */}
                   <motion.div variants={fadeUp} custom={0.5}>
-                    <Label
-                      htmlFor="phone"
-                      className="text-white font-medium tracking-wide"
-                    >
+                    <Label htmlFor="phone" className="text-white font-medium tracking-wide">
                       Phone (10 digits)
                     </Label>
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="Enter your 10-digit phone number"
+                      placeholder="Enter your phone number"
                       value={formData.phone}
-                      onChange={(e) =>
-                        setFormData({ ...formData, phone: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       required
                       pattern="[0-9]{10}"
                       maxLength={10}
-                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 focus:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all rounded-xl"
+                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 transition-all rounded-xl"
                     />
                   </motion.div>
 
                   {/* Message */}
                   <motion.div variants={fadeUp} custom={0.6}>
-                    <Label
-                      htmlFor="message"
-                      className="text-white font-medium tracking-wide"
-                    >
+                    <Label htmlFor="message" className="text-white font-medium tracking-wide">
                       Message
                     </Label>
                     <Textarea
@@ -178,15 +153,13 @@ const [formData, setFormData] = useState({
                       rows={4}
                       placeholder="Type your message..."
                       value={formData.message}
-                      onChange={(e) =>
-                        setFormData({ ...formData, message: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required
-                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 focus:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all rounded-xl"
+                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 transition-all rounded-xl"
                     />
                   </motion.div>
 
-                  {/* Submit */}
+                  {/* Submit Button */}
                   <motion.div variants={fadeUp} custom={0.8}>
                     <Button
                       type="submit"
@@ -201,7 +174,7 @@ const [formData, setFormData] = useState({
             </Card>
           </motion.div>
 
-          {/* Contact Info */}
+          {/* Contact Info Section */}
           <motion.div
             variants={fadeUp}
             custom={0.3}
@@ -242,9 +215,7 @@ const [formData, setFormData] = useState({
               >
                 {item.icon}
                 <div>
-                  <h3 className="font-semibold text-lg mb-1 text-white/90">
-                    {item.title}
-                  </h3>
+                  <h3 className="font-semibold text-lg mb-1 text-white/90">{item.title}</h3>
                   {item.link ? (
                     <a
                       href={item.link}
