@@ -8,23 +8,23 @@ import contactRoutes from "./routes/contactRoutes.js";
 import enquiryRoutes from "./routes/enquiryRoutes.js";
 import newsletterRoutes from "./routes/newsletterRoutes.js";
 
-dotenv.config();
+// Load environment variables
+dotenv.config(); // <-- must be called BEFORE using process.env
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // CORS Setup
 const allowedOrigins = [
-  "http://localhost:5173", // React dev server
+  "http://localhost:5173",       // React dev server
   "https://www.tdcstechnologies.com", // live website
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (like Postman)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) === -1) {
+      if (!origin) return callback(null, true); // allow Postman or curl requests
+      if (!allowedOrigins.includes(origin)) {
         const msg = `CORS policy: The site ${origin} is not allowed.`;
         return callback(new Error(msg), false);
       }
@@ -48,13 +48,9 @@ app.get("/", (req, res) => {
   res.send("Backend Server Running...");
 });
 
-// Contact Form API Route
+// API Routes
 app.use("/api/contact", contactRoutes);
-
-// Enquiry Form API Route
 app.use("/api/enquiry", enquiryRoutes);
-
-// Newsletter API Route
 app.use("/api/newsletter", newsletterRoutes);
 
 // 404 Handler
