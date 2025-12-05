@@ -1,63 +1,44 @@
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import dotenv from "dotenv";
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const Contact = require('./backend/schemas/Contact'); // Import the Model created in Step 1
 
-// Routes
-import contactRoutes from "./routes/contactRoutes.js";
-import enquiryRoutes from "./routes/enquiryRoutes.js";
-import newsletterRoutes from "./routes/newsletterRoutes.js";
-
-dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// ---------------------- CORS CONFIGURATION ----------------------
-const allowedOrigins = [
-  "http://localhost:5173",                 // Local React
-  "http://localhost:3000",                 // Optional local
-  "https://www.tdcstechnologies.com",      // Live website
-];
+// Middleware (Crucial)
+app.use(express.json()); // Allows server to read JSON data from React
+app.use(cors()); // Allows React (port 5173) to talk to Node (port 5000)
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // Allow server tools & postman
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error(`CORS policy: The site ${origin} is not allowed.`), false);
-    },
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  })
-);
+// Database Connection
+// Replace with the connection string you got from the screenshot earlier
+mongoose.connect("mongodb+srv://TDCS_webpage_db_user:71b7PPdu30xctQfq@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority")
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch(err => console.log("❌ DB Error:", err));
 
-// ------------------------- MIDDLEWARE ----------------------------
-app.use(express.json());
+// 👇 THIS IS THE ROUTE THAT FIXES YOUR 405 ERROR 👇
+app.post('/api/contact', async (req, res) => {
+  try {
+    const { name, email, phone, message } = req.body;
 
-// ----------------------- MONGO CONNECTION ------------------------
-mongoose
-  .connect(process.env.MONGO_URI, {
-    dbName: "TDCSTECHNOLOGIESPRIVATELIMITED",
-  })
-  .then(() => console.log("🚀 MongoDB Connected Successfully"))
-  .catch((err) => console.error("❌ MongoDB Error:", err.message));
+    // Create new entry using the Model
+    const newContact = new Contact({
+      name,
+      email,
+      phone,
+      message
+    });
 
-// --------------------------- ROUTES ------------------------------
-app.get("/", (req, res) => res.send("Backend Server Running..."));
+    // Save to MongoDB
+    await newContact.save();
 
-app.use("/api/contact", contactRoutes);
-app.use("/api/enquiry", enquiryRoutes);
-app.use("/api/newsletter", newsletterRoutes);
-
-// --------------------------- 404 ROUTE ---------------------------
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: "Route not found" });
+    res.status(201).json({ success: true, message: "Contact saved successfully!" });
+  } catch (error) {
+    console.error("Error saving contact:", error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
 });
 
-// -------------------- GLOBAL ERROR HANDLER ----------------------
-app.use((err, req, res, next) => {
-  console.error("🔥 Server Error:", err.message);
-  res.status(500).json({ success: false, message: err.message });
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
-
-// -------------------------- START SERVER -------------------------
-app.listen(PORT, () => console.log(`🌐 Server running at http://localhost:${PORT}`));
