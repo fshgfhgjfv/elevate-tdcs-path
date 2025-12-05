@@ -33,7 +33,7 @@ app.use(express.json());
 
 
 mongoose
-  .connect(process.env.MONGO_URI, { dbName: "TDCS_Web" })
+  .connect(process.env.MONGO_URI, { dbName: "TDCSTECHNOLOGIESPRIVATELIMITED" })
   .then(() => console.log("MongoDB Connected Successfully"))
   .catch((err) => console.log("MongoDB Error:", err));
 
