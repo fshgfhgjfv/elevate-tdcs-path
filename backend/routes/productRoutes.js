@@ -1,10 +1,11 @@
 import express from 'express';
 import Product from '../models/Product.js';
+import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// CREATE - Add new product
-router.post('/', async (req, res) => {
+// CREATE - Add new product (protected - admin only)
+router.post('/', protect, authorize('admin'), async (req, res) => {
   try {
     const product = new Product(req.body);
     const savedProduct = await product.save();
@@ -37,8 +38,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// UPDATE - Update product by ID
-router.put('/:id', async (req, res) => {
+// UPDATE - Update product by ID (protected - admin only)
+router.put('/:id', protect, authorize('admin'), async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(
       req.params.id,
@@ -54,8 +55,8 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE - Delete product by ID
-router.delete('/:id', async (req, res) => {
+// DELETE - Delete product by ID (protected - admin only)
+router.delete('/:id', protect, authorize('admin'), async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) {
