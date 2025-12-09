@@ -3,49 +3,36 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-// 👇 CRITICAL FIX: Point to the 'schemas' folder and add '.js'
-import Contact from './schemas/Contact.js'; 
+import productRoutes from './routes/productRoutes.js';
+import contactRoutes from './routes/contactRoutes.js';
 
 dotenv.config();
 
 const app = express();
 
 // Middleware
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Database Connection
-// Ensure your .env file has MONGO_URI, or replace process.env.MONGO_URI with your connection string string
-const dbUri = process.env.MONGO_URI || "mongodb+srv://TDCS_webpage_db_user:71b7PPdu30xctQfq@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority";
+// Routes
+app.use('/api/products', productRoutes);
+app.use('/api/contact', contactRoutes);
 
-mongoose.connect(dbUri)
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch(err => console.log("❌ DB Error:", err));
-
-// Route
-app.post('/api/contact', async (req, res) => {
-  try {
-    const { name, email, phone, message } = req.body;
-
-    // Create new entry
-    const newContact = new Contact({
-      name,
-      email,
-      phone,
-      message
-    });
-
-    // Save to database
-    await newContact.save();
-    
-    res.status(201).json({ success: true, message: "Contact saved successfully!" });
-  } catch (error) {
-    console.error("Error saving contact:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
-  }
+// Default route
+app.get('/', (req, res) => {
+  res.send('<h1>Express + MongoDB CRUD API is Running!</h1>');
 });
 
-const PORT = 5000;
+// Connect to MongoDB
+const dbUri = process.env.MONGODB_URI || "mongodb+srv://TDCS_webpage_db_user:Ubr0KNAm001vjjeB@cluster0.ck5p4gs.mongodb.net/cruddb";
+
+mongoose.connect(dbUri)
+  .then(() => console.log('✅ MongoDB Connected Successfully'))
+  .catch(err => console.log('❌ MongoDB Connection Error:', err));
+
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
