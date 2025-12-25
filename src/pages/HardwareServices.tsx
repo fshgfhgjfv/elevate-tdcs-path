@@ -1,10 +1,21 @@
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Star, Tag, ShoppingCart, Eye, ShieldCheck, Zap } from "lucide-react";
+import { 
+  Star, 
+  ShoppingCart, 
+  ShieldCheck, 
+  Zap, 
+  Filter, 
+  Cpu, 
+  GraduationCap, 
+  Box, 
+  AlertTriangle,
+  ChevronRight
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 
@@ -102,154 +113,233 @@ const products = [
   }
 ];
 
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    minimumFractionDigits: 0,
-  }).format(price);
-};
-
-const RatingStars = ({ rating }: { rating: number }) => (
-  <div className="flex items-center">
-    {[...Array(5)].map((_, i) => (
-      <Star
-        key={i}
-        className={`h-4 w-4 ${i < Math.round(rating) ? 'fill-yellow-500 text-yellow-500' : 'text-gray-600'}`}
-      />
-    ))}
-    <span className="ml-2 text-xs text-gray-400">({rating})</span>
-  </div>
-);
-
 const HardwareServices = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
+  // --- FILTER STATES ---
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [sortOrder, setSortOrder] = useState("default");
+
+  // --- FILTER LOGIC ---
+  const filteredProducts = products
+    .filter((product) => {
+      const categoryMatch = activeCategory === "All" || product.category === activeCategory;
+      const priceMatch = product.salePrice >= priceRange[0] && product.salePrice <= priceRange[1];
+      return categoryMatch && priceMatch;
+    })
+    .sort((a, b) => {
+      if (sortOrder === "price-low") return a.salePrice - b.salePrice;
+      if (sortOrder === "price-high") return b.salePrice - a.salePrice;
+      return 0;
+    });
+
+  const categories = [
+    { name: "All", icon: <Zap className="w-3 h-3" /> },
+    { name: "Hardware", icon: <Cpu className="w-3 h-3" /> },
+    { name: "Courses", icon: <GraduationCap className="w-3 h-3" /> },
+    { name: "Combo", icon: <Box className="w-3 h-3" /> },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white pt-24 pb-16">
+    <div className="min-h-screen bg-[#050505] text-white pt-24 pb-16">
       <div className="container mx-auto px-4">
         
         {/* Commercial Hero Section */}
-        <div className="relative rounded-2xl overflow-hidden mb-12 border border-white/10 bg-gradient-to-r from-red-900/20 to-transparent p-8 md:p-16">
+        <div className="relative rounded-[2.5rem] overflow-hidden mb-12 border border-white/10 bg-gradient-to-br from-red-900/20 via-black to-black p-8 md:p-20 shadow-2xl">
           <div className="max-w-2xl relative z-10">
-            <div className="inline-flex items-center space-x-2 bg-red-600/20 text-red-500 px-3 py-1 rounded-full text-xs font-bold mb-4">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="inline-flex items-center space-x-2 bg-red-600/20 text-red-500 px-4 py-1.5 rounded-full text-[10px] font-black mb-6 tracking-widest border border-red-600/30"
+            >
               <Zap className="h-3 w-3" />
-              <span>LIVE: RED TEAM HARDWARE DISCOUNTS</span>
-            </div>
-            <h1 className="text-5xl font-black mb-6 tracking-tight">
-              ARM YOUR <span className="text-red-600">ARSENAL</span>
+              <span>OFFICIAL LINUXNDROID ARSENAL</span>
+            </motion.div>
+            <h1 className="text-6xl font-black mb-6 tracking-tighter leading-none">
+              EQUIP YOUR <br />
+              <span className="text-red-600 italic">MISSION.</span>
             </h1>
-            <p className="text-gray-400 text-lg mb-8">
-              Professional-grade penetration testing tools and hardware kits. Battle-tested by security researchers worldwide.
+            <p className="text-zinc-400 text-lg mb-10 leading-relaxed max-w-md">
+              High-performance cybersecurity hardware and tactical training courses. Built for the elite.
             </p>
-            <Button size="lg" className="bg-red-600 hover:bg-red-700">Explore Catalog</Button>
+            <Button size="lg" className="bg-red-600 hover:bg-red-700 h-14 px-10 rounded-full font-bold text-lg">
+              View All Tools
+            </Button>
           </div>
-          <div className="absolute right-0 top-0 w-1/2 h-full opacity-20 hidden lg:block">
+          <div className="absolute right-[-10%] top-[-10%] w-[60%] h-[120%] opacity-10 pointer-events-none">
             <ShieldCheck className="w-full h-full text-white" />
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar Filters */}
-          <aside className="lg:w-1/4 space-y-6">
-            <Card className="bg-black/40 border-white/10 text-white">
-              <CardHeader><CardTitle className="text-sm">Categories</CardTitle></CardHeader>
-              <CardContent className="space-y-4">
-                {["Hardware", "Courses", "Combo"].map((cat) => (
-                  <div key={cat} className="flex items-center justify-between group cursor-pointer">
-                    <div className="flex items-center space-x-3">
-                      <Checkbox id={cat} className="border-white/20" />
-                      <label htmlFor={cat} className="text-sm text-gray-400 group-hover:text-red-500 transition-colors">{cat}</label>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+        <div className="flex flex-col lg:flex-row gap-12">
+          
+          {/* SIDEBAR FILTERS - PROFESSIONAL REDESIGN */}
+          <aside className="lg:w-1/4 space-y-8">
+            <div className="flex items-center gap-3 mb-2 pl-2">
+              <Filter className="w-4 h-4 text-red-500" />
+              <h2 className="text-sm font-black uppercase tracking-[0.2em] italic">Tactical Filters</h2>
+            </div>
 
-            <Card className="bg-black/40 border-white/10 text-white">
-              <CardHeader><CardTitle className="text-sm">Price Range</CardTitle></CardHeader>
-              <CardContent>
-                <Slider defaultValue={[0, 5000]} max={10000} step={100} className="my-6" />
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>₹0</span>
-                  <span>₹10,000+</span>
+            {/* Categories - Tactical Rounded Pills */}
+            <div className="space-y-3">
+              <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Classification</p>
+              <div className="flex flex-col gap-2.5">
+                {categories.map((cat) => (
+                  <button
+                    key={cat.name}
+                    onClick={() => setActiveCategory(cat.name)}
+                    className={`flex items-center justify-between p-4 rounded-[1.25rem] border transition-all duration-300 ${
+                      activeCategory === cat.name
+                        ? "bg-red-600 border-red-600 text-white shadow-[0_10px_20px_rgba(220,38,38,0.2)]"
+                        : "bg-zinc-900/40 border-white/5 text-zinc-400 hover:border-white/20"
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className={`p-2 rounded-full ${activeCategory === cat.name ? "bg-white/20" : "bg-black/50"}`}>
+                        {cat.icon}
+                      </div>
+                      <span className="text-xs font-black uppercase tracking-tight">{cat.name}</span>
+                    </div>
+                    <ChevronRight className={`w-4 h-4 transition-transform ${activeCategory === cat.name ? "rotate-90" : "opacity-20"}`} />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Price Range - Functional/Professional */}
+            <div className="bg-zinc-900/30 border border-white/5 p-8 rounded-[2.5rem] backdrop-blur-md">
+              <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-8">Financial Ceiling</h3>
+              
+              <Slider
+                value={priceRange}
+                min={0}
+                max={10000}
+                step={100}
+                onValueChange={(val) => setPriceRange(val)}
+                className="mb-8 cursor-pointer"
+              />
+
+              <div className="flex justify-between items-center">
+                <div className="bg-black/60 border border-white/10 px-4 py-3 rounded-2xl flex-1 text-center">
+                  <span className="text-[9px] text-zinc-500 block font-bold mb-1">MIN</span>
+                  <span className="text-xs font-mono font-bold">₹{priceRange[0]}</span>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="h-[1px] w-4 bg-zinc-800" />
+                <div className="bg-black/60 border border-white/10 px-4 py-3 rounded-2xl flex-1 text-center">
+                  <span className="text-[9px] text-zinc-500 block font-bold mb-1">MAX</span>
+                  <span className="text-xs font-mono font-bold">₹{priceRange[1]}</span>
+                </div>
+              </div>
+
+              <Button 
+                variant="ghost" 
+                onClick={() => {setActiveCategory("All"); setPriceRange([0, 10000]);}}
+                className="w-full mt-8 text-[10px] text-zinc-600 hover:text-red-500 uppercase font-black tracking-widest transition-colors"
+              >
+                Reset Arsenal
+              </Button>
+            </div>
           </aside>
 
-          {/* Product Grid */}
+          {/* MAIN PRODUCT GRID */}
           <main className="lg:w-3/4">
-            <div className="flex justify-between items-center mb-8 bg-white/5 p-4 rounded-lg border border-white/10">
-              <p className="text-sm text-gray-400">Deploying <span className="text-white font-bold">{products.length}</span> tactical tools</p>
-              <Select defaultValue="default">
-                <SelectTrigger className="w-[180px] bg-black border-white/10">
-                  <SelectValue placeholder="Sort By" />
+            <div className="flex justify-between items-center mb-10 bg-zinc-900/20 p-5 rounded-[1.5rem] border border-white/5">
+              <p className="text-xs text-zinc-500 font-mono italic">
+                Scanning Arsenal: <span className="text-white font-bold">{filteredProducts.length}</span> active modules
+              </p>
+              <Select onValueChange={(val) => setSortOrder(val)}>
+                <SelectTrigger className="w-[180px] bg-black border-white/10 rounded-full h-10 text-xs">
+                  <SelectValue placeholder="Sort Parameters" />
                 </SelectTrigger>
-                <SelectContent className="bg-black border-white/10 text-white">
-                  <SelectItem value="default">Newest Arrivals</SelectItem>
+                <SelectContent className="bg-[#0a0a0a] border-white/10 text-white">
+                  <SelectItem value="default">Default Scan</SelectItem>
                   <SelectItem value="price-low">Price: Low to High</SelectItem>
                   <SelectItem value="price-high">Price: High to Low</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {products.map((product) => (
-                <motion.div
-                  key={product.id}
-                  whileHover={{ y: -5 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Card 
-                    className="bg-zinc-900/50 border-white/10 overflow-hidden h-full flex flex-col group cursor-pointer"
-                    onClick={() => navigate(`/product/${product.id}`)}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+              <AnimatePresence mode="popLayout">
+                {filteredProducts.map((product) => (
+                  <motion.div
+                    key={product.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    whileHover={{ y: -10 }}
+                    transition={{ duration: 0.3 }}
                   >
-                    <div className="relative h-48 overflow-hidden">
-                      <img 
-                        src={product.image} 
-                        alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                      />
-                      <div className="absolute top-2 right-2 bg-red-600 text-[10px] font-bold px-2 py-1 rounded">
-                        -{Math.round(((product.originalPrice - product.salePrice) / product.originalPrice) * 100)}%
-                      </div>
-                      {product.isOutOfStock && (
-                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center">
-                          <span className="text-red-500 font-bold tracking-widest text-xs border border-red-500 px-4 py-2">SOLD OUT</span>
+                    <Card 
+                      className="bg-zinc-900/30 border-white/10 overflow-hidden h-full flex flex-col group rounded-[2rem] transition-all hover:border-red-600/50 cursor-pointer shadow-xl"
+                      onClick={() => navigate(`/product/${product.id}`)}
+                    >
+                      <div className="relative h-56 overflow-hidden bg-black p-4">
+                        <img 
+                          src={product.image} 
+                          alt={product.name}
+                          className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110" 
+                        />
+                        <div className="absolute top-4 right-4 bg-red-600 text-[10px] font-black px-3 py-1.5 rounded-full shadow-lg">
+                          -{Math.round(((product.originalPrice - product.salePrice) / product.originalPrice) * 100)}%
                         </div>
-                      )}
-                    </div>
+                        {product.isOutOfStock && (
+                          <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center">
+                            <span className="text-red-500 font-black tracking-[0.2em] text-xs border-2 border-red-600 px-6 py-3 rounded-full">SOLD OUT</span>
+                          </div>
+                        )}
+                      </div>
 
-                    <CardContent className="p-5 flex-grow">
-                      <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest mb-2">{product.category}</p>
-                      <h3 className="text-white font-semibold text-sm mb-3 line-clamp-2 group-hover:text-red-400 transition-colors">
-                        {product.name}
-                      </h3>
-                      <RatingStars rating={product.rating} />
-                      <div className="mt-4 flex items-end justify-between">
-                        <div>
-                          <p className="text-gray-500 text-xs line-through">{formatPrice(product.originalPrice)}</p>
-                          <p className="text-xl font-bold text-white">{formatPrice(product.salePrice)}</p>
+                      <CardContent className="p-7 flex-grow flex flex-col">
+                        <span className="text-red-500 text-[10px] font-black uppercase tracking-[0.2em] mb-3">{product.category}</span>
+                        <h3 className="text-white font-bold text-md mb-4 leading-tight group-hover:text-red-500 transition-colors">
+                          {product.name}
+                        </h3>
+                        
+                        <div className="flex items-center gap-1 mb-6">
+                           {[...Array(5)].map((_, i) => (
+                            <Star key={i} className={`h-3 w-3 ${i < Math.round(product.rating) ? 'fill-yellow-500 text-yellow-500' : 'text-zinc-700'}`} />
+                           ))}
+                           <span className="text-[10px] text-zinc-500 ml-1">({product.rating})</span>
                         </div>
-                        <Button 
-                          size="icon" 
-                          className="bg-white hover:bg-red-600 text-black hover:text-white rounded-none transition-all"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            addToCart(product);
-                          }}
-                          disabled={product.isOutOfStock}
-                        >
-                          <ShoppingCart className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+
+                        <div className="mt-auto flex items-end justify-between pt-4 border-t border-white/5">
+                          <div>
+                            <p className="text-zinc-600 text-xs line-through mb-1 font-mono">₹{product.originalPrice}</p>
+                            <p className="text-2xl font-black text-white font-mono tracking-tighter">₹{product.salePrice}</p>
+                          </div>
+                          <Button 
+                            size="icon" 
+                            className="bg-white hover:bg-red-600 text-black hover:text-white rounded-2xl h-12 w-12 transition-all shadow-lg"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              addToCart(product);
+                            }}
+                            disabled={product.isOutOfStock}
+                          >
+                            <ShoppingCart className="h-5 w-5" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
+
+            {filteredProducts.length === 0 && (
+              <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                className="text-center py-32 bg-zinc-900/10 rounded-[3rem] border-2 border-dashed border-white/5"
+              >
+                <AlertTriangle className="mx-auto h-16 w-16 text-zinc-800 mb-6" />
+                <p className="text-zinc-600 uppercase font-black tracking-widest text-sm">No hardware identified within parameters.</p>
+              </motion.div>
+            )}
           </main>
         </div>
       </div>
