@@ -1,322 +1,83 @@
-import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { products } from '../data/products';
-import { useCart } from '../context/CartContext';
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { hardwareProducts } from "@/data/hardwareProducts";
+import { Button } from "@/components/ui/button";
+import { ShoppingCart, ShieldCheck, Truck, RefreshCcw } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
 
-export default function ProductDetail() {
-  const { id } = useParams<{ id: string }>();
+const ProductPage = () => {
+  const { id } = useParams();
+  const product = hardwareProducts.find((p) => p.id === id);
+  const [selectedImg, setSelectedImg] = useState(0);
   const { addToCart } = useCart();
-  const [quantity, setQuantity] = useState(1);
-  const [showSuccess, setShowSuccess] = useState(false);
 
-  const product = products.find(p => p.id === id);
-
-  if (!product) {
-    return (
-      <div style={styles.container}>
-        <div style={styles.notFound}>
-          <h2>Product not found</h2>
-          <Link to="/hardware" style={styles.backLink}>
-            Back to Hardware
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const handleAddToCart = () => {
-    addToCart(product, quantity);
-    setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 3000);
-  };
-
-  const handleQuantityChange = (delta: number) => {
-    const newQuantity = quantity + delta;
-    if (newQuantity >= 1 && newQuantity <= 99) {
-      setQuantity(newQuantity);
-    }
-  };
+  if (!product) return <div>Product Not Found</div>;
 
   return (
-    <div style={styles.container}>
-      <div style={styles.breadcrumb}>
-        <Link to="/hardware" style={styles.breadcrumbLink}>Hardware</Link>
-        <span style={styles.breadcrumbSeparator}>/</span>
-        <span>{product.name}</span>
-      </div>
-
-      <div style={styles.productContainer}>
-        <div style={styles.imageSection}>
-          <img
-            src={product.image}
-            alt={product.name}
-            style={styles.image}
-          />
-        </div>
-
-        <div style={styles.infoSection}>
-          <span style={styles.category}>{product.category}</span>
-          <h1 style={styles.title}>{product.name}</h1>
-          <p style={styles.description}>{product.description}</p>
-
-          <div style={styles.priceSection}>
-            <span style={styles.price}>${product.price.toFixed(2)}</span>
-          </div>
-
-          <div style={styles.quantitySection}>
-            <label style={styles.quantityLabel}>Quantity:</label>
-            <div style={styles.quantityControl}>
-              <button
-                onClick={() => handleQuantityChange(-1)}
-                style={styles.quantityButton}
-                disabled={quantity <= 1}
-              >
-                -
-              </button>
-              <span style={styles.quantityValue}>{quantity}</span>
-              <button
-                onClick={() => handleQuantityChange(1)}
-                style={styles.quantityButton}
-                disabled={quantity >= 99}
-              >
-                +
-              </button>
+    <div className="min-h-screen pt-28 pb-12 bg-background">
+      <div className="container mx-auto px-4">
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Image Gallery */}
+          <div className="space-y-4">
+            <div className="aspect-square rounded-xl overflow-hidden border bg-muted">
+              <img 
+                src={product.images[selectedImg]} 
+                alt={product.name} 
+                className="w-full h-full object-cover transition-opacity duration-300" 
+              />
             </div>
-          </div>
-
-          <button onClick={handleAddToCart} style={styles.addButton}>
-            Add to Cart
-          </button>
-
-          {showSuccess && (
-            <div style={styles.successMessage}>
-              Added to cart successfully!
-            </div>
-          )}
-
-          <div style={styles.featuresSection}>
-            <h3 style={styles.sectionTitle}>Features</h3>
-            <ul style={styles.featuresList}>
-              {product.features.map((feature, index) => (
-                <li key={index} style={styles.featureItem}>{feature}</li>
+            <div className="flex gap-4">
+              {product.images.map((img, i) => (
+                <button 
+                  key={i} 
+                  onClick={() => setSelectedImg(i)}
+                  className={`w-24 h-24 rounded-md border-2 overflow-hidden ${selectedImg === i ? 'border-primary' : 'border-transparent'}`}
+                >
+                  <img src={img} className="w-full h-full object-cover" />
+                </button>
               ))}
-            </ul>
+            </div>
           </div>
 
-          {product.specifications && (
-            <div style={styles.specificationsSection}>
-              <h3 style={styles.sectionTitle}>Specifications</h3>
-              <dl style={styles.specsList}>
-                {Object.entries(product.specifications).map(([key, value]) => (
-                  <div key={key} style={styles.specItem}>
-                    <dt style={styles.specKey}>{key}:</dt>
-                    <dd style={styles.specValue}>{value}</dd>
-                  </div>
-                ))}
-              </dl>
+          {/* Details Section */}
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">{product.name}</h1>
+              <div className="flex items-center gap-4">
+                <span className="text-3xl font-bold text-red-500">₹{product.salePrice}</span>
+                <span className="text-xl text-muted-foreground line-through">₹{product.originalPrice}</span>
+              </div>
             </div>
-          )}
+
+            <p className="text-muted-foreground leading-relaxed">
+              {product.description}
+            </p>
+
+            <div className="flex gap-4 pt-4">
+              <Button size="lg" className="flex-1 gap-2" onClick={() => addToCart(product)}>
+                <ShoppingCart className="w-5 h-5" /> Add to Cart
+              </Button>
+              <Button size="lg" variant="secondary" className="flex-1">Buy Now</Button>
+            </div>
+
+            {/* Trust Badges */}
+            <div className="grid grid-cols-3 gap-4 border-t pt-8 mt-8">
+              <div className="flex flex-col items-center text-center p-2">
+                <ShieldCheck className="text-primary mb-2" />
+                <span className="text-xs">Secure Payment</span>
+              </div>
+              <div className="flex flex-col items-center text-center p-2">
+                <Truck className="text-primary mb-2" />
+                <span className="text-xs">Express Shipping</span>
+              </div>
+              <div className="flex flex-col items-center text-center p-2">
+                <RefreshCcw className="text-primary mb-2" />
+                <span className="text-xs">7-Day Return</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    minHeight: '100vh',
-    backgroundColor: '#f9fafb',
-    padding: '2rem',
-  },
-  breadcrumb: {
-    maxWidth: '1200px',
-    margin: '0 auto 2rem',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    fontSize: '0.875rem',
-    color: '#6b7280',
-  },
-  breadcrumbLink: {
-    color: '#3b82f6',
-    textDecoration: 'none',
-  },
-  breadcrumbSeparator: {
-    color: '#d1d5db',
-  },
-  notFound: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    textAlign: 'center',
-    padding: '4rem 0',
-  },
-  backLink: {
-    color: '#3b82f6',
-    textDecoration: 'none',
-    fontSize: '1rem',
-    marginTop: '1rem',
-    display: 'inline-block',
-  },
-  productContainer: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    backgroundColor: 'white',
-    borderRadius: '12px',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '3rem',
-    padding: '3rem',
-  },
-  imageSection: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    width: '100%',
-    maxHeight: '500px',
-    objectFit: 'cover',
-    borderRadius: '8px',
-  },
-  infoSection: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  category: {
-    display: 'inline-block',
-    backgroundColor: '#e5e7eb',
-    color: '#1f2937',
-    padding: '0.375rem 0.75rem',
-    borderRadius: '6px',
-    fontSize: '0.875rem',
-    fontWeight: 500,
-    marginBottom: '1rem',
-    width: 'fit-content',
-  },
-  title: {
-    fontSize: '2rem',
-    fontWeight: 700,
-    margin: '0 0 1rem 0',
-    color: '#1a1a1a',
-  },
-  description: {
-    fontSize: '1.125rem',
-    color: '#6b7280',
-    margin: '0 0 2rem 0',
-    lineHeight: 1.6,
-  },
-  priceSection: {
-    padding: '1.5rem 0',
-    borderTop: '1px solid #e5e7eb',
-    borderBottom: '1px solid #e5e7eb',
-    marginBottom: '2rem',
-  },
-  price: {
-    fontSize: '2.5rem',
-    fontWeight: 700,
-    color: '#1a1a1a',
-  },
-  quantitySection: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    marginBottom: '1.5rem',
-  },
-  quantityLabel: {
-    fontSize: '1rem',
-    fontWeight: 600,
-    color: '#1a1a1a',
-  },
-  quantityControl: {
-    display: 'flex',
-    alignItems: 'center',
-    border: '2px solid #e5e7eb',
-    borderRadius: '8px',
-    overflow: 'hidden',
-  },
-  quantityButton: {
-    width: '40px',
-    height: '40px',
-    border: 'none',
-    backgroundColor: 'white',
-    cursor: 'pointer',
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    color: '#1a1a1a',
-    transition: 'background-color 0.2s',
-  },
-  quantityValue: {
-    width: '60px',
-    textAlign: 'center',
-    fontSize: '1rem',
-    fontWeight: 600,
-    borderLeft: '1px solid #e5e7eb',
-    borderRight: '1px solid #e5e7eb',
-  },
-  addButton: {
-    backgroundColor: '#3b82f6',
-    color: 'white',
-    border: 'none',
-    padding: '1rem 2rem',
-    fontSize: '1.125rem',
-    fontWeight: 600,
-    borderRadius: '8px',
-    cursor: 'pointer',
-    transition: 'background-color 0.2s',
-    marginBottom: '1rem',
-  },
-  successMessage: {
-    backgroundColor: '#10b981',
-    color: 'white',
-    padding: '1rem',
-    borderRadius: '8px',
-    textAlign: 'center',
-    fontWeight: 600,
-    marginBottom: '2rem',
-  },
-  featuresSection: {
-    marginTop: '2rem',
-    paddingTop: '2rem',
-    borderTop: '1px solid #e5e7eb',
-  },
-  sectionTitle: {
-    fontSize: '1.25rem',
-    fontWeight: 700,
-    margin: '0 0 1rem 0',
-    color: '#1a1a1a',
-  },
-  featuresList: {
-    margin: 0,
-    padding: '0 0 0 1.5rem',
-    listStyle: 'disc',
-  },
-  featureItem: {
-    color: '#4b5563',
-    marginBottom: '0.5rem',
-    lineHeight: 1.6,
-  },
-  specificationsSection: {
-    marginTop: '2rem',
-    paddingTop: '2rem',
-    borderTop: '1px solid #e5e7eb',
-  },
-  specsList: {
-    margin: 0,
-    display: 'grid',
-    gap: '0.75rem',
-  },
-  specItem: {
-    display: 'flex',
-    gap: '1rem',
-  },
-  specKey: {
-    fontWeight: 600,
-    color: '#1a1a1a',
-    minWidth: '120px',
-  },
-  specValue: {
-    color: '#6b7280',
-    margin: 0,
-  },
 };
