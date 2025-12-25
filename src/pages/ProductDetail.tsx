@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ShoppingCart, Zap, Plus, Minus, ShieldCheck, ChevronLeft, 
-  MessageSquare, Star, Truck, CreditCard, ChevronRight
+  MessageSquare, Star, Truck, CreditCard, ChevronRight, Video
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
@@ -16,36 +16,64 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("description");
   const [zoomPos, setZoomPos] = useState({ x: 0, y: 0, show: false });
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const product = hardwareProducts.find((p) => p.id === id) || hardwareProducts[0];
-  const relatedProducts = hardwareProducts.filter((p) => p.id !== product.id).slice(0, 4);
+  // DYNAMIC DATA FETCHING: Find the specific product based on the URL ID
+  const product = hardwareProducts.find((p) => p.id === id);
+
+  // Auto-scroll logic for images
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const interval = setInterval(() => {
+      if (scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        if (scrollLeft + clientWidth >= scrollWidth - 5) {
+          scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+          scrollRef.current.scrollBy({ left: 150, behavior: "smooth" });
+        }
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [id]);
+
+  if (!product) {
+    return <div className="min-h-screen flex items-center justify-center text-zinc-500 font-mono">PRODUCT_NOT_FOUND</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-200">
-      {/* Top Minimalist Info Bar */}
-      <div className="bg-zinc-50 border-b border-zinc-100 py-2.5 text-[11px] font-medium text-zinc-500">
+    <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-100">
+      
+      {/* Top Professional Bar */}
+      <div className="bg-zinc-50 border-b border-zinc-100 py-3 text-[10px] font-bold text-zinc-400 tracking-widest uppercase">
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <p>Global Shipping • Secure Checkout</p>
+          <p>TDCS Technologies Private Limited</p>
           <div className="flex gap-6">
             <span>GSTIN: 08AAGCL2069R1ZT</span>
-            <span className="hidden sm:inline">Rajasthan, India</span>
+            <span className="hidden sm:inline">CIN: U85499RJ2025PTC101078</span>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-6 pt-16 pb-24">
-        {/* Simple Breadcrumb */}
-        <nav className="flex items-center gap-2 text-xs font-medium text-zinc-400 mb-12">
-          <Link to="/" className="hover:text-zinc-900 transition-colors">Home</Link>
+      <div className="container mx-auto px-6 pt-12 pb-24">
+        
+        {/* REQUESTED BREADCRUMB: Home / Service / Category / Product */}
+        <nav className="flex items-center gap-2 text-[11px] font-bold text-zinc-400 mb-12 uppercase tracking-tighter">
+          <Link to="/" className="hover:text-zinc-900">Home</Link>
+          <ChevronRight className="w-3 h-3" />
+          <Link to="/services" className="hover:text-zinc-900">Service Page</Link>
+          <ChevronRight className="w-3 h-3" />
+          <span className="text-zinc-400">{product.category}</span>
           <ChevronRight className="w-3 h-3" />
           <span className="text-zinc-900">{product.name}</span>
         </nav>
 
-        <div className="grid lg:grid-cols-2 gap-20 mb-32">
-          {/* PRODUCT IMAGE - SIMPLE ZOOM */}
+        <div className="grid lg:grid-cols-2 gap-16 mb-32">
+          
+          {/* LEFT: DYNAMIC IMAGE & AUTO-SCROLL GALLERY */}
           <div className="space-y-6">
             <div 
-              className="relative aspect-square bg-zinc-50 rounded-3xl overflow-hidden cursor-crosshair group border border-zinc-100"
+              className="relative aspect-square bg-zinc-50 rounded-[2.5rem] overflow-hidden cursor-crosshair group border border-zinc-100"
               onMouseMove={(e) => {
                 const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
                 setZoomPos({ x: ((e.pageX - left) / width) * 100, y: ((e.pageY - top) / height) * 100, show: true });
@@ -54,157 +82,135 @@ const ProductDetail = () => {
             >
               <img 
                 src={product.image} 
-                className={`w-full h-full object-contain p-12 transition-transform duration-300 ${zoomPos.show ? 'scale-[1.8]' : 'scale-100'}`}
+                className={`w-full h-full object-contain p-12 transition-transform duration-300 ${zoomPos.show ? 'scale-[2]' : 'scale-100'}`}
                 style={zoomPos.show ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : {}}
               />
-              <div className="absolute top-6 left-6 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-zinc-900 shadow-sm border border-white/50">
-                LATEST MODEL
+              <div className="absolute top-8 left-8 bg-white px-3 py-1 rounded-full text-[9px] font-black text-zinc-900 shadow-sm border border-zinc-100 tracking-widest uppercase">
+                TDCS Verified
               </div>
             </div>
             
-            {/* Simple Image Architecture Diagram Placeholder */}
-            <div className="p-8 bg-zinc-50 rounded-3xl border border-zinc-100">
-              <h5 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-4 text-center">Device Architecture</h5>
-              
-            </div>
-          </div>
-
-          {/* PURCHASE PANEL - ADVANCED SIMPLICITY */}
-          <div className="flex flex-col justify-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-100 rounded-full text-[11px] font-bold text-zinc-600 mb-6 w-fit">
-              <ShieldCheck className="w-3 h-3" /> VERIFIED HARDWARE
-            </div>
-
-            <h1 className="text-5xl font-semibold tracking-tight text-zinc-900 mb-4 leading-[1.1]">
-              {product.name}
-            </h1>
-
-            <div className="flex items-center gap-4 mb-8">
-              <div className="flex text-amber-400">
-                {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
-              </div>
-              <span className="text-sm text-zinc-400">2 Verified Reviews</span>
-            </div>
-
-            <div className="flex items-baseline gap-4 mb-10">
-              <span className="text-4xl font-light text-zinc-900">₹{product.salePrice.toLocaleString()}</span>
-              <span className="text-lg text-zinc-300 line-through">₹{product.originalPrice.toLocaleString()}</span>
-            </div>
-
-            <div className="space-y-4 mb-12">
-              {product.shortFeatures?.map((feature, i) => (
-                <div key={i} className="flex items-center gap-3 text-zinc-600">
-                  <div className="w-1.5 h-1.5 bg-zinc-900 rounded-full" />
-                  <span className="text-sm font-medium">{feature}</span>
+            {/* Auto-Scrolling Gallery */}
+            <div 
+              ref={scrollRef}
+              className="flex gap-4 overflow-x-auto no-scrollbar py-2 scroll-smooth"
+            >
+              {[product.image, product.image, product.image, product.image].map((img, i) => (
+                <div key={i} className="min-w-[140px] h-[140px] bg-zinc-50 rounded-2xl border border-zinc-100 p-4">
+                  <img src={img} className="w-full h-full object-contain mix-blend-multiply opacity-60 hover:opacity-100 transition-opacity" />
                 </div>
               ))}
             </div>
+          </div>
 
-            {/* ACTION CARD */}
-            <div className="p-8 rounded-[2rem] bg-zinc-50 border border-zinc-100">
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center bg-white rounded-full border border-zinc-200 p-1 shadow-sm">
+          {/* RIGHT: DYNAMIC PRODUCT DATA */}
+          <div className="flex flex-col justify-center">
+            <h1 className="text-5xl font-semibold tracking-tight text-zinc-900 mb-6 leading-[1.05]">
+              {product.name}
+            </h1>
+
+            <div className="flex items-center gap-4 mb-10">
+              <div className="flex text-zinc-900">
+                {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+              </div>
+              <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">2 Field Reports</span>
+            </div>
+
+            <div className="flex items-baseline gap-4 mb-12">
+              <span className="text-4xl font-light text-zinc-900">₹{product.salePrice.toLocaleString()}</span>
+              <span className="text-lg text-zinc-300 line-through">₹{product.originalPrice.toLocaleString()}</span>
+              <span className="text-[10px] font-bold text-green-600 uppercase ml-2 tracking-widest">/ No Extra Fee</span>
+            </div>
+
+            {/* Advanced Simple Checkout Box */}
+            <div className="p-10 rounded-[3rem] bg-zinc-50 border border-zinc-100">
+              <div className="flex items-center justify-between mb-10">
+                <div className="flex items-center bg-white rounded-full border border-zinc-200 p-1.5 shadow-sm">
                   <button onClick={() => setQuantity(Math.max(1, quantity-1))} className="p-2 hover:bg-zinc-50 rounded-full transition-colors"><Minus className="w-4 h-4"/></button>
-                  <span className="w-10 text-center font-semibold">{quantity}</span>
+                  <span className="w-12 text-center font-bold text-lg">{quantity}</span>
                   <button onClick={() => setQuantity(quantity+1)} className="p-2 hover:bg-zinc-50 rounded-full transition-colors"><Plus className="w-4 h-4"/></button>
                 </div>
-                <p className="text-xs font-bold text-zinc-400 uppercase tracking-tighter">9 Modules Available</p>
+                <div className="text-right">
+                  <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Availability</p>
+                  <p className="text-sm font-bold text-zinc-900 italic">9 In Stock</p>
+                </div>
               </div>
 
               <div className="grid gap-4">
                 <Button 
                   onClick={() => addToCart({...product, quantity})}
-                  className="w-full h-14 bg-zinc-900 text-white hover:bg-zinc-800 rounded-2xl font-bold text-lg transition-all"
+                  className="w-full h-16 bg-zinc-900 text-white hover:bg-black rounded-2xl font-bold text-lg"
                 >
                   Add to Cart
                 </Button>
                 <Button 
+                  onClick={() => { addToCart({...product, quantity}); navigate('/checkout'); }}
                   variant="outline"
-                  className="w-full h-14 border-zinc-200 text-zinc-900 hover:bg-white rounded-2xl font-bold text-lg"
+                  className="w-full h-16 border-zinc-200 text-zinc-900 hover:bg-white rounded-2xl font-bold text-lg"
                 >
-                  Express Checkout
+                  Buy It Now
                 </Button>
               </div>
             </div>
             
-            <div className="mt-8 flex justify-center gap-12 text-zinc-400">
-               <div className="flex items-center gap-2 text-[11px] font-bold uppercase"><Truck className="w-4 h-4" /> 2-Day Air</div>
-               <div className="flex items-center gap-2 text-[11px] font-bold uppercase"><CreditCard className="w-4 h-4" /> SSL Secure</div>
+            <div className="mt-10 flex justify-center gap-12 text-zinc-400 font-bold text-[10px] tracking-widest uppercase">
+               <div className="flex items-center gap-2"><Truck className="w-4 h-4 text-zinc-900" /> Fast Delivery</div>
+               <div className="flex items-center gap-2"><CreditCard className="w-4 h-4 text-zinc-900" /> Secure SSL</div>
             </div>
           </div>
         </div>
 
         {/* DETAILS SECTION */}
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="flex justify-center gap-16 border-b border-zinc-100 mb-16">
-            {["Description", "Reviews"].map(tab => (
+            {["Description", "Technical Info", "Reviews"].map(tab => (
               <button 
                 key={tab} 
-                onClick={() => setActiveTab(tab.toLowerCase())} 
-                className={`pb-6 text-sm font-bold tracking-widest uppercase transition-all relative ${activeTab.includes(tab.toLowerCase()) ? "text-zinc-900" : "text-zinc-300"}`}
+                onClick={() => setActiveTab(tab.toLowerCase().split(' ')[0])} 
+                className={`pb-6 text-xs font-black tracking-[0.2em] uppercase transition-all relative ${activeTab.includes(tab.toLowerCase().split(' ')[0]) ? "text-zinc-900" : "text-zinc-300"}`}
               >
                 {tab}
-                {activeTab.includes(tab.toLowerCase()) && <motion.div layoutId="tab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-zinc-900" />}
+                {activeTab.includes(tab.toLowerCase().split(' ')[0]) && <motion.div layoutId="tab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-zinc-900" />}
               </button>
             ))}
           </div>
 
-          <AnimatePresence mode="wait">
-            <motion.div 
-              key={activeTab}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="text-zinc-600 leading-relaxed"
-            >
-              {activeTab === "description" ? (
-                <div className="space-y-16">
-                  <p className="text-lg text-center font-medium leading-relaxed italic text-zinc-500">
-                    "Designed for elite researchers. The BW16 offers unmatched 5GHz penetration capabilities in a palm-sized form factor."
-                  </p>
-                  
-                  <div className="grid md:grid-cols-2 gap-16">
-                    <div className="space-y-6">
-                      <h4 className="text-zinc-900 font-bold uppercase text-xs tracking-widest">Technical Logic</h4>
-                      <ul className="space-y-4 text-sm">
-                        <li className="flex justify-between border-b border-zinc-100 pb-3"><span>MCU Architecture</span> <span className="text-zinc-900 font-semibold italic">ARM V8 Dual-Core</span></li>
-                        <li className="flex justify-between border-b border-zinc-100 pb-3"><span>Wireless Range</span> <span className="text-zinc-900 font-semibold italic">2.4GHz / 5.8GHz</span></li>
-                        <li className="flex justify-between border-b border-zinc-100 pb-3"><span>Encryption Engine</span> <span className="text-zinc-900 font-semibold italic">SHA/AES Hardware</span></li>
-                      </ul>
-                    </div>
-                    <div className="space-y-6">
-                      <h4 className="text-zinc-900 font-bold uppercase text-xs tracking-widest">Operation Guide</h4>
-                      <p className="text-sm">The module comes pre-flashed with Linuxndroid’s optimized firmware. Connect via UART to begin tactical assessment. Tutorial documentation is included in your account dashboard.</p>
-                      <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
-                         <p className="text-[11px] font-bold text-zinc-400 mb-1 uppercase">Official Support</p>
-                         <p className="text-xs text-zinc-600 underline cursor-pointer">Watch Setup Tutorial →</p>
-                      </div>
-                    </div>
-                  </div>
+          <div className="text-zinc-600 leading-relaxed">
+            {activeTab === "description" ? (
+              <div className="space-y-12">
+                <p className="text-xl text-center font-light leading-relaxed text-zinc-500 max-w-3xl mx-auto italic">
+                   Professional-grade equipment designed for the TDCS Security Ecosystem. 
+                   Fully compatible with pre-installed tactical firmware.
+                </p>
+                <div className="aspect-video bg-zinc-50 rounded-[3rem] border border-zinc-100 flex flex-col items-center justify-center group cursor-pointer overflow-hidden relative">
+                   <img src={product.image} className="absolute inset-0 w-full h-full object-cover opacity-10 grayscale" />
+                   <div className="bg-white p-6 rounded-full shadow-xl relative z-10 group-hover:scale-110 transition-transform">
+                      <Video className="w-8 h-8 text-zinc-900 fill-current" />
+                   </div>
+                   <span className="mt-6 font-bold text-xs uppercase tracking-[0.3em] relative z-10">Watch Setup Tutorial</span>
                 </div>
-              ) : (
-                <div className="text-center py-20 bg-zinc-50 rounded-[3rem] border border-dashed border-zinc-200">
-                  <MessageSquare className="w-8 h-8 mx-auto text-zinc-200 mb-4" />
-                  <p className="text-zinc-400 font-medium">Log in to view 2 verified field reports.</p>
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+              </div>
+            ) : (
+              <div className="bg-zinc-50 rounded-[3rem] p-12 border border-zinc-100 text-center">
+                 <p className="text-zinc-400 font-medium italic">Data strictly for authorized TDCS researchers.</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* REFINED FOOTER */}
+      {/* FOOTER - TDCS BRANDING */}
       <footer className="bg-zinc-50 pt-32 pb-16 border-t border-zinc-100">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-2xl font-semibold text-zinc-900 mb-8">Linuxndroid Arsenal</h2>
+          <h2 className="text-3xl font-black text-zinc-900 mb-10 tracking-tighter uppercase italic">TDCS TECHNOLOGIES</h2>
           <div className="flex justify-center gap-12 mb-16 text-zinc-400 font-bold text-[10px] tracking-widest">
-            <span>ABOUT</span>
-            <span>SHIPPING</span>
             <span>PRIVACY</span>
-            <span>SUPPORT</span>
+            <span>SHIPPING</span>
+            <span>LEGAL</span>
+            <span>CONTACT</span>
           </div>
-          <p className="text-xs text-zinc-400 mb-2 italic">Legal Compliance: For ethical security research only.</p>
-          <p className="text-[10px] text-zinc-300 uppercase tracking-tighter font-medium">© 2025 Linuxndroid • U85499RJ2025PTC101078</p>
+          <p className="text-xs text-zinc-400 mb-2 italic">Official TDCS Professional Hardware Store.</p>
+          <p className="text-[10px] text-zinc-300 uppercase tracking-widest font-bold">© 2025 TDCS PRIVATE LIMITED • U85499RJ2025PTC101078</p>
         </div>
       </footer>
     </div>
