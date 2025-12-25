@@ -1,51 +1,66 @@
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Star, ShoppingCart, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { hardwareProducts } from "@/data/hardwareProducts";
 import { useCart } from "@/contexts/CartContext";
 
 export default function HardwareServices() {
+  const navigate = useNavigate();
   const { addToCart } = useCart();
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Hardware Services</h1>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {hardwareProducts.map((product) => (
+        <motion.div
+          key={product.name}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Card>
+            <CardHeader>
+              <img
+                src={product.image}
+                alt={product.name}
+                className="h-48 w-full object-cover rounded"
+              />
+              <CardTitle>{product.name}</CardTitle>
+            </CardHeader>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {hardwareProducts.map((product) => (
-          <div
-            key={product.name}
-            className="border rounded-lg p-4 shadow hover:shadow-md transition"
-          >
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-48 object-cover rounded mb-4"
-            />
+            <CardContent>
+              <div className="flex items-center gap-1 mb-2">
+                {[...Array(product.rating)].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 text-yellow-500" />
+                ))}
+              </div>
 
-            <h2 className="text-lg font-semibold">{product.name}</h2>
-            <p className="text-sm text-gray-500">{product.category}</p>
+              <div className="mb-3">
+                <span className="line-through text-gray-400 mr-2">
+                  ₹{product.originalPrice}
+                </span>
+                <span className="font-bold text-lg">
+                  ₹{product.salePrice}
+                </span>
+              </div>
 
-            <div className="mt-2">
-              <span className="text-gray-400 line-through mr-2">
-                ₹{product.originalPrice}
-              </span>
-              <span className="text-green-600 font-bold">
-                ₹{product.salePrice}
-              </span>
-            </div>
-
-            <button
-              disabled={product.isOutOfStock}
-              onClick={() => addToCart(product)}
-              className={`mt-4 w-full py-2 rounded text-white ${
-                product.isOutOfStock
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
-              }`}
-            >
-              {product.isOutOfStock ? "Out of Stock" : "Add to Cart"}
-            </button>
-          </div>
-        ))}
-      </div>
+              <div className="flex gap-2">
+                <Button onClick={() => addToCart(product)}>
+                  <ShoppingCart className="h-4 w-4 mr-1" />
+                  Add
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => navigate(`/product/${product.name}`)}
+                >
+                  <Eye className="h-4 w-4 mr-1" />
+                  View
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      ))}
     </div>
   );
 }
