@@ -3,7 +3,8 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   ShoppingCart, Zap, Plus, Minus, ShieldCheck, ChevronLeft, 
-  Package, Star, MessageSquare, ArrowRight, Truck
+  Package, Star, MessageSquare, ArrowRight, Truck, Info, Video,
+  Globe, AlertTriangle, Facebook, Twitter, Instagram, Youtube
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
@@ -15,198 +16,229 @@ const ProductDetail = () => {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("description");
+  const [currency, setCurrency] = useState("INR");
   const [zoomPos, setZoomPos] = useState({ x: 0, y: 0, show: false });
 
-  // Find the current product from data
+  // Get current product
   const product = hardwareProducts.find((p) => p.id === id) || hardwareProducts[0];
-  
-  // Filter related products (same category, excluding current)
-  const relatedProducts = hardwareProducts
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 4);
+  const relatedProducts = hardwareProducts.filter((p) => p.id !== product.id).slice(0, 3);
 
-  // Scroll to top on ID change
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [id]);
+  const exchangeRate = 83; // Example USD/INR
+  const getPrice = (price: number) => currency === "INR" ? `₹${price.toLocaleString()}` : `$${(price / exchangeRate).toFixed(2)}`;
 
   const handleBuyNow = () => {
     addToCart({ ...product, quantity });
     navigate("/checkout");
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const x = ((e.pageX - left) / width) * 100;
-    const y = ((e.pageY - top) / height) * 100;
-    setZoomPos({ x, y, show: true });
-  };
-
   return (
-    <div className="min-h-screen bg-[#050505] text-white pt-28 pb-20">
-      <div className="container mx-auto px-4">
-        
-        {/* Navigation Breadcrumb */}
-        <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-500 mb-8 uppercase">
+    <div className="min-h-screen bg-[#050505] text-white">
+      {/* Top Currency Switcher Bar */}
+      <div className="bg-[#111] border-b border-white/5 py-2 text-[10px] font-mono">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <div className="flex gap-4">
+             <span className="text-zinc-500">GSTIN: 08AAGCL2069R1ZT</span>
+             <span className="hidden md:inline text-zinc-500">CIN: U85499RJ2025PTC101078</span>
+          </div>
+          <select 
+            onChange={(e) => setCurrency(e.target.value)}
+            className="bg-black text-white border-none outline-none cursor-pointer"
+          >
+            <option value="INR">INR - Indian Rupee</option>
+            <option value="USD">USD - US Dollar</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 pt-12 pb-20">
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-2 text-[11px] text-zinc-500 mb-8 uppercase tracking-widest">
           <Link to="/" className="hover:text-red-500 transition-colors">Home</Link>
           <span>/</span>
-          <Link to="/store" className="hover:text-red-500 transition-colors">{product.category}</Link>
+          <span>{product.category}</span>
           <span>/</span>
-          <span className="text-zinc-300">{product.name}</span>
-        </div>
+          <span className="text-red-600">{product.name}</span>
+        </nav>
 
-        <div className="flex flex-col lg:flex-row gap-12 mb-20">
-          {/* LEFT: Image Magnifier */}
+        <div className="flex flex-col lg:flex-row gap-16 mb-24">
+          {/* IMAGE SECTION */}
           <div className="w-full lg:w-1/2">
             <div 
-              className="relative aspect-square bg-zinc-900 border border-white/10 overflow-hidden cursor-crosshair"
-              onMouseMove={handleMouseMove}
+              className="relative aspect-square bg-[#0a0a0a] border border-white/10 overflow-hidden cursor-crosshair group"
+              onMouseMove={(e) => {
+                const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                setZoomPos({ x: ((e.pageX - left) / width) * 100, y: ((e.pageY - top) / height) * 100, show: true });
+              }}
               onMouseLeave={() => setZoomPos({ ...zoomPos, show: false })}
             >
               <img 
                 src={product.image} 
-                alt={product.name}
-                className={`w-full h-full object-contain transition-transform duration-200 ${zoomPos.show ? 'scale-[2.5]' : 'scale-100'}`}
+                className={`w-full h-full object-contain transition-transform duration-300 ${zoomPos.show ? 'scale-[2.5]' : 'scale-100'}`}
                 style={zoomPos.show ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : {}}
               />
-              <div className="absolute top-4 left-4 bg-red-600 text-[10px] font-black px-2 py-1 uppercase tracking-widest">
-                Tactical Gear
+              <div className="absolute top-4 left-4 flex gap-2">
+                <span className="bg-red-600 px-2 py-1 text-[10px] font-bold">SALE!</span>
+                <span className="bg-black/80 px-2 py-1 text-[10px] font-bold border border-white/20">5Ghz KIT</span>
               </div>
-            </div>
-            
-            
-
-            <div className="mt-6 grid grid-cols-4 gap-4">
-              {[product.image, product.image].map((img, i) => (
-                <div key={i} className="aspect-square border border-white/10 p-2 bg-zinc-900/50 opacity-50 hover:opacity-100 cursor-pointer">
-                  <img src={img} className="w-full h-full object-contain" />
-                </div>
-              ))}
             </div>
           </div>
 
-          {/* RIGHT: Checkout Panel */}
+          {/* CHECKOUT SECTION */}
           <div className="w-full lg:w-1/2">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex text-red-500 text-xs">
-                {[...Array(5)].map((_, i) => <Star key={i} className="fill-current w-3 h-3" />)}
-              </div>
-              <span className="text-[10px] text-zinc-500 font-mono">(2 Customer Reviews)</span>
-            </div>
-
             <h1 className="text-4xl font-black mb-4 tracking-tighter uppercase leading-none">{product.name}</h1>
             
-            <div className="flex items-center gap-4 mb-8">
-              <span className="text-3xl font-mono text-white">₹{product.salePrice.toLocaleString()}.00</span>
-              <span className="text-zinc-600 line-through text-lg">₹{product.originalPrice.toLocaleString()}.00</span>
-              <span className="text-green-500 text-xs font-bold border border-green-500/20 px-2 py-1 bg-green-500/5">SALE ACTIVE</span>
+            <div className="flex items-center gap-2 mb-6 text-yellow-500">
+               <Star className="w-4 h-4 fill-current"/> <Star className="w-4 h-4 fill-current"/> 
+               <Star className="w-4 h-4 fill-current"/> <Star className="w-4 h-4 fill-current"/> <Star className="w-4 h-4 fill-current"/>
+               <span className="text-zinc-500 text-xs ml-2 font-mono">(2 Customer Reviews)</span>
             </div>
 
-            <ul className="space-y-3 mb-10">
-              {["New Pre-Installed Firmware", "Penetration 5Ghz WiFi Support", "Useful for Cyber Experts", "Embedded AES/SHA Hardware Engine"].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-sm text-zinc-400">
-                  <ShieldCheck className="w-4 h-4 text-red-600" /> {item}
-                </li>
-              ))}
-            </ul>
+            <div className="space-y-1 mb-8">
+              <p className="text-zinc-500 line-through text-sm">{getPrice(product.originalPrice)}</p>
+              <p className="text-4xl font-mono text-red-600 font-bold">{getPrice(product.salePrice)}</p>
+              <p className="text-green-500 text-[11px] font-bold uppercase">/ No Extra Fee</p>
+            </div>
 
-            <div className="flex flex-col gap-4 py-8 border-y border-white/5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-8 mb-10 text-[13px] text-zinc-300 border-l-2 border-red-600 pl-4">
+              <div className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-red-600"/> New Pre Installed Firmware</div>
+              <div className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-red-600"/> External Antenna Support</div>
+              <div className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-red-600"/> Penetration 5Ghz WiFi</div>
+              <div className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-red-600"/> Embedded AES hardware engine</div>
+              <div className="flex items-center gap-2 text-zinc-500 italic"><Info className="w-4 h-4"/> Only For India</div>
+            </div>
+
+            <div className="flex flex-col gap-6 py-8 border-y border-white/5">
               <div className="flex items-center gap-6">
-                <div className="flex items-center bg-black border border-white/10 rounded">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-3 hover:text-red-500 transition-colors"><Minus className="w-4 h-4"/></button>
+                <div className="flex items-center bg-zinc-900 border border-white/10 px-2">
+                  <button onClick={() => setQuantity(Math.max(1, quantity-1))} className="p-3 text-zinc-500 hover:text-white"><Minus className="w-4 h-4"/></button>
                   <span className="w-12 text-center font-mono text-xl">{quantity}</span>
-                  <button onClick={() => setQuantity(quantity + 1)} className="p-3 hover:text-red-500 transition-colors"><Plus className="w-4 h-4"/></button>
+                  <button onClick={() => setQuantity(quantity+1)} className="p-3 text-zinc-500 hover:text-white"><Plus className="w-4 h-4"/></button>
                 </div>
-                <span className="text-xs text-zinc-500 uppercase tracking-widest font-bold italic">Only 9 Left in Stock</span>
+                <span className="text-xs text-red-500 font-bold uppercase animate-pulse italic">9 IN STOCK</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Button 
-                  onClick={() => addToCart({ ...product, quantity })}
-                  className="h-16 bg-white text-black hover:bg-zinc-200 rounded-none font-black uppercase text-lg"
-                >
-                  <ShoppingCart className="mr-2 w-5 h-5" /> Add To Cart
-                </Button>
-                <Button 
-                  onClick={handleBuyNow}
-                  className="h-16 bg-red-600 text-white hover:bg-red-700 rounded-none font-black uppercase text-lg"
-                >
-                  <Zap className="mr-2 w-5 h-5" /> Buy It Now
-                </Button>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button onClick={() => addToCart({...product, quantity})} className="h-16 flex-1 bg-white text-black hover:bg-zinc-200 rounded-none font-black text-lg">ADD TO CART</Button>
+                <Button onClick={handleBuyNow} className="h-16 flex-1 bg-red-600 text-white hover:bg-red-700 rounded-none font-black text-lg">BUY IT NOW</Button>
               </div>
             </div>
 
-            <div className="mt-8 flex gap-8">
-               <div className="flex items-center gap-2 text-[10px] text-zinc-500 uppercase font-bold">
-                 <Truck className="w-4 h-4 text-red-500" /> Fast Delivery India
-               </div>
-               <div className="flex items-center gap-2 text-[10px] text-zinc-500 uppercase font-bold">
-                 <MessageSquare className="w-4 h-4 text-red-500" /> 24/7 Expert Support
+            <div className="mt-8">
+               <div className="flex items-center gap-3 text-xs text-zinc-400 font-bold">
+                  <div className="bg-red-600/10 p-2 rounded"><MessageSquare className="w-5 h-5 text-red-500" /></div>
+                  NEED HELP? <span className="text-red-500 cursor-pointer border-b border-red-500">CHAT WITH US</span>
                </div>
             </div>
           </div>
         </div>
 
-        {/* TABS: Description & Reviews */}
-        <div className="mb-20">
-          <div className="flex gap-8 border-b border-white/5 mb-8">
-            {["description", "reviews"].map((tab) => (
-              <button 
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`pb-4 text-sm font-black uppercase tracking-widest transition-all ${activeTab === tab ? "text-red-600 border-b-2 border-red-600" : "text-zinc-600"}`}
-              >
+        {/* DETAILS TABS */}
+        <div className="mb-24">
+          <div className="flex gap-12 border-b border-white/5 mb-8 overflow-x-auto">
+            {["Description", "Reviews (2)"].map(tab => (
+              <button key={tab} onClick={() => setActiveTab(tab.toLowerCase())} className={`pb-4 text-xs font-black uppercase tracking-[0.2em] whitespace-nowrap ${activeTab.includes(tab.toLowerCase().split(' ')[0]) ? "text-red-600 border-b-2 border-red-600" : "text-zinc-600"}`}>
                 {tab}
               </button>
             ))}
           </div>
 
-          <div className="max-w-4xl">
-            {activeTab === "description" ? (
-              <div className="text-zinc-400 space-y-6 leading-relaxed">
-                <p>{product.description}</p>
-                <h4 className="text-white font-bold">Technical Specifications:</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-xs">
-                  <div className="bg-zinc-900/50 p-3 border border-white/5">Frequency: 2400-2483.5MHz / 5180-5825MHz</div>
-                  <div className="bg-zinc-900/50 p-3 border border-white/5">Power: 3.3V / Current &gt;450mA</div>
-                  <div className="bg-zinc-900/50 p-3 border border-white/5">Bluetooth: BT5.0 Low Power</div>
-                  <div className="bg-zinc-900/50 p-3 border border-white/5">Flash: Default 16Mbit (Expandable)</div>
+          <div className="max-w-5xl">
+            {activeTab.includes("description") ? (
+              <div className="space-y-12">
+                {/* Video Player Placeholder */}
+                <div className="aspect-video bg-zinc-900 relative group cursor-pointer border border-white/10">
+                   <img src="https://images.pexels.com/photos/1432675/pexels-photo-1432675.jpeg" className="w-full h-full object-cover opacity-40" />
+                   <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <div className="bg-red-600 p-6 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_30px_rgba(220,38,38,0.5)]">
+                         <Video className="w-8 h-8 text-white fill-current" />
+                      </div>
+                      <span className="mt-4 font-mono text-xs uppercase tracking-widest">Tutorial: BW16 Config</span>
+                   </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-12 text-sm text-zinc-400 leading-relaxed">
+                  <div>
+                    <h4 className="text-white font-bold mb-4 uppercase tracking-widest text-xs border-l-2 border-red-600 pl-3">Specifications</h4>
+                    <ul className="space-y-2 font-mono text-[11px]">
+                      <li className="flex justify-between border-b border-white/5 pb-2"><span>Model</span> <span>BW16</span></li>
+                      <li className="flex justify-between border-b border-white/5 pb-2"><span>Frequency</span> <span>2.4GHz / 5GHz</span></li>
+                      <li className="flex justify-between border-b border-white/5 pb-2"><span>BT Version</span> <span>BT 5.0 Low Power</span></li>
+                      <li className="flex justify-between border-b border-white/5 pb-2"><span>Supply Voltage</span> <span>3.0V ~ 3.6V</span></li>
+                      <li className="flex justify-between border-b border-white/5 pb-2"><span>Interfaces</span> <span>UART/GPIO/ADC/PWM</span></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="text-white font-bold mb-4 uppercase tracking-widest text-xs border-l-2 border-red-600 pl-3">Legal Compliance</h4>
+                    <p className="mb-4">Linuxndroid courses and software are intended for legal and ethical use cases only. Users are responsible for ensuring compliance with all applicable laws.</p>
+                    <div className="bg-red-600/5 p-4 border border-red-600/20 text-[11px]">
+                       <p className="font-bold text-red-500 uppercase mb-2">Delivery Partners:</p>
+                       <p>Bluedart Air, DTDC Air, Amazon Shipping, Indian Post.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : (
-              <div className="space-y-8">
-                <div className="bg-zinc-900/30 p-6 border border-white/5">
-                  <div className="flex items-center gap-4 mb-2">
-                    <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold">S</div>
-                    <div>
-                      <h5 className="text-sm font-bold">Sagar K. <span className="text-[10px] text-zinc-600 font-normal ml-2">Verified Buyer</span></h5>
-                      <div className="flex text-yellow-500 text-[10px]"><Star className="fill-current"/><Star className="fill-current"/><Star className="fill-current"/><Star className="fill-current"/><Star className="fill-current"/></div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-zinc-400">The pre-installed firmware is a lifesaver. Connected to 5GHz instantly for testing. Antennas provided have great gain.</p>
-                </div>
+              <div className="p-8 border border-white/5 bg-zinc-900/20">
+                <p className="text-zinc-500 font-mono italic">No unauthorized access to reviews. User authentication required.</p>
               </div>
             )}
           </div>
         </div>
 
         {/* RELATED PRODUCTS */}
-        <div className="border-t border-white/5 pt-16">
-          <h3 className="text-2xl font-black uppercase tracking-tighter mb-8 italic">You May Also Need</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {relatedProducts.map((p) => (
-              <Link key={p.id} to={`/product/${p.id}`} className="group">
-                <div className="bg-zinc-900/50 border border-white/10 p-4 aspect-square mb-4 overflow-hidden relative">
-                   <img src={p.image} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
-                   <div className="absolute bottom-2 left-2 bg-red-600 text-[8px] font-bold px-2 py-1">SALE</div>
+        <section className="pt-20 border-t border-white/5">
+          <h2 className="text-2xl font-black italic uppercase tracking-tighter mb-10">Related Products</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {relatedProducts.map(p => (
+              <Link key={p.id} to={`/product/${p.id}`} className="group bg-zinc-900/30 border border-white/5 p-4 hover:border-red-600/50 transition-colors">
+                <div className="aspect-square mb-4 overflow-hidden bg-black">
+                  <img src={p.image} className="w-full h-full object-contain transition-transform group-hover:scale-105" />
                 </div>
-                <h4 className="text-xs font-bold uppercase truncate">{p.name}</h4>
-                <p className="text-red-500 font-mono text-sm">₹{p.salePrice.toLocaleString()}</p>
+                <h3 className="text-sm font-bold truncate group-hover:text-red-500">{p.name}</h3>
+                <p className="text-red-600 font-mono mt-2">{getPrice(p.salePrice)}</p>
               </Link>
             ))}
           </div>
-        </div>
+        </section>
       </div>
+
+      {/* FOOTER - GST/CIN INCLUDED */}
+      <footer className="bg-black pt-20 pb-10 border-t border-white/10">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-4 gap-12 mb-16">
+            <div className="col-span-2">
+              <h3 className="text-2xl font-black text-red-600 mb-4 tracking-tighter uppercase italic">Linuxndroid</h3>
+              <p className="text-xs text-zinc-500 leading-relaxed max-w-sm">Learn Cyber Security. With Linuxndroid. Professional grade penetration hardware & software for ethical use cases only. GSTIN: 08AAGCL2069R1ZT</p>
+              <div className="flex gap-4 mt-6">
+                <Facebook className="w-4 h-4 text-zinc-500 hover:text-white cursor-pointer" />
+                <Youtube className="w-4 h-4 text-zinc-500 hover:text-white cursor-pointer" />
+                <Instagram className="w-4 h-4 text-zinc-500 hover:text-white cursor-pointer" />
+              </div>
+            </div>
+            <div>
+              <h4 className="text-white font-bold text-xs uppercase mb-4">Quick Links</h4>
+              <ul className="text-xs text-zinc-500 space-y-2">
+                <li>Privacy Policy</li>
+                <li>Shipping & Delivery</li>
+                <li>Refund Policy</li>
+                <li>Terms of Service</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-bold text-xs uppercase mb-4">Account</h4>
+              <ul className="text-xs text-zinc-500 space-y-2">
+                <li>My Arsenal</li>
+                <li>Track Order</li>
+                <li>FOTA Updates</li>
+                <li>Need Help?</li>
+              </ul>
+            </div>
+          </div>
+          <div className="text-center text-[10px] text-zinc-700 border-t border-white/5 pt-8">
+            Copyright 2025 © | Linuxndroid | Rajasthan, India
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
