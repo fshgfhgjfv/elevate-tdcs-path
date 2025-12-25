@@ -1,75 +1,40 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
-  ShoppingCart, 
-  Zap, 
-  Plus, 
-  Minus, 
-  ShieldCheck, 
-  ChevronLeft, 
-  Wifi, 
-  Cpu, 
-  Radio, 
-  Activity, 
-  Lock,
-  Package,
-  ExternalLink
+  ShoppingCart, Zap, Plus, Minus, ShieldCheck, ChevronLeft, 
+  Package, Star, MessageSquare, ArrowRight, Truck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
-
-// Detailed product data based on your specific BW16 requirements
-const productsData = {
-  "bw16-5ghz-kit": {
-    id: "bw16-5ghz-kit",
-    name: "BW16-5Ghz Kit (Pre-Installed Firmware)",
-    category: "Hardware",
-    rating: 5.0,
-    reviews: 2,
-    originalPrice: 1999,
-    salePrice: 1499,
-    stock: 9,
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkDg98A3ww8C_jg8f_KU91KY9kn2MRyqZoLQ&s",
-    shortFeatures: [
-      "New Pre-Installed Firmware",
-      "External Antenna Support",
-      "Penetration 5Ghz WiFi Capabilities",
-      "Useful for Cyber Experts",
-      "Support 802.11a/b/g/n 1x1",
-      "Embedded AES/DES/SHA Engine"
-    ],
-    description: "BW16 is a dual-frequency Wi-Fi Bluetooth SoC module based on RTL8720DN. It supports dual-frequency (2.4ghz or 5ghz) WLAN and low-power Bluetooth 5.0. It integrates ARM V8 (Cortex-M4F compatible) high-performance MCU and ARM V8M (Cortex-M0 compatible) low-power MCU.",
-    specs: {
-      "Model": "BW16",
-      "Antenna": "PCB or IPEX antenna",
-      "Frequency Range": "2400-2483.5MHz or 5180-5825MHz",
-      "Bluetooth": "BT5.0",
-      "Voltage": "3.0V ~ 3.6V (Typ: 3.3V)",
-      "Interface": "UART/GPIO/ADC/PWM/IIC/SPI/SWD",
-      "Flash": "Default 16Mbit",
-      "Current": ">450mA"
-    },
-    includes: [
-      "1x Pre-installed Firmware BW16-Kit WiFi Development Board",
-      "1x Dual Band High Gain Antenna"
-    ],
-    legal: "Users are responsible for ensuring use complies with all applicable laws. Linuxndroid disclaims any liability for misuse."
-  }
-};
+import { hardwareProducts } from "@/data/hardwareProducts";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [activeTab, setActiveTab] = useState("description");
   const [zoomPos, setZoomPos] = useState({ x: 0, y: 0, show: false });
-  const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Get current product or fallback
-  const product = productsData[id as keyof typeof productsData] || productsData["bw16-5ghz-kit"];
+  // Find the current product from data
+  const product = hardwareProducts.find((p) => p.id === id) || hardwareProducts[0];
+  
+  // Filter related products (same category, excluding current)
+  const relatedProducts = hardwareProducts
+    .filter((p) => p.category === product.category && p.id !== product.id)
+    .slice(0, 4);
 
-  // Magnifier Logic
+  // Scroll to top on ID change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
+  const handleBuyNow = () => {
+    addToCart({ ...product, quantity });
+    navigate("/checkout");
+  };
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
     const x = ((e.pageX - left) / width) * 100;
@@ -82,129 +47,163 @@ const ProductDetail = () => {
       <div className="container mx-auto px-4">
         
         {/* Navigation Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs font-mono text-zinc-500 mb-8 overflow-x-auto whitespace-nowrap">
-          <span className="cursor-pointer hover:text-white" onClick={() => navigate('/')}>HOME</span>
+        <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-500 mb-8 uppercase">
+          <Link to="/" className="hover:text-red-500 transition-colors">Home</Link>
           <span>/</span>
-          <span className="cursor-pointer hover:text-white uppercase">{product.category}</span>
+          <Link to="/store" className="hover:text-red-500 transition-colors">{product.category}</Link>
           <span>/</span>
-          <span className="text-red-500">{product.name}</span>
+          <span className="text-zinc-300">{product.name}</span>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-12">
-          
-          {/* LEFT: Image System */}
+        <div className="flex flex-col lg:flex-row gap-12 mb-20">
+          {/* LEFT: Image Magnifier */}
           <div className="w-full lg:w-1/2">
             <div 
-              className="relative aspect-square bg-zinc-900 border border-white/10 rounded-sm overflow-hidden cursor-zoom-in"
+              className="relative aspect-square bg-zinc-900 border border-white/10 overflow-hidden cursor-crosshair"
               onMouseMove={handleMouseMove}
               onMouseLeave={() => setZoomPos({ ...zoomPos, show: false })}
             >
               <img 
                 src={product.image} 
+                alt={product.name}
                 className={`w-full h-full object-contain transition-transform duration-200 ${zoomPos.show ? 'scale-[2.5]' : 'scale-100'}`}
                 style={zoomPos.show ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : {}}
               />
-              {zoomPos.show && (
-                <div className="absolute bottom-4 right-4 bg-red-600 px-2 py-1 text-[10px] font-bold animate-pulse">
-                  HIGH-RES MAGNIFICATION
-                </div>
-              )}
-            </div>
-            
-            {/* Package Includes Info */}
-            <div className="mt-6 p-4 bg-zinc-900/50 border border-white/5">
-              <h4 className="text-xs font-bold text-red-500 mb-3 flex items-center gap-2">
-                <Package className="h-3 w-3" /> PACKAGE INCLUDES
-              </h4>
-              <ul className="text-xs text-zinc-400 space-y-2">
-                {product.includes.map((item, i) => (
-                  <li key={i} className="flex gap-2"><span>•</span> {item}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* RIGHT: Content System */}
-          <div className="w-full lg:w-1/2">
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2 uppercase italic">
-              {product.name}
-            </h1>
-            
-            <div className="flex items-center gap-4 mb-6">
-              <div className="flex text-yellow-500">
-                {[...Array(5)].map((_, i) => <span key={i}>★</span>)}
+              <div className="absolute top-4 left-4 bg-red-600 text-[10px] font-black px-2 py-1 uppercase tracking-widest">
+                Tactical Gear
               </div>
-              <span className="text-xs text-zinc-500 font-mono">({product.reviews} customer reviews)</span>
             </div>
+            
+            
 
-            <div className="flex items-center gap-4 mb-8">
-              <p className="text-3xl font-mono text-white">₹{product.salePrice.toLocaleString('en-IN')}.00</p>
-              <p className="text-zinc-500 line-through text-lg">₹{product.originalPrice.toLocaleString('en-IN')}.00</p>
-              <span className="bg-green-500/10 text-green-500 text-[10px] px-2 py-1 border border-green-500/20 font-bold">
-                NO EXTRA FEE
-              </span>
-            </div>
-
-            {/* Quick Feature Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-              {product.shortFeatures.map((feat, i) => (
-                <div key={i} className="flex items-center gap-2 text-[13px] text-zinc-300">
-                  <ShieldCheck className="h-4 w-4 text-red-600" /> {feat}
+            <div className="mt-6 grid grid-cols-4 gap-4">
+              {[product.image, product.image].map((img, i) => (
+                <div key={i} className="aspect-square border border-white/10 p-2 bg-zinc-900/50 opacity-50 hover:opacity-100 cursor-pointer">
+                  <img src={img} className="w-full h-full object-contain" />
                 </div>
               ))}
             </div>
+          </div>
 
-            {/* Product Overview Tabs/Sections */}
-            <div className="space-y-8">
-              <section>
-                <h3 className="text-sm font-bold border-b border-red-600 w-fit mb-4 pb-1 uppercase tracking-widest">Description</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">{product.description}</p>
-              </section>
+          {/* RIGHT: Checkout Panel */}
+          <div className="w-full lg:w-1/2">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex text-red-500 text-xs">
+                {[...Array(5)].map((_, i) => <Star key={i} className="fill-current w-3 h-3" />)}
+              </div>
+              <span className="text-[10px] text-zinc-500 font-mono">(2 Customer Reviews)</span>
+            </div>
 
-              <section>
-                <h3 className="text-sm font-bold border-b border-red-600 w-fit mb-4 pb-1 uppercase tracking-widest">Specifications</h3>
-                <div className="grid grid-cols-2 border border-white/5">
-                  {Object.entries(product.specs).map(([key, val]) => (
-                    <div key={key} className="border-b border-r border-white/5 p-3">
-                      <p className="text-[10px] text-zinc-500 uppercase">{key}</p>
-                      <p className="text-xs font-mono text-zinc-200">{val}</p>
-                    </div>
-                  ))}
+            <h1 className="text-4xl font-black mb-4 tracking-tighter uppercase leading-none">{product.name}</h1>
+            
+            <div className="flex items-center gap-4 mb-8">
+              <span className="text-3xl font-mono text-white">₹{product.salePrice.toLocaleString()}.00</span>
+              <span className="text-zinc-600 line-through text-lg">₹{product.originalPrice.toLocaleString()}.00</span>
+              <span className="text-green-500 text-xs font-bold border border-green-500/20 px-2 py-1 bg-green-500/5">SALE ACTIVE</span>
+            </div>
+
+            <ul className="space-y-3 mb-10">
+              {["New Pre-Installed Firmware", "Penetration 5Ghz WiFi Support", "Useful for Cyber Experts", "Embedded AES/SHA Hardware Engine"].map((item, i) => (
+                <li key={i} className="flex items-center gap-3 text-sm text-zinc-400">
+                  <ShieldCheck className="w-4 h-4 text-red-600" /> {item}
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex flex-col gap-4 py-8 border-y border-white/5">
+              <div className="flex items-center gap-6">
+                <div className="flex items-center bg-black border border-white/10 rounded">
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-3 hover:text-red-500 transition-colors"><Minus className="w-4 h-4"/></button>
+                  <span className="w-12 text-center font-mono text-xl">{quantity}</span>
+                  <button onClick={() => setQuantity(quantity + 1)} className="p-3 hover:text-red-500 transition-colors"><Plus className="w-4 h-4"/></button>
                 </div>
-              </section>
-
-              {/* Legal Note */}
-              <div className="bg-red-900/10 p-4 border-l-2 border-red-600">
-                <p className="text-[11px] text-zinc-400 leading-tight">
-                  <span className="text-red-500 font-bold uppercase">Legal Compliance:</span> {product.legal}
-                </p>
+                <span className="text-xs text-zinc-500 uppercase tracking-widest font-bold italic">Only 9 Left in Stock</span>
               </div>
 
-              {/* Purchase Actions */}
-              <div className="flex flex-col gap-4 py-6 border-t border-white/10">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center bg-zinc-900 border border-white/10">
-                    <button onClick={() => setQuantity(Math.max(1, quantity-1))} className="p-3 hover:text-red-500"><Minus className="h-4 w-4"/></button>
-                    <span className="w-12 text-center font-mono">{quantity}</span>
-                    <button onClick={() => setQuantity(quantity+1)} className="p-3 hover:text-red-500"><Plus className="h-4 w-4"/></button>
-                  </div>
-                  <p className="text-xs text-zinc-500 font-mono italic">{product.stock} in stock</p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Button 
-                    onClick={() => addToCart({...product, quantity})}
-                    className="h-14 bg-white text-black hover:bg-zinc-200 font-black uppercase text-lg rounded-none"
-                  >
-                    Add to Cart
-                  </Button>
-                  <Button className="h-14 bg-red-600 text-white hover:bg-red-700 font-black uppercase text-lg rounded-none">
-                    Buy It Now
-                  </Button>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Button 
+                  onClick={() => addToCart({ ...product, quantity })}
+                  className="h-16 bg-white text-black hover:bg-zinc-200 rounded-none font-black uppercase text-lg"
+                >
+                  <ShoppingCart className="mr-2 w-5 h-5" /> Add To Cart
+                </Button>
+                <Button 
+                  onClick={handleBuyNow}
+                  className="h-16 bg-red-600 text-white hover:bg-red-700 rounded-none font-black uppercase text-lg"
+                >
+                  <Zap className="mr-2 w-5 h-5" /> Buy It Now
+                </Button>
               </div>
             </div>
 
+            <div className="mt-8 flex gap-8">
+               <div className="flex items-center gap-2 text-[10px] text-zinc-500 uppercase font-bold">
+                 <Truck className="w-4 h-4 text-red-500" /> Fast Delivery India
+               </div>
+               <div className="flex items-center gap-2 text-[10px] text-zinc-500 uppercase font-bold">
+                 <MessageSquare className="w-4 h-4 text-red-500" /> 24/7 Expert Support
+               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* TABS: Description & Reviews */}
+        <div className="mb-20">
+          <div className="flex gap-8 border-b border-white/5 mb-8">
+            {["description", "reviews"].map((tab) => (
+              <button 
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`pb-4 text-sm font-black uppercase tracking-widest transition-all ${activeTab === tab ? "text-red-600 border-b-2 border-red-600" : "text-zinc-600"}`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          <div className="max-w-4xl">
+            {activeTab === "description" ? (
+              <div className="text-zinc-400 space-y-6 leading-relaxed">
+                <p>{product.description}</p>
+                <h4 className="text-white font-bold">Technical Specifications:</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-xs">
+                  <div className="bg-zinc-900/50 p-3 border border-white/5">Frequency: 2400-2483.5MHz / 5180-5825MHz</div>
+                  <div className="bg-zinc-900/50 p-3 border border-white/5">Power: 3.3V / Current &gt;450mA</div>
+                  <div className="bg-zinc-900/50 p-3 border border-white/5">Bluetooth: BT5.0 Low Power</div>
+                  <div className="bg-zinc-900/50 p-3 border border-white/5">Flash: Default 16Mbit (Expandable)</div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-8">
+                <div className="bg-zinc-900/30 p-6 border border-white/5">
+                  <div className="flex items-center gap-4 mb-2">
+                    <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold">S</div>
+                    <div>
+                      <h5 className="text-sm font-bold">Sagar K. <span className="text-[10px] text-zinc-600 font-normal ml-2">Verified Buyer</span></h5>
+                      <div className="flex text-yellow-500 text-[10px]"><Star className="fill-current"/><Star className="fill-current"/><Star className="fill-current"/><Star className="fill-current"/><Star className="fill-current"/></div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-zinc-400">The pre-installed firmware is a lifesaver. Connected to 5GHz instantly for testing. Antennas provided have great gain.</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* RELATED PRODUCTS */}
+        <div className="border-t border-white/5 pt-16">
+          <h3 className="text-2xl font-black uppercase tracking-tighter mb-8 italic">You May Also Need</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {relatedProducts.map((p) => (
+              <Link key={p.id} to={`/product/${p.id}`} className="group">
+                <div className="bg-zinc-900/50 border border-white/10 p-4 aspect-square mb-4 overflow-hidden relative">
+                   <img src={p.image} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                   <div className="absolute bottom-2 left-2 bg-red-600 text-[8px] font-bold px-2 py-1">SALE</div>
+                </div>
+                <h4 className="text-xs font-bold uppercase truncate">{p.name}</h4>
+                <p className="text-red-500 font-mono text-sm">₹{p.salePrice.toLocaleString()}</p>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
