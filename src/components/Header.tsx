@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, User, LogOut, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { CartDrawer } from "./CartDrawer";
 
 const LOGO_URL =
   "https://blogger.googleusercontent.com/img/a/AVvXsEh6t9BjBO7igeafdAkeEQW1JNA1TAfi2lIR0Nr857ozJmsC-qPIm9m2BbQi8JkDD3TmGVuyKAyxnIc88lETBh18Xia9FqGTkGdtzD7215GLuqRBIhm9UCh7F4FDB9BsKHg78TKGkSUfCtTHefuZ5LwuXqdGLzO50ulgxWj2b-6gGAZJHE15AEKDUnwStMAm";
@@ -165,6 +166,9 @@ export const Header = () => {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center gap-2">
+            {/* Cart */}
+            <CartDrawer />
+
             {/* Theme Toggle Button (Desktop) */}
             <Button
               variant="ghost"
@@ -175,7 +179,6 @@ export const Header = () => {
               <Sun className="h-5 w-5 block dark:hidden" />
               <Moon className="h-5 w-5 hidden dark:block" />
             </Button>
-            {/* End Theme Toggle Button */}
 
             {user ? (
               <>

@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
+import { CartProvider } from "./contexts/CartContext";
 
 // --- Pages ---
 import Home from "./pages/Home";
@@ -29,9 +30,11 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 import HardwareServices from "./pages/HardwareServices";
-import WebsiteDevelopment from "./pages/website-development"; // This is likely your main Service Listing page
+import WebsiteDevelopment from "./pages/website-development";
+import ProductDetail from "./pages/ProductDetail";
+import Checkout from "./pages/Checkout";
 
-// ✅ NEW: Specific Service Detail Pages
+// ✅ Specific Service Detail Pages
 import WebsiteSecurityDetails from "./pages/WebsiteSecurityDetails";
 import PenetrationTestingPage from "./pages/PenetrationTestingPage";
 import WebDevelopmentPage from "./pages/WebDevelopmentPage";
@@ -42,66 +45,65 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <ScrollToTop />
-        <Header />
+    <CartProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <ScrollToTop />
+          <Header />
 
-        <Routes>
-          {/* 🌐 Main Pages */}
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact-us" element={<ContactUs />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/privacy" element={<Privacy />} />
+          <Routes>
+            {/* 🌐 Main Pages */}
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
 
-          {/* 🎓 Courses */}
-          <Route path="/courses" element={<Courses />} />
-          <Route path="/courses/:id" element={<CourseDetail />} />
-          <Route path="/courses/:id/content" element={<CourseContent />} />
+            {/* 🎓 Courses */}
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/courses/:id" element={<CourseDetail />} />
+            <Route path="/courses/:id/content" element={<CourseContent />} />
 
-          {/* 👤 Auth & Profile */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/dashboard/*" element={<Dashboard />} />
-          <Route path="/my-profile" element={<MyProfile />} />
+            {/* 👤 Auth & Profile */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/dashboard/*" element={<Dashboard />} />
+            <Route path="/my-profile" element={<MyProfile />} />
 
-          {/* 🪪 Certificates */}
-          <Route path="/verify-certificate" element={<VerifyCertificate />} />
-          <Route path="/certificate-download" element={<CertificateDownload />} />
+            {/* 🪪 Certificates */}
+            <Route path="/verify-certificate" element={<VerifyCertificate />} />
+            <Route path="/certificate-download" element={<CertificateDownload />} />
 
-          {/* 🧰 Services - Main Listing Pages */}
-          <Route path="/services" element={<Services />} />
-          <Route path="/services/software" element={<Services />} />
-          <Route path="/services/hardware" element={<HardwareServices />} />
-          <Route path="/services/legal" element={<AdvocateConstruction />} />
-          
-          {/* Main Listing for Web Dev & Security */}
-          <Route path="/services/website-development" element={<WebsiteDevelopment />} />
+            {/* 🧰 Services */}
+            <Route path="/services" element={<Services />} />
+            <Route path="/services/software" element={<Services />} />
+            <Route path="/services/hardware" element={<HardwareServices />} />
+            <Route path="/services/legal" element={<AdvocateConstruction />} />
+            <Route path="/services/website-development" element={<WebsiteDevelopment />} />
+            <Route path="/services/website-security" element={<WebsiteSecurityDetails />} />
+            <Route path="/services/penetration-testing" element={<PenetrationTestingPage />} />
+            <Route path="/services/web-development" element={<WebDevelopmentPage />} />
+            <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
-          {/* ✅ NEW ROUTES: Specific Detail Pages */}
-          {/* These match the slugs used in the listing page navigate() calls */}
-          <Route path="/services/website-security" element={<WebsiteSecurityDetails />} />
-          <Route path="/services/penetration-testing" element={<PenetrationTestingPage />} />
-          <Route path="/services/web-development" element={<WebDevelopmentPage />} />
-          
-          {/* Generic fallback for other services */}
-          <Route path="/services/:serviceId" element={<ServiceDetail />} />
+            {/* 🛒 E-commerce */}
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/checkout" element={<Checkout />} />
 
-          {/* 🛠️ Admin Panel */}
-          <Route path="/admintdcsd" element={<SimpleAdminPanel />} />
+            {/* 🛠️ Admin Panel */}
+            <Route path="/admintdcsd" element={<SimpleAdminPanel />} />
 
-          {/* 🚫 404 Fallback */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            {/* 🚫 404 Fallback */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
 
-        <Footer />
-      </BrowserRouter>
-    </TooltipProvider>
+          <Footer />
+        </BrowserRouter>
+      </TooltipProvider>
+    </CartProvider>
   </QueryClientProvider>
 );
 
