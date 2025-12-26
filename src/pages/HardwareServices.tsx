@@ -1,114 +1,16 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Star, Tag, ShoppingCart, Eye, ShieldCheck, Zap } from "lucide-react";
+import { Star, ShoppingCart, ShieldCheck, Zap, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
-
-// Updated Product Data with provided links
-const products = [
-  {
-    id: "pro-ducky-pi",
-    name: "Pro Ducky Pi (Hardware Penetration)",
-    image: "https://images.pexels.com/photos/2582937/pexels-photo-2582937.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", 
-    category: "Hardware",
-    rating: 5,
-    originalPrice: 3499,
-    salePrice: 2860,
-    isOutOfStock: false,
-  },
-  {
-    id: "tdcs-courses",
-    name: "All TDCS Technologies Private Limited Courses",
-    image: "https://images.pexels.com/photos/5905709/pexels-photo-5905709.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    category: "Combo",
-    rating: 4.8,
-    originalPrice: 5624,
-    salePrice: 4499,
-    isOutOfStock: false,
-  },
-  {
-    id: "atoms3u",
-    name: "AtomS3U (Rubber-Duck-Kit)",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbselltZRTKqlWg620s_Rq_HE2tgyUSIj7Pg&s",
-    category: "Hardware",
-    rating: 4.5,
-    originalPrice: 2999,
-    salePrice: 2499,
-    isOutOfStock: false,
-  },
-  {
-    id: "bw16-kit",
-    name: "BW16-5Ghz Kit (Pre-Installed Firmware)",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkDg98A3ww8C_jg8f_KU91KY9kn2MRyqZoLQ&s",
-    category: "Hardware",
-    rating: 5.0,
-    originalPrice: 1999,
-    salePrice: 1499,
-    isOutOfStock: false,
-  },
-  {
-    id: "cyber-t-knife",
-    name: "CYBER-T USB-ARMY-KNIFE",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzRhZ8FEcQAMMyx2ONJqm65DAUk8ufX-5WZw&s",
-    category: "Hardware",
-    rating: 5.0,
-    originalPrice: 3499,
-    salePrice: 2860,
-    isOutOfStock: false,
-  },
-  {
-    id: "cyd-esp32",
-    name: "CYD-ESP32 (Marauder) Cyber Edition",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3ALPJCxwCPh2-ApQTWan19yyVgLShdVxwXQ&s",
-    category: "Hardware",
-    rating: 5.0,
-    originalPrice: 3999,
-    salePrice: 2999,
-    isOutOfStock: false,
-  },
-  {
-    id: "esp32-2nrf",
-    name: "ESP32/2NRF Kit (Bluetooth Penetration)",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPFn3vA9m383WW65WUV3J1gqkwxPLWzWz-tiFOTFYZkRvLRiNCVQNOSiAUPknvA-Fn-nE&usqp=CAU",
-    category: "Hardware",
-    rating: 4.5,
-    originalPrice: 2499,
-    salePrice: 1799,
-    isOutOfStock: true,
-  },
-  {
-    id: "evil-team",
-    name: "EvilTeam (RedTeamer Choice)",
-    image: "https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg?auto=compress&cs=tinysrgb&w=400",
-    category: "Courses",
-    rating: 4.5,
-    originalPrice: 2000,
-    salePrice: 1099,
-    isOutOfStock: false,
-  },
-  {
-    id: "mr-hacker",
-    name: "Mr.Hacker Bug Bounty Course",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFm8WCUAtuRQM-I8W83xWnLqxRaU2vfAMYZQ&s",
-    category: "Courses",
-    rating: 4.9,
-    originalPrice: 1500,
-    salePrice: 699,
-    isOutOfStock: false,
-  }
-];
-
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    minimumFractionDigits: 0,
-  }).format(price);
-};
+import { useCurrency } from "@/contexts/CurrencyContext";
+import CurrencySelector from "@/components/CurrencySelector";
+import { hardwareProducts } from "@/data/hardwareProducts";
 
 const RatingStars = ({ rating }: { rating: number }) => (
   <div className="flex items-center">
@@ -125,13 +27,65 @@ const RatingStars = ({ rating }: { rating: number }) => (
 const HardwareServices = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { formatPrice } = useCurrency();
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [sortBy, setSortBy] = useState("default");
+
+  const categories = ["Hardware", "Courses", "Combo"];
+
+  const toggleCategory = (category: string) => {
+    setSelectedCategories(prev => 
+      prev.includes(category) 
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
+
+  const filteredProducts = hardwareProducts
+    .filter(product => {
+      if (selectedCategories.length > 0 && !selectedCategories.includes(product.category)) {
+        return false;
+      }
+      if (product.salePrice < priceRange[0] || product.salePrice > priceRange[1]) {
+        return false;
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "price-low":
+          return a.salePrice - b.salePrice;
+        case "price-high":
+          return b.salePrice - a.salePrice;
+        case "rating":
+          return b.rating - a.rating;
+        default:
+          return 0;
+      }
+    });
+
+  const handleAddToCart = (product: typeof hardwareProducts[0], e: React.MouseEvent) => {
+    e.stopPropagation();
+    addToCart({
+      id: product.id,
+      name: product.name,
+      image: product.images[0],
+      price: product.salePrice,
+      originalPrice: product.originalPrice,
+      category: product.category,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white pt-24 pb-16">
       <div className="container mx-auto px-4">
         
-        {/* Commercial Hero Section */}
+        {/* Hero Section with Currency Selector */}
         <div className="relative rounded-2xl overflow-hidden mb-12 border border-white/10 bg-gradient-to-r from-red-900/20 to-transparent p-8 md:p-16">
+          <div className="absolute top-4 right-4 z-20">
+            <CurrencySelector />
+          </div>
           <div className="max-w-2xl relative z-10">
             <div className="inline-flex items-center space-x-2 bg-red-600/20 text-red-500 px-3 py-1 rounded-full text-xs font-bold mb-4">
               <Zap className="h-3 w-3" />
@@ -156,11 +110,21 @@ const HardwareServices = () => {
             <Card className="bg-black/40 border-white/10 text-white">
               <CardHeader><CardTitle className="text-sm">Categories</CardTitle></CardHeader>
               <CardContent className="space-y-4">
-                {["Hardware", "Courses", "Combo"].map((cat) => (
+                {categories.map((cat) => (
                   <div key={cat} className="flex items-center justify-between group cursor-pointer">
                     <div className="flex items-center space-x-3">
-                      <Checkbox id={cat} className="border-white/20" />
-                      <label htmlFor={cat} className="text-sm text-gray-400 group-hover:text-red-500 transition-colors">{cat}</label>
+                      <Checkbox 
+                        id={cat} 
+                        className="border-white/20"
+                        checked={selectedCategories.includes(cat)}
+                        onCheckedChange={() => toggleCategory(cat)}
+                      />
+                      <label 
+                        htmlFor={cat} 
+                        className="text-sm text-gray-400 group-hover:text-red-500 transition-colors cursor-pointer"
+                      >
+                        {cat}
+                      </label>
                     </div>
                   </div>
                 ))}
@@ -170,10 +134,16 @@ const HardwareServices = () => {
             <Card className="bg-black/40 border-white/10 text-white">
               <CardHeader><CardTitle className="text-sm">Price Range</CardTitle></CardHeader>
               <CardContent>
-                <Slider defaultValue={[0, 5000]} max={10000} step={100} className="my-6" />
+                <Slider 
+                  value={priceRange} 
+                  onValueChange={setPriceRange}
+                  max={10000} 
+                  step={100} 
+                  className="my-6" 
+                />
                 <div className="flex justify-between text-xs text-gray-500">
-                  <span>₹0</span>
-                  <span>₹10,000+</span>
+                  <span>{formatPrice(priceRange[0])}</span>
+                  <span>{formatPrice(priceRange[1])}</span>
                 </div>
               </CardContent>
             </Card>
@@ -182,8 +152,10 @@ const HardwareServices = () => {
           {/* Product Grid */}
           <main className="lg:w-3/4">
             <div className="flex justify-between items-center mb-8 bg-white/5 p-4 rounded-lg border border-white/10">
-              <p className="text-sm text-gray-400">Deploying <span className="text-white font-bold">{products.length}</span> tactical tools</p>
-              <Select defaultValue="default">
+              <p className="text-sm text-gray-400">
+                Deploying <span className="text-white font-bold">{filteredProducts.length}</span> tactical tools
+              </p>
+              <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-[180px] bg-black border-white/10">
                   <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
@@ -191,12 +163,13 @@ const HardwareServices = () => {
                   <SelectItem value="default">Newest Arrivals</SelectItem>
                   <SelectItem value="price-low">Price: Low to High</SelectItem>
                   <SelectItem value="price-high">Price: High to Low</SelectItem>
+                  <SelectItem value="rating">Highest Rated</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <motion.div
                   key={product.id}
                   whileHover={{ y: -5 }}
@@ -208,7 +181,7 @@ const HardwareServices = () => {
                   >
                     <div className="relative h-48 overflow-hidden">
                       <img 
-                        src={product.image} 
+                        src={product.images[0]} 
                         alt={product.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
                       />
@@ -220,6 +193,19 @@ const HardwareServices = () => {
                           <span className="text-red-500 font-bold tracking-widest text-xs border border-red-500 px-4 py-2">SOLD OUT</span>
                         </div>
                       )}
+                      <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button 
+                          size="icon" 
+                          variant="secondary"
+                          className="rounded-full"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/product/${product.id}`);
+                          }}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
 
                     <CardContent className="p-5 flex-grow">
@@ -236,10 +222,7 @@ const HardwareServices = () => {
                         <Button 
                           size="icon" 
                           className="bg-white hover:bg-red-600 text-black hover:text-white rounded-none transition-all"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            addToCart(product);
-                          }}
+                          onClick={(e) => handleAddToCart(product, e)}
                           disabled={product.isOutOfStock}
                         >
                           <ShoppingCart className="h-4 w-4" />

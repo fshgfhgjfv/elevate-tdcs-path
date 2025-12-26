@@ -7,6 +7,7 @@ import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { CartProvider } from "./contexts/CartContext";
+import { CurrencyProvider } from "./contexts/CurrencyContext";
 
 // --- Pages ---
 import Home from "./pages/Home";
@@ -45,6 +46,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <CurrencyProvider>
     <CartProvider>
       <TooltipProvider>
         <Toaster />
@@ -104,6 +106,7 @@ const App = () => (
         </BrowserRouter>
       </TooltipProvider>
     </CartProvider>
+    </CurrencyProvider>
   </QueryClientProvider>
 );
 
