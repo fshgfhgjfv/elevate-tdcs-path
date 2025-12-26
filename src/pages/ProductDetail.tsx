@@ -5,24 +5,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Star, ShoppingCart, Zap, ArrowLeft, ChevronRight, Truck, Shield, RefreshCw } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Star, ShoppingCart, Zap, ArrowLeft, ChevronRight, Truck, Shield, RefreshCw, Package, CheckCircle } from "lucide-react";
 import { getProductById, getRelatedProducts } from "@/data/hardwareProducts";
 import { useCart } from "@/contexts/CartContext";
-
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(price);
-};
+import { useCurrency } from "@/contexts/CurrencyContext";
+import CurrencySelector from "@/components/CurrencySelector";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { formatPrice } = useCurrency();
   const [selectedImage, setSelectedImage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
 
   const product = getProductById(id || "");
   const relatedProducts = getRelatedProducts(id || "");
@@ -41,14 +37,16 @@ const ProductDetail = () => {
   }
 
   const handleAddToCart = () => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      image: product.images[0],
-      price: product.salePrice,
-      originalPrice: product.originalPrice,
-      category: product.category,
-    });
+    for (let i = 0; i < quantity; i++) {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        image: product.images[0],
+        price: product.salePrice,
+        originalPrice: product.originalPrice,
+        category: product.category,
+      });
+    }
   };
 
   const handleBuyNow = () => {
@@ -61,14 +59,17 @@ const ProductDetail = () => {
   return (
     <div className="min-h-screen pt-24 pb-16 bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-4">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
-          <Link to="/" className="hover:text-primary">Home</Link>
-          <ChevronRight className="h-4 w-4" />
-          <Link to="/services/hardware" className="hover:text-primary">Hardware Store</Link>
-          <ChevronRight className="h-4 w-4" />
-          <span className="text-foreground">{product.name}</span>
-        </nav>
+        {/* Breadcrumb with Currency Selector */}
+        <div className="flex items-center justify-between mb-6">
+          <nav className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Link to="/" className="hover:text-primary">Home</Link>
+            <ChevronRight className="h-4 w-4" />
+            <Link to="/services/hardware" className="hover:text-primary">Hardware Store</Link>
+            <ChevronRight className="h-4 w-4" />
+            <span className="text-foreground truncate max-w-[200px]">{product.name}</span>
+          </nav>
+          <CurrencySelector />
+        </div>
 
         <div className="grid lg:grid-cols-2 gap-8 mb-12">
           {/* Image Gallery */}
@@ -139,7 +140,7 @@ const ProductDetail = () => {
 
             <div className="space-y-2">
               <div className="flex items-baseline gap-3">
-                <span className="text-4xl font-bold gradient-text">{formatPrice(product.salePrice)}</span>
+                <span className="text-4xl font-bold text-primary">{formatPrice(product.salePrice)}</span>
                 <span className="text-xl text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>
               </div>
               <p className="text-sm text-green-600 font-medium">
@@ -150,6 +151,30 @@ const ProductDetail = () => {
             <Separator />
 
             <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+
+            {/* Quantity Selector */}
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium">Quantity:</span>
+              <div className="flex items-center border rounded-lg">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  disabled={product.isOutOfStock}
+                >
+                  -
+                </Button>
+                <span className="px-4 py-2 min-w-[50px] text-center">{quantity}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setQuantity(quantity + 1)}
+                  disabled={product.isOutOfStock}
+                >
+                  +
+                </Button>
+              </div>
+            </div>
 
             <div className="flex gap-4">
               <Button
@@ -164,7 +189,7 @@ const ProductDetail = () => {
               </Button>
               <Button
                 size="lg"
-                className="flex-1 gradient-primary"
+                className="flex-1 bg-primary hover:bg-primary/90"
                 onClick={handleBuyNow}
                 disabled={product.isOutOfStock}
               >
@@ -174,7 +199,7 @@ const ProductDetail = () => {
             </div>
 
             {/* Trust badges */}
-            <div className="grid grid-cols-3 gap-4 pt-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Truck className="h-5 w-5 text-primary" />
                 <span>Free Shipping</span>
@@ -187,91 +212,143 @@ const ProductDetail = () => {
                 <RefreshCw className="h-5 w-5 text-primary" />
                 <span>Easy Returns</span>
               </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Package className="h-5 w-5 text-primary" />
+                <span>Fast Delivery</span>
+              </div>
             </div>
           </motion.div>
         </div>
 
-        {/* Features & Specifications */}
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-xl font-bold mb-4">Features</h3>
-              <ul className="space-y-3">
-                {product.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
+        {/* Tabs for Details */}
+        <Tabs defaultValue="features" className="mb-12">
+          <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
+            <TabsTrigger value="features">Features</TabsTrigger>
+            <TabsTrigger value="specifications">Specifications</TabsTrigger>
+            <TabsTrigger value="reviews">Reviews ({product.reviewCount})</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="features" className="mt-6">
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-4">Key Features</h3>
+                <ul className="grid md:grid-cols-2 gap-4">
+                  {product.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-xl font-bold mb-4">Specifications</h3>
-              <div className="space-y-3">
-                {product.specifications.map((spec, idx) => (
-                  <div key={idx} className="flex justify-between py-2 border-b border-border last:border-0">
-                    <span className="text-muted-foreground">{spec.label}</span>
-                    <span className="font-medium">{spec.value}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Reviews */}
-        <Card className="mb-12">
-          <CardContent className="p-6">
-            <h3 className="text-xl font-bold mb-6">Customer Reviews</h3>
-            <div className="space-y-6">
-              {product.reviews.map((review) => (
-                <div key={review.id} className="border-b border-border last:border-0 pb-4 last:pb-0">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
-                        <span className="font-bold text-primary">{review.author[0]}</span>
-                      </div>
-                      <div>
-                        <p className="font-medium">{review.author}</p>
-                        <div className="flex items-center gap-1">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`h-4 w-4 ${
-                                i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
+          <TabsContent value="specifications" className="mt-6">
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-4">Technical Specifications</h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {product.specifications.map((spec, idx) => (
+                    <div key={idx} className="flex justify-between py-3 border-b border-border last:border-0">
+                      <span className="text-muted-foreground">{spec.label}</span>
+                      <span className="font-medium">{spec.value}</span>
                     </div>
-                    <span className="text-sm text-muted-foreground">{review.date}</span>
-                  </div>
-                  <p className="text-muted-foreground ml-13">{review.comment}</p>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="reviews" className="mt-6">
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold">Customer Reviews</h3>
+                  <div className="flex items-center gap-2">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-5 w-5 ${
+                            i < Math.round(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="font-medium">{product.rating.toFixed(1)} out of 5</span>
+                  </div>
+                </div>
+                <div className="space-y-6">
+                  {product.reviews.map((review) => (
+                    <div key={review.id} className="border-b border-border last:border-0 pb-4 last:pb-0">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+                            <span className="font-bold text-primary">{review.author[0]}</span>
+                          </div>
+                          <div>
+                            <p className="font-medium">{review.author}</p>
+                            <div className="flex items-center gap-1">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`h-4 w-4 ${
+                                    i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <span className="text-sm text-muted-foreground">{review.date}</span>
+                      </div>
+                      <p className="text-muted-foreground ml-13">{review.comment}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
 
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <div>
-            <h3 className="text-2xl font-bold mb-6">Related Products</h3>
+            <h3 className="text-2xl font-bold mb-6">Recommended Products</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {relatedProducts.map((p) => (
                 <Card
                   key={p.id}
-                  className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => navigate(`/product/${p.id}`)}
+                  className="cursor-pointer hover:shadow-lg transition-all hover:-translate-y-1"
+                  onClick={() => {
+                    navigate(`/product/${p.id}`);
+                    setSelectedImage(0);
+                    window.scrollTo(0, 0);
+                  }}
                 >
                   <CardContent className="p-3">
-                    <img src={p.images[0]} alt={p.name} className="w-full h-32 object-cover rounded-lg mb-3" />
+                    <div className="relative">
+                      <img src={p.images[0]} alt={p.name} className="w-full h-32 object-cover rounded-lg mb-3" />
+                      {p.isOutOfStock && (
+                        <Badge variant="destructive" className="absolute top-2 right-2 text-xs">
+                          Sold Out
+                        </Badge>
+                      )}
+                    </div>
                     <h4 className="font-medium text-sm line-clamp-2 mb-2">{p.name}</h4>
-                    <span className="font-bold text-primary">{formatPrice(p.salePrice)}</span>
+                    <div className="flex items-center gap-1 mb-2">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-3 w-3 ${i < Math.round(p.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                        />
+                      ))}
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-bold text-primary">{formatPrice(p.salePrice)}</span>
+                      <span className="text-xs text-muted-foreground line-through">{formatPrice(p.originalPrice)}</span>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
