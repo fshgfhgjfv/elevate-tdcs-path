@@ -11,9 +11,13 @@ import { CurrencyProvider } from "./contexts/CurrencyContext";
 
 // --- Pages ---
 import Home from "./pages/Home";
-import Courses from "./pages/Courses";
+import CoursesPage from "./pages/CoursesPage";
 import CourseDetail from "./pages/CourseDetail";
 import CourseContent from "./pages/CourseContent";
+import CourseEnroll from "./pages/CourseEnroll";
+import Auth from "./pages/Auth";
+import StudentDashboard from "./pages/StudentDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
@@ -64,12 +68,18 @@ const App = () => (
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
 
-            {/* 🎓 Courses */}
-            <Route path="/courses" element={<Courses />} />
+            {/* 🎓 Courses - New QR Payment Flow */}
+            <Route path="/courses" element={<CoursesPage />} />
             <Route path="/courses/:id" element={<CourseDetail />} />
             <Route path="/courses/:id/content" element={<CourseContent />} />
+            <Route path="/enroll/:courseId" element={<CourseEnroll />} />
 
-            {/* 👤 Auth & Profile */}
+            {/* 👤 Auth - New Supabase Auth */}
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/student-dashboard" element={<StudentDashboard />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            
+            {/* Legacy Auth */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
