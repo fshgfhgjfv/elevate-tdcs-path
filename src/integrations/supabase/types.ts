@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      course_access: {
+        Row: {
+          course_name: string
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          course_name: string
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          course_name?: string
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      course_recordings: {
+        Row: {
+          course_name: string
+          created_at: string
+          id: string
+          recording_url: string
+          title: string
+        }
+        Insert: {
+          course_name: string
+          created_at?: string
+          id?: string
+          recording_url: string
+          title: string
+        }
+        Update: {
+          course_name?: string
+          created_at?: string
+          id?: string
+          recording_url?: string
+          title?: string
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           content_url: string | null
@@ -118,6 +163,48 @@ export type Database = {
           name?: string
           phone?: string
           source?: string | null
+        }
+        Relationships: []
+      }
+      payment_submissions: {
+        Row: {
+          amount_paid: number
+          course_name: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          phone: string
+          screenshot_url: string | null
+          status: string
+          transaction_id: string
+          user_id: string
+        }
+        Insert: {
+          amount_paid: number
+          course_name: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          phone: string
+          screenshot_url?: string | null
+          status?: string
+          transaction_id: string
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number
+          course_name?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          phone?: string
+          screenshot_url?: string | null
+          status?: string
+          transaction_id?: string
+          user_id?: string
         }
         Relationships: []
       }
