@@ -214,12 +214,12 @@ const CourseEnroll = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col items-center">
-              {/* Placeholder QR - Replace with actual QR image */}
-              <div className="w-64 h-64 bg-white rounded-lg flex items-center justify-center border-2 border-dashed border-muted-foreground/30 mb-4">
-                <div className="text-center p-4">
-                  <QrCode className="h-32 w-32 mx-auto text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground mt-2">UPI QR Code</p>
-                </div>
+              <div className="w-64 h-64 bg-white rounded-lg flex items-center justify-center p-2 mb-4 shadow-md">
+                <img 
+                  src="https://blogger.googleusercontent.com/img/a/AVvXsEiELxVBDoZN5m4QVTDA_-qHj52le4N0SaPoO5hnEojupSercg3NAJLi-lnG7GcOdq5Zn7y2yOE67iP4zuOFAXaFZaKD7kxAdRea90YhQyFTBGwgVekp28gzWGGp8Y5zPETfsXCXWG03L9BTrmFCMBujeTd-wc3JceKLMDcN54dwVVxVwoCc7Usr9kXy5VjH" 
+                  alt="UPI Payment QR Code" 
+                  className="w-full h-full object-contain"
+                />
               </div>
               <p className="text-sm text-muted-foreground text-center">
                 UPI ID: <strong>tdcs@upi</strong>
