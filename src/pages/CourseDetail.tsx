@@ -17,14 +17,6 @@ import { MentorsSection } from "@/components/MentorsSection";
 import { HiringPartners } from "@/components/HiringPartners";
 import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
 
-const RAZORPAY_KEY = "rzp_test_1DP5mmOlF5G5ag";
-
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
-
 export default function CourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -42,15 +34,6 @@ export default function CourseDetail() {
     if (localStorage.getItem(`tdcs_purchased_${id}`)) setIsEnrolled(true);
   }, [id]);
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
   const handleEnroll = () => {
     if (!user) {
       toast.error("Please login first to enroll");
@@ -59,30 +42,8 @@ export default function CourseDetail() {
     }
     if (!course) return;
 
-    const options = {
-      key: RAZORPAY_KEY,
-      amount: course.price * 100,
-      currency: "INR",
-      name: "TDCS Technologies",
-      description: course.title,
-      handler: (res: any) => {
-        localStorage.setItem(
-          `tdcs_purchased_${id}`,
-          JSON.stringify({
-            userEmail: user.email,
-            date: new Date().toISOString(),
-            courseId: id,
-            paymentId: res.razorpay_payment_id,
-          })
-        );
-        setIsEnrolled(true);
-        toast.success("✅ Payment Successful! Welcome to the course.");
-        navigate("/my-profile");
-      },
-      prefill: { email: user.email },
-      theme: { color: "#6C63FF" },
-    };
-    new window.Razorpay(options).open();
+    // Navigate to checkout for manual payment
+    navigate("/checkout", { state: { courseId: id, courseName: course.title, price: course.price } });
   };
 
   if (!course)

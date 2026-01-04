@@ -8,14 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Check, Sparkles, Shield, Clock, Users } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
-
-const RAZORPAY_KEY = "rzp_test_1DP5mmOlF5G5ag";
-
 // Mock service data - in production, fetch from API
 const servicesData: Record<string, any> = {
   "ai-productivity": {
@@ -163,7 +155,6 @@ const servicesData: Record<string, any> = {
 const ServiceDetail = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
   const navigate = useNavigate();
-  const [isProcessing, setIsProcessing] = useState(false);
 
   const service = serviceId ? servicesData[serviceId] : null;
 
@@ -179,47 +170,17 @@ const ServiceDetail = () => {
   }
 
   const handleBookNow = () => {
-    setIsProcessing(true);
-
-    const options = {
-      key: RAZORPAY_KEY,
-      amount: parseInt(service.price.replace(/[^0-9]/g, '')) * 100,
-      currency: "INR",
-      name: "TDCS Technologies",
-      description: service.title,
-      image: "https://your-logo-url.com/logo.png", // Add your logo
-      handler: function (response: any) {
-        toast({
-          title: "Payment Successful! 🎉",
-          description: `Your ${service.title} subscription is now active. Check your email for access details.`,
-        });
-        setIsProcessing(false);
-      },
-      prefill: {
-        name: "",
-        email: "",
-        contact: "",
-      },
-      theme: {
-        color: "#FFB347",
-      },
-      modal: {
-        ondismiss: function() {
-          setIsProcessing(false);
-        }
-      }
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.on("payment.failed", function (response: any) {
-      toast({
-        title: "Payment Failed ❌",
-        description: "Please try again or contact support.",
-        variant: "destructive",
-      });
-      setIsProcessing(false);
+    // Navigate to checkout for manual payment
+    navigate("/checkout", { 
+      state: { 
+        serviceName: service.title, 
+        price: service.price 
+      } 
     });
-    rzp.open();
+    toast({
+      title: "Redirecting to Payment",
+      description: "Complete your payment using UPI to activate your subscription.",
+    });
   };
 
   return (
@@ -259,9 +220,8 @@ const ServiceDetail = () => {
                   size="lg"
                   className="shadow-glow"
                   onClick={handleBookNow}
-                  disabled={isProcessing}
                 >
-                  {isProcessing ? "Processing..." : "Book Now"}
+                  Book Now
                 </Button>
                 <Button variant="outline" size="lg">
                   Contact Sales
@@ -406,9 +366,8 @@ const ServiceDetail = () => {
               size="lg"
               className="shadow-glow"
               onClick={handleBookNow}
-              disabled={isProcessing}
             >
-              {isProcessing ? "Processing..." : `Book ${service.title}`}
+              Book {service.title}
             </Button>
           </Card>
         </div>

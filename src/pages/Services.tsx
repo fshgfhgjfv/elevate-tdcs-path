@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -14,7 +15,7 @@ import {
   Clock,
   CheckCircle,
   X,
-  ArrowLeft // Added for back button
+  ArrowLeft
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import React, { useMemo, useState } from "react";
@@ -23,15 +24,7 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label"; // Added for form
-
-const RAZORPAY_KEY = "rzp_test_1DP5mmOlF5G5ag";
-
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
+import { Label } from "@/components/ui/label";
 
 // 1. --- Original Bundle Data Structure (with logos instead of emojis) ---
 const services = [
@@ -187,35 +180,15 @@ const ProductCard = ({ product, onViewDetails }: { product: any, onViewDetails: 
   );
 };
 
-// 4. --- UPDATED: Product Detail Modal Component ---
+// 4. --- Product Detail Modal Component ---
 const ProductDetailModal = ({ product, onClose, onGetService }: { 
   product: any, 
   onClose: () => void, 
-  onGetService: (id: string, name: string, price: string, userDetails: { name: string, email: string, mobile: string }) => void 
+  onGetService: (id: string, name: string, price: number) => void 
 }) => {
-  // --- New state for modal view and form data ---
-  const [view, setView] = useState<'details' | 'form'>('details');
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    mobile: "",
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Call the prop with the form data
-    onGetService(product.id, product.name, product.price.toString(), formData);
-    onClose(); // Close the modal after starting payment
-  };
-
-  const modalVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 },
+  const handleGetServiceClick = () => {
+    onGetService(product.id, product.name, product.price);
+    onClose();
   };
 
   return (
@@ -253,92 +226,32 @@ const ProductDetailModal = ({ product, onClose, onGetService }: {
           </div>
         </div>
 
-        {/* --- Animated view switcher --- */}
-        <AnimatePresence mode="wait">
-          {view === 'details' ? (
-            <motion.div
-              key="details"
-              variants={modalVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-            >
-              <div className="bg-muted/50 p-6 space-y-4">
-                <h3 className="text-xl font-semibold">Key Benefits</h3>
-                <ul className="space-y-2">
-                  {product.features.map((feature: string, index: number) => (
-                    <li key={index} className="flex items-center space-x-2">
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                      <span className="text-muted-foreground">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              
-              <div className="p-6 bg-background flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-                <div className="text-center sm:text-left">
-                  <p className="text-3xl font-bold text-primary">{formatPrice(product.price)}</p>
-                  <p className="text-muted-foreground">For {product.duration}</p>
-                </div>
-                <Button
-                  variant="gradient"
-                  size="lg"
-                  className="w-full sm:w-auto shadow-glow"
-                  onClick={() => setView('form')} // Switch to form view
-                >
-                  Get Service Now
-                </Button>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="form"
-              variants={modalVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-            >
-              <form onSubmit={handleSubmit}>
-                <div className="p-6 space-y-4">
-                  <h3 className="text-xl font-semibold">Enter Your Details</h3>
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="John Doe" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="john@example.com" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="mobile">Mobile Number</Label>
-                    <Input id="mobile" name="mobile" type="tel" value={formData.mobile} onChange={handleChange} placeholder="9876543210" required maxLength={10} />
-                  </div>
-                </div>
-                
-                <div className="p-6 bg-muted/50 flex flex-col-reverse sm:flex-row justify-between items-center gap-4">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="w-full sm:w-auto"
-                    onClick={() => setView('details')} // Switch back to details
-                    type="button"
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back
-                  </Button>
-                  <Button
-                    variant="gradient"
-                    size="lg"
-                    className="w-full sm:w-auto shadow-glow"
-                    type="submit"
-                  >
-                    Proceed to Payment
-                  </Button>
-                </div>
-              </form>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="bg-muted/50 p-6 space-y-4">
+          <h3 className="text-xl font-semibold">Key Benefits</h3>
+          <ul className="space-y-2">
+            {product.features.map((feature: string, index: number) => (
+              <li key={index} className="flex items-center space-x-2">
+                <CheckCircle className="w-5 h-5 text-green-500" />
+                <span className="text-muted-foreground">{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        
+        <div className="p-6 bg-background flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+          <div className="text-center sm:text-left">
+            <p className="text-3xl font-bold text-primary">{formatPrice(product.price)}</p>
+            <p className="text-muted-foreground">For {product.duration}</p>
+          </div>
+          <Button
+            variant="gradient"
+            size="lg"
+            className="w-full sm:w-auto shadow-glow"
+            onClick={handleGetServiceClick}
+          >
+            Get Service Now
+          </Button>
+        </div>
       </motion.div>
     </motion.div>
   );
@@ -347,6 +260,8 @@ const ProductDetailModal = ({ product, onClose, onGetService }: {
 
 // 5. --- Main Services Component (Rebuilt as a Store) ---
 const Services = () => {
+  const navigate = useNavigate();
+  
   // --- Filter State ---
   const [searchTerm, setSearchTerm] = useState("");
   const [priceRange, setPriceRange] = useState([0, maxPrice]);
@@ -403,43 +318,22 @@ const Services = () => {
     return products;
   }, [searchTerm, priceRange, selectedCategories, selectedDurations, sortOrder]);
 
-  // --- UPDATED Razorpay Handler ---
+  // --- Navigate to Checkout Handler ---
   const handleGetService = (
     serviceId: string, 
     serviceName: string, 
-    price: string, 
-    userDetails: { name: string, email: string, mobile: string } // Added userDetails
+    price: number
   ) => {
-    const options = {
-      key: RAZORPAY_KEY,
-      amount: parseInt(price.replace(/[^0-9]/g, '')) * 100,
-      currency: "INR",
-      name: "TDCS Technologies",
-      description: serviceName,
-      handler: function (response: any) {
-        toast({
-          title: "Payment Successful! 🎉",
-          description: `Your ${serviceName} subscription is now active.`,
-        });
-      },
-      // --- UPDATED prefill object ---
-      prefill: { 
-        name: userDetails.name, 
-        email: userDetails.email, 
-        contact: userDetails.mobile 
-      },
-      theme: { color: "#FFB347" },
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.on("payment.failed", function (response: any) {
-      toast({
-        title: "Payment Failed ❌",
-        description: "Please try again or contact support.",
-        variant: "destructive",
-      });
+    navigate("/checkout", { 
+      state: { 
+        serviceName, 
+        price: formatPrice(price) 
+      } 
     });
-    rzp.open();
+    toast({
+      title: "Redirecting to Payment",
+      description: "Complete your payment using UPI to activate your subscription.",
+    });
   };
 
   return (
