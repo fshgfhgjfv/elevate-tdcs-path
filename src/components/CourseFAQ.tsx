@@ -8,7 +8,16 @@ import {
 import { motion } from "framer-motion";
 import { MessageCircle, Sparkles } from "lucide-react";
 
-const faqs = [
+interface FAQ {
+  question: string;
+  answer: string;
+}
+
+interface CourseFAQProps {
+  courseId?: string;
+}
+
+const defaultFaqs: FAQ[] = [
   {
     question: "What is the duration of the course?",
     answer:
@@ -41,6 +50,63 @@ const faqs = [
   },
 ];
 
+const networkSecurityFaqs: FAQ[] = [
+  {
+    question: "What is the duration and fee for Network Security & Defense?",
+    answer:
+      "The Network Security & Defense program is a 5-month comprehensive course priced at ₹12,000. This includes 60+ hours of live online classes, hands-on lab access, and lifetime access to recordings.",
+  },
+  {
+    question: "Are there any prerequisites for this course?",
+    answer:
+      "Basic understanding of computers and internet is helpful, but not mandatory. We start from network fundamentals and progressively build up to advanced topics. Fresher graduates and IT professionals can both join.",
+  },
+  {
+    question: "What tools will I learn in this course?",
+    answer:
+      "You'll get hands-on experience with industry-standard tools including Wireshark, Snort, Suricata, pfSense, FortiGate, Splunk, ELK Stack, Nessus, and cloud security tools for AWS and Azure.",
+  },
+  {
+    question: "What job roles can I apply for after completion?",
+    answer:
+      "Graduates can pursue roles like SOC Analyst, Network Security Engineer, Security Administrator, Incident Response Analyst, SIEM Engineer, and Network Administrator with security focus.",
+  },
+  {
+    question: "Is there placement assistance?",
+    answer:
+      "Yes! We provide 100% placement assistance including resume building, mock interviews, aptitude training, and connections to our hiring partners in cybersecurity industry.",
+  },
+  {
+    question: "Will I get a certificate?",
+    answer:
+      "Yes, upon successful completion of the course and capstone project, you'll receive an industry-recognized certification from TDCS that validates your network security skills.",
+  },
+  {
+    question: "Are the classes live or recorded?",
+    answer:
+      "All classes are conducted live online by industry experts. However, all sessions are recorded and you get lifetime access to the recordings for revision.",
+  },
+  {
+    question: "What is the capstone project about?",
+    answer:
+      "In the capstone project, you'll build a complete enterprise SOC lab from scratch - including firewall, IDS/IPS, SIEM integration, and simulate real attack scenarios with detection & response.",
+  },
+  {
+    question: "Is EMI option available?",
+    answer:
+      "Yes, we offer flexible EMI options to make the course affordable. Contact our counselors for available EMI plans.",
+  },
+  {
+    question: "Can I get a demo class before enrolling?",
+    answer:
+      "Absolutely! We offer free demo sessions where you can experience our teaching methodology and ask questions. Click the 'Book a Demo' button to schedule yours.",
+  },
+];
+
+const courseFaqMap: Record<string, FAQ[]> = {
+  "network-security-defense": networkSecurityFaqs,
+};
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -61,8 +127,10 @@ const itemVariants = {
   },
 };
 
-export const CourseFAQ = () => {
+export const CourseFAQ = ({ courseId }: CourseFAQProps) => {
   const [openItem, setOpenItem] = useState<string | undefined>(undefined);
+  
+  const faqs = courseId && courseFaqMap[courseId] ? courseFaqMap[courseId] : defaultFaqs;
 
   return (
     <section className="relative py-24 overflow-hidden" id="faq">
@@ -86,7 +154,10 @@ export const CourseFAQ = () => {
             Frequently Asked Questions
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            Everything you need to know about the course and how to get started.
+            {courseId === "network-security-defense" 
+              ? "Everything you need to know about the Network Security & Defense course"
+              : "Everything you need to know about the course and how to get started."
+            }
           </p>
         </motion.div>
 

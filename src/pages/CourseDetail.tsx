@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Download } from "lucide-react";
 import { courses } from "@/data/courses";
 import { CounselorForm } from "@/components/CounselorForm";
 import { CourseFAQ } from "@/components/CourseFAQ";
@@ -16,6 +16,8 @@ import { LearningExperience } from "@/components/LearningExperience";
 import { MentorsSection } from "@/components/MentorsSection";
 import { HiringPartners } from "@/components/HiringPartners";
 import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
+import { NetworkSecurityCurriculum } from "@/components/NetworkSecurityCurriculum";
+import { DownloadBrochureModal } from "@/components/DownloadBrochureModal";
 
 export default function CourseDetail() {
   const { id } = useParams();
@@ -24,6 +26,7 @@ export default function CourseDetail() {
 
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [user, setUser] = useState<{ email: string } | null>(null);
+  const [showBrochureModal, setShowBrochureModal] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const y1 = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
@@ -86,7 +89,7 @@ export default function CourseDetail() {
             {course.description}
           </p>
 
-          <div className="mt-8 flex justify-center gap-4">
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
             {isEnrolled ? (
               <Link to={`/courses/${id}/content`}>
                 <Button size="lg" variant="gradient">
@@ -98,8 +101,9 @@ export default function CourseDetail() {
                 Enroll Now
               </Button>
             )}
-            <Button variant="outline" size="lg">
-              Watch Demo
+            <Button variant="outline" size="lg" onClick={() => setShowBrochureModal(true)}>
+              <Download className="mr-2 w-4 h-4" />
+              Download Brochure
             </Button>
           </div>
         </motion.div>
@@ -141,7 +145,7 @@ export default function CourseDetail() {
         </div>
       </motion.nav>
 
-      {/* Curriculum */}
+      {/* Curriculum - Use Network Security specific curriculum if applicable */}
       <motion.section
         id="curriculum"
         className="py-16"
@@ -150,7 +154,11 @@ export default function CourseDetail() {
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
-        <CourseCurriculum />
+        {id === "network-security-defense" ? (
+          <NetworkSecurityCurriculum />
+        ) : (
+          <CourseCurriculum />
+        )}
       </motion.section>
 
       {/* Why Join */}
@@ -221,7 +229,7 @@ export default function CourseDetail() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
       >
-        <CourseFAQ />
+        <CourseFAQ courseId={id} />
       </motion.section>
 
       {/* Final CTA */}
@@ -249,6 +257,13 @@ export default function CourseDetail() {
           </Button>
         )}
       </motion.section>
+
+      {/* Brochure Download Modal */}
+      <DownloadBrochureModal
+        isOpen={showBrochureModal}
+        onClose={() => setShowBrochureModal(false)}
+        preselectedCourse={id}
+      />
     </div>
   );
 }

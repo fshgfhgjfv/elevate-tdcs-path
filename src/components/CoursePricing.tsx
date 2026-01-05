@@ -10,7 +10,6 @@ const pricingData = {
     monthlyPrice: "₹999/month",
     originalPrice: "₹30,000",
     discountedPrice: "₹6,999",
-    // Added specific details for this course
     accessDuration: "Lifetime Access to the Course",
     emiDetails: "5 month Zero cost EMI",
     features: [
@@ -31,7 +30,6 @@ const pricingData = {
     monthlyPrice: "₹3,999/month",
     originalPrice: "₹1,00,000",
     discountedPrice: "19,999/-",
-    // Added specific details for this course
     accessDuration: "1 Year Access + Internship",
     emiDetails: "12 month Zero cost EMI available",
     features: [
@@ -52,9 +50,8 @@ const pricingData = {
     monthlyPrice: "₹499/15days",
     originalPrice: "₹10,000",
     discountedPrice: "₹499",
-    // Added specific details for this course (Note: No EMI for low cost)
     accessDuration: "Half Months Access to Content",
-    emiDetails: null, // Set to null if not applicable
+    emiDetails: null,
     features: [
       "Aptitude Training",
       "Soft Skills Training",
@@ -66,6 +63,28 @@ const pricingData = {
       "Mock Interviews by Tech and HR Panels",
     ],
     scholarship: "Additional Scholarships Up To ₹5,000",
+  },
+  "network-security-defense": {
+    title: "Network Security & Defense",
+    subtitle: "5 Months Comprehensive Program",
+    monthlyPrice: "₹2,400/month",
+    originalPrice: "₹25,000",
+    discountedPrice: "₹12,000",
+    accessDuration: "5 Months Live Training + Lifetime Access",
+    emiDetails: "5 month Zero cost EMI available",
+    features: [
+      "60+ Hours of Live Online Classes",
+      "18 Comprehensive Modules",
+      "Hands-on Labs with Real Tools",
+      "Wireshark, Snort, Splunk Training",
+      "Firewall & IDS/IPS Configuration",
+      "SIEM Implementation (ELK/Splunk)",
+      "Cloud Security (AWS/Azure)",
+      "100% Placement Assistance",
+      "Industry-Recognized Certificate",
+      "Capstone Project: Enterprise SOC",
+    ],
+    scholarship: "Additional Scholarships Up To ₹8,000",
   },
 };
 
