@@ -92,7 +92,8 @@ const App = () => (
             <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
             {/* 🛒 E-commerce */}
-            <Route path="/product/:id" element={<ProductDetail />} />
+            {/* 👇 FIX: Updated path to match your link structure */}
+            <Route path="/hardware/product/:id" element={<ProductDetail />} />
             <Route path="/checkout" element={<Checkout />} />
 
             {/* 🛠️ Admin Panel */}
