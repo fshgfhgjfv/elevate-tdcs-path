@@ -83,7 +83,7 @@ const Courses = () => {
       filtered = filtered.filter((course) => {
         if (filters.duration.includes("1-2 months") && course.duration.includes("2 months")) return true;
         if (filters.duration.includes("3 months") && course.duration.includes("3 months")) return true;
-        if (filters.duration.includes("6+ months") && (course.duration.includes("4 months") || course.duration.includes("6 months"))) return true;
+        if (filters.duration.includes("6+ months") && (course.duration.includes("4 months") || course.duration.includes("5 months") || course.duration.includes("6 months"))) return true;
         return false;
       });
     }
@@ -150,10 +150,10 @@ const Courses = () => {
           <CourseFilters onFilterChange={setFilters} />
         )}
 
-        {/* Courses Grid or Coming Soon */}
+        {/* Courses Grid or Coming Soon - 2x2 Layout */}
         <motion.div
           layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"
         >
           {selectedCategory === "Live Courses" &&
             filteredCourses.map((course) => (
