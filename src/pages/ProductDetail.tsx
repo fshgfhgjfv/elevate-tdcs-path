@@ -31,7 +31,7 @@ const ProductDetail = () => {
         <h1 className="text-4xl font-bold mb-2">404: TARGET NOT FOUND</h1>
         <p className="text-gray-400 mb-8">The hardware ID "{id}" could not be located in the database.</p>
         <Link 
-          to="/hardware" 
+          to="/services/hardware" 
           className="px-6 py-3 bg-green-600 text-black font-bold rounded hover:bg-green-500 transition-colors"
         >
           RETURN TO ARMORY
@@ -47,8 +47,8 @@ const ProductDetail = () => {
     <div className="min-h-screen bg-black text-gray-100 font-sans pt-20 pb-12">
       <div className="container mx-auto px-4">
         
-        {/* BREADCRUMB / BACK BUTTON */}
-        <Link to="/hardware" className="inline-flex items-center text-green-500 hover:text-green-400 mb-8 transition-colors">
+        {/* ✅ FIXED BACK BUTTON LINK */}
+        <Link to="/services/hardware" className="inline-flex items-center text-green-500 hover:text-green-400 mb-8 transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Hardware
         </Link>
