@@ -3,37 +3,78 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Download } from "lucide-react";
+import { Download, FileText } from "lucide-react";
 
-// This URL is kept from your original code
-const BROCHURE_URL = "https://drive.google.com/file/d/1QyvVIVld5m8ORla6uqNK1NQHZIItwbzJ/view?usp=drivesdk";
+// Course-specific brochure URLs
+const BROCHURE_URLS: Record<string, string> = {
+  "network-security-defense": "https://drive.google.com/file/d/1_oWjtOS1hRyVolJv22tHwPxdv2t2ePau/view?usp=sharing",
+  "cyber-lite": "https://drive.google.com/file/d/1QyvVIVld5m8ORla6uqNK1NQHZIItwbzJ/view?usp=drivesdk",
+  "cyber-blackhat": "https://drive.google.com/file/d/1QyvVIVld5m8ORla6uqNK1NQHZIItwbzJ/view?usp=drivesdk",
+  "bug-hunting-pentest": "https://drive.google.com/file/d/1QyvVIVld5m8ORla6uqNK1NQHZIItwbzJ/view?usp=drivesdk",
+};
+
+const DEFAULT_BROCHURE_URL = "https://drive.google.com/file/d/1QyvVIVld5m8ORla6uqNK1NQHZIItwbzJ/view?usp=drivesdk";
 
 interface DownloadBrochureModalProps {
   isOpen: boolean;
   onClose: () => void;
+  preselectedCourse?: string;
 }
 
-export const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) => {
+export const DownloadBrochureModal = ({ isOpen, onClose, preselectedCourse }: DownloadBrochureModalProps) => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    email: "",
-    course: "",
-    consent: false,
+    course: preselectedCourse || "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
   const { toast } = useToast();
+
+  const validatePhone = (phone: string): boolean => {
+    const phoneRegex = /^[6-9]\d{9}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const handlePhoneChange = (value: string) => {
+    // Only allow digits and limit to 10
+    const cleaned = value.replace(/\D/g, '').slice(0, 10);
+    setFormData({ ...formData, phone: cleaned });
+    
+    if (cleaned.length === 10 && !validatePhone(cleaned)) {
+      setPhoneError("Please enter a valid Indian mobile number starting with 6-9");
+    } else {
+      setPhoneError("");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.consent) {
+    if (!formData.name.trim()) {
       toast({
-        title: "Consent Required",
-        description: "Please agree to receive course updates to continue",
+        title: "Name Required",
+        description: "Please enter your full name",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!validatePhone(formData.phone)) {
+      toast({
+        title: "Invalid Phone Number",
+        description: "Please enter a valid 10-digit Indian mobile number",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.course) {
+      toast({
+        title: "Course Required",
+        description: "Please select a course to download the brochure",
         variant: "destructive",
       });
       return;
@@ -42,7 +83,7 @@ export const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModal
     setIsSubmitting(true);
 
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 800));
 
     // Track analytics
     if (typeof (window as any).gtag !== 'undefined') {
@@ -52,112 +93,138 @@ export const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModal
       });
     }
 
+    // Get the appropriate brochure URL
+    const brochureUrl = BROCHURE_URLS[formData.course] || DEFAULT_BROCHURE_URL;
+
     toast({
       title: "Success!",
-      description: "Thanks! Brochure download starting. A counselor will contact you shortly.",
+      description: "Opening brochure in a new tab. A counselor will contact you shortly.",
     });
 
-    // Open brochure in new tab (as requested)
-    window.open(BROCHURE_URL, '_blank');
+    // Open brochure in new tab
+    window.open(brochureUrl, '_blank');
 
     setIsSubmitting(false);
     onClose();
+    
     // Reset form
     setFormData({
       name: "",
       phone: "",
-      email: "",
-      course: "",
-      consent: false,
+      course: preselectedCourse || "",
     });
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Download className="w-5 h-5 text-primary" />
-            Download Brochure
+          <DialogTitle className="flex items-center gap-2 text-foreground">
+            <FileText className="w-5 h-5 text-primary" />
+            Download Course Brochure
           </DialogTitle>
-          <DialogDescription>
-            Fill in your details to download our course brochure
+          <DialogDescription className="text-muted-foreground">
+            Fill in your details to download the complete course brochure with curriculum, pricing & FAQs
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Full Name *</Label>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Course Selection */}
+          <div className="space-y-2">
+            <Label htmlFor="course" className="text-foreground font-medium">
+              Select Course *
+            </Label>
+            <Select 
+              value={formData.course} 
+              onValueChange={(value) => setFormData({ ...formData, course: value })}
+            >
+              <SelectTrigger className="bg-background border-border">
+                <SelectValue placeholder="Choose your course" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="network-security-defense">
+                  <span className="flex items-center gap-2">
+                    🛡️ Network Security & Defense (₹12,000 - 5 months)
+                  </span>
+                </SelectItem>
+                <SelectItem value="cyber-lite">
+                  <span className="flex items-center gap-2">
+                    🔐 Cyber Master's Pro Lite (₹499 - 2 months)
+                  </span>
+                </SelectItem>
+                <SelectItem value="cyber-blackhat">
+                  <span className="flex items-center gap-2">
+                    🎯 Cyber Master's Pro Black Hat (₹19,999 - 4 months)
+                  </span>
+                </SelectItem>
+                <SelectItem value="bug-hunting-pentest">
+                  <span className="flex items-center gap-2">
+                    🐛 Bug Hunting & Penetration Testing (₹9,999 - 3 months)
+                  </span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Name Field */}
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-foreground font-medium">
+              Full Name *
+            </Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
               placeholder="Enter your full name"
+              className="bg-background border-border"
             />
           </div>
-          <div>
-            <Label htmlFor="phone">Phone * (10-digit Indian number)</Label>
-            <Input
-              id="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              required
-              placeholder="98XXXXXX00"
-              pattern="[6-9]\d{9}" 
-              title="Please enter a valid 10-digit Indian mobile number"
-            />
+
+          {/* Phone Field */}
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="text-foreground font-medium">
+              Phone Number * (10-digit Indian mobile)
+            </Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+                +91
+              </span>
+              <Input
+                id="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => handlePhoneChange(e.target.value)}
+                required
+                placeholder="98XXXXXXXX"
+                className="bg-background border-border pl-12"
+                maxLength={10}
+              />
+            </div>
+            {phoneError && (
+              <p className="text-destructive text-xs">{phoneError}</p>
+            )}
+            <p className="text-xs text-muted-foreground">
+              We'll send course updates and counselor will contact you
+            </p>
           </div>
-          <div>
-            <Label htmlFor="email">Email *</Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-              placeholder="your.email@example.com"
-            />
-          </div>
-          <div>
-            <Label htmlFor="course">Course of Interest *</Label>
-            <Select 
-              value={formData.course} 
-              onValueChange={(value) => setFormData({ ...formData, course: value })}
-              required 
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a course" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="cyber-master-pro-lite">Cyber Master Pro Lite</SelectItem>
-                <SelectItem value="cyber-master-pro">Cyber Master Pro</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex items-start space-x-2">
-            <Checkbox
-              id="consent"
-              checked={formData.consent}
-              onCheckedChange={(checked) => setFormData({ ...formData, consent: checked as boolean })}
-            />
-            <label
-              htmlFor="consent"
-              className="text-sm text-muted-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              I agree to receive course updates and offers (required)
-            </label>
-          </div>
-          
-          {/* --- THIS IS THE UPDATED LINE --- */}
+
+          {/* Submit Button */}
           <Button 
             type="submit" 
-            className="w-full transition-all hover:shadow-lg hover:shadow-primary/50" 
-            disabled={isSubmitting}
+            className="w-full h-12 text-base font-semibold transition-all hover:shadow-lg hover:shadow-primary/30" 
+            disabled={isSubmitting || !formData.name || !validatePhone(formData.phone) || !formData.course}
           >
-            {isSubmitting ? "Processing..." : "Download Brochure"}
+            {isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <span className="animate-spin">⏳</span> Processing...
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <Download className="w-5 h-5" />
+                Download Brochure
+              </span>
+            )}
           </Button>
-          
         </form>
       </DialogContent>
     </Dialog>
