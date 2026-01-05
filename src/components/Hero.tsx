@@ -3,12 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 // Import advanced hooks for 3D/parallax effects, adding AnimatePresence
 import { motion, useMotionValue, useTransform, useInView, AnimatePresence } from "framer-motion";
-import { Download, X } from "lucide-react";
+import { Download, X, FileText } from "lucide-react";
 import type { RefObject } from "react";
-import { CalendarCheck } from "lucide-react"; // NEW: Import for Book Demo Modal
+import { CalendarCheck } from "lucide-react"; 
 
 // 1. CONSTANT FOR GRADIENT
 const GRADIENT_CLASS = "text-transparent bg-clip-text bg-gradient-to-r from-[#FF9A3C] via-[#FF50B3] to-[#8C53FF]";
+
+// 2. CONSTANT FOR BROCHURE URL
+const COMMON_BROCHURE_URL = "https://drive.google.com/file/d/1_oWjtOS1hRyVolJv22tHwPxdv2t2ePau/view?usp=drive_link";
 
 interface HeroProps {
     showOnInnerPages?: boolean;
@@ -19,7 +22,6 @@ interface DownloadBrochureModalProps {
     onClose: () => void;
 }
 
-// NEW: Interface for BookDemoModal
 interface BookDemoModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -85,7 +87,7 @@ const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
         >
             <div
                 className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95"
-                onClick={e => e.stopPropagation()} // Prevent closing when clicking inside modal
+                onClick={e => e.stopPropagation()} 
             >
                 <div className="flex justify-between items-center p-5 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
@@ -146,16 +148,81 @@ const BookDemoModal = ({ isOpen, onClose }: BookDemoModalProps) => {
     );
 };
 
-// --- DownloadBrochureModal Component (UNCHANGED) ---
+// --- UPDATED DownloadBrochureModal Component ---
 const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) => {
+    // State management
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        course: "",
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [phoneError, setPhoneError] = useState("");
+
     if (!isOpen) return null;
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        // Simulate brochure download logic
-        console.log("Form Submitted for brochure download.");
-        alertMessage("Thank you! Your brochure download link has been sent to your email (simulated).", "success");
-        onClose();
+
+    // Validation Logic
+    const validatePhone = (phone: string): boolean => {
+        // Starts with 6, 7, 8, or 9 and has exactly 10 digits
+        const phoneRegex = /^[6-9]\d{9}$/;
+        return phoneRegex.test(phone);
     };
+
+    const validateEmail = (email: string): boolean => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const handlePhoneChange = (value: string) => {
+        // Only allow digits and limit to 10
+        const cleaned = value.replace(/\D/g, '').slice(0, 10);
+        setFormData({ ...formData, phone: cleaned });
+        
+        // Immediate validation feedback
+        if (cleaned.length > 0 && (cleaned.length < 10 || !/^[6-9]/.test(cleaned))) {
+            setPhoneError("Enter valid 10-digit number starting with 6-9");
+        } else if (cleaned.length === 10 && !validatePhone(cleaned)) {
+             setPhoneError("Invalid format");
+        } else {
+            setPhoneError("");
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Validate all fields
+        if (!formData.course) return alertMessage("Please select a course first", "error");
+        if (!formData.name.trim()) return alertMessage("Name is required", "error");
+        if (!formData.email.trim() || !validateEmail(formData.email)) return alertMessage("Valid Email is required", "error");
+        if (!validatePhone(formData.phone)) return alertMessage("Valid Indian Phone Number is required", "error");
+
+        setIsSubmitting(true);
+
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        // Analytics (Optional)
+        if (typeof (window as any).gtag !== 'undefined') {
+            (window as any).gtag('event', 'download_brochure_submit', {
+                course: formData.course,
+                source: 'brochure-download'
+            });
+        }
+
+        alertMessage("Success! Opening brochure...", "success");
+
+        // Open specific Brochure Link
+        window.open(COMMON_BROCHURE_URL, '_blank');
+
+        setIsSubmitting(false);
+        onClose();
+        
+        // Reset form
+        setFormData({ name: "", email: "", phone: "", course: "" });
+    };
+
     return (
         <div
             className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 transition-opacity duration-300 backdrop-blur-sm"
@@ -163,12 +230,12 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
         >
             <div
                 className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 animate-in fade-in-0 zoom-in-95"
-                onClick={e => e.stopPropagation()} // Prevent closing when clicking inside modal
+                onClick={e => e.stopPropagation()} 
             >
                 <div className="flex justify-between items-center p-5 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
-                        <Download className="w-5 h-5 mr-3 text-indigo-500" />
-                        Request Our Full Brochure
+                        <FileText className="w-5 h-5 mr-3 text-indigo-500" />
+                        Download Brochure
                     </h3>
                     <button
                         onClick={onClose}
@@ -179,44 +246,92 @@ const DownloadBrochureModal = ({ isOpen, onClose }: DownloadBrochureModalProps) 
                     </button>
                 </div>
                 
-                <form onSubmit={handleSubmit} className="p-6 space-y-5">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Fill out the form to instantly receive a PDF brochure detailing our programs, placements, and pricing.
-                    </p>
-                    
+                <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                    {/* 1. Course Select (No Prices) */}
+                    <div>
+                        <label htmlFor="course" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Select Course *
+                        </label>
+                        <select
+                            id="course"
+                            value={formData.course}
+                            onChange={(e) => setFormData({...formData, course: e.target.value})}
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white transition"
+                        >
+                            <option value="" disabled>Choose your course</option>
+                            <option value="cyber-lite">🔐 Cyber Master's Pro (Lite)</option>
+                            <option value="cyber-blackhat">🎯 Cyber Master's Pro Black Hat</option>
+                            <option value="bug-hunting-pentest">🐛 Bug Hunting & Penetration Testing</option>
+                            <option value="network-security-defense">🛡️ Network Security & Defense</option>
+                        </select>
+                    </div>
+
+                    {/* 2. Name */}
                     <div>
                         <label htmlFor="modal-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Name
+                            Full Name *
                         </label>
                         <input
                             type="text"
                             id="modal-name"
-                            name="name"
+                            value={formData.name}
+                            onChange={(e) => setFormData({...formData, name: e.target.value})}
                             required
                             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white transition"
                             placeholder="Your full name"
                         />
                     </div>
-                    
+
+                    {/* 3. Email */}
                     <div>
                         <label htmlFor="modal-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Work Email
+                            Email Address *
                         </label>
                         <input
                             type="email"
                             id="modal-email"
-                            name="email"
+                            value={formData.email}
+                            onChange={(e) => setFormData({...formData, email: e.target.value})}
                             required
                             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white transition"
-                            placeholder="email@company.com"
+                            placeholder="name@gmail.com"
                         />
                     </div>
+                    
+                    {/* 4. Phone */}
+                    <div>
+                        <label htmlFor="modal-phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Phone Number *
+                        </label>
+                        <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">+91</span>
+                            <input
+                                type="tel"
+                                id="modal-phone"
+                                value={formData.phone}
+                                onChange={(e) => handlePhoneChange(e.target.value)}
+                                required
+                                maxLength={10}
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white transition"
+                                placeholder="98XXXXXXXX"
+                            />
+                        </div>
+                        {phoneError && <p className="text-red-500 text-xs mt-1">{phoneError}</p>}
+                    </div>
+
                     <button
                         type="submit"
-                        className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+                        disabled={isSubmitting}
+                        className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                        <Download className="w-5 h-5 mr-2" />
-                        Download Instantly
+                        {isSubmitting ? (
+                            <span>Processing...</span>
+                        ) : (
+                            <>
+                                <Download className="w-5 h-5 mr-2" />
+                                Download Brochure
+                            </>
+                        )}
                     </button>
                 </form>
             </div>
@@ -635,7 +750,7 @@ export const Hero = ({ showOnInnerPages = true }: HeroProps) => {
                 onClose={() => setIsDemoModalOpen(false)}
             />
 
-            {/* Download Brochure Modal (UNCHANGED) */}
+            {/* Download Brochure Modal (UPDATED) */}
             <DownloadBrochureModal
                 isOpen={isBrochureModalOpen}
                 onClose={() => setIsBrochureModalOpen(false)}

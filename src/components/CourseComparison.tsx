@@ -1,10 +1,40 @@
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge"; // Assuming you have a Badge component
+import { CheckCircle2, X, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
+// 1. IMPROVED DATA STRUCTURE
+// We added an 'accessor' key to link the course to the feature object property.
 const comparisonData = {
+  courses: [
+    {
+      id: "bug-hunting-pentest",
+      name: "Bug Bounty Hunter Pro",
+      tagline: "Master Bug Hunting",
+      highlight: "Best for Researchers",
+      accessor: "bugBounty", // Matches the key in features
+      recommended: false,
+    },
+    {
+      id: "cyber-blackhat",
+      name: "Cyber Master's Pro Black Hat",
+      tagline: "With Placement",
+      highlight: "Most Popular",
+      accessor: "blackHat",
+      recommended: true,
+    },
+    {
+      id: "cyber-lite",
+      name: "Cyber Master's Pro Lite",
+      tagline: "Essential Skills",
+      highlight: "Best Value",
+      accessor: "lite",
+      recommended: false,
+    },
+  ],
   features: [
     { name: "Duration", bugBounty: "2 months", blackHat: "6 months", lite: "15 days" },
     { name: "Price", bugBounty: "₹6,999", blackHat: "₹19,000", lite: "₹499" },
@@ -23,139 +53,106 @@ const comparisonData = {
     { name: "Soft Skills Training", bugBounty: false, blackHat: true, lite: true },
     { name: "Placement Portal", bugBounty: false, blackHat: true, lite: true },
   ],
-  courses: [
-    {
-      id: "bug-hunting-pentest",
-      name: "Bug Bounty Hunter Pro",
-      tagline: "Master Bug Hunting",
-      highlight: "Best for Security Researchers",
-    },
-    {
-      id: "cyber-blackhat",
-      name: "Cyber Master's Pro Black Hat",
-      tagline: "With Placement",
-      highlight: "Most Popular",
-    },
-    {
-      id: "cyber-lite",
-      name: "Cyber Master's Pro Lite",
-      tagline: "Essential Skills",
-      highlight: "Best Value",
-    },
-  ],
+};
+
+// 2. HELPER COMPONENT FOR CELL RENDERING
+// This cleans up the main code significantly
+const FeatureValue = ({ value }: { value: string | boolean }) => {
+  if (typeof value === "boolean") {
+    return value ? (
+      <CheckCircle2 className="w-5 h-5 text-green-500 mx-auto" />
+    ) : (
+      <X className="w-5 h-5 text-muted-foreground/50 mx-auto" />
+    );
+  }
+  return <span className="font-semibold text-primary">{value}</span>;
 };
 
 export const CourseComparison = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-20 bg-background">
-      <div className="container mx-auto px-4">
+    <section className="py-20 bg-background relative overflow-hidden">
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <h2 className="text-4xl font-bold gradient-text mb-4">Compare Our Courses</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            Compare Our <span className="text-primary">Courses</span>
+          </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Choose the perfect course that matches your career goals
+            Find the perfect cybersecurity path tailored to your career goals.
           </p>
         </motion.div>
 
-        {/* Desktop View */}
-        <div className="hidden lg:block overflow-x-auto">
-          <Card className="shadow-glow-lg">
+        {/* --- DESKTOP VIEW (TABLE) --- */}
+        <div className="hidden lg:block">
+          <Card className="border-border/50 shadow-2xl bg-card/50 backdrop-blur-sm overflow-hidden">
             <CardContent className="p-0">
-              <table className="w-full">
+              <table className="w-full border-collapse">
                 <thead>
-                  <tr className="border-b">
-                    <th className="p-6 text-left font-semibold text-foreground">Features</th>
+                  <tr className="bg-muted/30">
+                    <th className="p-6 text-left w-1/4 font-bold text-lg">Features</th>
                     {comparisonData.courses.map((course, index) => (
-                      <th key={course.id} className="p-6 text-center">
+                      <th key={course.id} className="p-6 text-center w-1/4 align-top relative">
+                        {course.recommended && (
+                          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                             <Badge className="bg-primary text-primary-foreground hover:bg-primary">Recommended</Badge>
+                          </div>
+                        )}
                         <motion.div
-                          initial={{ opacity: 0, y: 20 }}
+                          initial={{ opacity: 0, y: 10 }}
                           whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
                           transition={{ delay: index * 0.1 }}
                         >
-                          <div className="mb-2">
-                            <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
-                              {course.highlight}
-                            </span>
-                          </div>
-                          <h3 className="text-lg font-bold mb-1">{course.name}</h3>
-                          <p className="text-sm text-muted-foreground">{course.tagline}</p>
+                          <h3 className="text-xl font-bold text-foreground">{course.name}</h3>
+                          <p className="text-sm text-muted-foreground mb-3">{course.tagline}</p>
+                          <Badge variant="outline" className="mb-2 border-primary/20 text-primary bg-primary/5">
+                            {course.highlight}
+                          </Badge>
                         </motion.div>
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {comparisonData.features.map((feature, index) => (
+                  {comparisonData.features.map((feature, idx) => (
                     <motion.tr
                       key={feature.name}
-                      className="border-b hover:bg-muted/20 transition-colors"
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.05 }}
+                      transition={{ delay: idx * 0.03 }}
+                      className={`
+                        border-b border-border/40 transition-colors hover:bg-muted/40
+                        ${idx % 2 === 0 ? "bg-transparent" : "bg-muted/10"}
+                      `}
                     >
-                      <td className="p-4 font-medium">{feature.name}</td>
-                      <td className="p-4 text-center">
-                        {typeof feature.bugBounty === "boolean" ? (
-                          feature.bugBounty ? (
-                            <CheckCircle2 className="w-6 h-6 text-primary mx-auto" />
-                          ) : (
-                            <X className="w-6 h-6 text-muted-foreground mx-auto" />
-                          )
-                        ) : (
-                          <span className="font-semibold text-primary">{feature.bugBounty}</span>
-                        )}
-                      </td>
-                      <td className="p-4 text-center">
-                        {typeof feature.blackHat === "boolean" ? (
-                          feature.blackHat ? (
-                            <CheckCircle2 className="w-6 h-6 text-primary mx-auto" />
-                          ) : (
-                            <X className="w-6 h-6 text-muted-foreground mx-auto" />
-                          )
-                        ) : (
-                          <span className="font-semibold text-primary">{feature.blackHat}</span>
-                        )}
-                      </td>
-                      <td className="p-4 text-center">
-                        {typeof feature.lite === "boolean" ? (
-                          feature.lite ? (
-                            <CheckCircle2 className="w-6 h-6 text-primary mx-auto" />
-                          ) : (
-                            <X className="w-6 h-6 text-muted-foreground mx-auto" />
-                          )
-                        ) : (
-                          <span className="font-semibold text-primary">{feature.lite}</span>
-                        )}
-                      </td>
+                      <td className="p-4 font-medium text-foreground/90 pl-8">{feature.name}</td>
+                      {comparisonData.courses.map((course) => (
+                        <td key={`${course.id}-${feature.name}`} className="p-4 text-center">
+                          {/* Dynamic Accessor Logic */}
+                          <FeatureValue value={(feature as any)[course.accessor]} />
+                        </td>
+                      ))}
                     </motion.tr>
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr>
+                  <tr className="bg-muted/30">
                     <td className="p-6"></td>
-                    {comparisonData.courses.map((course, index) => (
+                    {comparisonData.courses.map((course) => (
                       <td key={course.id} className="p-6 text-center">
-                        <motion.div
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
+                        <Button
+                          variant={course.recommended ? "default" : "outline"}
+                          size="lg"
+                          className={`w-full ${course.recommended ? "shadow-lg shadow-primary/20" : ""}`}
+                          onClick={() => navigate(`/courses/${course.id}`)}
                         >
-                          <Button
-                            variant={index === 1 ? "gradient" : "outline"}
-                            size="lg"
-                            className="w-full"
-                            onClick={() => navigate(`/courses/${course.id}`)}
-                          >
-                            View Course
-                          </Button>
-                        </motion.div>
+                          View Details
+                        </Button>
                       </td>
                     ))}
                   </tr>
@@ -165,61 +162,50 @@ export const CourseComparison = () => {
           </Card>
         </div>
 
-        {/* Mobile View */}
-        <div className="lg:hidden space-y-6">
-          {comparisonData.courses.map((course, courseIndex) => (
+        {/* --- MOBILE VIEW (STACKED CARDS) --- */}
+        <div className="lg:hidden space-y-8">
+          {comparisonData.courses.map((course, index) => (
             <motion.div
               key={course.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: courseIndex * 0.1 }}
+              transition={{ delay: index * 0.1 }}
             >
-              <Card className="shadow-glow-lg">
-                <CardHeader className="text-center border-b">
-                  <div className="mb-2">
-                    <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
-                      {course.highlight}
-                    </span>
-                  </div>
-                  <CardTitle>{course.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{course.tagline}</p>
+              <Card className={`relative overflow-hidden ${course.recommended ? 'border-primary shadow-lg shadow-primary/10' : ''}`}>
+                {course.recommended && (
+                   <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-bl-lg">
+                     Recommended
+                   </div>
+                )}
+                
+                <CardHeader className="text-center pb-2 bg-muted/20">
+                  <Badge variant="secondary" className="w-fit mx-auto mb-2">{course.highlight}</Badge>
+                  <CardTitle className="text-2xl">{course.name}</CardTitle>
+                  <p className="text-muted-foreground">{course.tagline}</p>
                 </CardHeader>
-                <CardContent className="p-4">
-                  <div className="space-y-3 mb-6">
-                    {comparisonData.features.map((feature) => {
-                      const value =
-                        courseIndex === 0
-                          ? feature.bugBounty
-                          : courseIndex === 1
-                          ? feature.blackHat
-                          : feature.lite;
-                      return (
-                        <div key={feature.name} className="flex justify-between items-center">
-                          <span className="text-sm font-medium">{feature.name}</span>
-                          <span>
-                            {typeof value === "boolean" ? (
-                              value ? (
-                                <CheckCircle2 className="w-5 h-5 text-primary" />
-                              ) : (
-                                <X className="w-5 h-5 text-muted-foreground" />
-                              )
-                            ) : (
-                              <span className="font-semibold text-primary text-sm">{value}</span>
-                            )}
-                          </span>
+
+                <CardContent className="p-0">
+                  <div className="divide-y divide-border/50">
+                    {comparisonData.features.map((feature) => (
+                      <div key={feature.name} className="flex justify-between items-center p-4 hover:bg-muted/20">
+                        <span className="text-sm font-medium text-muted-foreground">{feature.name}</span>
+                        <div className="text-sm font-semibold">
+                          <FeatureValue value={(feature as any)[course.accessor]} />
                         </div>
-                      );
-                    })}
+                      </div>
+                    ))}
                   </div>
-                  <Button
-                    variant={courseIndex === 1 ? "gradient" : "outline"}
-                    size="lg"
-                    className="w-full"
-                    onClick={() => navigate(`/courses/${course.id}`)}
-                  >
-                    View Course
-                  </Button>
+                  <div className="p-6 bg-muted/20">
+                    <Button 
+                      className="w-full" 
+                      variant={course.recommended ? "default" : "outline"}
+                      size="lg"
+                      onClick={() => navigate(`/courses/${course.id}`)}
+                    >
+                      Choose {course.name}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>

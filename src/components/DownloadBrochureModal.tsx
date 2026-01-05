@@ -7,15 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { useToast } from "@/hooks/use-toast";
 import { Download, FileText } from "lucide-react";
 
-// Course-specific brochure URLs
-const BROCHURE_URLS: Record<string, string> = {
-  "network-security-defense": "https://drive.google.com/file/d/1_oWjtOS1hRyVolJv22tHwPxdv2t2ePau/view?usp=sharing",
-  "cyber-lite": "https://drive.google.com/file/d/1QyvVIVld5m8ORla6uqNK1NQHZIItwbzJ/view?usp=drivesdk",
-  "cyber-blackhat": "https://drive.google.com/file/d/1QyvVIVld5m8ORla6uqNK1NQHZIItwbzJ/view?usp=drivesdk",
-  "bug-hunting-pentest": "https://drive.google.com/file/d/1QyvVIVld5m8ORla6uqNK1NQHZIItwbzJ/view?usp=drivesdk",
-};
-
-const DEFAULT_BROCHURE_URL = "https://drive.google.com/file/d/1QyvVIVld5m8ORla6uqNK1NQHZIItwbzJ/view?usp=drivesdk";
+// The single brochure URL for all courses as requested
+const COMMON_BROCHURE_URL = "https://drive.google.com/file/d/1_oWjtOS1hRyVolJv22tHwPxdv2t2ePau/view?usp=drive_link";
 
 interface DownloadBrochureModalProps {
   isOpen: boolean;
@@ -26,6 +19,7 @@ interface DownloadBrochureModalProps {
 export const DownloadBrochureModal = ({ isOpen, onClose, preselectedCourse }: DownloadBrochureModalProps) => {
   const [formData, setFormData] = useState({
     name: "",
+    email: "", // Added email field
     phone: "",
     course: preselectedCourse || "",
   });
@@ -36,6 +30,11 @@ export const DownloadBrochureModal = ({ isOpen, onClose, preselectedCourse }: Do
   const validatePhone = (phone: string): boolean => {
     const phoneRegex = /^[6-9]\d{9}$/;
     return phoneRegex.test(phone);
+  };
+
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   const handlePhoneChange = (value: string) => {
@@ -53,30 +52,24 @@ export const DownloadBrochureModal = ({ isOpen, onClose, preselectedCourse }: Do
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validation
     if (!formData.name.trim()) {
-      toast({
-        title: "Name Required",
-        description: "Please enter your full name",
-        variant: "destructive",
-      });
+      toast({ title: "Name Required", description: "Please enter your full name", variant: "destructive" });
+      return;
+    }
+
+    if (!formData.email.trim() || !validateEmail(formData.email)) {
+      toast({ title: "Invalid Email", description: "Please enter a valid email address", variant: "destructive" });
       return;
     }
 
     if (!validatePhone(formData.phone)) {
-      toast({
-        title: "Invalid Phone Number",
-        description: "Please enter a valid 10-digit Indian mobile number",
-        variant: "destructive",
-      });
+      toast({ title: "Invalid Phone Number", description: "Please enter a valid 10-digit Indian mobile number", variant: "destructive" });
       return;
     }
 
     if (!formData.course) {
-      toast({
-        title: "Course Required",
-        description: "Please select a course to download the brochure",
-        variant: "destructive",
-      });
+      toast({ title: "Course Required", description: "Please select a course to download the brochure", variant: "destructive" });
       return;
     }
 
@@ -93,16 +86,13 @@ export const DownloadBrochureModal = ({ isOpen, onClose, preselectedCourse }: Do
       });
     }
 
-    // Get the appropriate brochure URL
-    const brochureUrl = BROCHURE_URLS[formData.course] || DEFAULT_BROCHURE_URL;
-
     toast({
       title: "Success!",
       description: "Opening brochure in a new tab. A counselor will contact you shortly.",
     });
 
-    // Open brochure in new tab
-    window.open(brochureUrl, '_blank');
+    // Open the single common PDF link
+    window.open(COMMON_BROCHURE_URL, '_blank');
 
     setIsSubmitting(false);
     onClose();
@@ -110,6 +100,7 @@ export const DownloadBrochureModal = ({ isOpen, onClose, preselectedCourse }: Do
     // Reset form
     setFormData({
       name: "",
+      email: "",
       phone: "",
       course: preselectedCourse || "",
     });
@@ -127,8 +118,9 @@ export const DownloadBrochureModal = ({ isOpen, onClose, preselectedCourse }: Do
             Fill in your details to download the complete course brochure with curriculum, pricing & FAQs
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Course Selection */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          
+          {/* 1. Course Selection (Reordered) */}
           <div className="space-y-2">
             <Label htmlFor="course" className="text-foreground font-medium">
               Select Course *
@@ -141,14 +133,10 @@ export const DownloadBrochureModal = ({ isOpen, onClose, preselectedCourse }: Do
                 <SelectValue placeholder="Choose your course" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="network-security-defense">
-                  <span className="flex items-center gap-2">
-                    🛡️ Network Security & Defense (₹12,000 - 5 months)
-                  </span>
-                </SelectItem>
+                {/* Order: Cyber Master's Pro -> Black Hat -> Bug Hunting -> Network Security */}
                 <SelectItem value="cyber-lite">
                   <span className="flex items-center gap-2">
-                    🔐 Cyber Master's Pro Lite (₹499 - 2 months)
+                    🔐 Cyber Master's Pro (₹499 - 2 months)
                   </span>
                 </SelectItem>
                 <SelectItem value="cyber-blackhat">
@@ -161,11 +149,16 @@ export const DownloadBrochureModal = ({ isOpen, onClose, preselectedCourse }: Do
                     🐛 Bug Hunting & Penetration Testing (₹9,999 - 3 months)
                   </span>
                 </SelectItem>
+                <SelectItem value="network-security-defense">
+                  <span className="flex items-center gap-2">
+                    🛡️ Network Security & Defense (₹12,000 - 5 months)
+                  </span>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* Name Field */}
+          {/* 2. Name Field */}
           <div className="space-y-2">
             <Label htmlFor="name" className="text-foreground font-medium">
               Full Name *
@@ -180,7 +173,23 @@ export const DownloadBrochureModal = ({ isOpen, onClose, preselectedCourse }: Do
             />
           </div>
 
-          {/* Phone Field */}
+          {/* 3. Email Field (New) */}
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-foreground font-medium">
+              Email Address *
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              required
+              placeholder="name@example.com"
+              className="bg-background border-border"
+            />
+          </div>
+
+          {/* 4. Phone Field */}
           <div className="space-y-2">
             <Label htmlFor="phone" className="text-foreground font-medium">
               Phone Number * (10-digit Indian mobile)
@@ -212,7 +221,7 @@ export const DownloadBrochureModal = ({ isOpen, onClose, preselectedCourse }: Do
           <Button 
             type="submit" 
             className="w-full h-12 text-base font-semibold transition-all hover:shadow-lg hover:shadow-primary/30" 
-            disabled={isSubmitting || !formData.name || !validatePhone(formData.phone) || !formData.course}
+            disabled={isSubmitting || !formData.name || !formData.email || !validatePhone(formData.phone) || !formData.course}
           >
             {isSubmitting ? (
               <span className="flex items-center gap-2">
