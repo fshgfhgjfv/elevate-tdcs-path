@@ -167,6 +167,52 @@ export const courses: Course[] = [
       { name: "Report Templates", url: "#" },
     ],
   },
+  {
+    id: "network-security-defense",
+    title: "Network Security & Defense",
+    description:
+      "Comprehensive network security program covering firewall management, intrusion detection, network monitoring & defense strategies.",
+    price: 12000,
+    thumbnail:
+      "https://blogger.googleusercontent.com/img/a/AVvXsEimZrWbA4DGBCy0eQXhIBbuVefY_7WOcvJ6SC11Q55L0rc9sMT_b_2-BRTbGYPv9e6r05aREJI91KC7tE1rlobdc_gOLsRIO11_PAD246NAYCDsCboM9pSzJtqHLmhaXcDfb9c1NwfQviILZrJHgLByTSuTUKjmSAfkPgqWVgbYCNL8NF7ZCLb4UiJtqpBd",
+    category: "Live Online",
+    duration: "5 months",
+    modules: [
+      "Network Fundamentals & TCP/IP",
+      "Firewall Configuration & Management",
+      "Intrusion Detection & Prevention Systems (IDS/IPS)",
+      "Network Monitoring & Traffic Analysis",
+      "VPN & Secure Communications",
+      "Wireless Network Security",
+      "Network Forensics & Incident Response",
+      "SIEM Implementation & Log Analysis",
+      "Zero Trust Architecture",
+      "Cloud Network Security (AWS/Azure)",
+      "Network Hardening & Best Practices",
+      "Capstone Project: Enterprise Network Defense",
+    ],
+    overview:
+      "Master the art of network security and defense with this comprehensive 5-month program. Learn to protect enterprise networks from cyber threats using industry-standard tools and methodologies. This course covers everything from basic network fundamentals to advanced defense strategies including firewall management, IDS/IPS, SIEM, and cloud security.",
+    includes: [
+      "Live online classes with industry experts",
+      "Hands-on lab environment with real network scenarios",
+      "Enterprise-grade security tools access",
+      "Industry-recognized certification",
+      "Career placement assistance",
+      "1-on-1 mentorship sessions",
+      "Lifetime access to course materials",
+      "Community forum & peer support",
+      "Real-world project portfolio",
+      "Interview preparation & resume building",
+    ],
+    demoVideo: "https://youtu.be/JNcuJSJ3Z1Q?si=boi5NFQYhCrvT5JV",
+    resources: [
+      { name: "Network Security Handbook", url: "#" },
+      { name: "Firewall Configuration Guide", url: "#" },
+      { name: "SIEM Implementation Manual", url: "#" },
+      { name: "Incident Response Playbook", url: "#" },
+    ],
+  },
 ];
 
 // ===========================================
@@ -264,6 +310,36 @@ export const testimonials: Testimonial[] = [
     image: "https://randomuser.me/api/portraits/men/64.jpg",
     testimonial:
       "The pentesting methodology taught here is industry-standard. Got certified and hired within a month!",
+  },
+  {
+    name: "Vikram Rao",
+    before: "System Administrator",
+    after: "Network Security Engineer",
+    company: "Cisco",
+    courseId: "network-security-defense",
+    image: "https://randomuser.me/api/portraits/men/72.jpg",
+    testimonial:
+      "The Network Security & Defense course transformed my career. The hands-on labs with real firewalls and SIEM tools gave me practical experience that employers value.",
+  },
+  {
+    name: "Neha Gupta",
+    before: "IT Support",
+    after: "SOC Analyst",
+    company: "Wipro",
+    courseId: "network-security-defense",
+    image: "https://randomuser.me/api/portraits/women/68.jpg",
+    testimonial:
+      "Excellent curriculum covering everything from network fundamentals to advanced threat detection. The placement assistance helped me land my dream job!",
+  },
+  {
+    name: "Rajesh Kumar",
+    before: "Fresher",
+    after: "Network Security Specialist",
+    company: "TCS",
+    courseId: "network-security-defense",
+    image: "https://randomuser.me/api/portraits/men/85.jpg",
+    testimonial:
+      "As a fresher, this 5-month program gave me comprehensive knowledge in network security. The mentorship and real-world projects were invaluable.",
   },
 ];
 
