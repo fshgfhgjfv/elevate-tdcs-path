@@ -20,13 +20,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 
-// --- Import your saved QR Code Image here ---
-// Make sure the file exists at this path!
-import paymentQr from "@/assets/payment-qr.jpg";
-
 // --- Configuration ---
 const UPI_ID = "tdcsorganization@sbi"; 
 const MERCHANT_NAME = "TDCS Technologies";
+
+// --- Hosted QR Code Link ---
+const QR_CODE_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEiYxV2ayi-nLo4GdGqaDDKDg9OpUiRjbmyav9HoiZp_qm2Zt1-x8jQ7Y4S5gMQSeKrIuZKolSVxZ0c817cdvXKG5IbRLWEngQOEBC8Gah6Edi2snbD0vbr6y-0nJSq8rdvCR4HJIcRJhRDlSTYA9EeYdGj-U6QaRM365bjvdR85QjaR3s4rm1oYOTYTl8gU";
 
 export default function Checkout() {
   const location = useLocation();
@@ -324,9 +323,9 @@ export default function Checkout() {
                   
                   {/* --- STATIC IMPORTED IMAGE --- */}
                   <img 
-                    src={paymentQr} 
+                    src={QR_CODE_URL} 
                     alt="TDCS Payment QR" 
-                    className="w-48 h-48 object-contain" 
+                    className="w-48 h-48 object-contain"
                   />
                   
                   <div className="absolute inset-0 flex items-center justify-center bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none">
