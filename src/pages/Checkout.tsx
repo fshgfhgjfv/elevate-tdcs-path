@@ -275,7 +275,7 @@ export default function Checkout() {
                         id="phone" name="phone" 
                         type="tel"
                         maxLength={10}
-                        placeholder="e.g. 9876543210" 
+                        placeholder="Enter Your Phone Number" 
                         required 
                         value={formData.phone} onChange={handleInputChange}
                         className={`bg-muted/30 ${errors.phone ? "border-red-500 focus-visible:ring-red-500" : ""}`}
