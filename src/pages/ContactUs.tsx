@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import axios from "axios"; // 👈 Added axios
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
+import { Mail, Phone, MapPin, MessageCircle, Globe, ShieldCheck } from "lucide-react";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -65,8 +65,14 @@ export default function ContactUs() {
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-20 bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white">
-      <div className="container mx-auto px-6">
+    <div className="min-h-screen pt-28 pb-20 bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white overflow-hidden">
+      
+      {/* Background Cyber Grid Animation */}
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+         <div className="absolute w-full h-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
         {/* Header */}
         <motion.div
           initial="hidden"
@@ -74,46 +80,47 @@ export default function ContactUs() {
           variants={fadeUp}
           className="text-center mb-16"
         >
-          <h1 className="text-6xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-600 mb-4">
-            Get in Touch
+          <div className="inline-block p-2 px-4 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-semibold mb-4 tracking-wider uppercase">
+             <Globe className="w-3 h-3 inline mr-2" /> Global Operations
+          </div>
+          <h1 className="text-5xl md:text-6xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-600 mb-4 drop-shadow-2xl">
+            Contact HQ
           </h1>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto font-light tracking-wide">
-            We’d love to hear from you — reach out to our team and let’s connect.
+            Secure communication channel established. Reach out to our team below.
           </p>
         </motion.div>
 
         {/* Main Grid */}
-        <div className="grid lg:grid-cols-2 gap-10 max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-10 max-w-6xl mx-auto items-start">
+          
           {/* Contact Form */}
-          <motion.div variants={fadeUp} custom={0.2} initial="hidden" animate="visible">
-            <Card className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl">
+          <motion.div variants={fadeUp} custom={0.2} initial="hidden" animate="visible" className="h-full">
+            <Card className="bg-black/40 backdrop-blur-xl border border-white/10 shadow-[0_0_50px_-12px_rgba(129,140,248,0.2)] rounded-2xl h-full">
               <CardHeader>
-                <CardTitle className="text-2xl font-semibold bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">
-                  Send us a Message
+                <CardTitle className="text-2xl font-semibold flex items-center gap-3">
+                  <span className="p-2 rounded-lg bg-indigo-500/20 text-indigo-400"><Mail className="w-5 h-5"/></span>
+                  Send Encrypted Message
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-5">
                   {/* Name */}
                   <motion.div variants={fadeUp} custom={0.3}>
-                    <Label htmlFor="name" className="text-white font-medium tracking-wide">
-                      Name
-                    </Label>
+                    <Label htmlFor="name" className="text-gray-300 font-medium tracking-wide">Name</Label>
                     <Input
                       id="name"
                       placeholder="Enter your full name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
-                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 transition-all rounded-xl"
+                      className="bg-white/5 text-white placeholder:text-gray-500 border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all rounded-lg"
                     />
                   </motion.div>
 
                   {/* Email */}
                   <motion.div variants={fadeUp} custom={0.4}>
-                    <Label htmlFor="email" className="text-white font-medium tracking-wide">
-                      Email
-                    </Label>
+                    <Label htmlFor="email" className="text-gray-300 font-medium tracking-wide">Email</Label>
                     <Input
                       id="email"
                       type="email"
@@ -121,15 +128,13 @@ export default function ContactUs() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
-                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 transition-all rounded-xl"
+                      className="bg-white/5 text-white placeholder:text-gray-500 border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all rounded-lg"
                     />
                   </motion.div>
 
                   {/* Phone */}
                   <motion.div variants={fadeUp} custom={0.5}>
-                    <Label htmlFor="phone" className="text-white font-medium tracking-wide">
-                      Phone (10 digits)
-                    </Label>
+                    <Label htmlFor="phone" className="text-gray-300 font-medium tracking-wide">Phone (10 digits)</Label>
                     <Input
                       id="phone"
                       type="tel"
@@ -139,15 +144,13 @@ export default function ContactUs() {
                       required
                       pattern="[0-9]{10}"
                       maxLength={10}
-                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 transition-all rounded-xl"
+                      className="bg-white/5 text-white placeholder:text-gray-500 border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all rounded-lg"
                     />
                   </motion.div>
 
                   {/* Message */}
                   <motion.div variants={fadeUp} custom={0.6}>
-                    <Label htmlFor="message" className="text-white font-medium tracking-wide">
-                      Message
-                    </Label>
+                    <Label htmlFor="message" className="text-gray-300 font-medium tracking-wide">Message</Label>
                     <Textarea
                       id="message"
                       rows={4}
@@ -155,7 +158,7 @@ export default function ContactUs() {
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required
-                      className="bg-white/10 text-white placeholder:text-gray-400 border border-white/20 focus:border-purple-500 transition-all rounded-xl"
+                      className="bg-white/5 text-white placeholder:text-gray-500 border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all rounded-lg"
                     />
                   </motion.div>
 
@@ -164,9 +167,10 @@ export default function ContactUs() {
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-3 text-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 transition rounded-xl shadow-[0_0_25px_rgba(139,92,246,0.4)] disabled:opacity-50"
+                      className="w-full py-6 text-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-all rounded-xl shadow-lg hover:shadow-indigo-500/25 disabled:opacity-50 relative overflow-hidden group"
                     >
-                      {isSubmitting ? "Sending..." : "Send Message"}
+                      <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                      {isSubmitting ? "Transmitting..." : "Establish Connection"}
                     </Button>
                   </motion.div>
                 </form>
@@ -174,66 +178,120 @@ export default function ContactUs() {
             </Card>
           </motion.div>
 
-          {/* Contact Info Section */}
-          <motion.div
-            variants={fadeUp}
-            custom={0.3}
-            initial="hidden"
-            animate="visible"
-            className="space-y-6"
-          >
-            {[
-              {
-                icon: <Mail className="text-purple-400 w-6 h-6" />,
-                title: "Email",
-                text: "info@tdcs.tech",
-                link: "mailto:info@tdcs.tech",
-              },
-              {
-                icon: <Phone className="text-indigo-400 w-6 h-6" />,
-                title: "Call Support",
-                text: "+91 94227 99875",
-                link: "tel:+919422799875",
-              },
-              {
-                icon: <MessageCircle className="text-green-400 w-6 h-6" />,
-                title: "WhatsApp Support",
-                text: "+91 95647 30432",
-                link: "https://wa.me/919564730432",
-              },
-              {
-                icon: <MapPin className="text-pink-400 w-6 h-6" />,
-                title: "Office",
-                text: "Kolkata, West Bengal, India",
-              },
-            ].map((item, idx) => (
-              <motion.div
-                key={idx}
-                variants={fadeUp}
-                custom={0.4 + idx * 0.1}
-                className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 flex items-start gap-4 hover:bg-white/10 transition-all"
-              >
-                {item.icon}
-                <div>
-                  <h3 className="font-semibold text-lg mb-1 text-white/90">{item.title}</h3>
-                  {item.link ? (
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-300 hover:text-purple-400 transition"
-                    >
-                      {item.text}
-                    </a>
-                  ) : (
-                    <p className="text-gray-400">{item.text}</p>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+          {/* Map & Info Section */}
+          <div className="space-y-6">
+             
+             {/* Cyber Map Card */}
+             <motion.div 
+               variants={fadeUp} 
+               custom={0.3} 
+               initial="hidden" 
+               animate="visible"
+               className="relative group"
+             >
+                <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                <Card className="relative bg-black border border-white/10 rounded-2xl overflow-hidden h-80">
+                   
+                   {/* Radar Scan Overlay */}
+                   <div className="absolute inset-0 z-10 pointer-events-none opacity-20">
+                      <div className="w-full h-1 bg-indigo-500/50 absolute top-0 shadow-[0_0_15px_rgba(99,102,241,1)] animate-scan-line"></div>
+                   </div>
+
+                   {/* Map Iframe */}
+                   <iframe 
+                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117925.21689694463!2d88.26495039230678!3d22.53556493699318!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f882db4908f667%3A0x43e330e68f6c2cbc!2sKolkata%2C%20West%20Bengal!5e0!3m2!1sen!2sin!4v1709664551234!5m2!1sen!2sin&maptype=satellite" 
+                     width="100%" 
+                     height="100%" 
+                     style={{ border: 0, filter: "grayscale(100%) invert(90%) hue-rotate(180deg) contrast(1.2)" }} 
+                     allowFullScreen={false} 
+                     loading="lazy" 
+                     referrerPolicy="no-referrer-when-downgrade"
+                     className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
+                   ></iframe>
+
+                   {/* Overlay UI */}
+                   <div className="absolute top-4 left-4 z-20 bg-black/80 backdrop-blur-md px-3 py-1 rounded-full border border-indigo-500/30 flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-xs font-mono text-indigo-300">HQ: ONLINE</span>
+                   </div>
+
+                   <div className="absolute bottom-4 right-4 z-20 bg-black/80 backdrop-blur-md px-4 py-2 rounded-lg border border-indigo-500/30">
+                      <p className="text-xs text-gray-400 font-mono">LAT: 22.5726° N</p>
+                      <p className="text-xs text-gray-400 font-mono">LNG: 88.3639° E</p>
+                   </div>
+                </Card>
+             </motion.div>
+
+             {/* Info Cards */}
+             <motion.div
+               variants={fadeUp}
+               custom={0.4}
+               initial="hidden"
+               animate="visible"
+               className="grid sm:grid-cols-2 gap-4"
+             >
+               {[
+                 {
+                   icon: <Phone className="text-indigo-400 w-5 h-5" />,
+                   title: "Secure Line",
+                   text: "+91 94227 99875",
+                   link: "tel:+919422799875",
+                   color: "indigo"
+                 },
+                 {
+                   icon: <MessageCircle className="text-green-400 w-5 h-5" />,
+                   title: "WhatsApp",
+                   text: "+91 95647 30432",
+                   link: "https://wa.me/919564730432",
+                   color: "green"
+                 },
+                 {
+                   icon: <Mail className="text-purple-400 w-5 h-5" />,
+                   title: "Email Uplink",
+                   text: "info@tdcs.tech",
+                   link: "mailto:info@tdcs.tech",
+                   color: "purple"
+                 },
+                 {
+                   icon: <ShieldCheck className="text-pink-400 w-5 h-5" />,
+                   title: "Base of Ops",
+                   text: "Kolkata, West Bengal",
+                   color: "pink"
+                 },
+               ].map((item, idx) => (
+                 <a
+                   key={idx}
+                   href={item.link || "#"}
+                   target={item.link ? "_blank" : "_self"}
+                   rel="noopener noreferrer"
+                   className={`bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-all group flex items-start gap-4 hover:border-${item.color}-500/30`}
+                 >
+                   <div className={`p-2 rounded-lg bg-${item.color}-500/10 group-hover:bg-${item.color}-500/20 transition-colors`}>
+                      {item.icon}
+                   </div>
+                   <div>
+                     <h3 className="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">{item.title}</h3>
+                     <p className="text-xs text-gray-500 mt-1">{item.text}</p>
+                   </div>
+                 </a>
+               ))}
+             </motion.div>
+          </div>
         </div>
       </div>
+      
+      {/* CSS for Scan Line Animation */}
+      <style>{`
+        @keyframes scan-line {
+          0% { top: 0%; opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { top: 100%; opacity: 0; }
+        }
+        .animate-scan-line {
+          animation: scan-line 3s linear infinite;
+        }
+      `}</style>
     </div>
   );
 }
