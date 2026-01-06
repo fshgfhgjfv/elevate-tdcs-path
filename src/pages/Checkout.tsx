@@ -1,328 +1,331 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  ArrowLeft, 
+  CreditCard, 
+  ShieldCheck, 
+  QrCode, 
+  Smartphone, 
+  Copy, 
+  CheckCircle, 
+  Loader2 
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, ShoppingBag, Upload, CheckCircle, Copy, QrCode } from "lucide-react";
-import { useCart } from "@/contexts/CartContext";
-import { useCurrency } from "@/contexts/CurrencyContext";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 
-const QR_CODE_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEiELxVBDoZN5m4QVTDA_-qHj52le4N0SaPoO5hnEojupSercg3NAJLi-lnG7GcOdq5Zn7y2yOE67iP4zuOFAXaFZaKD7kxAdRea90YhQyFTBGwgVekp28gzWGGp8Y5zPETfsXCXWG03L9BTrmFCMBujeTd-wc3JceKLMDcN54dwVVxVwoCc7Usr9kXy5VjH";
-const UPI_ID = "tdcsorganization@sbi";
+// --- Configuration ---
+// REPLACE THIS with your actual UPI ID (e.g., your-business@okaxis)
+const UPI_ID = "rudranarayanswain10001@gmail.com"; 
+const MERCHANT_NAME = "TDCS Technologies";
 
-const Checkout = () => {
+export default function Checkout() {
+  const location = useLocation();
   const navigate = useNavigate();
-  const { items, totalPrice, clearCart } = useCart();
-  const { formatPrice, currency } = useCurrency();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  
+  // 1. Retrieve State from Services Page
+  const { serviceName, price } = location.state || {};
 
+  // 2. Form State
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
+    email: "",
     phone: "",
-    transactionId: "",
-    amountPaid: "",
-    screenshot: null as File | null,
+    transactionId: "" // For manual verification
   });
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  const shipping = totalPrice > 1000 ? 0 : (currency === 'INR' ? 99 : 5);
-  const taxRate = currency === 'INR' ? 0.18 : 0.08;
-  const tax = Math.round(totalPrice * taxRate);
-  const grandTotal = totalPrice + shipping + tax;
+  // 3. Redirect if accessed directly without selecting a product
+  useEffect(() => {
+    if (!serviceName || !price) {
+      toast({
+        variant: "destructive",
+        title: "No Product Selected",
+        description: "Please select a service from the store first.",
+      });
+      navigate("/services");
+    }
+  }, [serviceName, price, navigate]);
+
+  // 4. Generate Dynamic UPI QR Link
+  // Clean price string to number (remove currency symbols/commas)
+  const numericPrice = price ? price.replace(/[^0-9.]/g, '') : "0";
+  const upiLink = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${numericPrice}&cu=INR`;
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [id]: value
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData(prev => ({
-        ...prev,
-        screenshot: e.target.files![0]
-      }));
-    }
-  };
-
-  const copyUpiId = () => {
+  const copyUpiToClipboard = () => {
     navigator.clipboard.writeText(UPI_ID);
-    toast({
-      title: "UPI ID Copied!",
-      description: UPI_ID,
-    });
+    toast({ title: "Copied!", description: "UPI ID copied to clipboard." });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!formData.fullName || !formData.phone || !formData.transactionId || !formData.amountPaid) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+    
+    if (!formData.name || !formData.email || !formData.phone || !formData.transactionId) {
+      toast({ variant: "destructive", title: "Missing Fields", description: "Please fill in all details including Transaction ID." });
       return;
     }
 
     setIsSubmitting(true);
 
-    // Simulate submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    toast({
-      title: "Payment Submitted Successfully! 🎉",
-      description: "Our team will verify your payment and confirm your order within 24 hours.",
-    });
-
-    setIsSubmitted(true);
-    clearCart();
-    setIsSubmitting(false);
+    // Simulate API Call
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSuccess(true);
+      // Here you would typically send 'formData' and 'serviceName' to your backend/Supabase
+    }, 2000);
   };
 
-  if (items.length === 0 && !isSubmitted) {
-    return (
-      <div className="min-h-screen pt-24 pb-16 flex items-center justify-center">
-        <div className="text-center">
-          <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-          <h1 className="text-2xl font-bold mb-2">Your cart is empty</h1>
-          <p className="text-muted-foreground mb-4">Add some items to proceed to checkout</p>
-          <Button onClick={() => navigate('/services/hardware')}>
-            Continue Shopping
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  if (!serviceName) return null; // Prevent flash before redirect
 
-  if (isSubmitted) {
+  // --- Success View ---
+  if (isSuccess) {
     return (
-      <div className="min-h-screen pt-24 pb-16 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center max-w-md"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="max-w-md w-full text-center"
         >
-          <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="h-10 w-10 text-green-500" />
-          </div>
-          <h1 className="text-3xl font-bold mb-4">Payment Submitted!</h1>
-          <p className="text-muted-foreground mb-6">
-            Thank you for your order. Our team will verify your payment and send a confirmation email within 24 hours.
-          </p>
-          <Button onClick={() => navigate('/')} variant="gradient">
-            Return to Home
-          </Button>
+          <Card className="border-primary/50 shadow-[0_0_50px_-12px_rgba(var(--primary),0.5)]">
+            <CardContent className="pt-10 pb-10 space-y-6">
+              <div className="w-20 h-20 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500/20">
+                <CheckCircle className="w-10 h-10" />
+              </div>
+              <h2 className="text-3xl font-bold text-foreground">Order Placed!</h2>
+              <p className="text-muted-foreground">
+                Thank you, <span className="text-foreground font-semibold">{formData.name}</span>. 
+                We have received your request for <span className="text-primary">{serviceName}</span>.
+              </p>
+              <div className="bg-muted/50 p-4 rounded-lg text-sm">
+                <p>Our team will verify transaction <strong>#{formData.transactionId}</strong> and activate your service shortly via email.</p>
+              </div>
+              <Button className="w-full" onClick={() => navigate("/services")}>
+                Return to Store
+              </Button>
+            </CardContent>
+          </Card>
         </motion.div>
       </div>
     );
   }
 
+  // --- Main Checkout View ---
   return (
-    <div className="min-h-screen pt-24 pb-16 bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="container mx-auto px-4">
-        <Button variant="ghost" className="mb-6" onClick={() => navigate(-1)}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back
+    <div className="min-h-screen bg-background text-foreground pt-24 pb-12 relative selection:bg-primary/20">
+      
+      {/* Background Ambience */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-600/5 rounded-full blur-[100px]" />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10 max-w-6xl">
+        <Button 
+          variant="ghost" 
+          className="mb-8 pl-0 hover:bg-transparent hover:text-primary" 
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Services
         </Button>
 
-        <h1 className="text-3xl font-bold mb-2 text-center">Complete Your Payment</h1>
-        <p className="text-muted-foreground text-center mb-8">
-          Scan the QR code or use UPI ID to make payment, then submit your details
-        </p>
-
-        {/* Order Summary - Mobile */}
-        <div className="lg:hidden mb-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Order Total: {formatPrice(grandTotal)}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              {items.length} item(s) • Tax: {formatPrice(tax)} • Shipping: {shipping === 0 ? 'Free' : formatPrice(shipping)}
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Left Column - Payment Form */}
-          <motion.div
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* Left Column: User Details Form */}
+          <motion.div 
+            className="lg:col-span-7 space-y-6"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            <Card>
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Checkout</h1>
+              <p className="text-muted-foreground">Complete your purchase securely.</p>
+            </div>
+
+            <Card className="border-border/50 bg-background/50 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle>Payment Details</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-primary" /> 
+                  Personal Information
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="space-y-2">
-                    <Label htmlFor="fullName">Full Name *</Label>
-                    <Input
-                      id="fullName"
-                      value={formData.fullName}
-                      onChange={handleInputChange}
-                      placeholder="Enter your full name"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number *</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      placeholder="+91 98765 43210"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="transactionId">Transaction ID / UTR Number *</Label>
-                    <Input
-                      id="transactionId"
-                      value={formData.transactionId}
-                      onChange={handleInputChange}
-                      placeholder="Enter UPI transaction ID"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="amountPaid">Amount Paid (₹) *</Label>
-                    <Input
-                      id="amountPaid"
-                      type="number"
-                      value={formData.amountPaid}
-                      onChange={handleInputChange}
-                      placeholder={grandTotal.toString()}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="screenshot">Upload Screenshot (Optional)</Label>
-                    <div className="relative">
-                      <Input
-                        id="screenshot"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="hidden"
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Full Name</Label>
+                      <Input 
+                        id="name" name="name" 
+                        placeholder="John Doe" 
+                        required 
+                        value={formData.name} onChange={handleInputChange}
+                        className="bg-muted/30"
                       />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full justify-start"
-                        onClick={() => document.getElementById('screenshot')?.click()}
-                      >
-                        <Upload className="mr-2 h-4 w-4" />
-                        {formData.screenshot ? formData.screenshot.name : 'Choose file...'}
-                      </Button>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Upload a screenshot of your payment confirmation
-                    </p>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone Number</Label>
+                      <Input 
+                        id="phone" name="phone" 
+                        placeholder="+91 98765 43210" 
+                        required 
+                        value={formData.phone} onChange={handleInputChange}
+                        className="bg-muted/30"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input 
+                      id="email" name="email" type="email" 
+                      placeholder="john@example.com" 
+                      required 
+                      value={formData.email} onChange={handleInputChange}
+                      className="bg-muted/30"
+                    />
+                    <p className="text-xs text-muted-foreground">Your subscription details will be sent here.</p>
                   </div>
 
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="w-full"
-                    variant="gradient"
+                  <Separator className="my-4" />
+
+                  <div className="space-y-4">
+                    <Label className="text-base font-semibold">Payment Confirmation</Label>
+                    <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 text-sm text-yellow-600 dark:text-yellow-400">
+                      Please scan the QR code on the right to pay <strong>{price}</strong> via UPI. 
+                      Once paid, enter the Transaction ID (UTR) below.
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="transactionId">Transaction ID / UTR Number</Label>
+                      <Input 
+                        id="transactionId" name="transactionId" 
+                        placeholder="e.g. 403819XXXXXX" 
+                        required 
+                        value={formData.transactionId} onChange={handleInputChange}
+                        className="border-primary/30 focus-visible:ring-primary bg-muted/30"
+                      />
+                    </div>
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    size="lg" 
+                    className="w-full mt-6 text-lg font-semibold shadow-glow"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Submitting..." : "Submit Payment Details"}
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying...
+                      </>
+                    ) : (
+                      "Confirm Payment"
+                    )}
                   </Button>
                 </form>
               </CardContent>
             </Card>
           </motion.div>
 
-          {/* Right Column - QR Code & Order Summary */}
-          <motion.div
+          {/* Right Column: Order Summary & Payment QR */}
+          <motion.div 
+            className="lg:col-span-5 space-y-6"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="space-y-6"
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
-            {/* QR Code Card */}
-            <Card className="text-center">
+            {/* Order Summary Card */}
+            <Card className="border-border/50 bg-muted/5 backdrop-blur-sm overflow-hidden">
+              <CardHeader className="bg-muted/20 pb-4">
+                <CardTitle>Order Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="font-bold text-lg">{serviceName}</h3>
+                    <p className="text-sm text-muted-foreground">Standard License</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-xl">{price}</p>
+                  </div>
+                </div>
+                
+                <Separator className="my-4" />
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>Subtotal</span>
+                    <span>{price}</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>Tax</span>
+                    <span>₹0.00</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-2 mt-2 border-t border-border/50">
+                    <span className="font-bold">Total</span>
+                    <span className="font-bold text-2xl text-primary">{price}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Pay via UPI Card */}
+            <Card className="border-primary/20 bg-gradient-to-b from-background to-primary/5 shadow-lg">
               <CardHeader>
-                <CardTitle className="flex items-center justify-center gap-2">
-                  <QrCode className="h-5 w-5" />
+                <CardTitle className="flex items-center gap-2 text-primary">
+                  <QrCode className="w-5 h-5" />
                   Scan to Pay
                 </CardTitle>
+                <CardDescription>
+                  Supported by GPay, PhonePe, Paytm, etc.
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="bg-white p-4 rounded-xl inline-block mx-auto">
-                  <img
-                    src={QR_CODE_URL}
-                    alt="Payment QR Code"
-                    className="w-56 h-56 object-contain"
+              <CardContent className="flex flex-col items-center">
+                <div className="bg-white p-4 rounded-xl shadow-inner mb-6 relative group">
+                  {/* Generated QR Code */}
+                  <img 
+                    src={qrCodeUrl} 
+                    alt="UPI QR Code" 
+                    className="w-48 h-48 mix-blend-multiply" 
                   />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none">
+                    <span className="text-xs font-bold bg-white/80 px-2 py-1 rounded text-black">Scan Me</span>
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Or pay using UPI ID</p>
-                  <div className="flex items-center justify-center gap-2">
-                    <code className="px-4 py-2 bg-muted rounded-lg font-mono text-lg">
-                      {UPI_ID}
-                    </code>
-                    <Button variant="outline" size="icon" onClick={copyUpiId}>
-                      <Copy className="h-4 w-4" />
+                <div className="w-full space-y-3">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground justify-center">
+                    <Smartphone className="w-4 h-4" />
+                    <span>UPI ID</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border border-border/50 group hover:border-primary/30 transition-colors">
+                    <code className="flex-1 text-center font-mono text-sm">{UPI_ID}</code>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-8 w-8 hover:text-primary"
+                      onClick={copyUpiToClipboard}
+                    >
+                      <Copy className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
 
-                <p className="text-sm text-muted-foreground">
-                  Amount to pay: <span className="font-bold text-foreground">{formatPrice(grandTotal)}</span>
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Order Summary - Desktop */}
-            <Card className="hidden lg:block">
-              <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {items.map((item) => (
-                  <div key={item.id} className="flex gap-3">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-14 h-14 object-cover rounded-md"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">{item.name}</p>
-                      <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
-                    </div>
-                    <p className="font-medium text-sm">{formatPrice(item.price * item.quantity)}</p>
-                  </div>
-                ))}
-
-                <div className="border-t pt-4 space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span>{formatPrice(totalPrice)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Tax ({currency === 'INR' ? '18%' : '8%'})</span>
-                    <span>{formatPrice(tax)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Shipping</span>
-                    <span>{shipping === 0 ? 'Free' : formatPrice(shipping)}</span>
-                  </div>
-                  <div className="flex justify-between font-bold text-lg pt-2 border-t">
-                    <span>Total</span>
-                    <span className="text-primary">{formatPrice(grandTotal)}</span>
-                  </div>
+                <div className="mt-6 flex gap-4 text-muted-foreground opacity-50 justify-center">
+                   <CreditCard className="w-6 h-6" />
+                   <div className="text-xs max-w-[150px] text-center leading-tight">
+                     Secure Payment Encrypted via UPI Network
+                   </div>
                 </div>
               </CardContent>
             </Card>
@@ -331,6 +334,4 @@ const Checkout = () => {
       </div>
     </div>
   );
-};
-
-export default Checkout;
+}
