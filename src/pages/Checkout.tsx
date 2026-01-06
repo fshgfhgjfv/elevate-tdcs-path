@@ -11,7 +11,9 @@ import {
   CheckCircle, 
   Loader2,
   BookOpen,
-  Zap
+  Zap,
+  AlertTriangle,
+  MessageCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +25,7 @@ import { toast } from "@/hooks/use-toast";
 // --- Configuration ---
 const UPI_ID = "tdcsorganization@sbi"; 
 const MERCHANT_NAME = "TDCS Technologies";
+const WHATSAPP_LINK = "https://chat.whatsapp.com/DjpjRfZl7dI0wVIX9tXuFZ";
 
 // --- Hosted QR Code Link ---
 const QR_CODE_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEiYxV2ayi-nLo4GdGqaDDKDg9OpUiRjbmyav9HoiZp_qm2Zt1-x8jQ7Y4S5gMQSeKrIuZKolSVxZ0c817cdvXKG5IbRLWEngQOEBC8Gah6Edi2snbD0vbr6y-0nJSq8rdvCR4HJIcRJhRDlSTYA9EeYdGj-U6QaRM365bjvdR85QjaR3s4rm1oYOTYTl8gU";
@@ -95,42 +98,72 @@ export default function Checkout() {
 
   if (!itemName) return null; 
 
-  // --- Success View ---
+  // --- Success / Verification View ---
   if (isSuccess) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        
         <motion.div 
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="max-w-md w-full text-center"
+          className="max-w-xl w-full"
         >
-          <Card className="border-primary/50 shadow-[0_0_50px_-12px_rgba(var(--primary),0.5)]">
-            <CardContent className="pt-10 pb-10 space-y-6">
-              <div className="w-20 h-20 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500/20">
+          <Card className="border-green-500/30 shadow-[0_0_50px_-12px_rgba(34,197,94,0.3)]">
+            <CardHeader className="text-center pb-2">
+              <div className="w-20 h-20 bg-green-500/10 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500/20">
                 <CheckCircle className="w-10 h-10" />
               </div>
-              <h2 className="text-3xl font-bold text-foreground">Payment Successful!</h2>
-              <p className="text-muted-foreground">
-                Thank you, <span className="text-foreground font-semibold">{formData.name}</span>. 
-                <br />
-                Your access to <span className="text-primary font-bold">{itemName}</span> is being processed.
-              </p>
-              
-              <div className="bg-muted/50 p-4 rounded-lg text-sm">
-                <p>Transaction <strong>#{formData.transactionId}</strong> received.</p>
-                <p className="mt-1">Check your email for access details.</p>
+              <CardTitle className="text-2xl font-bold text-green-700 dark:text-green-400">Payment Submitted</CardTitle>
+              <CardDescription>
+                Transaction <strong>#{formData.transactionId}</strong> has been recorded.
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              {/* Verification Info */}
+              <div className="bg-muted/30 p-4 rounded-xl border border-border/50 space-y-3">
+                 <h3 className="font-semibold flex items-center gap-2">
+                   <ShieldCheck className="w-5 h-5 text-primary" /> Verification Process
+                 </h3>
+                 <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+                    <li>Our team will verify your payment within <strong>2 hours</strong>.</li>
+                    <li>Once verified, all access details will be shared via email/WhatsApp.</li>
+                    <li><strong>Genuine payments will receive a confirmation call.</strong></li>
+                 </ul>
               </div>
 
-              <div className="flex gap-3">
-                <Button className="flex-1" onClick={() => navigate("/")}>
-                  Go Home
-                </Button>
-                {isCourse && (
-                   <Button variant="outline" className="flex-1" onClick={() => navigate(`/courses/${courseId}/content`)}>
-                     Start Learning
-                   </Button>
-                )}
+              {/* Warning Section */}
+              <div className="bg-red-500/5 border border-red-500/20 p-4 rounded-xl">
+                 <h4 className="text-red-600 dark:text-red-400 font-bold flex items-center gap-2 mb-2 text-sm uppercase tracking-wide">
+                   <AlertTriangle className="w-4 h-4" /> Important Notice
+                 </h4>
+                 <p className="text-xs text-muted-foreground leading-relaxed">
+                   <span className="font-semibold text-red-600/80 dark:text-red-400/80">Fake, fraudulent, or illegal payments</span> may result in immediate legal action. 
+                   If the amount is debited but verification fails, a refund will be processed automatically after review.
+                 </p>
               </div>
+
+              {/* WhatsApp & Actions */}
+              <div className="space-y-3 pt-2">
+                <Button 
+                  className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold"
+                  onClick={() => window.open(WHATSAPP_LINK, "_blank")}
+                >
+                  <MessageCircle className="w-5 h-5 mr-2" /> Join WhatsApp Group
+                </Button>
+                
+                <div className="flex gap-3">
+                  <Button variant="outline" className="flex-1" onClick={() => navigate("/")}>
+                    Go Home
+                  </Button>
+                  {isCourse && (
+                     <Button variant="secondary" className="flex-1" onClick={() => navigate(`/courses/${courseId}/content`)}>
+                       Access Content
+                     </Button>
+                  )}
+                </div>
+              </div>
+
             </CardContent>
           </Card>
         </motion.div>
