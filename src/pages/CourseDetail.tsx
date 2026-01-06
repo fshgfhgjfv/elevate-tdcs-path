@@ -17,7 +17,6 @@ import { MentorsSection } from "@/components/MentorsSection";
 import { HiringPartners } from "@/components/HiringPartners";
 import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
 import { NetworkSecurityCurriculum } from "@/components/NetworkSecurityCurriculum";
-import { BugBountyCurriculum } from "@/components/BugBountyCurriculum";
 import { DownloadBrochureModal } from "@/components/DownloadBrochureModal";
 
 export default function CourseDetail() {
@@ -46,8 +45,8 @@ export default function CourseDetail() {
     }
     if (!course) return;
 
-    // Navigate to course enrollment page for manual payment
-    navigate(`/courses/${id}/enroll`);
+    // Navigate to checkout for manual payment
+    navigate("/checkout", { state: { courseId: id, courseName: course.title, price: course.price } });
   };
 
   if (!course)
@@ -157,8 +156,6 @@ export default function CourseDetail() {
       >
         {id === "network-security-defense" ? (
           <NetworkSecurityCurriculum />
-        ) : id === "bug-hunting-pentest" ? (
-          <BugBountyCurriculum />
         ) : (
           <CourseCurriculum />
         )}

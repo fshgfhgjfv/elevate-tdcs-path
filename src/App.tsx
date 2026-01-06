@@ -14,7 +14,6 @@ import Home from "./pages/Home";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 import CourseContent from "./pages/CourseContent";
-import CourseEnrollment from "./pages/CourseEnrollment";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
@@ -69,7 +68,6 @@ const App = () => (
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:id" element={<CourseDetail />} />
             <Route path="/courses/:id/content" element={<CourseContent />} />
-            <Route path="/courses/:id/enroll" element={<CourseEnrollment />} />
 
             {/* 👤 Auth & Profile */}
             <Route path="/login" element={<Login />} />
