@@ -13,7 +13,8 @@ import {
   BookOpen,
   Zap,
   AlertTriangle,
-  MessageCircle
+  MessageCircle,
+  Lock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,6 +51,11 @@ export default function Checkout() {
     transactionId: "" 
   });
   
+  const [errors, setErrors] = useState({
+    phone: "",
+    transactionId: ""
+  });
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -66,7 +72,30 @@ export default function Checkout() {
   }, [itemName, price, navigate, isCourse]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Specific validation logic for phone number
+    if (name === "phone") {
+        // Only allow digits
+        const cleanValue = value.replace(/\D/g, '').slice(0, 10);
+        setFormData({ ...formData, [name]: cleanValue });
+        
+        // Validation check
+        if (cleanValue.length === 10 && !/^[6-9]/.test(cleanValue)) {
+            setErrors(prev => ({ ...prev, phone: "Mobile number must start with 6, 7, 8, or 9" }));
+        } else {
+            setErrors(prev => ({ ...prev, phone: "" }));
+        }
+    } else if (name === "transactionId") {
+        setFormData({ ...formData, [name]: value.toUpperCase() }); // Auto-uppercase UTR
+        if (value.length > 0 && value.length < 12) {
+             setErrors(prev => ({ ...prev, transactionId: "UTR is typically 12 digits" }));
+        } else {
+             setErrors(prev => ({ ...prev, transactionId: "" }));
+        }
+    } else {
+        setFormData({ ...formData, [name]: value });
+    }
   };
 
   const copyUpiToClipboard = () => {
@@ -77,8 +106,21 @@ export default function Checkout() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.email || !formData.phone || !formData.transactionId) {
-      toast({ variant: "destructive", title: "Missing Fields", description: "Please fill in all details including Transaction ID." });
+    // --- SECURITY VALIDATION ---
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(formData.phone)) {
+        toast({ variant: "destructive", title: "Invalid Phone Number", description: "Please enter a valid 10-digit Indian mobile number." });
+        setErrors(prev => ({ ...prev, phone: "Enter a valid 10-digit number" }));
+        return;
+    }
+
+    if (formData.transactionId.length < 12) {
+        toast({ variant: "destructive", title: "Invalid Transaction ID", description: "Please enter a valid 12-digit UTR/Reference number." });
+        return;
+    }
+    
+    if (!formData.name || !formData.email) {
+      toast({ variant: "destructive", title: "Missing Fields", description: "Please fill in all details." });
       return;
     }
 
@@ -102,7 +144,8 @@ export default function Checkout() {
   if (isSuccess) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        
+        {/* Placeholder for optional diagram if needed */}
+        {/*  */}
         <motion.div 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -209,8 +252,8 @@ export default function Checkout() {
             <Card className="border-border/50 bg-background/50 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-primary" /> 
-                  Billing Details
+                  <Lock className="w-5 h-5 text-primary" /> 
+                  Secure Billing
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -227,14 +270,17 @@ export default function Checkout() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
+                      <Label htmlFor="phone">Phone Number (+91)</Label>
                       <Input 
                         id="phone" name="phone" 
-                        placeholder="Give your Phone number" 
+                        type="tel"
+                        maxLength={10}
+                        placeholder="e.g. 9876543210" 
                         required 
                         value={formData.phone} onChange={handleInputChange}
-                        className="bg-muted/30"
+                        className={`bg-muted/30 ${errors.phone ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                       />
+                      {errors.phone && <p className="text-xs text-red-500 font-medium">{errors.phone}</p>}
                     </div>
                   </div>
                   
@@ -268,9 +314,11 @@ export default function Checkout() {
                         id="transactionId" name="transactionId" 
                         placeholder="e.g. 403819XXXXXX" 
                         required 
+                        maxLength={20}
                         value={formData.transactionId} onChange={handleInputChange}
-                        className="border-primary/30 focus-visible:ring-primary bg-muted/30"
+                        className="border-primary/30 focus-visible:ring-primary bg-muted/30 uppercase placeholder:normal-case"
                       />
+                      {errors.transactionId && <p className="text-xs text-orange-500">{errors.transactionId}</p>}
                     </div>
                   </div>
 
