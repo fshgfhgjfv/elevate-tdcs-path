@@ -1,7 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Download, Share2, ArrowLeft, ArrowRight } from "lucide-react";
+import { X, Download, Share2, ArrowLeft, ArrowRight, Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+// Import images (Assuming these paths are correct in your project)
 import swag1 from "@/assets/gallery/swag1.jpg";
 import swag2 from "@/assets/gallery/swag2.jpg";
 import swag3 from "@/assets/gallery/swag3.jpg";
@@ -56,13 +58,21 @@ const galleryItems = [
   { id: 20, image: dibyajitImg, category: "Team", title: "Dibyajit Ghosh - Founder & CEO" },
 ];
 
+// Helper to generate deterministic random rotation based on ID
+const getRotation = (id: number) => {
+  // Returns a number between -6 and 6 degrees
+  const seed = id * 37; 
+  return (seed % 13) - 6;
+};
+
 export default function Gallery() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  const filteredItems = selectedCategory === "All"
+  const filteredItems = useMemo(() => selectedCategory === "All"
     ? galleryItems
-    : galleryItems.filter(item => item.category === selectedCategory);
+    : galleryItems.filter(item => item.category === selectedCategory), 
+  [selectedCategory]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (selectedIndex !== null) {
@@ -78,157 +88,216 @@ export default function Gallery() {
   }, [handleKeyDown]);
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen pt-24 pb-16 bg-[#f8f9fa] overflow-hidden relative">
+      {/* Background Decor - Dot Pattern */}
+      <div className="absolute inset-0 z-0 opacity-[0.03]" 
+           style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px' }} 
+      />
+
+      <div className="container mx-auto px-4 relative z-10">
         {/* Hero */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 gradient-text">Gallery</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Explore our collection of student experiences, swag boxes, tools, and office setup
+          <div className="inline-block relative">
+             <h1 className="text-5xl md:text-6xl font-black mb-4 tracking-tighter text-slate-800 relative z-10">
+                The Gallery
+             </h1>
+             {/* Underline highlighter effect */}
+             <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: "100%" }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="absolute bottom-2 left-0 h-4 bg-yellow-300/60 -z-0 -rotate-1"
+             />
+          </div>
+          <p className="text-xl text-slate-500 max-w-2xl mx-auto font-medium">
+            A visual journey through our student experiences, culture, and workspaces.
           </p>
         </motion.div>
 
-        {/* Category Filter */}
+        {/* Category Filter Pills */}
         <motion.div
-          className="flex flex-wrap justify-center gap-3 mb-12"
+          className="flex flex-wrap justify-center gap-3 mb-16"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
           {categories.map((cat) => (
-            <motion.div key={cat} whileTap={{ scale: 0.9 }}>
-              <Button
-                variant={selectedCategory === cat ? "default" : "outline"}
-                onClick={() => setSelectedCategory(cat)}
-                className="rounded-full px-5"
-              >
-                {cat}
-              </Button>
-            </motion.div>
+            <motion.button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`
+                px-6 py-2 rounded-full font-semibold text-sm border-2 transition-all duration-300
+                ${selectedCategory === cat 
+                  ? "bg-slate-900 text-white border-slate-900 shadow-lg" 
+                  : "bg-white text-slate-600 border-slate-200 hover:border-slate-400 hover:bg-slate-50"}
+              `}
+            >
+              {cat}
+            </motion.button>
           ))}
         </motion.div>
 
-        {/* Gallery Grid */}
+        {/* Sticky Note Grid Layout */}
         <motion.div
           layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12 px-4 md:px-12"
         >
           <AnimatePresence mode="popLayout">
-            {filteredItems.map((item, index) => (
-              <motion.div
-                key={item.id}
-                layoutId={`img-${item.id}`}
-                initial={{ opacity: 0, scale: 0.8, y: 30 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.4 }}
-                whileHover={{ scale: 1.05, rotateX: 5, rotateY: -3 }}
-                onClick={() => setSelectedIndex(index)}
-                className="relative overflow-hidden rounded-xl shadow-md group cursor-pointer bg-neutral-100"
-              >
-                <motion.img
-                  src={item.image}
-                  alt={item.title}
-                  loading="lazy"
-                  className="w-full h-64 object-cover"
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ duration: 0.5 }}
-                />
+            {filteredItems.map((item, index) => {
+               const rotation = getRotation(item.id);
+               
+               return (
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4"
+                  key={item.id}
+                  layoutId={`card-${item.id}`}
+                  initial={{ opacity: 0, scale: 0.8, rotate: rotation + 10 }}
+                  animate={{ 
+                    opacity: 1, 
+                    scale: 1, 
+                    rotate: rotation,
+                    transition: { type: "spring", bounce: 0.4, duration: 0.8 } 
+                  }}
+                  exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
+                  whileHover={{ 
+                    scale: 1.1, 
+                    rotate: 0, 
+                    zIndex: 50,
+                    transition: { duration: 0.2 } 
+                  }}
+                  onClick={() => setSelectedIndex(index)}
+                  className="group relative cursor-pointer"
                 >
-                  <div>
-                    <h3 className="text-white font-semibold text-lg">{item.title}</h3>
-                    <p className="text-white/70 text-sm">{item.category}</p>
+                  {/* The Card */}
+                  <div className="bg-white p-3 pb-12 shadow-md hover:shadow-2xl transition-shadow duration-300 rounded-sm border border-slate-100">
+                    
+                    {/* "Tape" Visual Effect at top center */}
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-8 bg-yellow-100/80 backdrop-blur-sm rotate-1 shadow-sm z-20 border-l border-r border-white/50 opacity-90" />
+                    
+                    {/* Image Container */}
+                    <div className="aspect-[4/5] overflow-hidden bg-slate-100 relative mb-3">
+                       <motion.img
+                        src={item.image}
+                        alt={item.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover filter contrast-[1.05] grayscale-[10%] group-hover:grayscale-0 transition-all duration-500"
+                      />
+                      {/* Dark Overlay on Hover */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                    </div>
+
+                    {/* Handwriting Style Caption */}
+                    <div className="absolute bottom-3 left-0 right-0 px-4 text-center">
+                      <p className="font-handwriting text-slate-800 font-bold text-sm truncate">
+                        {item.title}
+                      </p>
+                      <p className="text-[10px] text-slate-400 uppercase tracking-widest mt-0.5">
+                        {item.category}
+                      </p>
+                    </div>
+
+                    {/* Decorative Paperclip (Randomly applied to some) */}
+                    {item.id % 3 === 0 && (
+                      <Paperclip className="absolute -right-2 top-10 w-6 h-6 text-slate-400 rotate-45" />
+                    )}
                   </div>
                 </motion.div>
-              </motion.div>
-            ))}
+              );
+            })}
           </AnimatePresence>
         </motion.div>
 
-        {/* Lightbox */}
+        {/* Improved Lightbox */}
         <AnimatePresence>
           {selectedIndex !== null && (
             <motion.div
-              className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/95 backdrop-blur-md p-4"
               onClick={() => setSelectedIndex(null)}
             >
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-5 right-5 text-white hover:bg-white/20"
-                onClick={() => setSelectedIndex(null)}
-              >
-                <X className="h-6 w-6" />
-              </Button>
+              {/* Controls */}
+              <div className="absolute top-6 right-6 flex gap-4 z-50">
+                <Button 
+                   variant="outline" 
+                   size="icon" 
+                   className="rounded-full bg-white/10 text-white border-white/20 hover:bg-white/20"
+                   onClick={() => setSelectedIndex(null)}
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute left-5 text-white hover:bg-white/20"
+              {/* Navigation Arrows */}
+              <button
+                className="absolute left-4 md:left-8 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors z-50"
                 onClick={(e) => { e.stopPropagation(); setSelectedIndex((prev) => (prev! - 1 + filteredItems.length) % filteredItems.length); }}
               >
-                <ArrowLeft className="h-6 w-6" />
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute right-5 text-white hover:bg-white/20"
+                <ArrowLeft className="w-6 h-6" />
+              </button>
+              <button
+                className="absolute right-4 md:right-8 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors z-50"
                 onClick={(e) => { e.stopPropagation(); setSelectedIndex((prev) => (prev! + 1) % filteredItems.length); }}
               >
-                <ArrowRight className="h-6 w-6" />
-              </Button>
+                <ArrowRight className="w-6 h-6" />
+              </button>
 
+              {/* Main Lightbox Content */}
               <motion.div
-                layoutId={`img-${filteredItems[selectedIndex].id}`}
-                className="max-w-4xl w-full"
+                layoutId={`card-${filteredItems[selectedIndex].id}`} 
+                className="relative max-w-5xl w-full max-h-[85vh] bg-white rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row"
                 onClick={(e) => e.stopPropagation()}
               >
-                <motion.img
-                  src={filteredItems[selectedIndex].image}
-                  alt={filteredItems[selectedIndex].title}
-                  className="w-full h-auto rounded-lg shadow-2xl"
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.4 }}
-                />
-                <div className="mt-6 text-center">
-                  <h3 className="text-white text-2xl font-bold mb-2">{filteredItems[selectedIndex].title}</h3>
-                  <p className="text-white/70 mb-4">{filteredItems[selectedIndex].category}</p>
-                  <div className="flex justify-center gap-3">
-                    <Button
-                      onClick={() => {
-                        const a = document.createElement('a');
-                        a.href = filteredItems[selectedIndex].image;
-                        a.download = `${filteredItems[selectedIndex].title}.jpg`;
-                        a.click();
-                      }}
-                      className="bg-white text-black hover:bg-gray-200"
-                    >
-                      <Download className="mr-2 h-4 w-4" /> Download
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="text-white border-white hover:bg-white/20"
-                      onClick={() => {
-                        navigator.share?.({
-                          title: filteredItems[selectedIndex].title,
-                          url: filteredItems[selectedIndex].image,
-                        });
-                      }}
-                    >
-                      <Share2 className="mr-2 h-4 w-4" /> Share
-                    </Button>
+                {/* Image Section */}
+                <div className="flex-1 bg-black relative flex items-center justify-center overflow-hidden">
+                   <motion.img
+                    key={filteredItems[selectedIndex].id}
+                    src={filteredItems[selectedIndex].image}
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4 }}
+                    className="w-full h-full max-h-[60vh] md:max-h-[85vh] object-contain"
+                  />
+                </div>
+
+                {/* Sidebar Info Section */}
+                <div className="w-full md:w-80 bg-white p-8 flex flex-col justify-between border-l border-slate-100">
+                  <div>
+                    <span className="inline-block px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-bold mb-4 tracking-wider">
+                       {filteredItems[selectedIndex].category}
+                    </span>
+                    <h2 className="text-3xl font-bold text-slate-800 mb-2 leading-tight">
+                      {filteredItems[selectedIndex].title}
+                    </h2>
+                    <p className="text-slate-500 text-sm leading-relaxed">
+                       Captured at TDCS Technologies. Part of our journey in building the next generation of cybersecurity experts.
+                    </p>
+                  </div>
+
+                  <div className="mt-8 space-y-3">
+                     <Button 
+                        className="w-full" 
+                        onClick={() => {
+                           const link = document.createElement("a");
+                           link.href = filteredItems[selectedIndex].image;
+                           link.download = filteredItems[selectedIndex].title;
+                           link.click();
+                        }}
+                     >
+                        <Download className="mr-2 w-4 h-4" /> Download Original
+                     </Button>
+                     <Button variant="outline" className="w-full" onClick={() => {
+                        navigator.clipboard.writeText(window.location.href);
+                     }}>
+                        <Share2 className="mr-2 w-4 h-4" /> Share Image
+                     </Button>
                   </div>
                 </div>
               </motion.div>
