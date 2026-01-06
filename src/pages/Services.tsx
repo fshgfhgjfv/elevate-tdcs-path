@@ -1,97 +1,101 @@
+import React, { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Sparkles,
   Shield,
   GraduationCap,
-  Palette,
-  MessageSquare,
   Code2,
   Lock,
   Search,
-  Tag,
   Clock,
   CheckCircle,
   X,
-  ArrowLeft
+  Filter,
+  Zap,
+  Globe,
+  Palette,
+  Terminal,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import React, { useMemo, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
 
-// 1. --- Original Bundle Data Structure (with logos instead of emojis) ---
+// --- 1. Enhanced Data Structure ---
+// Note: I removed hardcoded iconUrls to use a dynamic fetcher for better consistency,
+// but you can add them back if you have specific custom images.
 const services = [
   {
     id: "ai-productivity",
-    title: "AI & Productivity Tools",
+    title: "AI & Productivity",
+    icon: Zap,
     tools: [
-      { name: "ChatGPT", iconUrl: "https://logo.clearbit.com/openai.com", duration: "3 Months", description: "Advanced AI chat assistant", features: ["GPT-4 access", "Faster responses", "Priority access"] },
-      { name: "Perplexity AI Pro", iconUrl: "https://logo.clearbit.com/perplexity.ai", duration: "1 Year", description: "AI-powered search engine", features: ["Unlimited searches", "Deep research", "Source citations"] },
-      { name: "Gemini Pro", iconUrl: "https://logo.clearbit.com/google.com", duration: "1 Year", description: "Google's advanced AI", features: ["Multimodal AI", "Code generation", "Document analysis"] },
-      { name: "Gemini Ultra", iconUrl: "https://logo.clearbit.com/google.com", duration: "1 Month", description: "Premium Gemini tier", features: ["Most capable model", "Extended context", "Advanced reasoning"] },
-      { name: "Gamma AI", iconUrl: "https://logo.clearbit.com/gamma.app", duration: "1 Year", description: "AI presentation maker", features: ["Auto design", "Templates", "Collaboration"] },
-      { name: "Notion Business", iconUrl: "https://logo.clearbit.com/notion.so", duration: "6 Months", description: "All-in-one workspace", features: ["Unlimited pages", "Team collaboration", "Advanced permissions"] },
-      { name: "Lovable Pro", iconUrl: "https://logo.clearbit.com/lovable.ai", duration: "1 Year", description: "AI app development", features: ["Code generation", "Real-time preview", "Deployment"] },
-      { name: "Replit Core", iconUrl: "https://logo.clearbit.com/replit.com", duration: "1 Year", description: "Cloud IDE platform", features: ["Always-on projects", "Multiplayer coding", "Ghostwriter AI"] },
-      { name: "Bolt.new AI Code", iconUrl: "https://logo.clearbit.com/bolt.new", duration: "1 Year", description: "AI code assistant", features: ["Code generation", "Auto-completion", "Debugging help"] },
-      { name: "N8N Automation", iconUrl: "https://logo.clearbit.com/n8n.io", duration: "1 Year", description: "Workflow automation", features: ["300+ integrations", "Self-hosted option", "Custom workflows"] },
-      { name: "Make.com", iconUrl: "https://logo.clearbit.com/make.com", duration: "1 Year", description: "Visual automation", features: ["No-code builder", "1000+ apps", "Advanced logic"] },
-      { name: "ClickSites AI Website", iconUrl: "https://logo.clearbit.com/clicksites.ai", duration: "1 Year", description: "AI website builder", features: ["Instant sites", "SEO optimization", "Custom domains"] },
-      { name: "Jasper AI", iconUrl: "https://logo.clearbit.com/jasper.ai", duration: "1 Month", description: "AI content writer", features: ["Marketing copy", "Blog posts", "Social media"] },
-      { name: "Warp Dev AI", iconUrl: "https://logo.clearbit.com/warp.dev", duration: "1 Year", description: "Modern terminal", features: ["AI command search", "Workflows", "Collaboration"] },
-      { name: "Mobbin UI/UX", iconUrl: "https://logo.clearbit.com/mobbin.design", duration: "1 Year", description: "UI design library", features: ["50k+ screens", "Design patterns", "Mobile & web"] },
-      { name: "Magic Patterns", iconUrl: "https://logo.clearbit.com/magicpatterns.design", duration: "1 Year", description: "AI UI generator", features: ["Generate designs", "Export code", "Figma plugin"] },
-      { name: "Wispr Voice AI", iconUrl: "https://logo.clearbit.com/wispr.ai", duration: "1 Year", description: "Voice transcription", features: ["Real-time transcription", "Multi-language", "High accuracy"] },
-      { name: "Granola Meeting", iconUrl: "https://logo.clearbit.com/granola.ai", duration: "1 Year", description: "AI meeting notes", features: ["Auto summaries", "Action items", "Integrations"] },
-      { name: "Superhuman", iconUrl: "https://logo.clearbit.com/superhuman.com", duration: "1 Year", description: "Email productivity", features: ["Blazing fast", "Keyboard shortcuts", "AI assistance"] },
-      { name: "Linear AI Project", iconUrl: "https://logo.clearbit.com/linear.app", duration: "1 Year", description: "Issue tracking", features: ["Project management", "Roadmaps", "Integrations"] },
-      { name: "Raycast AI", iconUrl: "https://logo.clearbit.com/raycast.com", duration: "1 Year", description: "Productivity launcher", features: ["Quick actions", "Extensions", "AI commands"] },
+      { name: "ChatGPT", domain: "openai.com", duration: "3 Months", description: "Advanced AI chat assistant with GPT-4 access.", features: ["GPT-4o Access", "Data Analysis", "DALL·E 3 Image Gen"] },
+      { name: "Perplexity AI", domain: "perplexity.ai", duration: "1 Year", description: "AI-powered search engine for deep research.", features: ["Pro Search", "File Uploads", "Model Switching"] },
+      { name: "Gemini Advanced", domain: "google.com", duration: "1 Year", description: "Google's most capable AI model.", features: ["1.5 Pro Model", "Python Integration", "2TB Storage"] },
+      { name: "Claude Pro", domain: "anthropic.com", duration: "1 Month", description: "AI with massive context window.", features: ["Opus Model", "Large Context", "Project Knowledge"] },
+      { name: "Notion", domain: "notion.so", duration: "6 Months", description: "All-in-one workspace for teams.", features: ["Unlimited Blocks", "AI Writer", "Team Spaces"] },
+      { name: "Replit Core", domain: "replit.com", duration: "1 Year", description: "Cloud IDE with AI coding powers.", features: ["Faster Machines", "Private Repos", "Ghostwriter AI"] },
+      { name: "Midjourney", domain: "midjourney.com", duration: "1 Year", description: "Generative AI for hyper-realistic images.", features: ["Fast GPU Time", "Stealth Mode", "Commercial Usage"] },
+      { name: "Zapier", domain: "zapier.com", duration: "1 Year", description: "Automate workflows between apps.", features: ["Multi-step Zaps", "Unlimited Zaps", "Logic Paths"] },
     ],
   },
   {
-    id: "software-subscriptions",
-    title: "Software & Subscriptions",
+    id: "software-creative",
+    title: "Creative & Software",
+    icon: Palette,
     tools: [
-      { name: "Canva Pro", iconUrl: "https://logo.clearbit.com/canva.com", duration: "1 Year", description: "Graphic design platform", features: ["Premium templates", "Brand kit", "Background remover"] },
-      { name: "Adobe Creative Cloud", iconUrl: "https://logo.clearbit.com/adobe.com", duration: "1 Year", description: "Creative suite", features: ["All Adobe apps", "Cloud storage", "Premium fonts"] },
-      { name: "CorelDRAW", iconUrl: "https://logo.clearbit.com/coreldraw.com", duration: "1 Year", description: "Vector graphics editor", features: ["Professional design", "Typography", "Illustrations"] },
-      { name: "Descript", iconUrl: "https://logo.clearbit.com/descript.com", duration: "1 Year", description: "Video & audio editor", features: ["Transcription", "Overdub", "Screen recording"] },
-      { name: "Filmora", iconUrl: "https://logo.clearbit.com/filmora.com", duration: "1 Year", description: "Video editing", features: ["Effects library", "AI tools", "Export options"] },
-      { name: "CapCut Pro", iconUrl: "https://logo.clearbit.com/capcut.com", duration: "1 Year", description: "Video editor", features: ["Advanced editing", "Effects", "Auto captions"] },
-      { name: "ElevenLabs", iconUrl: "https://logo.clearbit.com/elevenlabs.io", duration: "1 Year", description: "AI voice generation", features: ["Voice cloning", "Multiple languages", "High quality"] },
+      { name: "Canva Pro", domain: "canva.com", duration: "1 Year", description: "Design platform for everyone.", features: ["Brand Kit", "Magic Resize", "Premium Content"] },
+      { name: "Adobe Creative Cloud", domain: "adobe.com", duration: "1 Year", description: "The ultimate creative suite.", features: ["Photoshop", "Illustrator", "Premiere Pro", "20+ Apps"] },
+      { name: "Figma Pro", domain: "figma.com", duration: "1 Year", description: "Collaborative interface design.", features: ["Dev Mode", "Unlimited Files", "Team Libraries"] },
+      { name: "Descript", domain: "descript.com", duration: "1 Year", description: "All-in-one video & audio editor.", features: ["Overdub Voice", "Studio Sound", "Transcription"] },
+      { name: "CapCut Pro", domain: "capcut.com", duration: "1 Year", description: "Advanced video editing made easy.", features: ["Cloud Storage", "Pro Effects", "Remove Background"] },
+    ],
+  },
+  {
+    id: "dev-hosting",
+    title: "Dev & Hosting",
+    icon: Terminal,
+    tools: [
+      { name: "GitHub Copilot", domain: "github.com", duration: "1 Year", description: "Your AI pair programmer.", features: ["Chat in IDE", "Code Suggestions", "CLI Assistance"] },
+      { name: "Vercel Pro", domain: "vercel.com", duration: "1 Year", description: "Frontend cloud platform.", features: ["Higher Limits", "Team Collaboration", "Analytics"] },
+      { name: "Webflow", domain: "webflow.com", duration: "1 Year", description: "Visual web development platform.", features: ["CMS", "Custom Code", "Site Export"] },
     ],
   },
   {
     id: "vpn-security",
-    title: "VPN & Security",
+    title: "Security & VPN",
+    icon: Shield,
     tools: [
-      { name: "ExpressVPN Premium", iconUrl: "https://logo.clearbit.com/expressvpn.com", duration: "1 Year", description: "Top-tier VPN service", features: ["160+ locations", "Military encryption", "24/7 support"] },
-      { name: "Surfshark VPN", iconUrl: "https://logo.clearbit.com/surfshark.com", duration: "1 Year", description: "Unlimited devices VPN", features: ["Unlimited devices", "CleanWeb", "Multi-hop"] },
-      { name: "Advanced Threat Protection", iconUrl: "https://logo.clearbit.com/tdcs.in", duration: "1 Year", description: "Security suite", features: ["Real-time protection", "Malware blocking", "Safe browsing"] },
-      { name: "Secure DNS", iconUrl: "https://logo.clearbit.com/cloudflare.com", duration: "1 Year", description: "Privacy DNS", features: ["Ad blocking", "Tracking protection", "Fast resolution"] },
+      { name: "NordVPN", domain: "nordvpn.com", duration: "1 Year", description: "Advanced internet security.", features: ["Threat Protection", "Meshnet", "Double VPN"] },
+      { name: "ExpressVPN", domain: "expressvpn.com", duration: "1 Year", description: "High-speed secure anonymity.", features: ["Lightway Protocol", "TrustedServer", "Split Tunneling"] },
+      { name: "1Password", domain: "1password.com", duration: "1 Year", description: "Password manager for families.", features: ["Watchtower", "Travel Mode", "Secure Sharing"] },
     ],
   },
   {
-    id: "learning-career",
-    title: "Learning & Career",
+    id: "learning",
+    title: "Learning",
+    icon: GraduationCap,
     tools: [
-      { name: "Coursera Plus", iconUrl: "https://logo.clearbit.com/coursera.org", duration: "1 Year", description: "Online learning", features: ["7000+ courses", "Professional certificates", "University courses"] },
-      { name: "edX Premium", iconUrl: "https://logo.clearbit.com/edx.org", duration: "1 Year", description: "University courses", features: ["Top universities", "MicroMasters", "Certificates"] },
-      { name: "LinkedIn Learning", iconUrl: "https://logo.clearbit.com/linkedin.com", duration: "1 Year", description: "Professional skills", features: ["16000+ courses", "Certificates", "Expert instructors"] },
-      { name: "Udemy Business", iconUrl: "https://logo.clearbit.com/udemy.com", duration: "1 Year", description: "Business learning", features: ["7000+ courses", "Team access", "Learning paths"] },
-      { name: "Career Coaching", iconUrl: "https://logo.clearbit.com/tdcs.in", duration: "1 Year", description: "1-on-1 coaching", features: ["Resume review", "Interview prep", "Career guidance"] },
+      { name: "Coursera Plus", domain: "coursera.org", duration: "1 Year", description: "Unlimited access to courses.", features: ["Professional Certs", "Guided Projects", "7000+ Courses"] },
+      { name: "Udemy Business", domain: "udemy.com", duration: "1 Year", description: "On-demand video courses.", features: ["Top Rated Instructors", "Offline Mode", "Certificates"] },
+      { name: "MasterClass", domain: "masterclass.com", duration: "1 Year", description: "Learn from the best.", features: ["All Access", "Workbook Downloads", "Audio Mode"] },
     ],
   }
 ];
 
-// 2. --- Logic to flatten products and add prices ---
+// --- 2. Logic & Helpers ---
 const getPriceForDuration = (duration: string) => {
   switch (duration) {
     case "1 Month": return 499;
@@ -110,6 +114,7 @@ const flattenProducts = (services: any[]) => {
         ...tool,
         id: `${service.id}-${tool.name.toLowerCase().replace(/ /g, '-')}`,
         category: service.title,
+        categoryIcon: service.icon,
         price: getPriceForDuration(tool.duration),
       });
     });
@@ -122,7 +127,6 @@ const categories = [...new Set(allProducts.map(p => p.category))];
 const durations = [...new Set(allProducts.map(p => p.duration))];
 const maxPrice = Math.max(...allProducts.map(p => p.price));
 
-// Helper to format currency
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
@@ -132,124 +136,171 @@ const formatPrice = (price: number) => {
   }).format(price);
 };
 
-// 3. --- Product Card Component ---
+// --- 3. Smart Logo Component ---
+// This ensures every logo works. If fetching fails, it shows a nice fallback.
+const ServiceLogo = ({ domain, name, className = "w-12 h-12" }: { domain: string, name: string, className?: string }) => {
+  const [error, setError] = useState(false);
+  
+  // Strategy: Try Clearbit -> Fallback to Initials
+  const logoUrl = `https://logo.clearbit.com/${domain}`;
+
+  if (error || !domain) {
+    return (
+      <div className={`${className} bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border border-gray-700 flex items-center justify-center shadow-inner`}>
+        <span className="text-xl font-bold text-gray-300">
+          {name.substring(0, 2).toUpperCase()}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${className} bg-white rounded-xl p-1 shadow-sm border overflow-hidden`}>
+      <img 
+        src={logoUrl} 
+        alt={name}
+        className="w-full h-full object-contain"
+        onError={() => setError(true)}
+        loading="lazy"
+      />
+    </div>
+  );
+};
+
+// --- 4. Modern Product Card ---
 const ProductCard = ({ product, onViewDetails }: { product: any, onViewDetails: (product: any) => void }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      layout
+      initial={{ opacity: 0, scale: 0.9 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className="flex flex-col"
+      transition={{ duration: 0.3 }}
+      whileHover={{ y: -5 }}
+      className="group h-full"
     >
-      <Card className="flex-grow flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-        <CardHeader className="flex flex-row items-center space-x-4 p-4">
-          <img 
-            src={product.iconUrl} 
-            alt={`${product.name} logo`} 
-            className="w-12 h-12 rounded-lg object-contain border"
-            onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/100?text=Logo')}
-          />
-          <div>
-            <CardTitle className="text-lg leading-tight">{product.name}</CardTitle>
-            <Badge variant="secondary" className="mt-1">{product.category}</Badge>
+      <div className="h-full relative bg-background/50 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden hover:border-primary/50 hover:shadow-[0_0_30px_-10px_rgba(var(--primary),0.3)] transition-all duration-300 flex flex-col">
+        {/* Glow Effect Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        
+        <div className="p-6 flex flex-col h-full relative z-10">
+          <div className="flex justify-between items-start mb-4">
+            <ServiceLogo domain={product.domain} name={product.name} className="w-14 h-14" />
+            <Badge variant="outline" className="bg-background/50 backdrop-blur-md border-primary/20">
+              {product.category}
+            </Badge>
           </div>
-        </CardHeader>
-        <CardContent className="p-4 flex-grow space-y-3">
-          <p className="text-sm text-muted-foreground min-h-[40px]">{product.description}</p>
-          <div className="flex items-center space-x-2">
-            <Clock className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium">{product.duration}</span>
+
+          <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{product.name}</h3>
+          <p className="text-sm text-muted-foreground mb-6 line-clamp-2 flex-grow">{product.description}</p>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center text-muted-foreground bg-muted/50 px-2 py-1 rounded-md">
+                <Clock className="w-3 h-3 mr-1.5" />
+                {product.duration}
+              </div>
+              <div className="text-right">
+                <span className="text-lg font-bold text-foreground">{formatPrice(product.price)}</span>
+              </div>
+            </div>
+
+            <Button 
+              className="w-full rounded-xl group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300"
+              variant="secondary"
+              onClick={() => onViewDetails(product)}
+            >
+              View Bundle
+            </Button>
           </div>
-          <div>
-            <span className="text-2xl font-bold text-primary">{formatPrice(product.price)}</span>
-            <span className="text-sm text-muted-foreground"> / one-time</span>
-          </div>
-        </CardContent>
-        <div className="p-4 pt-0">
-          <Button
-            variant="gradient"
-            className="w-full"
-            onClick={() => onViewDetails(product)}
-          >
-            View Details
-          </Button>
         </div>
-      </Card>
+      </div>
     </motion.div>
   );
 };
 
-// 4. --- Product Detail Modal Component ---
+// --- 5. Enhanced Detail Modal ---
 const ProductDetailModal = ({ product, onClose, onGetService }: { 
   product: any, 
   onClose: () => void, 
   onGetService: (id: string, name: string, price: number) => void 
 }) => {
-  const handleGetServiceClick = () => {
-    onGetService(product.id, product.name, product.price);
-    onClose();
-  };
-
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      onClick={onClose}
     >
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <motion.div
-        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        layoutId={`card-${product.id}`}
+        initial={{ opacity: 0, y: 50, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 30, scale: 0.95 }}
-        className="bg-background rounded-2xl w-full max-w-2xl shadow-xl overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
+        exit={{ opacity: 0, y: 50, scale: 0.95 }}
+        className="bg-background border border-border w-full max-w-lg rounded-3xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]"
       >
-        <div className="p-6 relative">
-          <Button variant="ghost" size="icon" className="absolute top-4 right-4" onClick={onClose}>
+        {/* Header Graphic */}
+        <div className="h-32 bg-gradient-to-r from-primary/20 via-primary/10 to-background relative">
+          <Button variant="ghost" size="icon" className="absolute top-4 right-4 rounded-full bg-background/50 hover:bg-background" onClick={onClose}>
             <X className="w-5 h-5" />
           </Button>
+          <div className="absolute -bottom-8 left-8">
+            <ServiceLogo domain={product.domain} name={product.name} className="w-24 h-24 shadow-xl" />
+          </div>
+        </div>
 
-          <div className="flex flex-col sm:flex-row items-center sm:space-x-6 space-y-4 sm:space-y-0">
-            <img 
-              src={product.iconUrl} 
-              alt={`${product.name} logo`}
-              className="w-32 h-32 rounded-2xl object-contain border shadow-md"
-              onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/200?text=Logo')}
-            />
-            <div className="text-center sm:text-left">
-              <Badge variant="secondary">{product.category}</Badge>
-              <h2 className="text-3xl font-bold mt-2">{product.name}</h2>
-              <p className="text-lg text-muted-foreground mt-1">{product.description}</p>
+        <div className="p-8 pt-12 overflow-y-auto">
+          <div className="flex justify-between items-start mb-4">
+             <div>
+                <h2 className="text-3xl font-bold">{product.name}</h2>
+                <div className="flex items-center gap-2 mt-2 text-muted-foreground">
+                   <Globe className="w-4 h-4" />
+                   <span className="text-sm">{product.domain}</span>
+                </div>
+             </div>
+             <div className="text-right">
+                <div className="text-2xl font-bold text-primary">{formatPrice(product.price)}</div>
+                <div className="text-xs text-muted-foreground">One-time payment</div>
+             </div>
+          </div>
+
+          <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
+            {product.description}
+          </p>
+
+          <div className="space-y-6">
+            <h4 className="font-semibold flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-primary" /> 
+              Premium Features
+            </h4>
+            <div className="grid gap-3">
+              {product.features.map((feature: string, idx: number) => (
+                <motion.div 
+                  key={idx}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="flex items-center p-3 rounded-lg bg-secondary/30 border border-border/50"
+                >
+                  <CheckCircle className="w-5 h-5 text-green-500 mr-3 shrink-0" />
+                  <span className="text-sm font-medium">{feature}</span>
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="bg-muted/50 p-6 space-y-4">
-          <h3 className="text-xl font-semibold">Key Benefits</h3>
-          <ul className="space-y-2">
-            {product.features.map((feature: string, index: number) => (
-              <li key={index} className="flex items-center space-x-2">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span className="text-muted-foreground">{feature}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        
-        <div className="p-6 bg-background flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-          <div className="text-center sm:text-left">
-            <p className="text-3xl font-bold text-primary">{formatPrice(product.price)}</p>
-            <p className="text-muted-foreground">For {product.duration}</p>
-          </div>
-          <Button
-            variant="gradient"
-            size="lg"
-            className="w-full sm:w-auto shadow-glow"
-            onClick={handleGetServiceClick}
+        <div className="p-6 border-t border-border bg-muted/10 mt-auto">
+          <Button 
+            size="lg" 
+            className="w-full text-lg h-12 rounded-xl shadow-[0_0_20px_-5px_rgba(var(--primary),0.5)] hover:shadow-[0_0_25px_-5px_rgba(var(--primary),0.6)] transition-shadow"
+            onClick={() => {
+              onGetService(product.id, product.name, product.price);
+              onClose();
+            }}
           >
-            Get Service Now
+            Get {product.name} Now
           </Button>
         </div>
       </motion.div>
@@ -257,59 +308,37 @@ const ProductDetailModal = ({ product, onClose, onGetService }: {
   );
 };
 
-
-// 5. --- Main Services Component (Rebuilt as a Store) ---
+// --- 6. Main Services Page ---
 const Services = () => {
   const navigate = useNavigate();
-  
-  // --- Filter State ---
   const [searchTerm, setSearchTerm] = useState("");
   const [priceRange, setPriceRange] = useState([0, maxPrice]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedDurations, setSelectedDurations] = useState<string[]>([]);
   const [sortOrder, setSortOrder] = useState("default");
-  
-  // --- Modal State ---
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  // --- Filter Handlers ---
+  // Handlers
   const handleCategoryChange = (category: string) => {
-    setSelectedCategories(prev =>
-      prev.includes(category)
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
-    );
+    setSelectedCategories(prev => prev.includes(category) ? prev.filter(c => c !== category) : [...prev, category]);
   };
-
   const handleDurationChange = (duration: string) => {
-    setSelectedDurations(prev =>
-      prev.includes(duration)
-        ? prev.filter(d => d !== duration)
-        : [...prev, duration]
-    );
-  };
-  
-  // --- Modal Handler ---
-  const handleViewDetails = (product: any) => {
-    setSelectedProduct(product);
+    setSelectedDurations(prev => prev.includes(duration) ? prev.filter(d => d !== duration) : [...prev, duration]);
   };
 
-  // --- Filtered Products Logic ---
   const filteredProducts = useMemo(() => {
     let products = allProducts;
     if (searchTerm) {
-      products = products.filter(p =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      products = products.filter(p => 
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
         p.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     products = products.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1]);
-    if (selectedCategories.length > 0) {
-      products = products.filter(p => selectedCategories.includes(p.category));
-    }
-    if (selectedDurations.length > 0) {
-      products = products.filter(p => selectedDurations.includes(p.duration));
-    }
+    if (selectedCategories.length > 0) products = products.filter(p => selectedCategories.includes(p.category));
+    if (selectedDurations.length > 0) products = products.filter(p => selectedDurations.includes(p.duration));
+    
     switch (sortOrder) {
       case "price-asc": products.sort((a, b) => a.price - b.price); break;
       case "price-desc": products.sort((a, b) => b.price - a.price); break;
@@ -318,240 +347,193 @@ const Services = () => {
     return products;
   }, [searchTerm, priceRange, selectedCategories, selectedDurations, sortOrder]);
 
-  // --- Navigate to Checkout Handler ---
-  const handleGetService = (
-    serviceId: string, 
-    serviceName: string, 
-    price: number
-  ) => {
-    navigate("/checkout", { 
-      state: { 
-        serviceName, 
-        price: formatPrice(price) 
-      } 
-    });
-    toast({
-      title: "Redirecting to Payment",
-      description: "Complete your payment using UPI to activate your subscription.",
-    });
+  const handleGetService = (serviceId: string, serviceName: string, price: number) => {
+    navigate("/checkout", { state: { serviceName, price: formatPrice(price) } });
+    toast({ title: "Redirecting...", description: "Taking you to secure checkout." });
   };
 
+  // Shared Filter Content
+  const FilterContent = () => (
+    <div className="space-y-8">
+      <div>
+        <h3 className="text-sm font-medium mb-4 text-muted-foreground uppercase tracking-wider">Price Range</h3>
+        <Slider 
+          min={0} max={maxPrice} step={100} value={priceRange} 
+          onValueChange={setPriceRange} className="my-6" 
+        />
+        <div className="flex justify-between text-sm font-semibold">
+          <span>{formatPrice(priceRange[0])}</span>
+          <span>{formatPrice(priceRange[1])}</span>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-medium mb-4 text-muted-foreground uppercase tracking-wider">Categories</h3>
+        <div className="space-y-3">
+          {categories.map(category => (
+            <div key={category} className="flex items-center space-x-3">
+              <Checkbox 
+                id={`cat-${category}`} 
+                checked={selectedCategories.includes(category)}
+                onCheckedChange={() => handleCategoryChange(category)}
+              />
+              <label htmlFor={`cat-${category}`} className="text-sm leading-none cursor-pointer hover:text-primary transition-colors">
+                {category}
+              </label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-medium mb-4 text-muted-foreground uppercase tracking-wider">Duration</h3>
+        <div className="flex flex-wrap gap-2">
+          {durations.map(duration => (
+            <div 
+              key={duration}
+              onClick={() => handleDurationChange(duration)}
+              className={`cursor-pointer px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                selectedDurations.includes(duration) 
+                  ? "bg-primary text-primary-foreground border-primary" 
+                  : "bg-background hover:bg-muted border-border"
+              }`}
+            >
+              {duration}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen pt-20">
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-background via-muted/20 to-background">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-16"
-          >
-            <h1 className="text-5xl md:text-6xl font-bold gradient-text mb-6">
-              TDCS Premium Services
+    <div className="min-h-screen bg-background text-foreground relative selection:bg-primary/20">
+      {/* Background Decor */}
+      <div className="fixed inset-0 z-0 opacity-40 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px] translate-x-1/2 translate-y-1/2"></div>
+      </div>
+
+      <div className="relative z-10 pt-24 pb-20 container mx-auto px-4 md:px-6">
+        
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-2">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/70">Premium</span>
+              <span className="text-primary"> Tools.</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Unlock your potential with our exclusive bundle packages. Get premium tools, software, and learning resources at unbeatable prices.
+            <p className="text-muted-foreground text-lg max-w-xl">
+              Equip yourself with industry-standard software, AI models, and security tools at a fraction of the cost.
             </p>
           </motion.div>
-        </div>
-      </section>
-
-      {/* --- Store Layout Section --- */}
-      <section className="py-16 bg-muted/10">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row gap-8">
-            
-            {/* --- Filters Sidebar --- */}
-            <aside className="lg:w-1/4 space-y-6">
-              <Card>
-                <CardHeader><CardTitle>Search</CardTitle></CardHeader>
-                <CardContent>
-                  <div className="relative">
-                    <Input 
-                      placeholder="e.g. ChatGPT, Canva..." 
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-8"
-                    />
-                    <Search className="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader><CardTitle>Filter by Price</CardTitle></CardHeader>
-                <CardContent className="space-y-4">
-                  <Slider 
-                    min={0} 
-                    max={maxPrice} 
-                    step={100} 
-                    value={priceRange} 
-                    onValueChange={(value) => setPriceRange(value)}
-                  />
-                  <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>{formatPrice(priceRange[0])}</span>
-                    <span>{formatPrice(priceRange[1])}</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader><CardTitle>Categories</CardTitle></CardHeader>
-                <CardContent className="space-y-3">
-                  {categories.map(category => (
-                    <div key={category} className="flex items-center space-x-2">
-                      <Checkbox 
-                        id={`cat-${category}`} 
-                        checked={selectedCategories.includes(category)}
-                        onCheckedChange={() => handleCategoryChange(category)}
-                      />
-                      <label htmlFor={`cat-${category}`} className="text-sm font-medium leading-none">
-                        {category}
-                      </label>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader><CardTitle>Duration</CardTitle></CardHeader>
-                <CardContent className="space-y-3">
-                  {durations.map(duration => (
-                    <div key={duration} className="flex items-center space-x-2">
-                      <Checkbox 
-                        id={`dur-${duration}`} 
-                        checked={selectedDurations.includes(duration)}
-                        onCheckedChange={() => handleDurationChange(duration)}
-                      />
-                      <label htmlFor={`dur-${duration}`} className="text-sm font-medium leading-none">
-                        {duration}
-                      </label>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </aside>
-
-            {/* --- Product Grid --- */}
-            <main className="lg:w-3/4">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-muted-foreground text-sm">
-                  Showing {filteredProducts.length} of {allProducts.length} results
-                </span>
-                <Select value={sortOrder} onValueChange={setSortOrder}>
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="default">Default sorting</SelectItem>
-                    <SelectItem value="price-asc">Sort by price: low to high</SelectItem>
-                    <SelectItem value="price-desc">Sort by price: high to low</SelectItem>
-                    <SelectItem value="name-asc">Sort by name (A-Z)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onViewDetails={handleViewDetails}
-                  />
-                ))}
-              </div>
-              {filteredProducts.length === 0 && (
-                <div className="text-center col-span-full py-12">
-                  <p className="text-lg text-muted-foreground">No products found matching your filters.</p>
-                </div>
-              )}
-            </main>
+          
+          {/* Search & Mobile Filter Toggle */}
+          <div className="flex gap-3 w-full md:w-auto">
+             <div className="relative w-full md:w-80">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search tools..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9 bg-background/50 backdrop-blur-sm border-border/50 focus:ring-primary/20 rounded-xl"
+              />
+            </div>
+            <Button variant="outline" size="icon" className="md:hidden shrink-0" onClick={() => setShowMobileFilters(true)}>
+              <Filter className="w-4 h-4" />
+            </Button>
           </div>
         </div>
-      </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-gradient-to-br from-background via-primary/5 to-background">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl font-bold gradient-text mb-4">
-              Why Choose TDCS Services?
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Premium access to industry-leading tools at a fraction of the cost
-            </p>
-          </motion.div>
+        <div className="flex flex-col lg:flex-row gap-10">
+          
+          {/* Desktop Sidebar */}
+          <aside className="hidden lg:block w-64 shrink-0">
+            <div className="sticky top-28 p-6 rounded-2xl border border-border/50 bg-background/30 backdrop-blur-md">
+              <div className="flex items-center gap-2 mb-6 text-primary">
+                 <Filter className="w-5 h-5" />
+                 <span className="font-bold">Filters</span>
+              </div>
+              <FilterContent />
+            </div>
+          </aside>
 
-          <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            {[
-              { icon: Sparkles, title: "Premium Quality", desc: "Verified premium accounts" },
-              { icon: Lock, title: "Secure Access", desc: "Protected & encrypted" },
-              { icon: MessageSquare, title: "24/7 Support", desc: "Always here to help" },
-              { icon: Code2, title: "Easy Setup", desc: "Instant activation" }
-            ].map((feature, idx) => {
-              const FeatureIcon = feature.icon;
-              return (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
+          {/* Mobile Filter Drawer (Overlay) */}
+          <AnimatePresence>
+            {showMobileFilters && (
+              <motion.div 
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm lg:hidden"
+              >
+                <motion.div 
+                  initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
+                  className="absolute right-0 top-0 h-full w-80 bg-background border-l p-6 shadow-2xl overflow-y-auto"
                 >
-                  <Card className="text-center p-6 hover:shadow-glow transition-all duration-300">
-                    <div className="inline-flex p-4 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 mb-4">
-                      <FeatureIcon className="w-8 h-8 text-primary" />
-                    </div>
-                    <h3 className="font-bold mb-2">{feature.title}</h3>
-                    <p className="text-sm text-muted-foreground">{feature.desc}</p>
-                  </Card>
+                  <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-xl font-bold">Filters</h2>
+                    <Button variant="ghost" size="icon" onClick={() => setShowMobileFilters(false)}>
+                      <X className="w-5 h-5" />
+                    </Button>
+                  </div>
+                  <FilterContent />
                 </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-muted/20">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <Card className="p-12 shadow-glow-lg border-2">
-              <h2 className="text-4xl font-bold gradient-text mb-4">
-                Ready to Upgrade Your Digital Arsenal?
-              </h2>
-              <p className="text-xl text-muted-foreground mb-8">
-                Join thousands of satisfied customers who trust TDCS for their software needs
+          {/* Product Grid */}
+          <main className="flex-grow">
+            <div className="flex justify-between items-center mb-6">
+              <p className="text-sm text-muted-foreground">
+                Showing <span className="font-bold text-foreground">{filteredProducts.length}</span> tools
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button variant="gradient" size="lg" className="shadow-glow">
-                  View All Services
-                </Button>
-                <Button variant="outline" size="lg">
-                  Contact Sales
+              <Select value={sortOrder} onValueChange={setSortOrder}>
+                <SelectTrigger className="w-[180px] bg-background/50 rounded-xl border-border/50">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Relevance</SelectItem>
+                  <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                  <SelectItem value="name-asc">Name: A to Z</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <AnimatePresence mode="popLayout">
+                  {filteredProducts.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      onViewDetails={setSelectedProduct}
+                    />
+                  ))}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div className="text-center py-20 rounded-3xl border border-dashed border-border/50 bg-muted/5">
+                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">No tools found</h3>
+                <p className="text-muted-foreground">Try adjusting your filters or search term.</p>
+                <Button variant="link" onClick={() => {setSearchTerm(""); setPriceRange([0, maxPrice]); setSelectedCategories([]); setSelectedDurations([]);}} className="mt-2 text-primary">
+                  Clear all filters
                 </Button>
               </div>
-            </Card>
-          </motion.div>
+            )}
+          </main>
         </div>
-      </section>
+      </div>
 
-      {/* --- This is the Modal Renderer --- */}
       <AnimatePresence>
         {selectedProduct && (
           <ProductDetailModal 
-            product={selectedProduct}
-            onClose={() => setSelectedProduct(null)}
+            product={selectedProduct} 
+            onClose={() => setSelectedProduct(null)} 
             onGetService={handleGetService}
           />
         )}
