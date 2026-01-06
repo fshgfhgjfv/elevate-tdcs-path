@@ -187,7 +187,7 @@ export default function Checkout() {
                       <Label htmlFor="name">Full Name</Label>
                       <Input 
                         id="name" name="name" 
-                        placeholder="John Doe" 
+                        placeholder="Enter Your Full Name" 
                         required 
                         value={formData.name} onChange={handleInputChange}
                         className="bg-muted/30"
@@ -197,7 +197,7 @@ export default function Checkout() {
                       <Label htmlFor="phone">Phone Number</Label>
                       <Input 
                         id="phone" name="phone" 
-                        placeholder="+91 98765 43210" 
+                        placeholder="Give your Phone number" 
                         required 
                         value={formData.phone} onChange={handleInputChange}
                         className="bg-muted/30"
@@ -209,7 +209,7 @@ export default function Checkout() {
                     <Label htmlFor="email">Email Address</Label>
                     <Input 
                       id="email" name="email" type="email" 
-                      placeholder="john@example.com" 
+                      placeholder="valid@gmail.com" 
                       required 
                       value={formData.email} onChange={handleInputChange}
                       className="bg-muted/30"
