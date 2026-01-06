@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { 
   ArrowLeft, 
   CreditCard, 
@@ -9,7 +9,9 @@ import {
   Smartphone, 
   Copy, 
   CheckCircle, 
-  Loader2 
+  Loader2,
+  BookOpen,
+  Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +21,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 
 // --- Configuration ---
-// REPLACE THIS with your actual UPI ID (e.g., your-business@okaxis)
+// REPLACE THIS with your actual UPI ID
 const UPI_ID = "rudranarayanswain10001@gmail.com"; 
 const MERCHANT_NAME = "TDCS Technologies";
 
@@ -27,35 +29,39 @@ export default function Checkout() {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // 1. Retrieve State from Services Page
-  const { serviceName, price } = location.state || {};
+  // 1. Retrieve State (Handle both Software & Courses)
+  const { serviceName, courseName, price, courseId } = location.state || {};
+
+  // Determine what we are buying
+  const itemName = serviceName || courseName;
+  const isCourse = !!courseName;
+  const itemType = isCourse ? "Course Enrollment" : "Premium Tool";
 
   // 2. Form State
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    transactionId: "" // For manual verification
+    transactionId: "" 
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // 3. Redirect if accessed directly without selecting a product
+  // 3. Redirect if accessed directly without data
   useEffect(() => {
-    if (!serviceName || !price) {
+    if (!itemName || !price) {
       toast({
         variant: "destructive",
-        title: "No Product Selected",
-        description: "Please select a service from the store first.",
+        title: "No Item Selected",
+        description: "Please select a course or service first.",
       });
-      navigate("/services");
+      navigate(isCourse ? "/courses" : "/services");
     }
-  }, [serviceName, price, navigate]);
+  }, [itemName, price, navigate, isCourse]);
 
   // 4. Generate Dynamic UPI QR Link
-  // Clean price string to number (remove currency symbols/commas)
-  const numericPrice = price ? price.replace(/[^0-9.]/g, '') : "0";
+  const numericPrice = price ? price.toString().replace(/[^0-9.]/g, '') : "0";
   const upiLink = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${numericPrice}&cu=INR`;
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
 
@@ -78,15 +84,19 @@ export default function Checkout() {
 
     setIsSubmitting(true);
 
-    // Simulate API Call
+    // Simulate API Call / Backend Verification
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
-      // Here you would typically send 'formData' and 'serviceName' to your backend/Supabase
+      
+      // Store purchase in local storage for immediate access (if it's a course)
+      if (isCourse && courseId) {
+        localStorage.setItem(`tdcs_purchased_${courseId}`, "true");
+      }
     }, 2000);
   };
 
-  if (!serviceName) return null; // Prevent flash before redirect
+  if (!itemName) return null; 
 
   // --- Success View ---
   if (isSuccess) {
@@ -102,17 +112,28 @@ export default function Checkout() {
               <div className="w-20 h-20 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500/20">
                 <CheckCircle className="w-10 h-10" />
               </div>
-              <h2 className="text-3xl font-bold text-foreground">Order Placed!</h2>
+              <h2 className="text-3xl font-bold text-foreground">Payment Successful!</h2>
               <p className="text-muted-foreground">
                 Thank you, <span className="text-foreground font-semibold">{formData.name}</span>. 
-                We have received your request for <span className="text-primary">{serviceName}</span>.
+                <br />
+                Your access to <span className="text-primary font-bold">{itemName}</span> is being processed.
               </p>
+              
               <div className="bg-muted/50 p-4 rounded-lg text-sm">
-                <p>Our team will verify transaction <strong>#{formData.transactionId}</strong> and activate your service shortly via email.</p>
+                <p>Transaction <strong>#{formData.transactionId}</strong> received.</p>
+                <p className="mt-1">Check your email for access details.</p>
               </div>
-              <Button className="w-full" onClick={() => navigate("/services")}>
-                Return to Store
-              </Button>
+
+              <div className="flex gap-3">
+                <Button className="flex-1" onClick={() => navigate("/")}>
+                  Go Home
+                </Button>
+                {isCourse && (
+                   <Button variant="outline" className="flex-1" onClick={() => navigate(`/courses/${courseId}/content`)}>
+                     Start Learning
+                   </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         </motion.div>
@@ -136,7 +157,7 @@ export default function Checkout() {
           className="mb-8 pl-0 hover:bg-transparent hover:text-primary" 
           onClick={() => navigate(-1)}
         >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Services
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </Button>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -150,14 +171,16 @@ export default function Checkout() {
           >
             <div>
               <h1 className="text-3xl font-bold mb-2">Checkout</h1>
-              <p className="text-muted-foreground">Complete your purchase securely.</p>
+              <p className="text-muted-foreground">
+                You are purchasing <span className="text-primary font-semibold">{itemName}</span>
+              </p>
             </div>
 
             <Card className="border-border/50 bg-background/50 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <ShieldCheck className="w-5 h-5 text-primary" /> 
-                  Personal Information
+                  Billing Details
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -194,16 +217,19 @@ export default function Checkout() {
                       value={formData.email} onChange={handleInputChange}
                       className="bg-muted/30"
                     />
-                    <p className="text-xs text-muted-foreground">Your subscription details will be sent here.</p>
+                    <p className="text-xs text-muted-foreground">
+                      {isCourse ? "Course access link will be sent here." : "License keys will be sent here."}
+                    </p>
                   </div>
 
                   <Separator className="my-4" />
 
                   <div className="space-y-4">
-                    <Label className="text-base font-semibold">Payment Confirmation</Label>
+                    <Label className="text-base font-semibold">Payment Verification</Label>
                     <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 text-sm text-yellow-600 dark:text-yellow-400">
-                      Please scan the QR code on the right to pay <strong>{price}</strong> via UPI. 
-                      Once paid, enter the Transaction ID (UTR) below.
+                      Please scan the QR code on the right to pay <strong>{typeof price === 'number' ? `₹${price}` : price}</strong>. 
+                      <br/>
+                      After payment, enter the <strong>UTR / Transaction ID</strong> below to activate instantly.
                     </div>
                     
                     <div className="space-y-2">
@@ -226,10 +252,10 @@ export default function Checkout() {
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying...
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying Payment...
                       </>
                     ) : (
-                      "Confirm Payment"
+                      `Confirm & ${isCourse ? "Enroll" : "Buy Now"}`
                     )}
                   </Button>
                 </form>
@@ -251,12 +277,17 @@ export default function Checkout() {
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="font-bold text-lg">{serviceName}</h3>
-                    <p className="text-sm text-muted-foreground">Standard License</p>
+                  <div className="flex gap-3">
+                    <div className="mt-1 p-2 bg-primary/10 rounded-lg text-primary">
+                       {isCourse ? <BookOpen className="w-5 h-5" /> : <Zap className="w-5 h-5" />}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg leading-tight">{itemName}</h3>
+                      <p className="text-sm text-muted-foreground">{itemType}</p>
+                    </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-xl">{price}</p>
+                    <p className="font-bold text-xl">{typeof price === 'number' ? `₹${price}` : price}</p>
                   </div>
                 </div>
                 
@@ -265,15 +296,15 @@ export default function Checkout() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm text-muted-foreground">
                     <span>Subtotal</span>
-                    <span>{price}</span>
+                    <span>{typeof price === 'number' ? `₹${price}` : price}</span>
                   </div>
                   <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>Tax</span>
-                    <span>₹0.00</span>
+                    <span>GST (18%)</span>
+                    <span className="text-green-500 text-xs">Included</span>
                   </div>
                   <div className="flex justify-between items-center pt-2 mt-2 border-t border-border/50">
-                    <span className="font-bold">Total</span>
-                    <span className="font-bold text-2xl text-primary">{price}</span>
+                    <span className="font-bold">Total Payable</span>
+                    <span className="font-bold text-2xl text-primary">{typeof price === 'number' ? `₹${price}` : price}</span>
                   </div>
                 </div>
               </CardContent>
@@ -287,11 +318,11 @@ export default function Checkout() {
                   Scan to Pay
                 </CardTitle>
                 <CardDescription>
-                  Supported by GPay, PhonePe, Paytm, etc.
+                  Supported by GPay, PhonePe, Paytm, BHIM
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col items-center">
-                <div className="bg-white p-4 rounded-xl shadow-inner mb-6 relative group">
+                <div className="bg-white p-4 rounded-xl shadow-inner mb-6 relative group border-4 border-white">
                   {/* Generated QR Code */}
                   <img 
                     src={qrCodeUrl} 
@@ -299,7 +330,7 @@ export default function Checkout() {
                     className="w-48 h-48 mix-blend-multiply" 
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none">
-                    <span className="text-xs font-bold bg-white/80 px-2 py-1 rounded text-black">Scan Me</span>
+                    <span className="text-xs font-bold bg-white/90 px-2 py-1 rounded text-black shadow-sm">Scan to Pay</span>
                   </div>
                 </div>
 
@@ -309,7 +340,7 @@ export default function Checkout() {
                     <span>UPI ID</span>
                   </div>
                   <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border border-border/50 group hover:border-primary/30 transition-colors">
-                    <code className="flex-1 text-center font-mono text-sm">{UPI_ID}</code>
+                    <code className="flex-1 text-center font-mono text-sm select-all">{UPI_ID}</code>
                     <Button 
                       variant="ghost" 
                       size="icon" 
@@ -324,7 +355,7 @@ export default function Checkout() {
                 <div className="mt-6 flex gap-4 text-muted-foreground opacity-50 justify-center">
                    <CreditCard className="w-6 h-6" />
                    <div className="text-xs max-w-[150px] text-center leading-tight">
-                     Secure Payment Encrypted via UPI Network
+                     Secure 256-bit Encrypted Payment via UPI
                    </div>
                 </div>
               </CardContent>
