@@ -20,9 +20,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 
+// --- Import your saved QR Code Image here ---
+// Make sure the file exists at this path!
+import paymentQr from "@/assets/payment-qr.jpg";
+
 // --- Configuration ---
-// REPLACE THIS with your actual UPI ID
-const UPI_ID = "rudranarayanswain10001@gmail.com"; 
+const UPI_ID = "tdcsorganization@sbi"; 
 const MERCHANT_NAME = "TDCS Technologies";
 
 export default function Checkout() {
@@ -59,11 +62,6 @@ export default function Checkout() {
       navigate(isCourse ? "/courses" : "/services");
     }
   }, [itemName, price, navigate, isCourse]);
-
-  // 4. Generate Dynamic UPI QR Link
-  const numericPrice = price ? price.toString().replace(/[^0-9.]/g, '') : "0";
-  const upiLink = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${numericPrice}&cu=INR`;
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -323,14 +321,16 @@ export default function Checkout() {
               </CardHeader>
               <CardContent className="flex flex-col items-center">
                 <div className="bg-white p-4 rounded-xl shadow-inner mb-6 relative group border-4 border-white">
-                  {/* Generated QR Code */}
+                  
+                  {/* --- STATIC IMPORTED IMAGE --- */}
                   <img 
-                    src={qrCodeUrl} 
-                    alt="UPI QR Code" 
-                    className="w-48 h-48 mix-blend-multiply" 
+                    src={paymentQr} 
+                    alt="TDCS Payment QR" 
+                    className="w-48 h-48 object-contain" 
                   />
+                  
                   <div className="absolute inset-0 flex items-center justify-center bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none">
-                    <span className="text-xs font-bold bg-white/90 px-2 py-1 rounded text-black shadow-sm">Scan to Pay</span>
+                    <span className="text-xs font-bold bg-white/90 px-2 py-1 rounded text-black shadow-sm">Scan Now</span>
                   </div>
                 </div>
 
