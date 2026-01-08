@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { 
   ArrowLeft, 
-  CreditCard, 
-  ShieldCheck, 
-  QrCode, 
-  Smartphone, 
-  Copy, 
   CheckCircle, 
   Loader2,
   BookOpen,
@@ -15,18 +10,16 @@ import {
   Lock,
   GraduationCap,
   Briefcase,
-  Building2,
-  Linkedin,
-  Users,
+  Copy,
   Calculator,
-  Percent
+  CalendarClock,
+  ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -46,20 +39,17 @@ export default function Checkout() {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // 1. Retrieve State
+  // 1. Retrieve Data
   const { serviceName, courseName, price, courseId } = location.state || {};
   
-  // Helper to determine if it is a course or software
-  // If 'courseName' exists, it's a course. Otherwise, it's a tool/service.
+  // Logic: If 'courseName' exists, it is a Course. Otherwise, it is Software.
   const isCourse = !!courseName; 
   const itemName = serviceName || courseName || "Unknown Item";
   const itemType = isCourse ? "Course Enrollment" : "Premium Tool";
-  const basePrice = Number(price) || 0; // Ensure price is a number
+  const basePrice = Number(price) || 0;
 
-  // 2. State Management
-  // Default to 'regular' (Professional) so software users pay full price by default
+  // 2. State
   const [userType, setUserType] = useState<"student" | "regular">("regular");
-  
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -75,12 +65,12 @@ export default function Checkout() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // 3. Price Calculation Logic
+  // 3. Price Calculation
   const getEffectivePrice = () => {
-    // If it's NOT a course, always return full price (Ignore student discount)
+    // RULE 1: Software always uses base price
     if (!isCourse) return basePrice;
-
-    // If it IS a course, check user type
+    
+    // RULE 2: Students get discount only on courses
     if (userType === 'student') {
       return Math.floor(basePrice * (1 - STUDENT_DISCOUNT_PERCENT / 100));
     }
@@ -90,34 +80,35 @@ export default function Checkout() {
   const effectivePrice = getEffectivePrice();
   const discountAmount = basePrice - effectivePrice;
 
-  // EMI Calculator
+  // 4. EMI Calculation
   const calculateEMI = () => {
     const config = EMI_CONFIG[userType];
     const baseAmount = effectivePrice;
-    const downPayment = (baseAmount * config.downPaymentPercent) / 100;
+    
+    const downPayment = Math.floor((baseAmount * config.downPaymentPercent) / 100);
     const principal = baseAmount - downPayment;
-    const interestAmount = (principal * config.interest) / 100;
-    const totalWithInterest = principal + interestAmount;
-    const monthlyEMI = Math.ceil(totalWithInterest / emiMonths);
+    const interestAmount = Math.floor((principal * config.interest) / 100);
+    const totalLoanAmount = principal + interestAmount;
+    const monthlyEMI = Math.ceil(totalLoanAmount / emiMonths);
     
     return {
-      total: baseAmount + interestAmount,
-      downPayment,
-      monthlyEMI,
-      interest: interestAmount
+      totalCost: downPayment + totalLoanAmount, 
+      downPayment,      
+      monthlyEMI,       
+      interest: interestAmount,
+      // If student (0 down payment), they pay 1st month EMI now
+      payNow: downPayment > 0 ? downPayment : monthlyEMI 
     };
   };
 
   const emiDetails = calculateEMI();
+  
+  // Determine "Amount Due Today"
+  const amountDueNow = (paymentMode === 'emi' && isCourse)
+    ? emiDetails.payNow 
+    : effectivePrice;
 
-  // Redirect if no data
-  useEffect(() => {
-    if (!itemName || basePrice === 0) {
-      // Optional: Remove toast to prevent spam if reloading dev server
-      // navigate("/"); 
-    }
-  }, [itemName, basePrice, navigate]);
-
+  // Handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -125,21 +116,25 @@ export default function Checkout() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    // Simulate API verification
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
+      if (isCourse && courseId) localStorage.setItem(`tdcs_purchased_${courseId}`, "true");
     }, 2000);
   };
 
+  // 5. Success View
   if (isSuccess) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full border-green-500/30">
             <CardHeader className="text-center">
                 <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                <CardTitle className="text-green-600">Order Placed!</CardTitle>
+                <CardTitle className="text-green-600">Order Placed Successfully</CardTitle>
                 <CardDescription>
-                   We verify all payments manually. Access will be granted shortly.
+                   Amount Paid: <strong>₹{amountDueNow.toLocaleString()}</strong>
+                   <br/>We are verifying your transaction ID. You will receive access details shortly via email/WhatsApp.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -163,10 +158,10 @@ export default function Checkout() {
           <motion.div className="lg:col-span-7 space-y-6" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             <div>
               <h1 className="text-3xl font-bold mb-2">Checkout</h1>
-              <p className="text-muted-foreground">Purchase details for <span className="text-primary font-semibold">{itemName}</span></p>
+              <p className="text-muted-foreground">Completing purchase for <span className="text-primary font-semibold">{itemName}</span></p>
             </div>
 
-            {/* --- USER TYPE SELECTOR (ONLY FOR COURSES) --- */}
+            {/* --- RULE: ONLY SHOW STUDENT SELECTOR IF IT IS A COURSE --- */}
             {isCourse && (
                 <Card className="border-primary/20 bg-primary/5">
                     <CardContent className="pt-6">
@@ -200,9 +195,10 @@ export default function Checkout() {
             )}
 
             <Card className="border-border/50 bg-background/50 backdrop-blur-sm">
-              <CardHeader><CardTitle className="flex items-center gap-2"><Lock className="w-5 h-5 text-primary" /> Details</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="flex items-center gap-2"><Lock className="w-5 h-5 text-primary" /> Billing Details</CardTitle></CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Basic Fields */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Full Name</Label>
@@ -213,27 +209,31 @@ export default function Checkout() {
                       <Input name="phone" required value={formData.phone} onChange={handleInputChange} className="bg-muted/30" />
                     </div>
                   </div>
-                  
                   <div className="space-y-2">
                     <Label>Email Address</Label>
                     <Input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="bg-muted/30" />
                   </div>
 
-                  {/* STUDENT PROOF (Only if Course AND Student) */}
+                  {/* --- RULE: ONLY SHOW PROOF FIELDS IF COURSE & STUDENT --- */}
                   {isCourse && userType === 'student' && (
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-green-500/5 p-4 rounded-xl border border-green-500/20">
-                        <div className="space-y-2">
-                            <Label>College Name</Label>
-                            <Input name="collegeName" required value={formData.collegeName} onChange={handleInputChange} />
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-green-500/5 p-4 rounded-xl border border-green-500/20 animate-in fade-in slide-in-from-top-2">
+                        <div className="col-span-2 pb-2 border-b border-green-500/10 mb-2">
+                            <h4 className="text-sm font-semibold text-green-700 flex items-center gap-2">
+                                <ShieldCheck className="w-4 h-4"/> Student Verification Required
+                            </h4>
                         </div>
                         <div className="space-y-2">
-                            <Label>Parent's Phone</Label>
-                            <Input name="parentPhone" required value={formData.parentPhone} onChange={handleInputChange} />
+                            <Label>College Name</Label>
+                            <Input name="collegeName" required placeholder="e.g. IIT Bombay" value={formData.collegeName} onChange={handleInputChange} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Parent's Phone No.</Label>
+                            <Input name="parentPhone" required placeholder="Parent's Mobile" value={formData.parentPhone} onChange={handleInputChange} />
                         </div>
                      </div>
                   )}
 
-                  {/* EMI Selection (Only for Courses) */}
+                  {/* --- RULE: PAYMENT PLAN (EMI) ONLY FOR COURSES --- */}
                   {isCourse && (
                     <div className="space-y-4 pt-4 border-t">
                        <Label className="text-base font-semibold flex items-center gap-2"><Calculator className="w-4 h-4 text-primary" /> Payment Plan</Label>
@@ -254,7 +254,7 @@ export default function Checkout() {
                        
                        {paymentMode === 'emi' && (
                            <div className="p-4 bg-muted/50 rounded-lg">
-                               <Label className="mb-2 block">Duration</Label>
+                               <Label className="mb-2 block">Select Duration</Label>
                                <Select value={emiMonths.toString()} onValueChange={(v) => setEmiMonths(parseInt(v))}>
                                  <SelectTrigger><SelectValue /></SelectTrigger>
                                  <SelectContent>
@@ -262,9 +262,6 @@ export default function Checkout() {
                                    <SelectItem value="6">6 Months</SelectItem>
                                  </SelectContent>
                                </Select>
-                               <div className="mt-2 text-sm text-muted-foreground">
-                                   First Pay: <span className="font-bold text-foreground">₹{(emiDetails.downPayment || emiDetails.monthlyEMI).toLocaleString()}</span>
-                               </div>
                            </div>
                        )}
                     </div>
@@ -272,18 +269,22 @@ export default function Checkout() {
 
                   <Separator className="my-4" />
 
+                  {/* Payment Info */}
                   <div className="space-y-4">
-                     <div className="bg-muted p-4 rounded-lg text-sm">
-                        Please pay <strong className="text-primary text-lg">₹{paymentMode === 'emi' && isCourse ? (emiDetails.downPayment || emiDetails.monthlyEMI).toLocaleString() : effectivePrice.toLocaleString()}</strong> using the QR Code.
+                     <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg text-sm">
+                        Please pay <strong className="text-primary text-xl">₹{amountDueNow.toLocaleString()}</strong> using the QR Code.
+                        <p className="text-xs text-muted-foreground mt-1">
+                           Enter the Transaction ID below after payment.
+                        </p>
                      </div>
                      <div className="space-y-2">
                        <Label>Transaction ID (UTR)</Label>
-                       <Input name="transactionId" placeholder="12 Digit UTR" required value={formData.transactionId} onChange={handleInputChange} className="uppercase" />
+                       <Input name="transactionId" placeholder="12 Digit UTR Number" required value={formData.transactionId} onChange={handleInputChange} className="uppercase" />
                      </div>
                   </div>
 
                   <Button type="submit" size="lg" className="w-full mt-6" disabled={isSubmitting}>
-                    {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing</> : "Submit Payment"}
+                    {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying</> : "Submit Payment"}
                   </Button>
                 </form>
               </CardContent>
@@ -309,7 +310,7 @@ export default function Checkout() {
                     <span>₹{basePrice.toLocaleString()}</span>
                   </div>
                   
-                  {/* Only show Discount if it is a Course AND Student */}
+                  {/* Discount Row (Courses Only) */}
                   {isCourse && userType === 'student' && (
                     <div className="flex justify-between text-sm text-green-600 font-medium">
                       <span>Student Discount (15%)</span>
@@ -317,14 +318,47 @@ export default function Checkout() {
                     </div>
                   )}
 
+                  {/* EMI Interest Row (Courses Only) */}
+                  {paymentMode === 'emi' && isCourse && (
+                      <div className="flex justify-between text-sm text-orange-500">
+                          <span>EMI Interest ({userType === 'student' ? '3.5%' : '5%'})</span>
+                          <span>+ ₹{emiDetails.interest.toLocaleString()}</span>
+                      </div>
+                  )}
+
                   <Separator className="my-2"/>
                   
+                  {/* FINAL PAYABLE DISPLAY */}
                   <div className="flex justify-between items-center pt-2">
-                    <span className="font-bold">Total Payable</span>
-                    <span className="font-bold text-2xl text-primary">
-                        ₹{paymentMode === 'emi' && isCourse ? emiDetails.total.toLocaleString() : effectivePrice.toLocaleString()}
+                    <div className="flex flex-col">
+                        <span className="font-bold text-lg">Due Today</span>
+                        {paymentMode === 'emi' && isCourse && (
+                            <span className="text-xs text-muted-foreground">
+                                {userType === 'student' ? '1st Month Installment' : 'Down Payment'}
+                            </span>
+                        )}
+                    </div>
+                    <span className="font-bold text-3xl text-primary">
+                        ₹{amountDueNow.toLocaleString()}
                     </span>
                   </div>
+                  
+                  {/* FUTURE PAYMENTS INFO (EMI) */}
+                  {paymentMode === 'emi' && isCourse && (
+                      <div className="mt-4 flex items-start gap-2 text-xs text-muted-foreground bg-yellow-500/5 p-3 rounded border border-yellow-500/20">
+                          <CalendarClock className="w-4 h-4 mt-0.5 text-yellow-600" />
+                          <div>
+                              <p className="font-semibold text-yellow-700">Future Schedule:</p>
+                              {userType === 'student' ? (
+                                  // Student pays 1st EMI now, so remaining is months-1
+                                  <p>{emiMonths - 1} more installments of <strong>₹{emiDetails.monthlyEMI.toLocaleString()}</strong></p>
+                              ) : (
+                                  // Regular paid down payment, so full months EMI remain
+                                  <p>{emiMonths} installments of <strong>₹{emiDetails.monthlyEMI.toLocaleString()}</strong></p>
+                              )}
+                          </div>
+                      </div>
+                  )}
                 </div>
               </CardContent>
 
