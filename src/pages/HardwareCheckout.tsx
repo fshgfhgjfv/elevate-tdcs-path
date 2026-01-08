@@ -27,7 +27,6 @@ export default function HardwareCheckout() {
   const navigate = useNavigate();
   
   // 1. Get Data passed from ProductDetail
-  // Defaulting to empty object to prevent crashes if state is null
   const { productName, price, image } = location.state || {};
   
   const SHIPPING_COST = 150; 
