@@ -27,9 +27,12 @@ export default function HardwareCheckout() {
   const navigate = useNavigate();
   
   // 1. Get Data passed from ProductDetail
+  // Defaulting to empty object to prevent crashes if state is null
   const { productName, price, image } = location.state || {};
-  const SHIPPING_COST = 150; // Flat shipping rate
-  const TOTAL_PRICE = (Number(price) || 0) + SHIPPING_COST;
+  
+  const SHIPPING_COST = 150; 
+  const productPrice = Number(price) || 0;
+  const TOTAL_PRICE = productPrice + SHIPPING_COST;
 
   const [formData, setFormData] = useState({
     name: "",
@@ -45,9 +48,10 @@ export default function HardwareCheckout() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  // Kick back if accessed without data
   useEffect(() => {
     if (!productName || !price) {
-      navigate("/services/hardware"); // Kick back if accessed directly
+      navigate("/services/hardware"); 
     }
   }, [productName, price, navigate]);
 
@@ -195,7 +199,7 @@ export default function HardwareCheckout() {
                 {/* Product Snippet */}
                 <div className="flex gap-4">
                     <div className="w-20 h-20 bg-gray-800 rounded-lg overflow-hidden border border-gray-700">
-                        <img src={image} alt="Product" className="w-full h-full object-cover" />
+                        {image && <img src={image} alt="Product" className="w-full h-full object-cover" />}
                     </div>
                     <div>
                         <h3 className="font-bold text-white text-lg">{productName}</h3>
@@ -208,7 +212,7 @@ export default function HardwareCheckout() {
                 <div className="space-y-2 text-sm">
                     <div className="flex justify-between text-gray-400">
                         <span>Item Price</span>
-                        <span>₹{Number(price).toLocaleString()}</span>
+                        <span>₹{productPrice.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-gray-400">
                         <span>Shipping & Handling</span>
