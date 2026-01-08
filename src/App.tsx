@@ -34,8 +34,9 @@ import HardwareServices from "./pages/HardwareServices";
 import WebsiteDevelopment from "./pages/website-development";
 import ProductDetail from "./pages/ProductDetail";
 import Checkout from "./pages/Checkout";
+import HardwareCheckout from "./pages/HardwareCheckout"; // ✅ IMPORT THIS
 
-// ✅ Specific Service Detail Pages
+// Specific Service Detail Pages
 import WebsiteSecurityDetails from "./pages/WebsiteSecurityDetails";
 import PenetrationTestingPage from "./pages/PenetrationTestingPage";
 import WebDevelopmentPage from "./pages/WebDevelopmentPage";
@@ -92,9 +93,9 @@ const App = () => (
             <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
             {/* 🛒 E-commerce */}
-            {/* 👇 FIX: Updated path to match your link structure */}
             <Route path="/hardware/product/:id" element={<ProductDetail />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/hardware-checkout" element={<HardwareCheckout />} /> {/* ✅ ADDED ROUTE HERE */}
 
             {/* 🛠️ Admin Panel */}
             <Route path="/admintdcsd" element={<SimpleAdminPanel />} />
