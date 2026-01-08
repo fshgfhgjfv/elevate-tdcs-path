@@ -26,7 +26,7 @@ export default function HardwareCheckout() {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Safe destructuring with fallback
+  // Safe destructuring
   const state = location.state || {};
   const productName = state.productName;
   const price = state.price;
@@ -53,8 +53,8 @@ export default function HardwareCheckout() {
   // Redirect if accessed directly without data
   useEffect(() => {
     if (!productName || !price) {
-      // Small delay to prevent redirect loops or strict mode double-invocations
-      const timer = setTimeout(() => navigate("/services/hardware"), 100);
+      // Use setTimeout to avoid render-loop crashes
+      const timer = setTimeout(() => navigate("/services/hardware"), 0);
       return () => clearTimeout(timer);
     }
   }, [productName, price, navigate]);
