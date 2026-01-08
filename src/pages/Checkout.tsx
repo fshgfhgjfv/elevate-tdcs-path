@@ -29,7 +29,6 @@ const UPI_ID = "tdcsorganization@sbi";
 const STUDENT_DISCOUNT_PERCENT = 15; 
 const QR_CODE_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEiYxV2ayi-nLo4GdGqaDDKDg9OpUiRjbmyav9HoiZp_qm2Zt1-x8jQ7Y4S5gMQSeKrIuZKolSVxZ0c817cdvXKG5IbRLWEngQOEBC8Gah6Edi2snbD0vbr6y-0nJSq8rdvCR4HJIcRJhRDlSTYA9EeYdGj-U6QaRM365bjvdR85QjaR3s4rm1oYOTYTl8gU";
 
-// EMI Configuration
 const EMI_CONFIG = {
   student: { interest: 3.5, downPaymentPercent: 0 },
   regular: { interest: 5, downPaymentPercent: 30 }
@@ -42,13 +41,25 @@ export default function Checkout() {
   // 1. Retrieve Data
   const { serviceName, courseName, price, courseId } = location.state || {};
   
-  // Logic: If 'courseName' exists, it is a Course. Otherwise, it is Software.
   const isCourse = !!courseName; 
   const itemName = serviceName || courseName || "Unknown Item";
   const itemType = isCourse ? "Course Enrollment" : "Premium Tool";
-  const basePrice = Number(price) || 0;
 
-  // 2. State
+  // --- FIX: ROBUST PRICE PARSING ---
+  // This helper function cleans the price input (removes ₹, commas, etc.)
+  const parsePrice = (inputPrice: any) => {
+    if (typeof inputPrice === 'number') return inputPrice;
+    if (typeof inputPrice === 'string') {
+      // Remove everything that isn't a digit or a dot
+      const cleanString = inputPrice.replace(/[^0-9.]/g, '');
+      return Number(cleanString) || 0;
+    }
+    return 0;
+  };
+
+  const basePrice = parsePrice(price); 
+  // ---------------------------------
+
   const [userType, setUserType] = useState<"student" | "regular">("regular");
   const [formData, setFormData] = useState({
     name: "",
@@ -67,10 +78,10 @@ export default function Checkout() {
 
   // 3. Price Calculation
   const getEffectivePrice = () => {
-    // RULE 1: Software always uses base price
+    // Software/Tools always use base price
     if (!isCourse) return basePrice;
     
-    // RULE 2: Students get discount only on courses
+    // Students get discount ONLY on courses
     if (userType === 'student') {
       return Math.floor(basePrice * (1 - STUDENT_DISCOUNT_PERCENT / 100));
     }
@@ -96,19 +107,17 @@ export default function Checkout() {
       downPayment,      
       monthlyEMI,       
       interest: interestAmount,
-      // If student (0 down payment), they pay 1st month EMI now
       payNow: downPayment > 0 ? downPayment : monthlyEMI 
     };
   };
 
   const emiDetails = calculateEMI();
   
-  // Determine "Amount Due Today"
+  // Calculate Due Today
   const amountDueNow = (paymentMode === 'emi' && isCourse)
     ? emiDetails.payNow 
     : effectivePrice;
 
-  // Handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -116,7 +125,6 @@ export default function Checkout() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API verification
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
@@ -124,7 +132,6 @@ export default function Checkout() {
     }, 2000);
   };
 
-  // 5. Success View
   if (isSuccess) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -134,7 +141,7 @@ export default function Checkout() {
                 <CardTitle className="text-green-600">Order Placed Successfully</CardTitle>
                 <CardDescription>
                    Amount Paid: <strong>₹{amountDueNow.toLocaleString()}</strong>
-                   <br/>We are verifying your transaction ID. You will receive access details shortly via email/WhatsApp.
+                   <br/>We are verifying your transaction ID. You will receive access details shortly.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -161,7 +168,7 @@ export default function Checkout() {
               <p className="text-muted-foreground">Completing purchase for <span className="text-primary font-semibold">{itemName}</span></p>
             </div>
 
-            {/* --- RULE: ONLY SHOW STUDENT SELECTOR IF IT IS A COURSE --- */}
+            {/* Student Selector - COURSES ONLY */}
             {isCourse && (
                 <Card className="border-primary/20 bg-primary/5">
                     <CardContent className="pt-6">
@@ -214,7 +221,7 @@ export default function Checkout() {
                     <Input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="bg-muted/30" />
                   </div>
 
-                  {/* --- RULE: ONLY SHOW PROOF FIELDS IF COURSE & STUDENT --- */}
+                  {/* PROOF FIELDS - COURSE & STUDENT ONLY */}
                   {isCourse && userType === 'student' && (
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-green-500/5 p-4 rounded-xl border border-green-500/20 animate-in fade-in slide-in-from-top-2">
                         <div className="col-span-2 pb-2 border-b border-green-500/10 mb-2">
@@ -233,7 +240,7 @@ export default function Checkout() {
                      </div>
                   )}
 
-                  {/* --- RULE: PAYMENT PLAN (EMI) ONLY FOR COURSES --- */}
+                  {/* EMI PLAN - COURSES ONLY */}
                   {isCourse && (
                     <div className="space-y-4 pt-4 border-t">
                        <Label className="text-base font-semibold flex items-center gap-2"><Calculator className="w-4 h-4 text-primary" /> Payment Plan</Label>
@@ -310,7 +317,6 @@ export default function Checkout() {
                     <span>₹{basePrice.toLocaleString()}</span>
                   </div>
                   
-                  {/* Discount Row (Courses Only) */}
                   {isCourse && userType === 'student' && (
                     <div className="flex justify-between text-sm text-green-600 font-medium">
                       <span>Student Discount (15%)</span>
@@ -318,7 +324,6 @@ export default function Checkout() {
                     </div>
                   )}
 
-                  {/* EMI Interest Row (Courses Only) */}
                   {paymentMode === 'emi' && isCourse && (
                       <div className="flex justify-between text-sm text-orange-500">
                           <span>EMI Interest ({userType === 'student' ? '3.5%' : '5%'})</span>
@@ -328,7 +333,7 @@ export default function Checkout() {
 
                   <Separator className="my-2"/>
                   
-                  {/* FINAL PAYABLE DISPLAY */}
+                  {/* FINAL PAYABLE */}
                   <div className="flex justify-between items-center pt-2">
                     <div className="flex flex-col">
                         <span className="font-bold text-lg">Due Today</span>
@@ -343,17 +348,14 @@ export default function Checkout() {
                     </span>
                   </div>
                   
-                  {/* FUTURE PAYMENTS INFO (EMI) */}
                   {paymentMode === 'emi' && isCourse && (
                       <div className="mt-4 flex items-start gap-2 text-xs text-muted-foreground bg-yellow-500/5 p-3 rounded border border-yellow-500/20">
                           <CalendarClock className="w-4 h-4 mt-0.5 text-yellow-600" />
                           <div>
                               <p className="font-semibold text-yellow-700">Future Schedule:</p>
                               {userType === 'student' ? (
-                                  // Student pays 1st EMI now, so remaining is months-1
                                   <p>{emiMonths - 1} more installments of <strong>₹{emiDetails.monthlyEMI.toLocaleString()}</strong></p>
                               ) : (
-                                  // Regular paid down payment, so full months EMI remain
                                   <p>{emiMonths} installments of <strong>₹{emiDetails.monthlyEMI.toLocaleString()}</strong></p>
                               )}
                           </div>
