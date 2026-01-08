@@ -1,278 +1,284 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Download, ShieldCheck, ChevronDown } from "lucide-react";
+import { ChevronRight, Download, ShieldCheck, ChevronDown, Trophy, Zap, Terminal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// --- UPDATED CURRICULUM ARRAY ---
+// --- DATA STRUCTURE: MULTIPLE COURSES ---
 
-const cyberSecurityCurriculum = [
+const COURSES = [
   {
-    unit: "Module 1",
-    title: "Cyber Security Fundamentals",
-    topics: [
+    id: "blackhat",
+    name: "Cyber Master's Pro (Black Hat)",
+    icon: <ShieldCheck className="w-5 h-5" />,
+    description: "The complete 6-month flagship program with placement assistance.",
+    curriculum: [
       {
-        title: "Ethical Hacking vs Malicious Hacking",
-        details:
-          "Learn the difference between ethical (white hat) and malicious (black hat) hacking. Understand how ethical hackers use similar tools but with authorization to secure systems.",
+        unit: "Module 1",
+        title: "Cyber Security Fundamentals",
+        topics: [
+          { title: "Ethical Hacking vs Malicious Hacking", details: "White hat vs Black hat concepts and legal boundaries." },
+          { title: "Network Basics & OSI Model", details: "TCP/IP, Subnetting, and the OSI layers deep dive." },
+          { title: "Virtual Labs Setup", details: "Setting up Kali Linux, Windows, and Metasploitable in VirtualBox/VMware." },
+        ],
       },
       {
-        title: "Network Basics & Security Layers",
-        details:
-          "Understand how computer networks function, the OSI model, and the role of each layer in maintaining secure communication.",
+        unit: "Module 2",
+        title: "Offensive Security (Red Team)",
+        topics: [
+          { title: "System Hacking", details: "Password cracking, privilege escalation, and covering tracks." },
+          { title: "Malware Threats", details: "Trojan, Virus, and Worm creation and analysis (in sandbox)." },
+          { title: "Social Engineering", details: "Phishing simulations and human-based attack vectors." },
+        ],
       },
       {
-        title: "Understanding Threats & Vulnerabilities",
-        details:
-          "Explore common attack vectors, vulnerabilities in software, and strategies for identifying and mitigating risks.",
+        unit: "Module 3",
+        title: "Network Defense (Blue Team)",
+        topics: [
+          { title: "Firewalls & Honeypots", details: "Configuring IDS/IPS and setting up honeypots to trap hackers." },
+          { title: "SIEM Operations", details: "Log monitoring and incident response using Splunk/Wazuh." },
+        ],
       },
       {
-        title: "Legal & Ethical Responsibilities",
-        details:
-          "Review international laws, cybersecurity regulations, and professional ethics for information security specialists.",
+        unit: "Module 4",
+        title: "Advanced Web Pentesting",
+        topics: [
+          { title: "OWASP Top 10", details: "Deep dive into SQLi, XSS, and IDOR vulnerabilities." },
+          { title: "Burp Suite Pro", details: "Advanced interception and automated scanning techniques." },
+        ],
       },
       {
-        title: "Setting Up a Safe Testing Environment",
-        details:
-          "Learn how to build isolated lab environments using VMs and sandboxes for ethical hacking and malware analysis.",
+        unit: "Module 5",
+        title: "Digital Forensics",
+        topics: [
+          { title: "Disk Forensics", details: "Recovering deleted data and analyzing drive images." },
+          { title: "Memory Forensics", details: "Using Volatility to analyze RAM dumps for malware." },
+        ],
       },
     ],
   },
   {
-    unit: "Module 2",
-    title: "Offensive Tools & Techniques (Black Hat Simulation)",
-    topics: [
+    id: "bugbounty",
+    name: "Bug Bounty Hunter Pro",
+    icon: <Trophy className="w-5 h-5" />,
+    description: "Specialized training to find bugs and earn bounties on HackerOne & Bugcrowd.",
+    curriculum: [
       {
-        title: "Kali Linux Overview",
-        details:
-          "Get hands-on with Kali Linux — the most popular ethical hacking OS, preloaded with penetration testing tools.",
+        unit: "Module 1",
+        title: "Web Architecture & Protocols",
+        topics: [
+          { title: "HTTP Request/Response", details: "Understanding headers, status codes, and methods (GET, POST, PUT)." },
+          { title: "Cookies & Sessions", details: "How authentication and session management works." },
+        ],
       },
       {
-        title: "WiFi Hacking & Network Sniffing",
-        details:
-          "Simulate WiFi cracking and packet sniffing in a safe lab environment to understand real-world wireless vulnerabilities.",
+        unit: "Module 2",
+        title: "Reconnaissance (Recon)",
+        topics: [
+          { title: "Subdomain Enumeration", details: "Using Amass, Subfinder, and crt.sh to find hidden assets." },
+          { title: "Content Discovery", details: "Directory bruteforcing with Ffuf and Dirb." },
+          { title: "GitHub Dorking", details: "Finding leaked API keys and secrets in public repositories." },
+        ],
       },
       {
-        title: "Password Cracking, Keyloggers & Reconnaissance",
-        details:
-          "Learn reconnaissance, brute force, and dictionary attack techniques (for legal lab use only).",
+        unit: "Module 3",
+        title: "Server-Side Vulnerabilities",
+        topics: [
+          { title: "SQL Injection (SQLi)", details: "Manual and automated exploitation (SQLmap)." },
+          { title: "SSRF (Server-Side Request Forgery)", details: "Tricking servers into making internal requests." },
+          { title: "RCE (Remote Code Execution)", details: "The holy grail of bug bounties: getting a shell." },
+        ],
       },
       {
-        title: "Social Engineering Awareness",
-        details:
-          "Understand phishing, baiting, and social manipulation tactics — and how to build awareness against them.",
+        unit: "Module 4",
+        title: "Client-Side Vulnerabilities",
+        topics: [
+          { title: "XSS (Cross-Site Scripting)", details: "Reflected, Stored, and DOM-based XSS methodologies." },
+          { title: "CSRF & CORS", details: "Cross-Site Request Forgery and Misconfigured CORS headers." },
+        ],
       },
       {
-        title: "Ethical Simulation Projects",
-        details:
-          "Perform end-to-end ethical hacking simulations on virtual systems to analyze attack patterns and prevention methods.",
-      },
-    ],
-  },
-  {
-    unit: "Module 3",
-    title: "Defensive Security & System Hardening (Blue Team)",
-    topics: [
-      {
-        title: "Firewalls, IDS & IPS Systems",
-        details:
-          "Learn to configure and manage firewalls, Intrusion Detection Systems (IDS), and Intrusion Prevention Systems (IPS) to protect network perimeters.",
-      },
-      {
-        title: "SIEM & Log Analysis",
-        details:
-          "Understand how Security Information and Event Management (SIEM) tools aggregate and analyze log data to detect suspicious activity and manage security incidents.",
-      },
-      {
-        title: "Operating System Hardening",
-        details:
-          "Secure configurations for Windows and Linux servers, including user access controls, patching, and disabling unnecessary services.",
-      },
-      {
-        title: "Endpoint Protection (EDR)",
-        details:
-          "Explore modern antivirus, Endpoint Detection and Response (EDR) solutions, and host-based security strategies to protect individual devices.",
-      },
-      {
-        title: "Cryptography Basics & PKI",
-        details:
-          "Grasp the fundamentals of encryption (symmetric/asymmetric), hashing, digital signatures, and how Public Key Infrastructure (PKI) is used to secure communications.",
+        unit: "Module 5",
+        title: "Reporting & Career",
+        topics: [
+          { title: "Writing Professional Reports", details: "How to write POCs that get accepted and paid." },
+          { title: "Platform Navigation", details: "Strategies for HackerOne, Bugcrowd, and Synack." },
+        ],
       },
     ],
   },
   {
-    unit: "Module 4",
-    title: "Web Application Penetration Testing",
-    topics: [
+    id: "lite",
+    name: "Cyber Master's Pro Lite",
+    icon: <Zap className="w-5 h-5" />,
+    description: "A fast-track 15-day course covering essential security skills.",
+    curriculum: [
       {
-        title: "The OWASP Top 10",
-        details:
-          "A deep dive into the 10 most critical web application security risks, such as SQL Injection, Cross-Site Scripting, and Broken Access Control.",
-      },
-      // 
-      {
-        title: "SQL Injection (SQLi) Deep Dive",
-        details:
-          "Hands-on labs to find and exploit SQL injection vulnerabilities to bypass logins, exfiltrate database information, and (in a lab) gain shell access.",
-      },
-      {
-        title: "Cross-Site Scripting (XSS)",
-        details:
-          "Learn the difference between Stored, Reflected, and DOM-based XSS and how to execute scripts in a victim's browser to steal session cookies.",
+        unit: "Module 1",
+        title: "Introduction & Networking",
+        topics: [
+          { title: "Cyber Security Basics", details: "CIA Triad, threats, and safety protocols." },
+          { title: "Networking Essentials", details: "IP addresses, ports, and common protocols (HTTP, FTP, SSH)." },
+        ],
       },
       {
-        title: "Using Burp Suite Professional",
-        details:
-          "Master Burp Suite, the industry-standard tool for intercepting, modifying, and analyzing web traffic to find complex vulnerabilities.",
+        unit: "Module 2",
+        title: "Linux & Tools",
+        topics: [
+          { title: "Linux Command Line", details: "Navigating the terminal, permissions, and bash scripting." },
+          { title: "Hacking Tools Overview", details: "Intro to Nmap, Metasploit, and Wireshark." },
+        ],
       },
       {
-        title: "API Security Testing (OWASP API Top 10)",
-        details:
-          "Focus on vulnerabilities specific to REST and GraphQL APIs, including improper authentication, excessive data exposure, and broken object-level authorization.",
-      },
-    ],
-  },
-  {
-    unit: "Module 5",
-    title: "Digital Forensics & Incident Response",
-    topics: [
-      {
-        title: "The Incident Response Lifecycle",
-        details:
-          "Study the 6 phases of incident response: Preparation, Identification, Containment, Eradication, Recovery, and Lessons Learned.",
-      },
-      // 
-      {
-        title: "File System Forensics (FAT, NTFS, ext4)",
-        details:
-          "Learn to analyze file systems to recover deleted data, track user activity, and find hidden evidence on disk drives using tools like Autopsy.",
-      },
-      {
-        title: "Memory Forensics with Volatility",
-        details:
-          "Capture and analyze system RAM to find running processes, network connections, and malware artifacts that don't exist on disk.",
-      },
-      {
-        title: "Malware Analysis Fundamentals",
-        details:
-          "Safely analyze malware samples (static and dynamic analysis) in a sandbox to understand their behavior, purpose, and indicators of compromise (IoCs).",
-      },
-      {
-        title: "Creating a Forensic Report",
-        details:
-          "Learn how to properly document findings, maintain the chain of custody, and write a professional report for technical and non-technical stakeholders.",
+        unit: "Module 3",
+        title: "Basic Web Security",
+        topics: [
+          { title: "Understanding Web Attacks", details: "How websites get hacked: SQLi and XSS basics." },
+          { title: "Securing Yourself", details: "Password managers, 2FA, and safe browsing habits." },
+        ],
       },
     ],
   },
 ];
 
-// --- THE REST OF YOUR COMPONENT REMAINS THE SAME ---
-
 export const CourseCurriculum = () => {
-  const [selectedCyberUnit, setSelectedCyberUnit] = useState(0);
+  const [selectedCourseIndex, setSelectedCourseIndex] = useState(0); // Default to Black Hat
+  const [selectedModuleIndex, setSelectedModuleIndex] = useState(0);
   const [expandedTopic, setExpandedTopic] = useState<number | null>(null);
+
+  const currentCourse = COURSES[selectedCourseIndex];
+  const currentModule = currentCourse.curriculum[selectedModuleIndex];
+
+  const handleCourseChange = (index: number) => {
+    setSelectedCourseIndex(index);
+    setSelectedModuleIndex(0); // Reset module selection
+    setExpandedTopic(null);    // Close expanded topics
+  };
 
   const handleTopicClick = (index: number) => {
     setExpandedTopic(expandedTopic === index ? null : index);
   };
 
-  const currentModule = cyberSecurityCurriculum[selectedCyberUnit];
-
   return (
-    <section className="py-16" id="curriculum">
+    <section className="py-16 bg-background" id="curriculum">
       <div className="container mx-auto px-4">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
+        
+        {/* Header */}
+        <div className="text-center mb-12">
           <motion.div
             initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+            whileInView={{ scale: 1 }}
+            viewport={{ once: true }}
             className="flex justify-center mb-4"
           >
-            <ShieldCheck className="w-14 h-14 text-primary" />
+            <div className="p-4 rounded-full bg-primary/10">
+                <Terminal className="w-10 h-10 text-primary" />
+            </div>
           </motion.div>
-          <h2 className="text-4xl font-bold gradient-text mb-4">
-            Cyber Security Curriculum
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            Learn Ethical Hacking, Network Defense, and Real-World Cyber
-            Security with Hands-on Labs
+          <h2 className="text-4xl font-bold mb-4">Course Curriculum</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Select a specialized track below to explore the detailed syllabus.
           </p>
+        </div>
+
+        {/* COURSE SELECTOR TABS */}
+        <div className="flex flex-wrap justify-center gap-4 mb-10">
+          {COURSES.map((course, index) => (
+            <Button
+              key={course.id}
+              variant={selectedCourseIndex === index ? "default" : "outline"}
+              className={`h-auto py-3 px-6 gap-2 transition-all ${
+                selectedCourseIndex === index ? "shadow-lg scale-105 ring-2 ring-primary/20" : "hover:bg-muted"
+              }`}
+              onClick={() => handleCourseChange(index)}
+            >
+              {course.icon}
+              <div className="flex flex-col items-start">
+                <span className="font-bold text-md">{course.name}</span>
+              </div>
+            </Button>
+          ))}
+        </div>
+
+        {/* Selected Course Description */}
+        <motion.div 
+            key={currentCourse.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-10 text-muted-foreground font-medium"
+        >
+            {currentCourse.description}
         </motion.div>
 
         {/* Curriculum Grid */}
         <div className="grid md:grid-cols-4 gap-6">
-          {/* Module List */}
-          <div className="space-y-2">
-            {cyberSecurityCurriculum.map((unit, index) => (
+          
+          {/* SIDEBAR: Module List */}
+          <div className="space-y-2 md:col-span-1">
+            {currentCourse.curriculum.map((unit, index) => (
               <motion.div
-                key={index}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 200 }}
+                key={`${currentCourse.id}-module-${index}`}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
               >
                 <Card
-                  className={`cursor-pointer transition-all duration-300 ${
-                    selectedCyberUnit === index
-                      ? "shadow-glow border-primary bg-primary/5"
-                      : "hover:shadow-glow"
+                  className={`cursor-pointer transition-all duration-300 border-l-4 ${
+                    selectedModuleIndex === index
+                      ? "border-l-primary bg-primary/5 shadow-md"
+                      : "border-l-transparent hover:bg-muted/50"
                   }`}
                   onClick={() => {
-                    setSelectedCyberUnit(index);
+                    setSelectedModuleIndex(index);
                     setExpandedTopic(null);
                   }}
                 >
                   <CardContent className="p-4">
-                    <p className="text-sm text-muted-foreground mb-1">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                       {unit.unit}
                     </p>
-                    <p className="font-semibold text-sm">{unit.title}</p>
+                    <p className={`font-semibold text-sm ${selectedModuleIndex === index ? "text-primary" : ""}`}>
+                        {unit.title}
+                    </p>
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
           </div>
 
-          {/* Topics List */}
+          {/* MAIN CONTENT: Topics List */}
           <motion.div
-            key={selectedCyberUnit}
+            key={`${currentCourse.id}-${selectedModuleIndex}`}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.3 }}
             className="md:col-span-3"
           >
-            <Card className="shadow-glow-lg">
+            <Card className="h-full border-t-4 border-t-primary shadow-lg">
               <CardContent className="p-6">
-                <h3 className="text-2xl font-bold gradient-text mb-6">
-                  {currentModule.title}
-                </h3>
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold">
+                        {selectedModuleIndex + 1}
+                    </div>
+                    <h3 className="text-2xl font-bold">
+                    {currentModule.title}
+                    </h3>
+                </div>
 
                 {/* Expandable Topics */}
                 <div className="space-y-3">
                   {currentModule.topics.map((topic, index) => (
-                    <motion.div key={index} layout className="border-b pb-2">
+                    <motion.div key={index} layout className="border rounded-lg overflow-hidden bg-card/50">
                       <div
-                        className="flex items-center justify-between gap-3 p-3 rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+                        className="flex items-center justify-between gap-3 p-4 cursor-pointer hover:bg-muted/50 transition-colors"
                         onClick={() => handleTopicClick(index)}
                       >
                         <div className="flex items-center gap-3">
-                          <ChevronRight
-                            className={`text-primary transition-transform ${
-                              expandedTopic === index ? "rotate-90" : ""
-                            }`}
-                          />
-                          <span className="font-medium">{`Topic ${index + 1}: ${
-                            topic.title
-                          }`}</span>
+                          <span className="font-semibold text-foreground/80">{topic.title}</span>
                         </div>
                         <ChevronDown
-                          className={`transition-transform ${
-                            expandedTopic === index ? "rotate-180" : ""
+                          className={`w-5 h-5 text-muted-foreground transition-transform duration-300 ${
+                            expandedTopic === index ? "rotate-180 text-primary" : ""
                           }`}
                         />
                       </div>
@@ -283,36 +289,29 @@ export const CourseCurriculum = () => {
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: "auto" }}
                             exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="pl-10 pr-4 pb-3 text-muted-foreground text-sm"
+                            className="bg-muted/30"
                           >
-                            {topic.details}
+                            <div className="p-4 pt-0 text-sm text-muted-foreground leading-relaxed border-t border-dashed border-muted-foreground/20 mt-2 mx-4 py-4">
+                              {topic.details}
+                            </div>
                           </motion.div>
                         )}
                       </AnimatePresence>
                     </motion.div>
                   ))}
                 </div>
-
-                <p className="mt-6 text-sm text-muted-foreground italic"></p>
               </CardContent>
             </Card>
           </motion.div>
         </div>
 
         {/* Download Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="text-center mt-10"
-        >
-          <Button variant="gradient" size="lg" className="shadow-glow">
-            <Download className="mr-2" />
-            Download Cyber Security Curriculum
+        <div className="text-center mt-12">
+          <Button size="lg" className="shadow-lg hover:shadow-primary/20 transition-all">
+            <Download className="mr-2 h-4 w-4" />
+            Download {currentCourse.name} Syllabus
           </Button>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
