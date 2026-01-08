@@ -34,7 +34,7 @@ import HardwareServices from "./pages/HardwareServices";
 import WebsiteDevelopment from "./pages/website-development";
 import ProductDetail from "./pages/ProductDetail";
 import Checkout from "./pages/Checkout";
-import HardwareCheckout from "./pages/HardwareCheckout"; // ✅ IMPORT THIS
+import HardwareCheckout from "./pages/HardwareCheckout"; // ✅ Added Hardware Checkout
 
 // Specific Service Detail Pages
 import WebsiteSecurityDetails from "./pages/WebsiteSecurityDetails";
@@ -48,66 +48,68 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <CurrencyProvider>
-    <CartProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <ScrollToTop />
-          <Header />
+      <CartProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ScrollToTop />
+            <Header />
 
-          <Routes>
-            {/* 🌐 Main Pages */}
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact-us" element={<ContactUs />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
+            <Routes>
+              {/* 🌐 Main Pages */}
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact-us" element={<ContactUs />} />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
 
-            {/* 🎓 Courses */}
-            <Route path="/courses" element={<Courses />} />
-            <Route path="/courses/:id" element={<CourseDetail />} />
-            <Route path="/courses/:id/content" element={<CourseContent />} />
+              {/* 🎓 Courses */}
+              <Route path="/courses" element={<Courses />} />
+              <Route path="/courses/:id" element={<CourseDetail />} />
+              <Route path="/courses/:id/content" element={<CourseContent />} />
 
-            {/* 👤 Auth & Profile */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/dashboard/*" element={<Dashboard />} />
-            <Route path="/my-profile" element={<MyProfile />} />
+              {/* 👤 Auth & Profile */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/dashboard/*" element={<Dashboard />} />
+              <Route path="/my-profile" element={<MyProfile />} />
 
-            {/* 🪪 Certificates */}
-            <Route path="/verify-certificate" element={<VerifyCertificate />} />
-            <Route path="/certificate-download" element={<CertificateDownload />} />
+              {/* 🪪 Certificates */}
+              <Route path="/verify-certificate" element={<VerifyCertificate />} />
+              <Route path="/certificate-download" element={<CertificateDownload />} />
 
-            {/* 🧰 Services */}
-            <Route path="/services" element={<Services />} />
-            <Route path="/services/software" element={<Services />} />
-            <Route path="/services/hardware" element={<HardwareServices />} />
-            <Route path="/services/legal" element={<AdvocateConstruction />} />
-            <Route path="/services/website-development" element={<WebsiteDevelopment />} />
-            <Route path="/services/website-security" element={<WebsiteSecurityDetails />} />
-            <Route path="/services/penetration-testing" element={<PenetrationTestingPage />} />
-            <Route path="/services/web-development" element={<WebDevelopmentPage />} />
-            <Route path="/services/:serviceId" element={<ServiceDetail />} />
+              {/* 🧰 Services */}
+              <Route path="/services" element={<Services />} />
+              <Route path="/services/software" element={<Services />} />
+              <Route path="/services/hardware" element={<HardwareServices />} />
+              <Route path="/services/legal" element={<AdvocateConstruction />} />
+              <Route path="/services/website-development" element={<WebsiteDevelopment />} />
+              <Route path="/services/website-security" element={<WebsiteSecurityDetails />} />
+              <Route path="/services/penetration-testing" element={<PenetrationTestingPage />} />
+              <Route path="/services/web-development" element={<WebDevelopmentPage />} />
+              <Route path="/services/:serviceId" element={<ServiceDetail />} />
 
-            {/* 🛒 E-commerce */}
-            <Route path="/hardware/product/:id" element={<ProductDetail />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/hardware-checkout" element={<HardwareCheckout />} /> {/* ✅ ADDED ROUTE HERE */}
+              {/* 🛒 E-commerce */}
+              <Route path="/hardware/product/:id" element={<ProductDetail />} />
+              
+              {/* Checkout Routes */}
+              <Route path="/checkout" element={<Checkout />} /> {/* Software/Courses */}
+              <Route path="/hardware-checkout" element={<HardwareCheckout />} /> {/* Hardware */}
 
-            {/* 🛠️ Admin Panel */}
-            <Route path="/admintdcsd" element={<SimpleAdminPanel />} />
+              {/* 🛠️ Admin Panel */}
+              <Route path="/admintdcsd" element={<SimpleAdminPanel />} />
 
-            {/* 🚫 404 Fallback */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              {/* 🚫 404 Fallback */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
 
-          <Footer />
-        </BrowserRouter>
-      </TooltipProvider>
-    </CartProvider>
+            <Footer />
+          </BrowserRouter>
+        </TooltipProvider>
+      </CartProvider>
     </CurrencyProvider>
   </QueryClientProvider>
 );
