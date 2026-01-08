@@ -14,8 +14,8 @@ interface Course {
   name: string;
   tagline: string;
   highlight: string;
-  accessor: CourseKey; // Links strict key to data
-  recommended: boolean;
+  accessor: CourseKey;
+  // Removed 'recommended' boolean
 }
 
 interface FeatureRow {
@@ -25,7 +25,7 @@ interface FeatureRow {
   lite: string | boolean;
 }
 
-// --- 2. TYPED DATA ---
+// --- 2. DATA (Cleaned) ---
 const COURSES: Course[] = [
   {
     id: "bug-hunting-pentest",
@@ -33,7 +33,6 @@ const COURSES: Course[] = [
     tagline: "Master Bug Hunting",
     highlight: "Best for Researchers",
     accessor: "bugBounty",
-    recommended: false,
   },
   {
     id: "cyber-blackhat",
@@ -41,7 +40,6 @@ const COURSES: Course[] = [
     tagline: "With Placement",
     highlight: "Most Popular",
     accessor: "blackHat",
-    recommended: true,
   },
   {
     id: "cyber-lite",
@@ -49,7 +47,6 @@ const COURSES: Course[] = [
     tagline: "Essential Skills",
     highlight: "Best Value",
     accessor: "lite",
-    recommended: false,
   },
 ];
 
@@ -84,23 +81,18 @@ const FeatureValue = ({ value }: { value: string | boolean }) => {
   return <span className="font-semibold text-foreground/90">{value}</span>;
 };
 
-// --- 4. SUB-COMPONENTS FOR CLEANER RENDER ---
+// --- 4. SUB-COMPONENTS ---
 const DesktopTable = ({ navigate }: { navigate: (path: string) => void }) => (
   <div className="hidden lg:block">
     <Card className="border-border/50 shadow-2xl bg-card/50 backdrop-blur-sm overflow-hidden">
       <CardContent className="p-0">
         <table className="w-full border-collapse">
-          {/* Sticky Header for UX */}
+          {/* Sticky Header */}
           <thead className="sticky top-0 z-20 bg-background/95 backdrop-blur-md shadow-sm">
             <tr>
               <th className="p-6 text-left w-1/4 font-bold text-lg border-b">Features</th>
               {COURSES.map((course, index) => (
-                <th key={course.id} className="p-6 text-center w-1/4 align-top border-b relative">
-                  {course.recommended && (
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                      <Badge className="bg-primary text-primary-foreground shadow-md">Recommended</Badge>
-                    </div>
-                  )}
+                <th key={course.id} className="p-6 text-center w-1/4 align-top border-b">
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -140,9 +132,9 @@ const DesktopTable = ({ navigate }: { navigate: (path: string) => void }) => (
               {COURSES.map((course) => (
                 <td key={course.id} className="p-6 text-center">
                   <Button
-                    variant={course.recommended ? "default" : "outline"}
+                    variant="default" // Uniform style for all buttons
                     size="lg"
-                    className={`w-full font-bold ${course.recommended ? "shadow-lg shadow-primary/20" : ""}`}
+                    className="w-full font-bold hover:shadow-lg transition-all"
                     onClick={() => navigate(`/courses/${course.id}`)}
                   >
                     View Details
@@ -167,13 +159,7 @@ const MobileCards = ({ navigate }: { navigate: (path: string) => void }) => (
         viewport={{ once: true }}
         transition={{ delay: index * 0.1 }}
       >
-        <Card className={`relative overflow-hidden border-2 ${course.recommended ? 'border-primary/50 shadow-xl shadow-primary/10' : 'border-border'}`}>
-          {course.recommended && (
-             <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-bl-lg z-10">
-               Recommended
-             </div>
-          )}
-          
+        <Card className="relative overflow-hidden border border-border hover:border-primary/50 transition-colors">
           <CardHeader className="text-center pb-4 bg-muted/30 border-b">
             <Badge variant="secondary" className="w-fit mx-auto mb-2 bg-background border">{course.highlight}</Badge>
             <CardTitle className="text-2xl">{course.name}</CardTitle>
@@ -194,7 +180,7 @@ const MobileCards = ({ navigate }: { navigate: (path: string) => void }) => (
             <div className="p-6 bg-muted/10">
               <Button 
                 className="w-full" 
-                variant={course.recommended ? "default" : "outline"}
+                variant="default" // Uniform style
                 size="lg"
                 onClick={() => navigate(`/courses/${course.id}`)}
               >
@@ -214,7 +200,7 @@ export const CourseComparison = () => {
 
   return (
     <section className="py-20 bg-background relative overflow-hidden">
-      {/* Background Decor (Optional) */}
+      {/* Background Decor */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/5 rounded-full blur-3xl -z-10" />
 
       <div className="container mx-auto px-4 relative z-10">
