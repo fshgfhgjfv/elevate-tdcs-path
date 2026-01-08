@@ -17,6 +17,9 @@ import { MentorsSection } from "@/components/MentorsSection";
 import { HiringPartners } from "@/components/HiringPartners";
 import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
 import { NetworkSecurityCurriculum } from "@/components/NetworkSecurityCurriculum";
+import { CyberLiteCurriculum } from "@/components/CyberLiteCurriculum";
+import { CyberBlackhatCurriculum } from "@/components/CyberBlackhatCurriculum";
+import { BugHuntingCurriculum } from "@/components/BugHuntingCurriculum";
 import { DownloadBrochureModal } from "@/components/DownloadBrochureModal";
 
 export default function CourseDetail() {
@@ -156,6 +159,12 @@ export default function CourseDetail() {
       >
         {id === "network-security-defense" ? (
           <NetworkSecurityCurriculum />
+        ) : id === "cyber-lite" ? (
+          <CyberLiteCurriculum />
+        ) : id === "cyber-blackhat" ? (
+          <CyberBlackhatCurriculum />
+        ) : id === "bug-hunting-pentest" ? (
+          <BugHuntingCurriculum />
         ) : (
           <CourseCurriculum />
         )}
