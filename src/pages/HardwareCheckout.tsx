@@ -1,264 +1,225 @@
-import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { 
-  ArrowLeft, 
-  MapPin, 
-  Truck, 
-  CreditCard, 
-  CheckCircle, 
-  Loader2,
-  Package,
-  Copy,
-  ShieldCheck
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { toast } from "@/hooks/use-toast";
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowLeft, CreditCard, Truck, ShieldCheck, Lock } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
-// Config
-const UPI_ID = "tdcsorganization@sbi";
-const QR_CODE_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEiYxV2ayi-nLo4GdGqaDDKDg9OpUiRjbmyav9HoiZp_qm2Zt1-x8jQ7Y4S5gMQSeKrIuZKolSVxZ0c817cdvXKG5IbRLWEngQOEBC8Gah6Edi2snbD0vbr6y-0nJSq8rdvCR4HJIcRJhRDlSTYA9EeYdGj-U6QaRM365bjvdR85QjaR3s4rm1oYOTYTl8gU";
+// Mock Cart Data (Replace with your actual Cart Context/State)
+const MOCK_CART = [
+  {
+    id: 1,
+    name: "WiFi Pineapple Mark VII",
+    price: 11999,
+    image: "https://images.unsplash.com/photo-1558389186-438424b00a32?auto=format&fit=crop&q=80&w=200",
+    quantity: 1,
+  },
+  {
+    id: 2,
+    name: "Raspberry Pi 5 (8GB)",
+    price: 8499,
+    image: "https://images.unsplash.com/photo-1629739884942-887f213205df?auto=format&fit=crop&q=80&w=200",
+    quantity: 2,
+  },
+];
 
-export default function HardwareCheckout() {
-  const location = useLocation();
+const HardwareCheckout = () => {
   const navigate = useNavigate();
-  
-  // Safe destructuring
-  const state = location.state || {};
-  const productName = state.productName;
-  const price = state.price;
-  const image = state.image;
-  
-  const SHIPPING_COST = 150; 
-  const productPrice = Number(price) || 0;
-  const TOTAL_PRICE = productPrice + SHIPPING_COST;
+  const [loading, setLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('upi');
 
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    address: "",
-    city: "",
-    state: "",
-    pincode: "",
-    transactionId: ""
-  });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-
-  // Redirect if accessed directly without data
-  useEffect(() => {
-    if (!productName || !price) {
-      // Use setTimeout to avoid render-loop crashes
-      const timer = setTimeout(() => navigate("/services/hardware"), 0);
-      return () => clearTimeout(timer);
-    }
-  }, [productName, price, navigate]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // Calculate Totals
+  const subtotal = MOCK_CART.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const shipping = 150; // Flat rate
+  const tax = subtotal * 0.18; // 18% GST
+  const total = subtotal + shipping + tax;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    // Simulate Order Processing
+    setLoading(true);
+
+    // Simulate API call
     setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-    }, 2500);
+      setLoading(false);
+      // Navigate to success page or handle payment gateway logic here
+      alert("Order placed successfully! (Redirecting to payment gateway...)");
+      navigate('/order-success');
+    }, 2000);
   };
 
-  // --- Success View ---
-  if (isSuccess) {
-    return (
-      <div className="min-h-screen bg-black text-green-500 flex items-center justify-center p-4">
-        <Card className="max-w-md w-full border-green-500/30 bg-gray-900">
-            <CardHeader className="text-center">
-                <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-4" />
-                <CardTitle className="text-2xl text-white">Deployment Authorized</CardTitle>
-                <CardDescription className="text-gray-400">
-                   Order ID: <span className="font-mono text-green-400">#{Math.floor(Math.random() * 90000) + 10000}</span>
-                </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                <div className="bg-gray-800 p-4 rounded text-sm text-gray-300">
-                   <p><strong>Item:</strong> {productName}</p>
-                   <p><strong>Shipping to:</strong> {formData.city}, {formData.pincode}</p>
-                </div>
-                <div className="text-center text-sm text-gray-500">
-                    We are verifying your payment. You will receive tracking details via WhatsApp/Email within 24 hours.
-                </div>
-                <Button className="w-full bg-green-600 hover:bg-green-500 text-black font-bold" onClick={() => navigate("/")}>
-                    Return to Base
-                </Button>
-            </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // --- Main View ---
   return (
-    <div className="min-h-screen bg-black text-gray-100 pt-24 pb-12 font-sans">
-      <div className="container mx-auto px-4 max-w-6xl">
-        <Button variant="ghost" className="mb-6 pl-0 text-green-500 hover:text-green-400 hover:bg-transparent" onClick={() => navigate(-1)}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Cancel Deployment
-        </Button>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          {/* LEFT: SHIPPING FORM */}
-          <div className="lg:col-span-7 space-y-6">
-            <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
-              <Truck className="w-8 h-8 text-green-500" /> 
-              Secure Checkout
-            </h1>
-
-            <Card className="border-gray-800 bg-gray-900/50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-white">
-                    <MapPin className="w-5 h-5 text-green-500" /> Shipping Destination
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form id="checkout-form" onSubmit={handleSubmit} className="space-y-4">
-                  {/* Personal Info */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-gray-400">Full Name</Label>
-                      <Input name="name" required value={formData.name} onChange={handleInputChange} className="bg-gray-800 border-gray-700 text-white" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-gray-400">Mobile Number</Label>
-                      <Input name="phone" required value={formData.phone} onChange={handleInputChange} className="bg-gray-800 border-gray-700 text-white" />
-                    </div>
-                  </div>
-                  
-                  {/* Address */}
-                  <div className="space-y-2">
-                    <Label className="text-gray-400">Street Address</Label>
-                    <Input name="address" placeholder="House No, Building, Street Area" required value={formData.address} onChange={handleInputChange} className="bg-gray-800 border-gray-700 text-white" />
-                  </div>
-
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                       <Label className="text-gray-400">City</Label>
-                       <Input name="city" required value={formData.city} onChange={handleInputChange} className="bg-gray-800 border-gray-700 text-white" />
-                    </div>
-                    <div className="space-y-2">
-                       <Label className="text-gray-400">State</Label>
-                       <Input name="state" required value={formData.state} onChange={handleInputChange} className="bg-gray-800 border-gray-700 text-white" />
-                    </div>
-                    <div className="space-y-2 col-span-2 md:col-span-1">
-                       <Label className="text-gray-400">Pincode</Label>
-                       <Input name="pincode" required value={formData.pincode} onChange={handleInputChange} className="bg-gray-800 border-gray-700 text-white" />
-                    </div>
-                  </div>
-
-                  <Separator className="bg-gray-800 my-6" />
-
-                  {/* Payment Input */}
-                  <div className="space-y-4">
-                     <div className="flex items-center justify-between">
-                         <Label className="text-white font-bold flex items-center gap-2">
-                             <CreditCard className="w-4 h-4 text-green-500" /> Payment Confirmation
-                         </Label>
-                         <span className="text-xs text-gray-500">Scan QR Code -> Pay -> Enter UTR</span>
-                     </div>
-                     <Input 
-                        name="transactionId" 
-                        placeholder="ENTER 12-DIGIT UTR / TRANSACTION ID" 
-                        required 
-                        value={formData.transactionId} 
-                        onChange={handleInputChange} 
-                        className="bg-gray-800 border-green-500/30 text-white placeholder:text-gray-600 uppercase tracking-widest" 
-                     />
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-
-            <Button 
-                type="submit" 
-                form="checkout-form"
-                disabled={isSubmitting}
-                className="w-full py-6 text-lg font-bold bg-green-600 hover:bg-green-500 text-black shadow-lg shadow-green-900/20"
-            >
-                {isSubmitting ? <><Loader2 className="mr-2 animate-spin"/> Processing Order...</> : "CONFIRM ORDER & PAY"}
-            </Button>
+    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans selection:bg-blue-500 selection:text-white">
+      {/* Navbar Placeholder */}
+      <nav className="w-full bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Link to="/hardware" className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+            <ArrowLeft size={20} />
+            <span className="font-medium">Continue Shopping</span>
+          </Link>
+          <div className="flex items-center gap-2 text-green-600">
+            <Lock size={16} />
+            <span className="text-sm font-semibold">Secure Checkout</span>
           </div>
+        </div>
+      </nav>
 
-          {/* RIGHT: ORDER SUMMARY */}
-          <div className="lg:col-span-5 space-y-6">
-            <Card className="border-gray-800 bg-gray-900 sticky top-24">
-              <CardHeader className="border-b border-gray-800 pb-4">
-                <CardTitle className="text-white">Order Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6 space-y-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          
+          {/* LEFT COLUMN: Shipping & Payment Forms */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="lg:col-span-7 space-y-8"
+          >
+            <form id="checkout-form" onSubmit={handleSubmit} className="space-y-8">
+              
+              {/* Shipping Information */}
+              <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h2 className="text-xl font-bold flex items-center gap-2 mb-6">
+                  <Truck className="text-blue-600" /> Shipping Information
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input required type="text" placeholder="John Doe" className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input required type="email" placeholder="john@example.com" className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
+                    <input required type="text" placeholder="123 Cyber Lane" className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                    <input required type="text" placeholder="Bengaluru" className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Pincode</label>
+                    <input required type="text" placeholder="560001" className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <input required type="tel" placeholder="+91 98765 43210" className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+                  </div>
+                </div>
+              </section>
+
+              {/* Payment Method */}
+              <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h2 className="text-xl font-bold flex items-center gap-2 mb-6">
+                  <CreditCard className="text-blue-600" /> Payment Method
+                </h2>
                 
-                {/* Product Snippet */}
-                <div className="flex gap-4">
-                    <div className="w-20 h-20 bg-gray-800 rounded-lg overflow-hidden border border-gray-700">
-                        {image && <img src={image} alt="Product" className="w-full h-full object-cover" />}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <label 
+                    className={`cursor-pointer border-2 rounded-xl p-4 flex items-center gap-4 transition-all ${paymentMethod === 'upi' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
+                    onClick={() => setPaymentMethod('upi')}
+                  >
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'upi' ? 'border-blue-600' : 'border-gray-400'}`}>
+                      {paymentMethod === 'upi' && <div className="w-2.5 h-2.5 rounded-full bg-blue-600" />}
                     </div>
                     <div>
-                        <h3 className="font-bold text-white text-lg">{productName}</h3>
-                        <div className="flex items-center gap-2 text-sm text-green-400">
-                            <Package className="w-4 h-4" /> Physical Delivery
-                        </div>
+                      <span className="font-semibold block">UPI / QR Code</span>
+                      <span className="text-xs text-gray-500">GPay, PhonePe, Paytm</span>
                     </div>
-                </div>
+                  </label>
 
-                <div className="space-y-2 text-sm">
-                    <div className="flex justify-between text-gray-400">
-                        <span>Item Price</span>
-                        <span>₹{productPrice.toLocaleString()}</span>
+                  <label 
+                    className={`cursor-pointer border-2 rounded-xl p-4 flex items-center gap-4 transition-all ${paymentMethod === 'card' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
+                    onClick={() => setPaymentMethod('card')}
+                  >
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'card' ? 'border-blue-600' : 'border-gray-400'}`}>
+                      {paymentMethod === 'card' && <div className="w-2.5 h-2.5 rounded-full bg-blue-600" />}
                     </div>
-                    <div className="flex justify-between text-gray-400">
-                        <span>Shipping & Handling</span>
-                        <span>₹{SHIPPING_COST}</span>
+                    <div>
+                      <span className="font-semibold block">Credit / Debit Card</span>
+                      <span className="text-xs text-gray-500">Visa, Mastercard, RuPay</span>
                     </div>
-                    <div className="flex justify-between text-gray-400">
-                        <span>Taxes (18% GST)</span>
-                        <span className="text-green-500">Included</span>
-                    </div>
-                    <Separator className="bg-gray-800 my-2" />
-                    <div className="flex justify-between text-white text-xl font-bold">
-                        <span>Total Payable</span>
-                        <span className="text-green-400">₹{TOTAL_PRICE.toLocaleString()}</span>
-                    </div>
+                  </label>
                 </div>
+              </section>
+            </form>
+          </motion.div>
 
-                {/* QR Code */}
-                <div className="bg-white p-4 rounded-lg flex flex-col items-center">
-                    <img src={QR_CODE_URL} alt="Payment QR" className="w-48 h-48 mix-blend-multiply" />
-                    <div className="mt-4 flex items-center gap-2 bg-gray-100 px-3 py-1 rounded text-xs text-black font-mono">
-                        {UPI_ID}
-                        <Copy 
-                            className="w-3 h-3 cursor-pointer hover:text-green-600" 
-                            onClick={() => {
-                                navigator.clipboard.writeText(UPI_ID);
-                                toast({ title: "UPI ID Copied" });
-                            }}
-                        />
+          {/* RIGHT COLUMN: Order Summary */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="lg:col-span-5"
+          >
+            <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 sticky top-24">
+              <h2 className="text-xl font-bold mb-6">Order Summary</h2>
+              
+              {/* Cart Items */}
+              <div className="space-y-4 mb-6 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+                {MOCK_CART.map((item) => (
+                  <div key={item.id} className="flex items-start gap-4 py-3 border-b border-gray-50 last:border-0">
+                    <div className="w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
+                      <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                     </div>
-                </div>
-                
-                <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
-                    <ShieldCheck className="w-4 h-4" /> Secure 256-bit SSL Encrypted Payment
-                </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900 line-clamp-1">{item.name}</h4>
+                      <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-semibold text-gray-900">₹{(item.price * item.quantity).toLocaleString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-              </CardContent>
-            </Card>
-          </div>
+              {/* Price Breakdown */}
+              <div className="space-y-3 border-t border-gray-100 pt-4 mb-6">
+                <div className="flex justify-between text-gray-600">
+                  <span>Subtotal</span>
+                  <span>₹{subtotal.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                  <span>Shipping</span>
+                  <span>₹{shipping.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                  <span>Tax (18% GST)</span>
+                  <span>₹{tax.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-lg font-bold text-gray-900 border-t border-gray-200 pt-3">
+                  <span>Total</span>
+                  <span>₹{total.toLocaleString()}</span>
+                </div>
+              </div>
 
+              {/* Security Badge */}
+              <div className="flex items-center justify-center gap-2 text-xs text-gray-500 bg-gray-50 p-3 rounded-lg mb-6">
+                <ShieldCheck size={16} className="text-green-600" />
+                <span>Your data is encrypted and secure</span>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                form="checkout-form"
+                disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    Place Order <span className="font-normal opacity-80">(₹{total.toLocaleString()})</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </motion.div>
         </div>
-      </div>
+      </main>
     </div>
   );
-}
+};
+
+export default HardwareCheckout;
