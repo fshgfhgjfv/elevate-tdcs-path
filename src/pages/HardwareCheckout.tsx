@@ -26,8 +26,11 @@ export default function HardwareCheckout() {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // 1. Get Data passed from ProductDetail
-  const { productName, price, image } = location.state || {};
+  // Safe destructuring with fallback
+  const state = location.state || {};
+  const productName = state.productName;
+  const price = state.price;
+  const image = state.image;
   
   const SHIPPING_COST = 150; 
   const productPrice = Number(price) || 0;
@@ -47,10 +50,12 @@ export default function HardwareCheckout() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // Kick back if accessed without data
+  // Redirect if accessed directly without data
   useEffect(() => {
     if (!productName || !price) {
-      navigate("/services/hardware"); 
+      // Small delay to prevent redirect loops or strict mode double-invocations
+      const timer = setTimeout(() => navigate("/services/hardware"), 100);
+      return () => clearTimeout(timer);
     }
   }, [productName, price, navigate]);
 
@@ -97,6 +102,7 @@ export default function HardwareCheckout() {
     );
   }
 
+  // --- Main View ---
   return (
     <div className="min-h-screen bg-black text-gray-100 pt-24 pb-12 font-sans">
       <div className="container mx-auto px-4 max-w-6xl">
