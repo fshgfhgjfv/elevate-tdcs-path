@@ -14,7 +14,11 @@ import {
   Zap,
   AlertTriangle,
   MessageCircle,
-  Lock
+  Lock,
+  GraduationCap,
+  User,
+  Calculator,
+  Phone
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,11 +26,30 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // --- Configuration ---
 const UPI_ID = "tdcsorganization@sbi"; 
 const MERCHANT_NAME = "TDCS Technologies";
 const WHATSAPP_LINK = "https://chat.whatsapp.com/DjpjRfZl7dI0wVIX9tXuFZ";
+const SUPPORT_WHATSAPP = "https://wa.me/918388959737";
+
+// EMI Configuration
+const EMI_CONFIG = {
+  student: {
+    interest: 3.5,
+    downPaymentPercent: 0,
+    label: "Student EMI",
+    description: "Special rate for students"
+  },
+  regular: {
+    interest: 5,
+    downPaymentPercent: 30,
+    label: "Regular EMI", 
+    description: "30% down payment required"
+  }
+};
 
 // --- Hosted QR Code Link ---
 const QR_CODE_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEiYxV2ayi-nLo4GdGqaDDKDg9OpUiRjbmyav9HoiZp_qm2Zt1-x8jQ7Y4S5gMQSeKrIuZKolSVxZ0c817cdvXKG5IbRLWEngQOEBC8Gah6Edi2snbD0vbr6y-0nJSq8rdvCR4HJIcRJhRDlSTYA9EeYdGj-U6QaRM365bjvdR85QjaR3s4rm1oYOTYTl8gU";
@@ -56,8 +79,36 @@ export default function Checkout() {
     transactionId: ""
   });
   
+  // EMI State
+  const [paymentMode, setPaymentMode] = useState<"full" | "emi">("full");
+  const [emiType, setEmiType] = useState<"student" | "regular">("student");
+  const [emiMonths, setEmiMonths] = useState(3);
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // Calculate EMI amounts
+  const calculateEMI = () => {
+    if (!price || typeof price !== 'number') return { total: 0, downPayment: 0, monthlyEMI: 0, interest: 0 };
+    
+    const config = EMI_CONFIG[emiType];
+    const downPayment = (price * config.downPaymentPercent) / 100;
+    const principal = price - downPayment;
+    const interestAmount = (principal * config.interest) / 100;
+    const totalWithInterest = principal + interestAmount;
+    const monthlyEMI = Math.ceil(totalWithInterest / emiMonths);
+    
+    return {
+      total: price + interestAmount,
+      downPayment,
+      monthlyEMI,
+      interest: interestAmount,
+      principal: totalWithInterest
+    };
+  };
+
+  const emiDetails = calculateEMI();
+  
 
   // 3. Redirect if accessed directly without data
   useEffect(() => {
@@ -300,10 +351,190 @@ export default function Checkout() {
 
                   <Separator className="my-4" />
 
+                  {/* EMI Options Section */}
+                  {isCourse && (
+                    <div className="space-y-4">
+                      <Label className="text-base font-semibold flex items-center gap-2">
+                        <Calculator className="w-4 h-4 text-primary" />
+                        Payment Option
+                      </Label>
+                      
+                      <RadioGroup 
+                        value={paymentMode} 
+                        onValueChange={(value: "full" | "emi") => setPaymentMode(value)}
+                        className="grid grid-cols-2 gap-3"
+                      >
+                        <div className={`relative flex items-center space-x-2 rounded-lg border p-4 cursor-pointer transition-all ${paymentMode === 'full' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`}>
+                          <RadioGroupItem value="full" id="full" />
+                          <Label htmlFor="full" className="cursor-pointer flex-1">
+                            <div className="font-semibold">Full Payment</div>
+                            <div className="text-xs text-muted-foreground">Pay complete amount</div>
+                          </Label>
+                        </div>
+                        <div className={`relative flex items-center space-x-2 rounded-lg border p-4 cursor-pointer transition-all ${paymentMode === 'emi' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`}>
+                          <RadioGroupItem value="emi" id="emi" />
+                          <Label htmlFor="emi" className="cursor-pointer flex-1">
+                            <div className="font-semibold">EMI Option</div>
+                            <div className="text-xs text-muted-foreground">Pay in installments</div>
+                          </Label>
+                        </div>
+                      </RadioGroup>
+
+                      {paymentMode === 'emi' && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="space-y-4 pt-2"
+                        >
+                          {/* EMI Type Selection */}
+                          <div className="space-y-3">
+                            <Label className="text-sm font-medium">Select EMI Type</Label>
+                            <RadioGroup 
+                              value={emiType} 
+                              onValueChange={(value: "student" | "regular") => setEmiType(value)}
+                              className="space-y-2"
+                            >
+                              <div className={`relative flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-all ${emiType === 'student' ? 'border-green-500 bg-green-500/5' : 'border-border hover:border-green-500/50'}`}>
+                                <RadioGroupItem value="student" id="student" />
+                                <GraduationCap className={`w-5 h-5 ${emiType === 'student' ? 'text-green-500' : 'text-muted-foreground'}`} />
+                                <Label htmlFor="student" className="cursor-pointer flex-1">
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <div className="font-semibold">Student EMI</div>
+                                      <div className="text-xs text-muted-foreground">Special rate for students</div>
+                                    </div>
+                                    <div className="text-right">
+                                      <span className="text-green-500 font-bold">3.5%</span>
+                                      <div className="text-xs text-muted-foreground">interest</div>
+                                    </div>
+                                  </div>
+                                </Label>
+                              </div>
+                              
+                              <div className={`relative flex items-center space-x-3 rounded-lg border p-4 cursor-pointer transition-all ${emiType === 'regular' ? 'border-blue-500 bg-blue-500/5' : 'border-border hover:border-blue-500/50'}`}>
+                                <RadioGroupItem value="regular" id="regular" />
+                                <User className={`w-5 h-5 ${emiType === 'regular' ? 'text-blue-500' : 'text-muted-foreground'}`} />
+                                <Label htmlFor="regular" className="cursor-pointer flex-1">
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <div className="font-semibold">Regular EMI</div>
+                                      <div className="text-xs text-muted-foreground">30% down payment required</div>
+                                    </div>
+                                    <div className="text-right">
+                                      <span className="text-blue-500 font-bold">5%</span>
+                                      <div className="text-xs text-muted-foreground">interest</div>
+                                    </div>
+                                  </div>
+                                </Label>
+                              </div>
+                            </RadioGroup>
+                          </div>
+
+                          {/* EMI Duration */}
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">EMI Duration</Label>
+                            <Select value={emiMonths.toString()} onValueChange={(value) => setEmiMonths(parseInt(value))}>
+                              <SelectTrigger className="bg-muted/30">
+                                <SelectValue placeholder="Select duration" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="3">3 Months</SelectItem>
+                                <SelectItem value="6">6 Months</SelectItem>
+                                <SelectItem value="9">9 Months</SelectItem>
+                                <SelectItem value="12">12 Months</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          {/* EMI Breakdown */}
+                          <div className="bg-muted/30 rounded-lg p-4 space-y-3 border border-border/50">
+                            <h4 className="font-semibold text-sm flex items-center gap-2">
+                              <Calculator className="w-4 h-4 text-primary" />
+                              EMI Breakdown
+                            </h4>
+                            <div className="space-y-2 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">Course Price</span>
+                                <span>₹{price?.toLocaleString()}</span>
+                              </div>
+                              {emiType === 'regular' && emiDetails.downPayment > 0 && (
+                                <div className="flex justify-between text-blue-500">
+                                  <span>Down Payment (30%)</span>
+                                  <span>₹{emiDetails.downPayment.toLocaleString()}</span>
+                                </div>
+                              )}
+                              <div className="flex justify-between text-orange-500">
+                                <span>Interest ({emiType === 'student' ? '3.5%' : '5%'})</span>
+                                <span>+ ₹{Math.ceil(emiDetails.interest).toLocaleString()}</span>
+                              </div>
+                              <Separator />
+                              <div className="flex justify-between font-bold">
+                                <span>Total Amount</span>
+                                <span>₹{Math.ceil(emiDetails.total).toLocaleString()}</span>
+                              </div>
+                              <div className="flex justify-between text-primary font-bold text-base pt-2 border-t">
+                                <span>Monthly EMI</span>
+                                <span>₹{emiDetails.monthlyEMI.toLocaleString()}/month</span>
+                              </div>
+                              <p className="text-xs text-muted-foreground">
+                                for {emiMonths} months
+                                {emiType === 'regular' && ' (after 30% down payment)'}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Discount Contact */}
+                          <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
+                            <div className="flex items-start gap-3">
+                              <Phone className="w-5 h-5 text-green-500 mt-0.5" />
+                              <div>
+                                <p className="text-sm font-semibold text-green-700 dark:text-green-400">
+                                  Want More Discount?
+                                </p>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  Connect with our team for special offers
+                                </p>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="mt-2 border-green-500/30 text-green-600 hover:bg-green-500/10"
+                                  onClick={() => window.open(SUPPORT_WHATSAPP, "_blank")}
+                                  type="button"
+                                >
+                                  <MessageCircle className="w-4 h-4 mr-2" />
+                                  +91 83889 59737
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </div>
+                  )}
+
+                  <Separator className="my-4" />
+
                   <div className="space-y-4">
                     <Label className="text-base font-semibold">Payment Verification</Label>
                     <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 text-sm text-yellow-600 dark:text-yellow-400">
-                      Please scan the QR code on the right to pay <strong>{typeof price === 'number' ? `₹${price}` : price}</strong>. 
+                      {paymentMode === 'emi' && emiType === 'regular' ? (
+                        <>
+                          Please scan the QR code to pay <strong>Down Payment: ₹{emiDetails.downPayment.toLocaleString()}</strong>.
+                          <br/>
+                          Remaining amount will be collected in {emiMonths} monthly installments of <strong>₹{emiDetails.monthlyEMI.toLocaleString()}</strong>.
+                        </>
+                      ) : paymentMode === 'emi' && emiType === 'student' ? (
+                        <>
+                          Please scan the QR code to pay <strong>First EMI: ₹{emiDetails.monthlyEMI.toLocaleString()}</strong>.
+                          <br/>
+                          Total {emiMonths} installments of <strong>₹{emiDetails.monthlyEMI.toLocaleString()}</strong>/month.
+                        </>
+                      ) : (
+                        <>
+                          Please scan the QR code on the right to pay <strong>{typeof price === 'number' ? `₹${price.toLocaleString()}` : price}</strong>. 
+                        </>
+                      )}
                       <br/>
                       After payment, enter the <strong>UTR / Transaction ID</strong> below to activate instantly.
                     </div>
@@ -362,10 +593,15 @@ export default function Checkout() {
                     <div>
                       <h3 className="font-bold text-lg leading-tight">{itemName}</h3>
                       <p className="text-sm text-muted-foreground">{itemType}</p>
+                      {paymentMode === 'emi' && isCourse && (
+                        <span className="inline-block mt-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                          {emiType === 'student' ? 'Student EMI' : 'Regular EMI'} • {emiMonths} months
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-xl">{typeof price === 'number' ? `₹${price}` : price}</p>
+                    <p className="font-bold text-xl">{typeof price === 'number' ? `₹${price?.toLocaleString()}` : price}</p>
                   </div>
                 </div>
                 
@@ -373,17 +609,53 @@ export default function Checkout() {
                 
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>Subtotal</span>
-                    <span>{typeof price === 'number' ? `₹${price}` : price}</span>
+                    <span>Course Price</span>
+                    <span>{typeof price === 'number' ? `₹${price?.toLocaleString()}` : price}</span>
                   </div>
+                  
+                  {paymentMode === 'emi' && isCourse && (
+                    <>
+                      <div className="flex justify-between text-sm text-orange-500">
+                        <span>Interest ({emiType === 'student' ? '3.5%' : '5%'})</span>
+                        <span>+ ₹{Math.ceil(emiDetails.interest).toLocaleString()}</span>
+                      </div>
+                      {emiType === 'regular' && emiDetails.downPayment > 0 && (
+                        <div className="flex justify-between text-sm text-blue-500">
+                          <span>Down Payment (30%)</span>
+                          <span>₹{emiDetails.downPayment.toLocaleString()}</span>
+                        </div>
+                      )}
+                    </>
+                  )}
+                  
                   <div className="flex justify-between text-sm text-muted-foreground">
                     <span>GST (18%)</span>
                     <span className="text-green-500 text-xs">Included</span>
                   </div>
+                  
                   <div className="flex justify-between items-center pt-2 mt-2 border-t border-border/50">
-                    <span className="font-bold">Total Payable</span>
-                    <span className="font-bold text-2xl text-primary">{typeof price === 'number' ? `₹${price}` : price}</span>
+                    <span className="font-bold">
+                      {paymentMode === 'emi' ? 'Pay Now' : 'Total Payable'}
+                    </span>
+                    <span className="font-bold text-2xl text-primary">
+                      {paymentMode === 'emi' && isCourse ? (
+                        emiType === 'regular' ? 
+                          `₹${emiDetails.downPayment.toLocaleString()}` : 
+                          `₹${emiDetails.monthlyEMI.toLocaleString()}`
+                      ) : (
+                        typeof price === 'number' ? `₹${price?.toLocaleString()}` : price
+                      )}
+                    </span>
                   </div>
+                  
+                  {paymentMode === 'emi' && isCourse && (
+                    <p className="text-xs text-muted-foreground text-right">
+                      {emiType === 'regular' ? 
+                        `Then ₹${emiDetails.monthlyEMI.toLocaleString()}/month × ${emiMonths} months` :
+                        `₹${emiDetails.monthlyEMI.toLocaleString()}/month × ${emiMonths} months`
+                      }
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
