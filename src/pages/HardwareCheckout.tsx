@@ -245,7 +245,7 @@ export default function HardwareCheckout() {
                 </div>
                 
                 <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
-                    <ShieldCheck className="w-4 h-4" /> Secure 256-bit SSL Encrypted Payment.
+                    <ShieldCheck className="w-4 h-4" /> Secure 256-bit SSL Encrypted Payment
                 </div>
 
               </CardContent>
