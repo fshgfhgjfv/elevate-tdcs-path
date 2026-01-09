@@ -64,8 +64,8 @@ export default function Checkout() {
     name: "",
     email: "",
     phone: "",
-    aadharNumber: "", // Added Aadhar
-    linkedinProfile: "", // Added LinkedIn
+    aadharNumber: "", 
+    linkedinProfile: "",
     transactionId: "",
     collegeName: "",
     parentPhone: ""
@@ -214,57 +214,58 @@ export default function Checkout() {
                     </div>
                   </div>
 
-                  {/* Row 2: Email & Aadhar */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Email Address</Label>
-                      <Input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="bg-muted/30" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="flex items-center gap-2">
-                         <CreditCard className="w-3.5 h-3.5"/> Aadhar Card Number
-                      </Label>
-                      <Input 
-                        name="aadharNumber" 
-                        required 
-                        placeholder="XXXX XXXX XXXX" 
-                        maxLength={12}
-                        value={formData.aadharNumber} 
-                        onChange={handleInputChange} 
-                        className="bg-muted/30" 
-                      />
-                    </div>
-                  </div>
-
-                  {/* Row 3: LinkedIn */}
+                  {/* Row 2: Email */}
                   <div className="space-y-2">
-                    <Label className="flex items-center gap-2">
-                        <Linkedin className="w-3.5 h-3.5"/> LinkedIn Profile
-                    </Label>
-                    <Input 
-                        name="linkedinProfile" 
-                        placeholder="https://linkedin.com/in/username" 
-                        value={formData.linkedinProfile} 
-                        onChange={handleInputChange} 
-                        className="bg-muted/30" 
-                    />
+                    <Label>Email Address</Label>
+                    <Input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="bg-muted/30" />
                   </div>
 
-                  {/* PROOF FIELDS - COURSE & STUDENT ONLY */}
+                  {/* === STUDENT VERIFICATION SECTION (Verification + Aadhar + LinkedIn) === */}
                   {isCourse && userType === 'student' && (
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-green-500/5 p-4 rounded-xl border border-green-500/20 animate-in fade-in slide-in-from-top-2">
                         <div className="col-span-1 md:col-span-2 pb-2 border-b border-green-500/10 mb-2">
                             <h4 className="text-sm font-semibold text-green-700 flex items-center gap-2">
                                 <ShieldCheck className="w-4 h-4"/> Student Verification Required
                             </h4>
+                            <p className="text-xs text-green-600/80 mt-1">Please provide details to verify your student status.</p>
                         </div>
+
+                        {/* College & Parent Phone */}
                         <div className="space-y-2">
                             <Label>College Name</Label>
-                            <Input name="collegeName" required placeholder="e.g. IIT Bombay" value={formData.collegeName} onChange={handleInputChange} />
+                            <Input name="collegeName" required placeholder="e.g. IIT Bombay" value={formData.collegeName} onChange={handleInputChange} className="bg-white/50 border-green-500/20 focus:border-green-500"/>
                         </div>
                         <div className="space-y-2">
                             <Label>Parent's Phone No.</Label>
-                            <Input name="parentPhone" type="tel" required placeholder="Parent's Mobile" value={formData.parentPhone} onChange={handleInputChange} />
+                            <Input name="parentPhone" type="tel" required placeholder="Parent's Mobile" value={formData.parentPhone} onChange={handleInputChange} className="bg-white/50 border-green-500/20 focus:border-green-500" />
+                        </div>
+
+                        {/* Aadhar & LinkedIn */}
+                        <div className="space-y-2">
+                            <Label className="flex items-center gap-2 text-xs uppercase text-muted-foreground font-bold">
+                                <CreditCard className="w-3 h-3"/> Aadhar Number
+                            </Label>
+                            <Input 
+                                name="aadharNumber" 
+                                required 
+                                placeholder="XXXX XXXX XXXX" 
+                                maxLength={12}
+                                value={formData.aadharNumber} 
+                                onChange={handleInputChange} 
+                                className="bg-white/50 border-green-500/20 focus:border-green-500 font-mono" 
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="flex items-center gap-2 text-xs uppercase text-muted-foreground font-bold">
+                                <Linkedin className="w-3 h-3"/> LinkedIn Profile
+                            </Label>
+                            <Input 
+                                name="linkedinProfile" 
+                                placeholder="linkedin.com/in/..." 
+                                value={formData.linkedinProfile} 
+                                onChange={handleInputChange} 
+                                className="bg-white/50 border-green-500/20 focus:border-green-500" 
+                            />
                         </div>
                      </div>
                   )}
