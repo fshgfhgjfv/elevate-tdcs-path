@@ -51,7 +51,7 @@ const HardwareServices = () => {
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
           <h1 className="text-2xl font-bold text-white flex items-center">
             <Cpu className="w-6 h-6 mr-2 text-green-500" />
-            TDCS ARMORY
+            ADD To Cart
           </h1>
 
           <div className="flex-1 w-full md:max-w-xl mx-4 relative">
