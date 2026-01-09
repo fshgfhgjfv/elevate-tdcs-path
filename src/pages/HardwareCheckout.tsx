@@ -27,7 +27,7 @@ const HardwareCheckout = () => {
   const tax = Math.round(subtotal * 0.18);
   const total = subtotal + shipping + tax;
 
-  const upiId = 'tdcsorganization@sbi';
+  const upiId = 'tdcsorganization@sbi ';
   const qrCodeUrl = 'https://blogger.googleusercontent.com/img/a/AVvXsEiYxV2ayi-nLo4GdGqaDDKDg9OpUiRjbmyav9HoiZp_qm2Zt1-x8jQ7Y4S5gMQSeKrIuZKolSVxZ0c817cdvXKG5IbRLWEngQOEBC8Gah6Edi2snbD0vbr6y-0nJSq8rdvCR4HJIcRJhRDlSTYA9EeYdGj-U6QaRM365bjvdR85QjaR3s4rm1oYOTYTl8gU';
 
   const handleCopyUpi = () => {
