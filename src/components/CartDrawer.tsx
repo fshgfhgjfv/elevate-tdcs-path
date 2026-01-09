@@ -20,7 +20,7 @@ export const CartDrawer = () => {
 
   const handleCheckout = () => {
     setIsCartOpen(false);
-    navigate('/checkout');
+    navigate('/hardware-checkout');
   };
 
   return (
