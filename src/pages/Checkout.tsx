@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
@@ -45,12 +45,10 @@ export default function Checkout() {
   const itemName = serviceName || courseName || "Unknown Item";
   const itemType = isCourse ? "Course Enrollment" : "Premium Tool";
 
-  // --- FIX: ROBUST PRICE PARSING ---
-  // This helper function cleans the price input (removes ₹, commas, etc.)
+  // --- PRICE PARSING ---
   const parsePrice = (inputPrice: any) => {
     if (typeof inputPrice === 'number') return inputPrice;
     if (typeof inputPrice === 'string') {
-      // Remove everything that isn't a digit or a dot
       const cleanString = inputPrice.replace(/[^0-9.]/g, '');
       return Number(cleanString) || 0;
     }
@@ -58,7 +56,6 @@ export default function Checkout() {
   };
 
   const basePrice = parsePrice(price); 
-  // ---------------------------------
 
   const [userType, setUserType] = useState<"student" | "regular">("regular");
   const [formData, setFormData] = useState({
@@ -78,10 +75,7 @@ export default function Checkout() {
 
   // 3. Price Calculation
   const getEffectivePrice = () => {
-    // Software/Tools always use base price
     if (!isCourse) return basePrice;
-    
-    // Students get discount ONLY on courses
     if (userType === 'student') {
       return Math.floor(basePrice * (1 - STUDENT_DISCOUNT_PERCENT / 100));
     }
@@ -104,8 +98,8 @@ export default function Checkout() {
     
     return {
       totalCost: downPayment + totalLoanAmount, 
-      downPayment,      
-      monthlyEMI,       
+      downPayment,       
+      monthlyEMI,        
       interest: interestAmount,
       payNow: downPayment > 0 ? downPayment : monthlyEMI 
     };
@@ -113,7 +107,6 @@ export default function Checkout() {
 
   const emiDetails = calculateEMI();
   
-  // Calculate Due Today
   const amountDueNow = (paymentMode === 'emi' && isCourse)
     ? emiDetails.payNow 
     : effectivePrice;
@@ -135,17 +128,17 @@ export default function Checkout() {
   if (isSuccess) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="max-w-md w-full border-green-500/30">
+        <Card className="max-w-md w-full border-green-500/30 shadow-lg">
             <CardHeader className="text-center">
                 <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                <CardTitle className="text-green-600">Order Placed Successfully</CardTitle>
-                <CardDescription>
-                   Amount Paid: <strong>₹{amountDueNow.toLocaleString()}</strong>
+                <CardTitle className="text-green-600 text-2xl">Order Placed Successfully</CardTitle>
+                <CardDescription className="text-base mt-2">
+                   Amount Paid: <strong className="text-foreground">₹{amountDueNow.toLocaleString()}</strong>
                    <br/>We are verifying your transaction ID. You will receive access details shortly.
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <Button className="w-full" onClick={() => navigate("/")}>Return Home</Button>
+                <Button className="w-full h-12 text-base" onClick={() => navigate("/")}>Return Home</Button>
             </CardContent>
         </Card>
       </div>
@@ -153,9 +146,9 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-24 pb-12">
+    <div className="min-h-screen bg-background text-foreground pt-20 lg:pt-24 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
-        <Button variant="ghost" className="mb-6 pl-0" onClick={() => navigate(-1)}>
+        <Button variant="ghost" className="mb-4 lg:mb-6 pl-0 hover:bg-transparent hover:text-primary" onClick={() => navigate(-1)}>
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </Button>
 
@@ -164,8 +157,8 @@ export default function Checkout() {
           {/* LEFT COLUMN: FORM */}
           <motion.div className="lg:col-span-7 space-y-6" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             <div>
-              <h1 className="text-3xl font-bold mb-2">Checkout</h1>
-              <p className="text-muted-foreground">Completing purchase for <span className="text-primary font-semibold">{itemName}</span></p>
+              <h1 className="text-2xl lg:text-3xl font-bold mb-2">Checkout</h1>
+              <p className="text-muted-foreground text-sm lg:text-base">Completing purchase for <span className="text-primary font-semibold">{itemName}</span></p>
             </div>
 
             {/* Student Selector - COURSES ONLY */}
@@ -173,10 +166,11 @@ export default function Checkout() {
                 <Card className="border-primary/20 bg-primary/5">
                     <CardContent className="pt-6">
                         <Label className="text-base font-semibold mb-3 block">Who is enrolling?</Label>
+                        {/* Mobile Optimize: Stack on mobile, side-by-side on sm+ */}
                         <RadioGroup 
                             value={userType} 
                             onValueChange={(val: "student" | "regular") => setUserType(val)}
-                            className="grid grid-cols-2 gap-4"
+                            className="grid grid-cols-1 sm:grid-cols-2 gap-4"
                         >
                             <div className={`relative flex items-center space-x-2 rounded-xl border-2 p-4 cursor-pointer transition-all ${userType === 'regular' ? 'border-primary bg-background' : 'border-transparent hover:bg-background/50'}`}>
                                 <RadioGroupItem value="regular" id="r-regular" />
@@ -191,7 +185,7 @@ export default function Checkout() {
                                 <Label htmlFor="r-student" className="cursor-pointer flex-1">
                                     <div className="flex items-center gap-2 font-bold text-green-600">
                                         <GraduationCap className="w-4 h-4"/> Student
-                                        <Badge className="bg-green-500 hover:bg-green-600 text-[10px] h-5 px-1.5">15% OFF</Badge>
+                                        <Badge className="bg-green-500 hover:bg-green-600 text-[10px] h-5 px-1.5 ml-auto">15% OFF</Badge>
                                     </div>
                                     <div className="text-xs text-muted-foreground">Valid ID Required</div>
                                 </Label>
@@ -213,7 +207,7 @@ export default function Checkout() {
                     </div>
                     <div className="space-y-2">
                       <Label>Phone Number (+91)</Label>
-                      <Input name="phone" required value={formData.phone} onChange={handleInputChange} className="bg-muted/30" />
+                      <Input name="phone" type="tel" required value={formData.phone} onChange={handleInputChange} className="bg-muted/30" />
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -224,7 +218,7 @@ export default function Checkout() {
                   {/* PROOF FIELDS - COURSE & STUDENT ONLY */}
                   {isCourse && userType === 'student' && (
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-green-500/5 p-4 rounded-xl border border-green-500/20 animate-in fade-in slide-in-from-top-2">
-                        <div className="col-span-2 pb-2 border-b border-green-500/10 mb-2">
+                        <div className="col-span-1 md:col-span-2 pb-2 border-b border-green-500/10 mb-2">
                             <h4 className="text-sm font-semibold text-green-700 flex items-center gap-2">
                                 <ShieldCheck className="w-4 h-4"/> Student Verification Required
                             </h4>
@@ -235,7 +229,7 @@ export default function Checkout() {
                         </div>
                         <div className="space-y-2">
                             <Label>Parent's Phone No.</Label>
-                            <Input name="parentPhone" required placeholder="Parent's Mobile" value={formData.parentPhone} onChange={handleInputChange} />
+                            <Input name="parentPhone" type="tel" required placeholder="Parent's Mobile" value={formData.parentPhone} onChange={handleInputChange} />
                         </div>
                      </div>
                   )}
@@ -243,54 +237,55 @@ export default function Checkout() {
                   {/* EMI PLAN - COURSES ONLY */}
                   {isCourse && (
                     <div className="space-y-4 pt-4 border-t">
-                       <Label className="text-base font-semibold flex items-center gap-2"><Calculator className="w-4 h-4 text-primary" /> Payment Plan</Label>
-                       <RadioGroup value={paymentMode} onValueChange={(val: "full" | "emi") => setPaymentMode(val)} className="grid grid-cols-2 gap-3">
-                         <div className={`rounded-lg border p-4 cursor-pointer ${paymentMode === 'full' ? 'border-primary bg-primary/5' : 'border-border'}`}>
-                           <div className="flex items-center space-x-2">
-                             <RadioGroupItem value="full" id="full" />
-                             <Label htmlFor="full" className="cursor-pointer font-semibold">One-Time Payment</Label>
-                           </div>
-                         </div>
-                         <div className={`rounded-lg border p-4 cursor-pointer ${paymentMode === 'emi' ? 'border-primary bg-primary/5' : 'border-border'}`}>
-                           <div className="flex items-center space-x-2">
-                             <RadioGroupItem value="emi" id="emi" />
-                             <Label htmlFor="emi" className="cursor-pointer font-semibold">Installments (EMI)</Label>
-                           </div>
-                         </div>
-                       </RadioGroup>
-                       
-                       {paymentMode === 'emi' && (
-                           <div className="p-4 bg-muted/50 rounded-lg">
-                               <Label className="mb-2 block">Select Duration</Label>
-                               <Select value={emiMonths.toString()} onValueChange={(v) => setEmiMonths(parseInt(v))}>
-                                 <SelectTrigger><SelectValue /></SelectTrigger>
-                                 <SelectContent>
-                                   <SelectItem value="3">3 Months</SelectItem>
-                                   <SelectItem value="6">6 Months</SelectItem>
-                                 </SelectContent>
-                               </Select>
-                           </div>
-                       )}
-                    </div>
+                        <Label className="text-base font-semibold flex items-center gap-2"><Calculator className="w-4 h-4 text-primary" /> Payment Plan</Label>
+                        {/* Mobile Optimize: Stack on mobile */}
+                        <RadioGroup value={paymentMode} onValueChange={(val: "full" | "emi") => setPaymentMode(val)} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className={`rounded-lg border p-4 cursor-pointer transition-colors ${paymentMode === 'full' ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'}`}>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="full" id="full" />
+                              <Label htmlFor="full" className="cursor-pointer font-semibold">One-Time Payment</Label>
+                            </div>
+                          </div>
+                          <div className={`rounded-lg border p-4 cursor-pointer transition-colors ${paymentMode === 'emi' ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'}`}>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="emi" id="emi" />
+                              <Label htmlFor="emi" className="cursor-pointer font-semibold">Installments (EMI)</Label>
+                            </div>
+                          </div>
+                        </RadioGroup>
+                        
+                        {paymentMode === 'emi' && (
+                            <div className="p-4 bg-muted/50 rounded-lg">
+                                <Label className="mb-2 block">Select Duration</Label>
+                                <Select value={emiMonths.toString()} onValueChange={(v) => setEmiMonths(parseInt(v))}>
+                                  <SelectTrigger className="w-full bg-background"><SelectValue /></SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="3">3 Months</SelectItem>
+                                    <SelectItem value="6">6 Months</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                            </div>
+                        )}
+                     </div>
                   )}
 
                   <Separator className="my-4" />
 
                   {/* Payment Info */}
                   <div className="space-y-4">
-                     <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg text-sm">
+                      <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg text-sm">
                         Please pay <strong className="text-primary text-xl">₹{amountDueNow.toLocaleString()}</strong> using the QR Code.
                         <p className="text-xs text-muted-foreground mt-1">
                            Enter the Transaction ID below after payment.
                         </p>
-                     </div>
-                     <div className="space-y-2">
-                       <Label>Transaction ID (UTR)</Label>
-                       <Input name="transactionId" placeholder="12 Digit UTR Number" required value={formData.transactionId} onChange={handleInputChange} className="uppercase" />
-                     </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Transaction ID (UTR)</Label>
+                        <Input name="transactionId" placeholder="12 Digit UTR Number" required value={formData.transactionId} onChange={handleInputChange} className="uppercase font-mono" />
+                      </div>
                   </div>
 
-                  <Button type="submit" size="lg" className="w-full mt-6" disabled={isSubmitting}>
+                  <Button type="submit" size="lg" className="w-full mt-6 h-12 text-lg" disabled={isSubmitting}>
                     {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying</> : "Submit Payment"}
                   </Button>
                 </form>
@@ -300,13 +295,14 @@ export default function Checkout() {
 
           {/* RIGHT COLUMN: SUMMARY */}
           <motion.div className="lg:col-span-5 space-y-6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-            <Card className="border-border/50 bg-muted/5 sticky top-24">
+            {/* Mobile Optimization: 'lg:sticky' prevents it from sticking on mobile where it would block the form */}
+            <Card className="border-border/50 bg-muted/5 lg:sticky lg:top-24">
               <CardHeader className="bg-muted/20 pb-4"><CardTitle>Order Summary</CardTitle></CardHeader>
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3 mb-6">
-                    <div className="p-3 bg-primary/10 rounded-lg text-primary">{isCourse ? <BookOpen /> : <Zap />}</div>
-                    <div>
-                        <h3 className="font-bold text-lg">{itemName}</h3>
+                    <div className="p-3 bg-primary/10 rounded-lg text-primary shrink-0">{isCourse ? <BookOpen /> : <Zap />}</div>
+                    <div className="min-w-0">
+                        <h3 className="font-bold text-lg truncate">{itemName}</h3>
                         <p className="text-sm text-muted-foreground">{itemType}</p>
                     </div>
                 </div>
@@ -343,14 +339,14 @@ export default function Checkout() {
                             </span>
                         )}
                     </div>
-                    <span className="font-bold text-3xl text-primary">
+                    <span className="font-bold text-2xl lg:text-3xl text-primary">
                         ₹{amountDueNow.toLocaleString()}
                     </span>
                   </div>
                   
                   {paymentMode === 'emi' && isCourse && (
                       <div className="mt-4 flex items-start gap-2 text-xs text-muted-foreground bg-yellow-500/5 p-3 rounded border border-yellow-500/20">
-                          <CalendarClock className="w-4 h-4 mt-0.5 text-yellow-600" />
+                          <CalendarClock className="w-4 h-4 mt-0.5 text-yellow-600 shrink-0" />
                           <div>
                               <p className="font-semibold text-yellow-700">Future Schedule:</p>
                               {userType === 'student' ? (
@@ -367,9 +363,9 @@ export default function Checkout() {
               {/* QR Code */}
               <div className="p-6 bg-white border-t flex flex-col items-center">
                  <img src={QR_CODE_URL} alt="QR" className="w-40 h-40 object-contain mix-blend-multiply" />
-                 <div className="flex items-center gap-2 mt-4 p-2 bg-gray-100 rounded-md text-xs">
-                    <code>{UPI_ID}</code>
-                    <Copy className="w-3 h-3 cursor-pointer" onClick={() => navigator.clipboard.writeText(UPI_ID)}/>
+                 <div className="flex items-center gap-2 mt-4 p-2 bg-gray-100 rounded-md text-xs max-w-full overflow-hidden">
+                   <code className="truncate">{UPI_ID}</code>
+                   <Copy className="w-3 h-3 cursor-pointer shrink-0" onClick={() => navigator.clipboard.writeText(UPI_ID)}/>
                  </div>
               </div>
             </Card>
