@@ -1,27 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom'; // Added useNavigate
+import { useParams, Link } from 'react-router-dom';
 import { 
   Star, 
   ShoppingCart, 
   ArrowLeft, 
-  ShieldCheck, 
   Zap, 
-  Cpu, 
-  AlertTriangle 
+  AlertTriangle,
+  Check
 } from 'lucide-react';
 import { hardwareProducts } from '../data/hardwareProducts';
+import { useCart } from '../contexts/CartContext';
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate(); // Hook for navigation
+  const { addToCart, items } = useCart();
   const [product, setProduct] = useState(hardwareProducts.find(p => p.id === id));
   const [activeImage, setActiveImage] = useState(0);
+  const [isAdded, setIsAdded] = useState(false);
 
   useEffect(() => {
     const found = hardwareProducts.find(p => p.id === id);
     setProduct(found);
     if (found) setActiveImage(0);
   }, [id]);
+
+  // Check if already in cart
+  const isInCart = product ? items.some(item => item.id === product.id) : false;
 
   if (!product) {
     return (
@@ -35,16 +39,17 @@ const ProductDetail = () => {
 
   const discount = Math.round(((product.originalPrice - product.salePrice) / product.originalPrice) * 100);
 
-  // ✅ FUNCTION TO HANDLE BUYING
-  const handleBuyNow = () => {
-    navigate('/hardware-checkout', { 
-      state: { 
-        productName: product.name,
-        price: product.salePrice,
-        image: product.images[0],
-        productId: product.id 
-      } 
+  const handleAddToCart = () => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      image: product.images[0],
+      price: product.salePrice,
+      originalPrice: product.originalPrice,
+      category: product.category,
     });
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 2000);
   };
 
   return (
@@ -116,20 +121,45 @@ const ProductDetail = () => {
               <p className="text-gray-300 leading-relaxed text-justify">{product.description}</p>
             </div>
 
-            {/* ✅ FIXED BUTTON: Now navigates to checkout */}
-            <div className="pt-4">
+            {/* Add to Cart Button */}
+            <div className="pt-4 space-y-4">
               <button 
-                onClick={handleBuyNow} // Added Handler
-                disabled={product.isOutOfStock}
+                onClick={handleAddToCart}
+                disabled={product.isOutOfStock || isAdded}
                 className={`w-full py-4 rounded-lg font-bold text-lg flex items-center justify-center space-x-2 transition-all transform hover:scale-[1.02] ${
                   product.isOutOfStock 
                     ? 'bg-gray-800 text-gray-500 cursor-not-allowed' 
+                    : isAdded || isInCart
+                    ? 'bg-green-700 text-white'
                     : 'bg-green-600 text-black hover:bg-green-500 shadow-[0_0_15px_rgba(22,163,74,0.5)]'
                 }`}
               >
-                <ShoppingCart className="w-6 h-6" />
-                <span>{product.isOutOfStock ? 'UNAVAILABLE' : 'ADD TO ARSENAL'}</span>
+                {isAdded ? (
+                  <>
+                    <Check className="w-6 h-6" />
+                    <span>ADDED TO CART!</span>
+                  </>
+                ) : isInCart ? (
+                  <>
+                    <Check className="w-6 h-6" />
+                    <span>IN YOUR CART</span>
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="w-6 h-6" />
+                    <span>{product.isOutOfStock ? 'UNAVAILABLE' : 'ADD TO ARSENAL'}</span>
+                  </>
+                )}
               </button>
+
+              {isInCart && (
+                <Link 
+                  to="/hardware-checkout"
+                  className="w-full py-4 rounded-lg font-bold text-lg flex items-center justify-center space-x-2 bg-white text-black hover:bg-gray-200 transition-all"
+                >
+                  Proceed to Checkout →
+                </Link>
+              )}
             </div>
 
           </div>
