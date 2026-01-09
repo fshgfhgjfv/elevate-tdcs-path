@@ -13,7 +13,9 @@ import {
   Copy,
   Calculator,
   CalendarClock,
-  ShieldCheck
+  ShieldCheck,
+  CreditCard,
+  Linkedin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,9 +64,10 @@ export default function Checkout() {
     name: "",
     email: "",
     phone: "",
+    aadharNumber: "", // Added Aadhar
+    linkedinProfile: "", // Added LinkedIn
     transactionId: "",
     collegeName: "",
-    linkedinProfile: "",
     parentPhone: ""
   });
   
@@ -166,7 +169,6 @@ export default function Checkout() {
                 <Card className="border-primary/20 bg-primary/5">
                     <CardContent className="pt-6">
                         <Label className="text-base font-semibold mb-3 block">Who is enrolling?</Label>
-                        {/* Mobile Optimize: Stack on mobile, side-by-side on sm+ */}
                         <RadioGroup 
                             value={userType} 
                             onValueChange={(val: "student" | "regular") => setUserType(val)}
@@ -199,7 +201,8 @@ export default function Checkout() {
               <CardHeader><CardTitle className="flex items-center gap-2"><Lock className="w-5 h-5 text-primary" /> Billing Details</CardTitle></CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Basic Fields */}
+                  
+                  {/* Row 1: Name & Phone */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Full Name</Label>
@@ -210,9 +213,41 @@ export default function Checkout() {
                       <Input name="phone" type="tel" required value={formData.phone} onChange={handleInputChange} className="bg-muted/30" />
                     </div>
                   </div>
+
+                  {/* Row 2: Email & Aadhar */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Email Address</Label>
+                      <Input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="bg-muted/30" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                         <CreditCard className="w-3.5 h-3.5"/> Aadhar Card Number
+                      </Label>
+                      <Input 
+                        name="aadharNumber" 
+                        required 
+                        placeholder="XXXX XXXX XXXX" 
+                        maxLength={12}
+                        value={formData.aadharNumber} 
+                        onChange={handleInputChange} 
+                        className="bg-muted/30" 
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 3: LinkedIn */}
                   <div className="space-y-2">
-                    <Label>Email Address</Label>
-                    <Input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="bg-muted/30" />
+                    <Label className="flex items-center gap-2">
+                        <Linkedin className="w-3.5 h-3.5"/> LinkedIn Profile
+                    </Label>
+                    <Input 
+                        name="linkedinProfile" 
+                        placeholder="https://linkedin.com/in/username" 
+                        value={formData.linkedinProfile} 
+                        onChange={handleInputChange} 
+                        className="bg-muted/30" 
+                    />
                   </div>
 
                   {/* PROOF FIELDS - COURSE & STUDENT ONLY */}
@@ -238,7 +273,6 @@ export default function Checkout() {
                   {isCourse && (
                     <div className="space-y-4 pt-4 border-t">
                         <Label className="text-base font-semibold flex items-center gap-2"><Calculator className="w-4 h-4 text-primary" /> Payment Plan</Label>
-                        {/* Mobile Optimize: Stack on mobile */}
                         <RadioGroup value={paymentMode} onValueChange={(val: "full" | "emi") => setPaymentMode(val)} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div className={`rounded-lg border p-4 cursor-pointer transition-colors ${paymentMode === 'full' ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'}`}>
                             <div className="flex items-center space-x-2">
@@ -295,7 +329,6 @@ export default function Checkout() {
 
           {/* RIGHT COLUMN: SUMMARY */}
           <motion.div className="lg:col-span-5 space-y-6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-            {/* Mobile Optimization: 'lg:sticky' prevents it from sticking on mobile where it would block the form */}
             <Card className="border-border/50 bg-muted/5 lg:sticky lg:top-24">
               <CardHeader className="bg-muted/20 pb-4"><CardTitle>Order Summary</CardTitle></CardHeader>
               <CardContent className="pt-6">
