@@ -15,7 +15,7 @@ const About = () => {
         >
           <h1 className="text-5xl font-bold gradient-text mb-4">About TDCS</h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
-            Empowering futures through <span className="text-primary font-semibold">Cybersecurity, Software,</span> and <span className="text-primary font-semibold">Career Development</span> excellence.
+            Empowering futures through. <span className="text-primary font-semibold">Cybersecurity, Software,</span> and <span className="text-primary font-semibold">Career Development</span> excellence.
           </p>
         </motion.div>
 
