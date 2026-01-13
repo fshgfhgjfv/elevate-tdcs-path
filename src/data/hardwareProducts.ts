@@ -77,14 +77,12 @@ export const hardwareProducts: HardwareProduct[] = [
       { id: "201", author: "Amit V.", rating: 5, date: "2024-03-01", comment: "Best investment for my career." }
     ]
   },
-  {
+  { 
     id: "tdcs-wifi-deauther",
     name: "TDCS WiFi Deauther Watch V3 (ESP8266)",
     images: [
-      "https://blogger.googleusercontent.com/img/a/AVvXsEjUM60rdjnZLBIvc0mr-ZeUxBrF0MDxBFfRbqFRnO4C4FIariuai7Cx_wl5wzfG7v-qE1H-6BoxBm_AhvgMgkPKxQhY4FvgHf-XCYDIeEDyu5LkyGa0VSU0ZqaXnO0i2y-6lyXUwbXwCWjtVoUqCEupXukmeQkrqeoOxb12wiFdzwwWQ3h1SCJqIeoMSvDG",
-      "https://blogger.googleusercontent.com/img/a/AVvXsEgYGt0L0-Jr03qE7MfFDegbKqZzf65RUYD2Uxb4DbwDPmL2sau8AfLSo2C9R_wl6NIYudkzUZ3XTHoEp_VqsifPevCUBwqCCvFpcxCH4ne825RcOKD9fu68wKHDJBFMByiG9uhr33glWuvKQcR97ZHcvSI9mThaWwqG_JrVCAtEWlfTKpRn4K-eZkDv2u_t"
-      z"https://blogger.googleusercontent.com/img/a/AVvXsEi3QytH2pOb56WXh8oY4_tllgVyjGy_XXrJb9qEw2LyJREo26hgRHk0hhAp6MtZIvN4xszGHtTW992rx17ZiVF7KgQnBM4xezFM7WvDYDF48XYEF3ZHbBjLn5RdpImY-alFiO2L-CEHUvfAVO-p1GxyxefmdUUfbp5ATwgAfLxHhbYORv-Ekvylq_wJ0JYM",
-      "https://blogger.googleusercontent.com/img/a/AVvXsEi8aWW8Mhr_t69BDjT0bRm_VPmEEBJviVdK_J4q-MvhUndZ6VTJ6Y4i4WnFL8NdWI4guhsur7j3sBm8VzUcslFHiIqV9FJ5W2w7grdk5TdjmuLiXlyUF5nTU9Ghnt2bkO6FEc4Akio7UPgBHUkklwtOINVs0OQJMcsb0j4SALe6aT_1FBSRWO0G9JzhJF0p",
+      "https://images.unsplash.com/photo-1523206489230-c012c64b2b48?auto=format&fit=crop&q=80&w=600",
+      "https://images.unsplash.com/photo-1551808525-51a943718d53?auto=format&fit=crop&q=80&w=600"
     ],
     category: "WiFi Auditing",
     rating: 4.7,
