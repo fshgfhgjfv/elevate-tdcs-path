@@ -100,28 +100,35 @@ export const hardwareProducts: HardwareProduct[] = [
     ],
     reviews: []
   },
-  {
-    id: "tdcs-hackrf-one",
+{
+    id: "tdcs-m5stickc-plus2",
     name: "TDCS M5StickC PLUS2",
     images: [
       "https://blogger.googleusercontent.com/img/a/AVvXsEgiEvVwPPSxB_jUcqIhWwrnbMvRQz8fUEMWV50pYU5Xi_txwbSoMIlNCF0VS8ksMY5zwMX5sy2Z0XUYj1ZzlpUjxdK0hYw4DPkS8Y_xgBRxmcuiJwVblJCu6jFEqwsIrbvALlN7biC8Napi2IevX2EZbvMiyUwBoSWIMML9sjgbyHVHa5LQ1boJo8M7FjiF",
-      "https://blogger.googleusercontent.com/img/a/AVvXsEgiEvVwPPSxB_jUcqIhWwrnbMvRQz8fUEMWV50pYU5Xi_txwbSoMIlNCF0VS8ksMY5zwMX5sy2Z0XUYj1ZzlpUjxdK0hYw4DPkS8Y_xgBRxmcuiJwVblJCu6jFEqwsIrbvALlN7biC8Napi2IevX2EZbvMiyUwBoSWIMML9sjgbyHVHa5LQ1boJo8M7FjiF"
-      "https://blogger.googleusercontent.com/img/a/AVvXsEgAxnBiwyUY-7pvDFgM6kxexP4OpDLUWsPfvZQF77kQIFdHDoDjHNj-iJHnc3EGaoMOyOYMndDoeL25FElpRvPV1e4bDXkS7Z84sBDUU6c9BYJsolBrMGKeqmsoKSljCoI7zzgYVTB0W844E8Hr3CJbqhZiDFaxMpr8stqYzIk4sD8x9cJJ5GDObnmDEKmV"
+      "https://blogger.googleusercontent.com/img/a/AVvXsEgiEvVwPPSxB_jUcqIhWwrnbMvRQz8fUEMWV50pYU5Xi_txwbSoMIlNCF0VS8ksMY5zwMX5sy2Z0XUYj1ZzlpUjxdK0hYw4DPkS8Y_xgBRxmcuiJwVblJCu6jFEqwsIrbvALlN7biC8Napi2IevX2EZbvMiyUwBoSWIMML9sjgbyHVHa5LQ1boJo8M7FjiF",
+      "https://blogger.googleusercontent.com/img/a/AVvXsEgAxnBiwyUY-7pvDFgM6kxexP4OpDLUWsPfvZQF77kQIFdHDoDjHNj-iJHnc3EGaoMOyOYMndDoeL25FElpRvPV1e4bDXkS7Z84sBDUU6c9BYJsolBrMGKeqmsoKSljCoI7zzgYVTB0W844E8Hr3CJbqhZiDFaxMpr8stqYzIk4sD8x9cJJ5GDObnmDEKmV",
       "https://blogger.googleusercontent.com/img/a/AVvXsEhFrydXYFhR_LN9aPLPAjQZ4O24IwE5Mdgc-z7cTK55l49hbmKipNRP1dZbaeIHqS2tGLH1f9FbZ1rAzuiFpfleGeDZMCwvsQh8kwUNx0wN1SsATt75fV3cz_R-dAC81lksAhFo4hGtF_TCFe0sTW7I8d8CQqVV2i9ol85XD-XCnZUjCkY3lX7fbkR1k2mY"
     ],
-    category: "SDR / Radio",
+    category: "Development / IoT",
     rating: 5.0,
     reviewCount: 15,
     originalPrice: 5999,
     salePrice: 3999,
     isOutOfStock: false,
-    description: "The TDCS M5StickC PLUS2 is a compact, feature-rich ESP32-based IoT development kit designed for rapid prototyping, embedded development, and smart device applications. With an upgraded display, enhanced performance, and integrated sensors, it delivers a powerful all-in-one solution in an ultra-portable form factor.Powerful ESP32 Microcontroller.",
-    features: ["Dual-core Xtensa® LX7 processor", "Integrated Wi-Fi (2.4 GHz) and Bluetooth BLE", "Ideal for IoT, edge computing, and wireless control", "Resolution: 240 × 135 pixels"],
+    description: "The TDCS M5StickC PLUS2 is a compact, feature-rich ESP32-based IoT development kit designed for rapid prototyping, embedded development, and smart device applications. With an upgraded display, enhanced performance, and integrated sensors, it delivers a powerful all-in-one solution in an ultra-portable form factor.",
+    features: [
+      "Dual-core Xtensa® LX7 processor",
+      "Integrated Wi-Fi (2.4 GHz) and Bluetooth BLE",
+      "Ideal for IoT, edge computing, and wireless control",
+      "Resolution: 240 × 135 pixels"
+    ],
     specifications: [
       { label: "Microcontroller", value: "ESP32" },
       { label: "Wireless", value: "Wi-Fi 802.11 b/g/n, Bluetooth BLE" },
       { label: "ADC/DAC", value: "8-bit" }
     ],
+    reviews: []
+  },
     reviews: []
   },
   {
