@@ -553,9 +553,9 @@ export const hardwareProducts: HardwareProduct[] = [
     description: "The TDCS USB Killer is a specialized hardware testing device designed for authorized robustness, resilience, and failure-mode testing of electronic equipment. It is intended for use by qualified professionals in controlled environments to evaluate protection mechanisms against abnormal electrical conditions on USB interfaces..",
     features: [
       "High Voltage Pulse Generator (-200V)",
-      "Compact Flash Drive form factor",
+      "Compact USB-form testing device",
       "Includes Testing Shield (to safely test the spark)",
-      "Tests effectiveness of ESD protection diodes",
+      "No software installation required",
       "Destructive testing capability"
     ],
     specifications: [
