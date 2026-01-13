@@ -9,7 +9,7 @@ const pricingData = {
     subtitle: "Starts As low as",
     monthlyPrice: "₹999/month",
     originalPrice: "₹30,000",
-    discountedPrice: "₹6,999",
+    discountedPrice: "₹9,999",
     accessDuration: "Lifetime Access to the Course",
     emiDetails: "5 month Zero cost EMI",
     features: [
