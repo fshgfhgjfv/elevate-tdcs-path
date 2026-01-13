@@ -596,7 +596,8 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-keylogger-usb",
     name: "TDCS Cyber-T",
     images: [
-      "https://blogger.googleusercontent.com/img/a/AVvXsEhpg85kcbLYyB0P3udNVYsShqBclfoItuKOHIJdv0e24E4k-0vpvNvZJPE_wZyzLBIF5A0D2zvNwgKMaEcpRbvDYnhXJHzPBBknmC-6dTxtjfzx5lZFzlSJx_JeED7zUYkGSe8R4V9r1j2q6CfN6T-9y4B2Nw19WpasOhVPnue_9ElCVBltZ34PVOIPZP3x"
+      "https://blogger.googleusercontent.com/img/a/AVvXsEhpg85kcbLYyB0P3udNVYsShqBclfoItuKOHIJdv0e24E4k-0vpvNvZJPE_wZyzLBIF5A0D2zvNwgKMaEcpRbvDYnhXJHzPBBknmC-6dTxtjfzx5lZFzlSJx_JeED7zUYkGSe8R4V9r1j2q6CfN6T-9y4B2Nw19WpasOhVPnue_9ElCVBltZ34PVOIPZP3x",
+      "https://blogger.googleusercontent.com/img/a/AVvXsEgKKAEpbU9AzDx61w3t4pP8HKZ93qcyQ2_KOMXJO8_aOjcn_rGm5zkTiumRu9urfkzD-NsYW5cPqDTEgmVhEvq9gRLY82xaLwW8obSxF0OsbhxyEOlWyuTQ-y5LNkYZ2LUClxsNVwdPPFcIcVWIG-n0qI2K9dL77iEviqZCoaLEEtAg5YVplITJnoQXHqc9"
     ],
     category: "Surveillance",
     rating: 4.7,
