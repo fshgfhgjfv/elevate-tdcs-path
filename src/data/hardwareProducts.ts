@@ -93,9 +93,9 @@ export const hardwareProducts: HardwareProduct[] = [
     description: "The CC1101 + SMA RF Module is a high-performance, low-power sub-GHz wireless transceiver based on the Texas Instruments CC1101 chipset. Designed for reliable long-range communication, this module supports multiple frequency bands between 300 MHz and 938 MHz, making it ideal for industrial, IoT, remote control, and wireless data transmission applications.",
     features: ["Operates from 300 MHz to 938 MHz", "Supports popular bands: 315 MHz, 433 MHz, 868 MHz, 915 MHz", "Ultra-low power sleep modes", "Ideal for battery-powered devices"],
     specifications: [
-      { label: "Chipset", value: "ESP8266" },
-      { label: "Display", value: "1.3 inch OLED" },
-      { label: "Battery", value: "800mAh Li-ion" }
+      { label: "Frequency Range", value: "300 MHz – 938 MHz" },
+      { label: "Output Power", value: "Up to +10 dBm" },
+      { label: "Operating Temperature", value: "-40°C to +85°C" }
     ],
     reviews: []
   },
