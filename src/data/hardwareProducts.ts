@@ -567,9 +567,9 @@ export const hardwareProducts: HardwareProduct[] = [
   },
   {
     id: "tdcs-lan-tap",
-    name: "TDCS Passive LAN Tap Star",
+    name: "TDCS USB Killer",
     images: [
-      "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=600"
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdtyZFruho_XMM0XmNIiGQ6xN6lW_-A09dGA&s"
     ],
     category: "Network Auditing",
     rating: 4.4,
