@@ -459,7 +459,7 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-digispark",
     name: "TDCS BadUSB Digispark",
     images: [
-      "https://images.unsplash.com/photo-1608538260461-105c98d6c075?auto=format&fit=crop&q=80&w=600"
+      "https://blogger.googleusercontent.com/img/a/AVvXsEhJOeEO47bUCZoKZEpnL3KZqxh6Y_CVpC3MwMbQVAV432R8AZZjHvD8kTgOs19zeTnKtNG7Zg26xz4Rvf0K4VzjiKQcaG1xaoQBwcO_JQs2x0XUAfKug7MxEvtu67wUhr-getw-oeIZAk9CTWKpsyBY8BCQ0b_z4hlwUYeFVhmjLes5pedaiASi36xKkEfL"
     ],
     category: "Hardware / HID",
     rating: 4.0,
