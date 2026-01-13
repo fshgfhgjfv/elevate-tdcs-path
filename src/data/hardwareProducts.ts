@@ -23,7 +23,7 @@ export interface HardwareProduct {
 export const hardwareProducts: HardwareProduct[] = [
   {
     id: "Raspberry pi pico",
-    name: "Raspberry pi pico(TDCS)",
+    name: "Raspberry Pi Pico (TDCS Edition)",
     images: [
       "https://blogger.googleusercontent.com/img/a/AVvXsEjbayeundx_TQVe4KxDo141n0wlmgwN009qVBXw8J2HnduSQQyuFc5tKMVwqtHALQl8Q7Dx3-llm2hgOEBzd-F1laXUoUReyZEsAy0N610PLxGjoxuMWc6HX6UKffANdNWo65-vSJP3W0Mq1XECsabs5EU-Oq6uIL7JdNURS-E12QKZutxFTUSoqHzjnbVF",
       "https://blogger.googleusercontent.com/img/a/AVvXsEjx9_GSMO5DyQC2NSe6KUAjf7kFX0PJwoFUeao1B7YDeSQL3nD3YTAItfuDAALZb2qsPyxIhmOSxzugMoINNmFFrTwZGqNFU1tI7BFEDjbdTsOuhVmFbUF8XL_T81ffiTv6b-xRPaxFFWWCYjNyshcgWM8CZqPse32Um0_ao7RTouOP1DmqhilCeAqA-n6T",
@@ -37,17 +37,18 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 3499,
     salePrice: 999,
     isOutOfStock: false,
-    description: "The Raspberry Pi Pico is a high-performance, low-cost microcontroller development board built around the powerful RP2040 microcontroller. Designed for embedded systems, IoT projects, and educational applications, the Pico offers exceptional processing power, flexible I/O options, and ease of programming, making it ideal for both beginners and professionals.",
+    description: "The Raspberry Pi Pico is a radical change from the previous Pis, because it’s not a Linux computer—it’s a microcontroller. Built around the RP2040 chip designed by Raspberry Pi themselves, it features a dual-core ARM Cortex-M0+ processor running at 133MHz. This board is perfect for low-latency hardware interaction, BadUSB scripting (using CircuitPython), and embedded security projects. It's incredibly power-efficient and versatile.",
     features: [
-      "Dual-core ARM® Cortex®-M0+ processor",
-      "Clock speed up to 133 MHz",
-      "High performance with low power consumption",
-      "Programmable using MicroPython and C/C++ SDK"
+      "Dual-core ARM® Cortex®-M0+ @ 133MHz",
+      "264kB on-chip SRAM & 2MB onboard Flash",
+      "Drag-and-drop programming via USB",
+      "8 × Programmable I/O (PIO) state machines",
+      "Ideal for HID Attacks and Hardware Implants"
     ],
     specifications: [
       { label: "Microcontroller", value: "RP2040" },
-      { label: "Storage", value: "16MB SPI Flash" },
-      { label: "Interface", value: "USB Type-A" }
+      { label: "Storage", value: "2MB Q-SPI Flash" },
+      { label: "Voltage", value: "1.8V - 5.5V" }
     ],
     reviews: [
       { id: "101", author: "Rohan K.", rating: 5, date: "2024-02-14", comment: "Incredible value. Drag-and-drop works perfectly." }
@@ -55,7 +56,7 @@ export const hardwareProducts: HardwareProduct[] = [
   },
   {
     id: "all-tdcs-courses",
-    name: "ESP8266 - Kit",
+    name: "ESP8266 WiFi Development Kit",
     images: [
       "https://blogger.googleusercontent.com/img/a/AVvXsEi19affCJsFqGgVFUFzlYkdaP0AcsjA-n_bbE8FYNewIK_7kHEeY25UvGTsqZKpiMfzqPFPtd8dvPXdpSGW3WLK2NpTglfiMYImq_JvHK1xcT1u5ENaxPsWe6CGRhUh3gsysUy33FqYkJPmrAE_rk94OJAhtJQd9FhMX_qBboPIIjyybK7T8tZeyG8OJrcn",
       "https://blogger.googleusercontent.com/img/a/AVvXsEgm2rP7ziezJgjJkwMidPVi6eCPXbnTV0ApJQFgX0B-H3H2dSYEebM8nt23Y99FCbfi5a6aUU9auyTum2fdPfvV_vdKZcqGDlS7ld672MLC_XzXiWAuO07jDtF5UI84foQfVoMrSo5TUskp7Jh5irhkc8Xc7Txqqz9gNBzSTeDRhy7R2lOau9Mht3AeXoXs",
@@ -67,11 +68,18 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 1999,
     salePrice: 499,
     isOutOfStock: false,
-    description: "The ESP8266 Wi-Fi Development Kit is a compact, cost-effective solution designed to empower makers, students, and professional engineers with wireless connectivity. Built around the powerful ESP8266 microcontroller, this kit enables rapid development of Internet of Things (IoT) applications with seamless Wi-Fi connectivity, low power consumption, and easy programmability.",
-    features: ["Powered by ESP8266 SoC", "Lightweight and space-efficient PCB", "Integrated Wi-Fi", "Supports Arduino IDE, MicroPython, Lua, and AT Command Firmware"],
+    description: "The ESP8266 NodeMCU is the legendary board that democratized WiFi hacking and IoT. Famous for being the hardware behind the 'WiFi Deauther' project, this board allows you to monitor packets, create fake access points (Beacon Spam), and test network resilience. It features a full TCP/IP stack and can be programmed easily using the Arduino IDE or Lua script.",
+    features: [
+      "Integrated 802.11 b/g/n WiFi 2.4GHz",
+      "Support for WiFi Deauther firmware",
+      "Built-in CP2102 USB-to-TTL converter",
+      "Deep sleep power saving mode",
+      "Breadboard friendly form-factor"
+    ],
     specifications: [
-      { label: "Microcontroller", value: "ESP8266 SoC" },
-      { label: "Wi-Fi Standard", value: "802.11 b/g/n" }
+      { label: "Chipset", value: "ESP8266-12E" },
+      { label: "Clock Speed", value: "80 MHz / 160 MHz" },
+      { label: "Flash Memory", value: "4 MB" }
     ],
     reviews: [
       { id: "201", author: "Amit V.", rating: 5, date: "2024-03-01", comment: "Best investment for my career." }
@@ -79,7 +87,7 @@ export const hardwareProducts: HardwareProduct[] = [
   },
   { 
     id: "CC1101+SMA (300Mz-938Mz) RF Module",
-    name: "CC1101+SMA (300Mz-938Mz) RF Module",
+    name: "TDCS CC1101 Sub-GHz Transceiver (High Gain)",
     images: [
       "https://blogger.googleusercontent.com/img/a/AVvXsEjUM60rdjnZLBIvc0mr-ZeUxBrF0MDxBFfRbqFRnO4C4FIariuai7Cx_wl5wzfG7v-qE1H-6BoxBm_AhvgMgkPKxQhY4FvgHf-XCYDIeEDyu5LkyGa0VSU0ZqaXnO0i2y-6lyXUwbXwCWjtVoUqCEupXukmeQkrqeoOxb12wiFdzwwWQ3h1SCJqIeoMSvDG",
       "https://blogger.googleusercontent.com/img/a/AVvXsEi8aWW8Mhr_t69BDjT0bRm_VPmEEBJviVdK_J4q-MvhUndZ6VTJ6Y4i4WnFL8NdWI4guhsur7j3sBm8VzUcslFHiIqV9FJ5W2w7grdk5TdjmuLiXlyUF5nTU9Ghnt2bkO6FEc4Akio7UPgBHUkklwtOINVs0OQJMcsb0j4SALe6aT_1FBSRWO0G9JzhJF0p",
@@ -91,12 +99,18 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 2999,
     salePrice: 999,
     isOutOfStock: false,
-    description: "The CC1101 + SMA RF Module is a high-performance, low-power sub-GHz wireless transceiver based on the Texas Instruments CC1101 chipset. Designed for reliable long-range communication, this module supports multiple frequency bands between 300 MHz and 938 MHz, making it ideal for industrial, IoT, remote control, and wireless data transmission applications.",
-    features: ["Operates from 300 MHz to 938 MHz", "Supports popular bands: 315 MHz, 433 MHz, 868 MHz, 915 MHz", "Ultra-low power sleep modes", "Ideal for battery-powered devices"],
+    description: "The CC1101 is the gold standard for Sub-GHz wireless communication. Unlike standard WiFi modules, this transceiver operates on lower frequencies (300-928 MHz), which are commonly used by car key fobs, garage door openers, automated gates, and industrial sensors. This module includes an SMA connector for an external high-gain antenna, significantly extending your range for signal analysis and replay attacks (e.g., RollJam simulations).",
+    features: [
+      "Wide Frequency Range: 300-928 MHz",
+      "High Sensitivity: -116 dBm at 0.6 kBaud",
+      "Hardware support for Packet Handling & Wake-On-Radio",
+      "Compatible with Flipper Zero (GPIO) & Arduino",
+      "Perfect for signal replay and jamming research"
+    ],
     specifications: [
-      { label: "Frequency Range", value: "300 MHz – 938 MHz" },
-      { label: "Output Power", value: "Up to +10 dBm" },
-      { label: "Operating Temperature", value: "-40°C to +85°C" }
+      { label: "Chip", value: "Texas Instruments CC1101" },
+      { label: "Modulation", value: "2-FSK, 4-FSK, GFSK, MSK, OOK" },
+      { label: "Voltage", value: "1.8V - 3.6V" }
     ],
     reviews: []
   },
@@ -115,17 +129,18 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 5999,
     salePrice: 3999,
     isOutOfStock: false,
-    description: "The TDCS M5StickC PLUS2 is a compact, feature-rich ESP32-based IoT development kit designed for rapid prototyping, embedded development, and smart device applications. With an upgraded display, enhanced performance, and integrated sensors, it delivers a powerful all-in-one solution in an ultra-portable form factor.",
+    description: "The M5StickC PLUS2 is a mini IoT development board powered by the ESP32-PICO-V3-02. It's essentially a smartwatch-sized computer with a screen, battery, and sensors. In the security community, it's famous for running the 'Nemo' firmware, turning it into a portable WiFi auditing tool capable of scanning networks and detecting vulnerabilities on the go. It packs an LCD screen, 6-axis IMU, microphone, and buzzer into a bright orange stick.",
     features: [
-      "Dual-core Xtensa® LX7 processor",
-      "Integrated Wi-Fi (2.4 GHz) and Bluetooth BLE",
-      "Ideal for IoT, edge computing, and wireless control",
-      "Resolution: 240 × 135 pixels"
+      "ESP32-PICO-V3-02 (240MHz Dual Core, WiFi/BLE)",
+      "1.14 inch TFT Color Screen (135x240)",
+      "Built-in 200mAh Battery & Infrared Transmitter",
+      "Grove Port for easy sensor expansion",
+      "Portable platform for Marauder/Nemo firmware"
     ],
     specifications: [
-      { label: "Microcontroller", value: "ESP32" },
-      { label: "Wireless", value: "Wi-Fi 802.11 b/g/n, Bluetooth BLE" },
-      { label: "ADC/DAC", value: "8-bit" }
+      { label: "SoC", value: "ESP32-PICO-V3-02" },
+      { label: "Display", value: "ST7789v2" },
+      { label: "Battery", value: "200mAh LiPo" }
     ],
     reviews: []
   },
@@ -144,25 +159,24 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 4500,
     salePrice: 3499,
     isOutOfStock: false,
-    description: "The ESP32-2432S028, affectionately known as the 'Cheap Yellow Display' (CYD), is the ultimate all-in-one development board for makers who need a powerful interface without the wiring mess. It integrates a 2.8-inch TFT LCD Touch Screen directly onto an ESP32-WROOM module. Perfect for building smart home control panels, weather stations, or GUI-based projects using LVGL. It comes packed with onboard peripherals including an RGB LED, Light Sensor (LDR), and SD Card slot, making it ready for complex projects right out of the box.",
+    description: "The ESP32-2432S028 'Cheap Yellow Display' (CYD) is a hidden gem in the hardware hacking community. It combines a powerful ESP32 module with a 2.8-inch touchscreen, SD card slot, and RGB LED—all for an incredibly low price. It's the perfect base for building a graphical WiFi Scanner, a smart home controller, or a visual packet monitor. No need to mess with wires; it's a ready-to-go GUI solution.",
     features: [
       "Integrated 2.8-inch TFT Touch Screen (320x240)",
       "Powered by ESP32-WROOM-32 (Dual Core)",
       "Onboard MicroSD Card Slot for data logging",
       "Programmable RGB LED and Light Sensor",
-      "Compatible with Arduino IDE, LVGL, and ESPHome"
+      "Compatible with ESP32 Marauder (Visual)"
     ],
     specifications: [
       { label: "Display", value: "2.8\" ILI9341 w/ XPT2046 Touch" },
       { label: "Processor", value: "ESP32-WROOM-32" },
-      { label: "Resolution", value: "320 x 240 px" },
-      { label: "Interface", value: "Micro USB" }
+      { label: "Resolution", value: "320 x 240 px" }
     ],
     reviews: []
   },
   {
     id: "lilygo-tembed-cc1101",
-    name: "Lilygo T-Embed CC1101 Plus(Pre-Program)",
+    name: "Lilygo T-Embed CC1101 Plus",
     images: [
       "https://blogger.googleusercontent.com/img/a/AVvXsEi5m8SotFBwLZpNH-oVd3XlN9Oknn4fiE3EUDDIhKDk2SyFt_nPglhlI74l4Wjz04b-Z3JhFtK2xXOtRGPsFbUENYKRctKzqrJnBk4sLgf4Inl5rArmtqqE_I5m2LN88GtVsCOYQ19ngWPiJ9AI-_4sB1UQUwb38XmxqS57qTFEp3g7Qz37DAjbmlCvGCVs",
       "https://blogger.googleusercontent.com/img/a/AVvXsEjUNbmcWWO88vdp1q8BW0xM5IIl0FgieKD6voCiQ0CsxsKB-VwLNok7eVdtuhrzlIhN3vOVYshJx0L4lqLjWY23Di_w84MH3u85Bn_M2k_Jd4hbopMzSLazXtzJLUQ3QHzkI0kifRd1yVk_ZmEKxd5OEKSxqBOzF9ONugjOduoGiQl1q64V794E7pdDcvBU",
@@ -174,26 +188,24 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 12500,
     salePrice: 9999,
     isOutOfStock: false,
-    description: "The Lilygo T-Embed CC1101 Plus is a highly versatile, programmable embedded panel designed for creative engineers and security researchers. This upgraded version features an integrated CC1101 Sub-GHz module, allowing for interaction with wireless devices (gates, remotes) straight from the device. It features a unique rotary encoder control, a vibrant color display, and comes in a sleek, transparent industrial casing. Pre-programmed and ready to deploy, it bridges the gap between a macro-pad, a dev-board, and a hacking tool.",
+    description: "The Lilygo T-Embed CC1101 Plus is an industrial-grade programmable control panel that doubles as a powerful pentesting tool. Encased in a transparent shell with a rotary encoder and a vibrant LCD, it looks like a futuristic gadget. Under the hood, it pairs an ESP32-S3 with a CC1101 Transceiver, allowing you to interface with both WiFi networks and Sub-GHz devices (gates, remotes). Ideally suited for researchers building custom remotes or signal analyzers.",
     features: [
-      "ESP32-S3 Microcontroller with WiFi & Bluetooth",
-      "Integrated CC1101 Sub-GHz Transceiver",
-      "1.9-inch LCD Display (170x320)",
-      "Rotary Encoder with Push Button",
-      "Built-in Microphone and Speaker",
-      "Battery powered for portability"
+      "ESP32-S3 (Dual Core) + CC1101 Sub-GHz Module",
+      "1.9-inch LCD (170x320) & Rotary Encoder",
+      "Dual Microphones & Speaker",
+      "Built-in Battery & Grove Interface",
+      "Transparent 'Cyberpunk' Aesthetic"
     ],
     specifications: [
-      { label: "Main Chip", value: "ESP32-S3 (Dual Core)" },
-      { label: "Radio Module", value: "TI CC1101" },
-      { label: "Display", value: "ST7789V IPS LCD" },
-      { label: "Battery", value: "Included" }
+      { label: "Main Chip", value: "ESP32-S3" },
+      { label: "Radio", value: "TI CC1101" },
+      { label: "Display", value: "ST7789V IPS" }
     ],
     reviews: []
   },
   {
     id: "flipper-zero-tdcs",
-    name: "Flipper Zero",
+    name: "Flipper Zero Multi-tool",
     images: [
       "https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&q=80&w=600",
       "https://images.unsplash.com/photo-1558089687-f282ffcbc0d5?auto=format&fit=crop&q=80&w=600",
@@ -205,26 +217,25 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 35000,
     salePrice: 29999,
     isOutOfStock: false,
-    description: "The Flipper Zero is the ultimate portable multi-tool for pentesters, geeks, and hardware enthusiasts. Shaped like a toy but packed with industrial-grade hardware, it allows you to explore the digital world around you. It combines a Sub-GHz transceiver, RFID reader/writer (125kHz & 13.56MHz), Infrared transceiver, and GPIO pins into one pocket-sized device. It operates completely autonomously with its own screen and 5-button control, requiring no computer or phone to hack protocols, clone access cards, or analyze signals. With its open-source firmware and 'Tamagotchi-style' cyber-dolphin AI, learning hardware security has never been this addictive.",
+    description: "The Flipper Zero is the ultimate portable multi-tool for engineers, geeks, and security professionals. Shaped like a toy, it is a fully capable autonomous device for exploring the digital world. It combines a Sub-GHz transceiver (for gates/barriers), 125kHz & NFC RFID (for access cards), Infrared (for TVs/ACs), and GPIO pins for hardware debugging. It gamifies the hacking experience with a 'Tamagotchi-style' cyber-dolphin that levels up as you use the tools.",
     features: [
-      "Sub-GHz Transceiver for radio remotes/gates",
-      "125kHz LF RFID & 13.56MHz NFC Reading/Writing",
+      "Sub-GHz Transceiver (300-928 MHz)",
+      "125kHz LF RFID & 13.56MHz NFC Reader/Emulator",
       "Infrared Transceiver (Learning & Universal Remote)",
       "iButton 1-Wire Key Reading",
       "BadUSB / U2F Security Token capabilities",
-      "Open Source & Fully Customizable"
+      "Open Source Firmware (Unleashed/Xtreme supported)"
     ],
     specifications: [
       { label: "CPU", value: "STM32WB55" },
       { label: "Screen", value: "1.4\" Monochrome LCD" },
-      { label: "Battery", value: "2000mAh (7 days)" },
-      { label: "Connectivity", value: "USB-C, Bluetooth LE, microSD" }
+      { label: "Battery", value: "2000mAh (7+ days)" }
     ],
     reviews: []
   },
   {
     id: "tdcs-rtl-sdr",
-    name: "TDCS RTL-SDR Blog V3 (Dipole Antenna Kit)",
+    name: "TDCS RTL-SDR Blog V3 Kit",
     images: [
       "https://images.unsplash.com/photo-1515461971439-684260d8a57e?auto=format&fit=crop&q=80&w=600"
     ],
@@ -234,33 +245,18 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 3500,
     salePrice: 2899,
     isOutOfStock: false,
-    description: "The best entry-level SDR for beginners. Listen to aircraft (ADS-B), police radio, satellites (NOAA), and analyze GSM signals.",
-    features: ["Low Noise floor", "Direct Sampling Mode (HF)", "Bias Tee Powered", "Aluminum enclosure"],
+    description: "Turn your computer into a powerful radio scanner with the RTL-SDR Blog V3. This Software Defined Radio (SDR) dongle allows you to listen to and visualize radio signals from 500 kHz up to 1.7 GHz. Security researchers use it to analyze GSM traffic, decode pager messages (POCSAG), track aircraft (ADS-B), receive weather satellite images (NOAA), and reverse engineer unknown wireless protocols.",
+    features: [
+      "Custom RTL2832U + R820T2 chipset",
+      "Direct Sampling Mode for HF reception (500 kHz+)",
+      "Software selectable Bias Tee for LNA power",
+      "Aluminum enclosure for cooling and shielding",
+      "Includes Dipole Antenna Kit"
+    ],
     specifications: [
-      { label: "Chipset", value: "RTL2832U + R820T2" },
       { label: "Frequency", value: "500 kHz – 1.7 GHz" },
+      { label: "Bandwidth", value: "Up to 3.2 MHz" },
       { label: "Connector", value: "SMA Female" }
-    ],
-    reviews: []
-  },
-  {
-    id: "tdcs-cc1101-original",
-    name: "TDCS CC1101 Sub-GHz Transceiver Module (Basic)",
-    images: [
-      "https://images.unsplash.com/photo-1555664424-778a69022365?auto=format&fit=crop&q=80&w=600"
-    ],
-    category: "SDR / Radio",
-    rating: 4.2,
-    reviewCount: 34,
-    originalPrice: 899,
-    salePrice: 499,
-    isOutOfStock: false,
-    description: "High-power Sub-GHz module perfect for interacting with gates, cars, and remotes. Compatible with Flipper Zero, Arduino, and Raspberry Pi.",
-    features: ["Supports 315/433/868/915 MHz", "External Antenna for High Gain", "SPI Interface"],
-    specifications: [
-      { label: "Chip", value: "TI CC1101" },
-      { label: "Interface", value: "SPI" },
-      { label: "Range", value: "Up to 500m (LoS)" }
     ],
     reviews: []
   },
@@ -276,17 +272,24 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 12000,
     salePrice: 9999,
     isOutOfStock: true,
-    description: "Open source 2.4 GHz wireless development platform suitable for Bluetooth experimentation. The world's first affordable Bluetooth monitoring platform.",
-    features: ["Bluetooth Basic Rate Sniffing", "Spectrum Analysis", "2.4 GHz Transmit/Receive"],
+    description: "The Ubertooth One is an open-source 2.4 GHz wireless development platform suitable for Bluetooth experimentation. Unlike standard Bluetooth dongles that only see what they are paired with, the Ubertooth One operates in 'monitor mode,' allowing you to sniff and analyze Bluetooth traffic in real-time. It is the primary hardware used for Bluetooth security auditing and research.",
+    features: [
+      "2.4 GHz Transmit and Receive",
+      "Comparable transmit power to Class 1 Bluetooth devices",
+      "Standard Cortex Debug Connector (10-pin 50-mil JTAG)",
+      "Expansion connector for inter-Ubertooth communication",
+      "Capable of sniffing Bluetooth Basic Rate packets"
+    ],
     specifications: [
-      { label: "Power", value: "USB" },
-      { label: "Range", value: "Comparable to Class 1 BT" }
+      { label: "Frequency", value: "2.400 - 2.485 GHz" },
+      { label: "Interface", value: "USB 2.0" },
+      { label: "Antenna", value: "RP-SMA Included" }
     ],
     reviews: []
   },
   {
     id: "tdcs-proxmark3",
-    name: "TDCS Proxmark3 Easy (RFID/NFC Cloner)",
+    name: "TDCS Proxmark3 Easy (RFID Cloner)",
     images: [
       "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&q=80&w=600"
     ],
@@ -296,12 +299,18 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 6500,
     salePrice: 4999,
     isOutOfStock: false,
-    description: "The industry standard for RFID analysis. Clone, simulate, and analyze both High Frequency (13.56MHz) and Low Frequency (125kHz) cards and tags.",
-    features: ["Dual Frequency Support", "Standalone Mode", "Full Mifare Crack Support"],
+    description: "The Proxmark3 is the industry-standard Swiss Army Knife for RFID analysis. This 'Easy' version is a compact, cost-effective build of the famous RDV4. It is capable of reading, writing, cloning, and simulating almost any RFID tag, from simple 125kHz employee badges to complex 13.56MHz encrypted transit cards. Essential for physical security assessments.",
+    features: [
+      "Dual Antenna: High Frequency (HF) & Low Frequency (LF)",
+      "Standalone Mode: Run scripts without a PC",
+      "Full support for 'Iceman' Firmware fork",
+      "Attacks: Darkside, Nested, Hardnested for Mifare",
+      "Simulation: Act as a card to test readers"
+    ],
     specifications: [
-      { label: "HF Support", value: "13.56 MHz (Mifare, iClass)" },
-      { label: "LF Support", value: "125 kHz (HID, EM4100)" },
-      { label: "Firmware", value: "Iceman Repo Compatible" }
+      { label: "HF Support", value: "13.56 MHz (ISO14443A/B)" },
+      { label: "LF Support", value: "125 kHz (HID, EM41xx)" },
+      { label: "FPGA", value: "Xilinx Spartan-II" }
     ],
     reviews: []
   },
@@ -317,17 +326,24 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 3999,
     salePrice: 2800,
     isOutOfStock: false,
-    description: "Reliable USB NFC reader used in many security courses. Great for reading and writing Mifare Classic cards and basic NFC experimentation.",
-    features: ["Read/Write Speed up to 424 kbps", "Built-in Antenna", "Libnfc Compatible"],
+    description: "The ACR122U is the world's most popular PC-linked NFC reader. While it looks like a standard desktop reader, it is fully compatible with advanced tools like LibNFC and Mifare Classic Tool (MCT) on Linux/Windows. It is widely used in cybersecurity courses to teach the basics of NFC card structure, sector cracking, and key dumping.",
+    features: [
+      "Read/Write speed up to 424 kbps",
+      "Built-in antenna with 50mm reading distance",
+      "Supports ISO 14443 Type A and B cards",
+      "Supports Mifare, FeliCa, and 4 types of NFC (ISO/IEC 18092) tags",
+      "CCID Compliant (Plug and Play)"
+    ],
     specifications: [
-      { label: "Protocol", value: "ISO 14443 A/B" },
-      { label: "Frequency", value: "13.56 MHz" }
+      { label: "Interface", value: "USB Full Speed" },
+      { label: "Frequency", value: "13.56 MHz" },
+      { label: "Standard", value: "ISO/IEC 18092" }
     ],
     reviews: []
   },
   {
     id: "tdcs-lockpick-set",
-    name: "TDCS Transparent Lock Pick Training Set",
+    name: "TDCS Transparent Lock Pick Set",
     images: [
       "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=600",
       "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=600"
@@ -338,17 +354,24 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 1999,
     salePrice: 1299,
     isOutOfStock: false,
-    description: "Learn the art of lockpicking with this clear acrylic practice lock. See exactly how the pins move when you insert the key or pick.",
-    features: ["Transparent Casing", "12 Hardened Steel Picks", "Tension Wrenches Included"],
+    description: "Cybersecurity often stops at a locked server room door. This training set teaches you the physical side of security. It includes a transparent acrylic padlock that reveals the inner mechanism of pins and springs, allowing you to see exactly how lockpicking works. Comes with a variety of hooks, rakes, and tension wrenches to master the art of non-destructive entry.",
+    features: [
+      "Crystal clear cutaway practice lock",
+      "12-piece stainless steel pick set",
+      "Includes tension wrenches and key extractors",
+      "Leather carrying case included",
+      "Perfect for understanding pin-tumbler mechanisms"
+    ],
     specifications: [
-      { label: "Material", value: "Acrylic & Stainless Steel" },
+      { label: "Material", value: "Acrylic & Steel" },
+      { label: "Lock Type", value: "Pin Tumbler" },
       { label: "Pieces", value: "15 Total" }
     ],
     reviews: []
   },
   {
     id: "tdcs-magspoof",
-    name: "TDCS MagSpoof (Magnetic Stripe Emulator)",
+    name: "TDCS MagSpoof (Magnetic Emulator)",
     images: [
       "https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&q=80&w=600"
     ],
@@ -358,17 +381,24 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 2500,
     salePrice: 1999,
     isOutOfStock: true,
-    description: "A device that can emulate magnetic stripes wirelessly. It works by generating a strong electromagnetic field that mimics a traditional card swipe.",
-    features: ["Emulates Track 1, 2 & 3", "Wireless usage", "Tiny form factor"],
+    description: "MagSpoof is a wireless credit card/magnetic stripe spoofing device. Unlike a traditional card reader that requires a swipe, MagSpoof generates a strong electromagnetic field that mimics the magnetic pattern of a card stripe. By holding it near a traditional magnetic reader, you can wirelessly transmit track data (Track 1 & 2), effectively 'swiping' a card without touching the reader.",
+    features: [
+      "Emulates Track 1, Track 2, and Track 3",
+      "Wireless operation creates a magnetic field",
+      "Compatible with standard MagStripe readers",
+      "Compact size, battery powered",
+      "Ideal for researching magnetic stripe insecurity"
+    ],
     specifications: [
-      { label: "Controller", value: "ATtiny85" },
-      { label: "Power", value: "3.7V LiPo" }
+      { label: "Microcontroller", value: "ATtiny85" },
+      { label: "Power", value: "3.7V LiPo" },
+      { label: "Range", value: "~2-5cm" }
     ],
     reviews: []
   },
   {
     id: "tdcs-pi5-kit",
-    name: "TDCS Raspberry Pi 5 Kali Linux Kit (8GB)",
+    name: "Raspberry Pi 5 Kali Linux Kit (8GB)",
     images: [
       "https://images.unsplash.com/photo-1647427060118-4911c9821b82?auto=format&fit=crop&q=80&w=600",
       "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&q=80&w=600"
@@ -379,12 +409,18 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 12000,
     salePrice: 9800,
     isOutOfStock: false,
-    description: "The beast is here. Raspberry Pi 5 with 8GB RAM, pre-loaded with a customized TDCS Kali Linux build. Includes active cooling case.",
-    features: ["2.4GHz Quad-core CPU", "Dual 4K Support", "PCIe 2.0 Interface", "Active Cooler Included"],
+    description: "The ultimate ARM-based hacking station. This kit includes the powerful Raspberry Pi 5 with 8GB RAM, capable of running a full desktop environment with ease. It comes pre-flashed with a custom build of Kali Linux, optimized for the Pi 5's architecture. Whether you are cracking hashes with Hashcat or running vulnerability scans with OpenVAS, this board handles it all without breaking a sweat.",
+    features: [
+      "Broadcom BCM2712 Quad-core Cortex-A76 @ 2.4GHz",
+      "8GB LPDDR4X SDRAM",
+      "Dual 4K Micro-HDMI Output",
+      "PCIe 2.0 interface for high-speed NVMe storage",
+      "Includes Active Cooler and Official Power Supply"
+    ],
     specifications: [
-      { label: "RAM", value: "8GB LPDDR4X" },
-      { label: "Processor", value: "Broadcom BCM2712" },
-      { label: "OS", value: "Kali Linux (TDCS Mod)" }
+      { label: "RAM", value: "8GB" },
+      { label: "OS", value: "Kali Linux ARM64" },
+      { label: "Connectivity", value: "Gigabit LAN + WiFi 5" }
     ],
     reviews: []
   },
@@ -400,18 +436,24 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 899,
     salePrice: 599,
     isOutOfStock: false,
-    description: "Tiny WiFi + Bluetooth development board with an OV2640 camera. Perfect for building remote surveillance cameras.",
-    features: ["Built-in Flash LED", "MicroSD Card Slot", "WiFi & BT 4.2"],
+    description: "The ESP32-CAM is a tiny, low-cost development board with a WiFi chip and a 2MP OV2640 camera. It is widely used in the security field to build remote surveillance devices, IP cameras, or face recognition systems. Its small size allows it to be hidden easily, making it a favorite for 'red team' exercises involving planting monitoring devices.",
+    features: [
+      "Low-power dual-core 32-bit CPU",
+      "Main frequency up to 240MHz",
+      "OV2640 Camera with Built-in Flash LED",
+      "Onboard MicroSD Card Slot for local recording",
+      "Supports video streaming over WiFi"
+    ],
     specifications: [
-      { label: "Camera", value: "OV2640 (2MP)" },
-      { label: "Clock", value: "160MHz" },
+      { label: "Camera Sensor", value: "OV2640 (2 Megapixel)" },
+      { label: "Wireless", value: "WiFi 802.11b/g/n + BT" },
       { label: "Voltage", value: "5V" }
     ],
     reviews: []
   },
   {
     id: "tdcs-digispark",
-    name: "TDCS BadUSB Digispark (Attiny85)",
+    name: "TDCS BadUSB Digispark",
     images: [
       "https://images.unsplash.com/photo-1608538260461-105c98d6c075?auto=format&fit=crop&q=80&w=600"
     ],
@@ -421,18 +463,24 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 499,
     salePrice: 299,
     isOutOfStock: false,
-    description: "The cheapest way to get into HID attacks. This tiny development board plugs directly into USB and can be programmed with Arduino IDE.",
-    features: ["Tiny Form Factor", "Arduino Compatible", "USB 2.0 Software Implementation"],
+    description: "The Digispark is an ATtiny85-based microcontroller development board similar to the Arduino line, but cheaper and smaller. Its superpower is its ability to emulate a USB keyboard (Human Interface Device). This allows for 'BadUSB' attacks: when plugged in, it can type keystrokes at lightning speed, opening a terminal and executing payloads before the victim even realizes what happened.",
+    features: [
+      "Support for the Arduino IDE",
+      "Power via USB or External Source (5v-35v)",
+      "6 I/O Pins (2 are used for USB only if your program communicates over USB)",
+      "8k Flash Memory (about 6k after bootloader)",
+      "Ideal for Keystroke Injection (Ducky Script)"
+    ],
     specifications: [
-      { label: "Flash Memory", value: "8KB" },
-      { label: "I/O Pins", value: "6" },
-      { label: "Voltage", value: "5V USB" }
+      { label: "Chip", value: "ATtiny85" },
+      { label: "Voltage", value: "5V USB" },
+      { label: "Interface", value: "Software USB" }
     ],
     reviews: []
   },
   {
     id: "tdcs-faraday-bag",
-    name: "TDCS Signal Blocking Faraday Bag",
+    name: "TDCS RF Shielding Faraday Bag",
     images: [
       "https://images.unsplash.com/photo-1617058866380-60b763dc369c?auto=format&fit=crop&q=80&w=600"
     ],
@@ -442,18 +490,24 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 1200,
     salePrice: 899,
     isOutOfStock: false,
-    description: "Military-grade signal blocking bag for phones, key fobs, and drives. Blocks WiFi, Bluetooth, GPS, RFID, and Cell signals.",
-    features: ["Double Layer Shielding", "Water Resistant", "Anti-tracking"],
+    description: "A Faraday bag is an essential tool for digital forensics and privacy. Lined with specialized metallic mesh, it creates a Faraday cage that blocks all incoming and outgoing electromagnetic signals. When a phone or laptop is placed inside, it cannot be tracked via GPS, cannot receive calls or texts, and cannot be remotely wiped by a suspect. Attenuation >85 dB.",
+    features: [
+      "Blocks WiFi (2.4 & 5GHz), Bluetooth, GPS, RFID, and Cell Signals (4G/5G)",
+      "Double-roll velcro closure for complete seal",
+      "Water-resistant ballistic nylon outer layer",
+      "Prevents ' Relay Attacks' on car key fobs",
+      "Used by law enforcement for evidence seizure"
+    ],
     specifications: [
-      { label: "Material", value: "Shielded Oxford Fabric" },
-      { label: "Size", value: "20cm x 10cm" },
-      { label: "Attenuation", value: ">85 dB" }
+      { label: "Shielding", value: "Silver/Copper Nickel Fabric" },
+      { label: "Size", value: "Medium (Phone/Key)" },
+      { label: "Efficiency", value: "99.99%" }
     ],
     reviews: []
   },
   {
     id: "tdcs-gps-tracker",
-    name: "TDCS Mini GPS/GSM Asset Tracker",
+    name: "TDCS Magnetic Asset Tracker",
     images: [
       "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&q=80&w=600"
     ],
@@ -463,39 +517,24 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 2999,
     salePrice: 1499,
     isOutOfStock: false,
-    description: "Real-time magnetic GPS tracker with voice recording capabilities. Uses 2G GSM network for location uploads.",
-    features: ["Real-time Tracking", "Voice Monitor", "Magnetic Mount"],
-    specifications: [
-      { label: "Battery", value: "400mAh (4 Days)" },
-      { label: "Network", value: "GSM/GPRS" },
-      { label: "Accuracy", value: "10m" }
+    description: "A compact, robust GPS tracker designed for vehicle and asset monitoring. It features strong industrial magnets for quick deployment under car chassis or on metal containers. It utilizes a hybrid positioning system (GPS + LBS) to upload location data via the 2G GSM network. Also features a built-in microphone for remote voice monitoring.",
+    features: [
+      "Real-time tracking via Web/App",
+      "Strong Magnetic Mount for 1-second installation",
+      "Remote Voice Monitor/Recording",
+      "History Route Playback",
+      "Geofence Alarms"
     ],
-    reviews: []
-  },
-  {
-    id: "tdcs-nodemcu",
-    name: "TDCS NodeMCU V3 LUA (WiFi Jammer Capable)",
-    images: [
-      "https://images.unsplash.com/photo-1553406830-ef2513450d76?auto=format&fit=crop&q=80&w=600"
-    ],
-    category: "Development",
-    rating: 4.8,
-    reviewCount: 880,
-    originalPrice: 550,
-    salePrice: 349,
-    isOutOfStock: false,
-    description: "The classic ESP8266 development board. Can be used for IoT projects or flashed with Deauther to test WiFi networks.",
-    features: ["Open Source", "Interactive", "Low Cost", "WiFi Enabled"],
     specifications: [
-      { label: "Chip", value: "ESP8266-12E" },
-      { label: "Flash", value: "4MB" },
-      { label: "Clock", value: "80MHz" }
+      { label: "Network", value: "GSM/GPRS 850/900/1800/1900MHz" },
+      { label: "Battery", value: "400mAh Li-ion" },
+      { label: "Positioning", value: "GPS + LBS + WiFi" }
     ],
     reviews: []
   },
   {
     id: "tdcs-usb-killer",
-    name: "TDCS USB Surge Tester (Pro)",
+    name: "TDCS USB Surge Tester Pro",
     images: [
       "https://images.unsplash.com/photo-1562408590-e32931084e23?auto=format&fit=crop&q=80&w=600"
     ],
@@ -505,11 +544,18 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 4500,
     salePrice: 3999,
     isOutOfStock: true,
-    description: "Designed to test the surge protection of USB ports. Safely (or unsafely) discharges high voltage into the data lines.",
-    features: ["Rapid Pulse Discharge", "-200V Output", "Pulse Shield Included"],
+    description: "The USB Surge Tester (often called a USB Killer) is an industrial testing tool designed to verify the surge protection of USB ports. When plugged in, it rapidly charges its capacitors from the USB power lines and then discharges -200V DC instantly onto the data lines. This cycle repeats continuously. Unprotected equipment will suffer permanent hardware failure. USE WITH EXTREME CAUTION.",
+    features: [
+      "High Voltage Pulse Generator (-200V)",
+      "Compact Flash Drive form factor",
+      "Includes Testing Shield (to safely test the spark)",
+      "Tests effectiveness of ESD protection diodes",
+      "Destructive testing capability"
+    ],
     specifications: [
-      { label: "Output Voltage", value: "-220V" },
-      { label: "Interface", value: "USB-A" }
+      { label: "Output", value: "-200V DC" },
+      { label: "Interface", value: "USB Type-A" },
+      { label: "Cycle", value: "Charge/Discharge loops" }
     ],
     reviews: []
   },
@@ -525,17 +571,24 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 1500,
     salePrice: 999,
     isOutOfStock: false,
-    description: "A hardware device that allows you to monitor Ethernet traffic. It requires no power and is undetectable by the network.",
-    features: ["Passive Monitoring", "No Power Required", "Portable"],
+    description: "The Throwing Star LAN Tap is a passive Ethernet tap. It requires no power. By plugging it inline between a target device and a switch, it physically copies the transmit and receive pairs to separate monitoring ports. This allows a security analyst to monitor 10/100Base-T network traffic using Wireshark without being detectable by the target network (no IP address, no MAC address).",
+    features: [
+      "Passive monitoring of 10BASET and 100BASETX networks",
+      "Requires no power to operate",
+      "Zero footprint (undetectable by software)",
+      "Great for IDS (Intrusion Detection System) deployment",
+      "Unique 'Throwing Star' PCB design"
+    ],
     specifications: [
-      { label: "Speed", value: "10/100 Base-T" },
-      { label: "Ports", value: "4 x RJ45" }
+      { label: "Speed", value: "10/100 Mbps" },
+      { label: "Ports", value: "4 x RJ45" },
+      { label: "Type", value: "Passive Tap" }
     ],
     reviews: []
   },
   {
     id: "tdcs-keylogger-usb",
-    name: "TDCS AirDrive Keylogger (WiFi)",
+    name: "TDCS AirDrive WiFi Keylogger",
     images: [
       "https://images.unsplash.com/photo-1611174743420-3d7df880ce32?auto=format&fit=crop&q=80&w=600"
     ],
@@ -545,77 +598,24 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 8500,
     salePrice: 6999,
     isOutOfStock: false,
-    description: "Advanced USB keylogger with WiFi access. Record keystrokes and access them remotely via a web browser.",
-    features: ["WiFi Access Point", "16MB Internal Memory", "Email Reports"],
+    description: "The AirDrive Keylogger is an advanced USB hardware keylogger with a built-in WiFi module. It sits between the keyboard and the computer, recording every keystroke to its internal memory. Unlike traditional keyloggers that require physical retrieval, the AirDrive creates its own WiFi hotspot. You can connect to it wirelessly from your phone or laptop to view the logs or configure it to email you reports automatically.",
+    features: [
+      "Records all keystrokes to internal flash memory",
+      "Undetectable by antivirus software (hardware-based)",
+      "WiFi Hotspot for remote data retrieval",
+      "Supports 40+ national keyboard layouts",
+      "Tiny footprint (less than 1 inch long)"
+    ],
     specifications: [
-      { label: "Memory", value: "16MB (~16000 pages)" },
-      { label: "Dimensions", value: "10mm long" }
-    ],
-    reviews: []
-  },
-  {
-    id: "tdcs-flipper-case",
-    name: "TDCS Silicone Case for Flipper Zero",
-    images: [
-      "https://images.unsplash.com/photo-1603539270381-b20f924151dc?auto=format&fit=crop&q=80&w=600"
-    ],
-    category: "Accessories",
-    rating: 4.6,
-    reviewCount: 150,
-    originalPrice: 1200,
-    salePrice: 799,
-    isOutOfStock: false,
-    description: "Protective silicone bumper case for your Flipper Zero. Provides better grip and drop protection for your favorite multi-tool.",
-    features: ["Shock Absorption", "Access to GPIO", "Orange/White options"],
-    specifications: [
-      { label: "Material", value: "Food Grade Silicone" },
-      { label: "Compatibility", value: "Flipper Zero" }
-    ],
-    reviews: []
-  },
-  {
-    id: "tdcs-hak5-field-kit",
-    name: "TDCS Red Team Field Kit (Bag Only)",
-    images: [
-      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=600"
-    ],
-    category: "Accessories",
-    rating: 4.8,
-    reviewCount: 35,
-    originalPrice: 3500,
-    salePrice: 2499,
-    isOutOfStock: false,
-    description: "Tactical organizer bag designed to hold all your pentesting gear. Specific compartments for Pineapple, Rubber Ducky, cables, and antennas.",
-    features: ["Water Resistant", "Cable Management Loops", "MOLLE System"],
-    specifications: [
-      { label: "Material", value: "1000D Nylon" },
-      { label: "Zippers", value: "YKK" }
-    ],
-    reviews: []
-  },
-  {
-    id: "tdcs-sim800l",
-    name: "TDCS SIM800L GPRS Module",
-    images: [
-      "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=600"
-    ],
-    category: "Development",
-    rating: 4.1,
-    reviewCount: 67,
-    originalPrice: 450,
-    salePrice: 299,
-    isOutOfStock: false,
-    description: "Add cellular capability to your projects. Send SMS, make calls, or use GPRS data with this tiny module. Needs a stable power supply.",
-    features: ["Quad-band 850/900/1800/1900MHz", "Micro SIM Card", "TTL Serial"],
-    specifications: [
-      { label: "Voltage", value: "3.7V - 4.2V" },
-      { label: "Current", value: "2A Peak" }
+      { label: "Memory", value: "16MB (~16,000 pages of text)" },
+      { label: "Wireless", value: "WiFi 2.4GHz" },
+      { label: "Form Factor", value: "USB-A Pass-through" }
     ],
     reviews: []
   },
   {
     id: "tdcs-logic-analyzer",
-    name: "TDCS USB Logic Analyzer 24MHz 8Ch",
+    name: "TDCS USB Logic Analyzer 24MHz",
     images: [
       "https://images.unsplash.com/photo-1581092334651-ddf26d9a09d0?auto=format&fit=crop&q=80&w=600"
     ],
@@ -625,11 +625,18 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 1200,
     salePrice: 850,
     isOutOfStock: false,
-    description: "Debug digital circuits easily. Compatible with Saleae Logic software (via open source drivers). Perfect for decoding UART, SPI, I2C protocols.",
-    features: ["24MHz Sampling Rate", "8 Channels", "Protocol Decoding"],
+    description: "A logic analyzer is the stethoscope of digital electronics. This 8-channel USB analyzer allows you to record and view digital signals on your computer. It is indispensable for reverse engineering hardware protocols. Compatible with the open-source 'Sigrok' PulseView software, it can automatically decode protocols like UART (Serial), I2C, SPI, CAN, and more.",
+    features: [
+      "8 Channels of simultaneous monitoring",
+      "Sampling rate up to 24 MHz",
+      "Decodes UART, I2C, SPI, 1-Wire, and 50+ other protocols",
+      "Adjustable trigger settings",
+      "Works with PulseView (Open Source)"
+    ],
     specifications: [
-      { label: "Input", value: "5V Tolerant" },
-      { label: "Connection", value: "Mini USB" }
+      { label: "Input", value: "5V Tolerant (Logic 0-5V)" },
+      { label: "Connection", value: "Mini USB" },
+      { label: "Channels", value: "8" }
     ],
     reviews: []
   }
