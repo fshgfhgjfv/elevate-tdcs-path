@@ -596,7 +596,7 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-keylogger-usb",
     name: "TDCS Cyber-T",
     images: [
-      "https://images.unsplash.com/photo-1611174743420-3d7df880ce32?auto=format&fit=crop&q=80&w=600"
+      "https://blogger.googleusercontent.com/img/a/AVvXsEhpg85kcbLYyB0P3udNVYsShqBclfoItuKOHIJdv0e24E4k-0vpvNvZJPE_wZyzLBIF5A0D2zvNwgKMaEcpRbvDYnhXJHzPBBknmC-6dTxtjfzx5lZFzlSJx_JeED7zUYkGSe8R4V9r1j2q6CfN6T-9y4B2Nw19WpasOhVPnue_9ElCVBltZ34PVOIPZP3x"
     ],
     category: "Surveillance",
     rating: 4.7,
