@@ -67,7 +67,7 @@ export const courses: Course[] = [
     thumbnail:
       "https://blogger.googleusercontent.com/img/a/AVvXsEi2jJG9xx6SAnzeq8WvvqKFO2Wn9YwnEdeYhxL7LjbWmkhPOxQtYUivHqch9IPeMZ-y-3uK8Aa0zq5soxCEACNabiI-rTbpJBw-0XHxgGiRAwHqOP7js6xq25wf51fDUH2ZVhkYRvu2ZoiwznZRf3ujEjstLaTBL6NFyCwuJ0RGX_fU48fQNTvKsgEZB7YY",
     category: "Live Online",
-    duration: "2 months",
+    duration: "15 days",
     modules: [
       "Network Security Fundamentals",
       "Password Cracking Techniques",
@@ -101,7 +101,7 @@ export const courses: Course[] = [
     thumbnail:
       "https://blogger.googleusercontent.com/img/a/AVvXsEimZrWbA4DGBCy0eQXhIBbuVefY_7WOcvJ6SC11Q55L0rc9sMT_b_2-BRTbGYPv9e6r05aREJI91KC7tE1rlobdc_gOLsRIO11_PAD246NAYCDsCboM9pSzJtqHLmhaXcDfb9c1NwfQviILZrJHgLByTSuTUKjmSAfkPgqWVgbYCNL8NF7ZCLb4UiJtqpBd",
     category: "Live Online",
-    duration: "4 months",
+    duration: "6 months",
     modules: [
       "Exploit Development",
       "Reverse Engineering",
