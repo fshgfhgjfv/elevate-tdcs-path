@@ -81,7 +81,7 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-wifi-deauther",
     name: "TDCS WiFi Deauther Watch V3 (ESP8266)",
     images: [
-      "https://images.unsplash.com/photo-1523206489230-c012c64b2b48?auto=format&fit=crop&q=80&w=600",
+      "https://blogger.googleusercontent.com/img/a/AVvXsEjUM60rdjnZLBIvc0mr-ZeUxBrF0MDxBFfRbqFRnO4C4FIariuai7Cx_wl5wzfG7v-qE1H-6BoxBm_AhvgMgkPKxQhY4FvgHf-XCYDIeEDyu5LkyGa0VSU0ZqaXnO0i2y-6lyXUwbXwCWjtVoUqCEupXukmeQkrqeoOxb12wiFdzwwWQ3h1SCJqIeoMSvDG",
       "https://images.unsplash.com/photo-1551808525-51a943718d53?auto=format&fit=crop&q=80&w=600"
     ],
     category: "WiFi Auditing",
