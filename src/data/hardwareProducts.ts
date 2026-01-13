@@ -550,7 +550,7 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 4500,
     salePrice: 3999,
     isOutOfStock: true,
-    description: "The USB Surge Tester (often called a USB Killer) is an industrial testing tool designed to verify the surge protection of USB ports. When plugged in, it rapidly charges its capacitors from the USB power lines and then discharges -200V DC instantly onto the data lines. This cycle repeats continuously. Unprotected equipment will suffer permanent hardware failure. USE WITH EXTREME CAUTION.",
+    description: "The TDCS USB Killer is a specialized hardware testing device designed for authorized robustness, resilience, and failure-mode testing of electronic equipment. It is intended for use by qualified professionals in controlled environments to evaluate protection mechanisms against abnormal electrical conditions on USB interfaces..",
     features: [
       "High Voltage Pulse Generator (-200V)",
       "Compact Flash Drive form factor",
