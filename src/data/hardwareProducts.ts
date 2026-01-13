@@ -404,7 +404,7 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-pi5-kit",
     name: "Raspberry Pi 5 Kali Linux Kit (8GB)",
     images: [
-      "https://images.unsplash.com/photo-1647427060118-4911c9821b82?auto=format&fit=crop&q=80&w=600",
+      "https://lh3.googleusercontent.com/rd-gg-dl/ABS2GSkozJZbYZP2IaOMlSMZpV1VmspCEeNwIKvU6qsN9DAOPZqsbnRbpKUSpEu1VHeFrXGgv66fe1bs3AslYOP-YMLu0P7CC7t_Qd6UITmqPKEdYZYtZj2PswBnn6ajgvokTWmLzTD7BM5LkiOh8PKSdQgv8G9nnInRYjwbQXbt-uxYhuaRgOYM-a-szRlW27jx2Ow1LmvhDFYIPWr3vsHNef9h92MvocLpufWWOyaOheNcvLqpy-Owr37jxlZBrq5zjgU5b4sltR4Yq6tJVIxvMZ8KlKHataxYOOebip1WKj2sU7e8L6k8xqr3JLHaM330XF6Hj-EAriLma8kKghjNqjp7ox2uVUO0EzdGK3xZxPbuWZApTTFYzq2BIQA0WrJj7sOPfAnkx7fPtL70JbqODQ0c6hLQsIYqRW3tYQvD2jKezhPW56bXIaLnZzXIfYJifHkHJHcTyj0LSqsAoeMxvXKydcxsekdfMFraGOXZ6JVUwElhMCvbKA7ecyETnEe-_VyinQM92GpYJPA9nZpEoGMitgBGikxLNYtsMaWJf1yCpX-eZm1wxlkVGNW0BZyO70RtI_hjhUF-yTsqRV2KbUHlAdBlrfYQBqkF2M9N3Wui0vCpF0TQ1H-vGX2jDLfYCzCeMwStVS5mtyTBiABmL4NonDoTBa4ModC2qod5FvgzqPHAOo9S7Jvi-_JRMN0nros_45t7T12S97f-Amax8rbtjZ6-XRmaixFRJY08lSdv3EVexF6ohJe6aEumj1KuyDbW_krkD-W9LOOhatHDjkvmWTJIISztNpwUpYGRBA2srH5wTb7WVCFmt_XcIp_RElWdfstHOatqhvoNWQHwYrzg9pEMh6eYJWSHaBPKBBRXkTZ5fy8gaza23hhuGuL7zK3gitCheZjK4L3i_oZE0zSEo4rlmE70ON6O1Vag__UUgDxB1xkPD1JMmWemE_IzKkUEsb7KSj_KAkHFDqA_wa_4VRuw84XyBjK8ZUACPhcI6a908xfIf0Yrh1_M-o9dPt-cdeokWOO0vfDNelXbMSEoF5hVB-5yW-O9ArGFTuy2F-XR66uxnGijFxqDrFJ6F0EcSAmtjO64lWavopypmb-bOpY70cU_ED3mvfo5INSzlwnV6f_56njxOhzG57PYaNug3zZaPBoGt7xqj-MSLSnmfK56do0U3t0rogjnqqiS6FHyPjRq=s1024-rj",
       "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&q=80&w=600"
     ],
     category: "Single Board Computers",
