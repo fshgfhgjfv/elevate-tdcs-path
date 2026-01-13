@@ -569,7 +569,7 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-lan-tap",
     name: "TDCS USB Killer",
     images: [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdtyZFruho_XMM0XmNIiGQ6xN6lW_-A09dGA&s"
+      "https://blogger.googleusercontent.com/img/a/AVvXsEjXWC81FcRGOHzlnaMitnIQ3Y9fnk-X-Wi2EcSikpFOnkIdZHbHriBWvPytKgofh9lJSX1No39vBwjdJz0X2d4c_gB-xWnPnMg7ajfkFE_VMk-sskSt-bn6HD8trkPoaBW38rwoa0uDAQHXtf_nQUdi-plYUlpVipX079W_RBqCSRGYhQ_9d2avdhnPT2W_"
     ],
     category: "Network Auditing",
     rating: 4.4,
