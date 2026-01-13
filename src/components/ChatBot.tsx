@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown"; // Optional: Remove if you don't want to install it
 
 // 🔒 Replace this with your key, but keep it out of public repos!
-const GEMINI_API_KEY = "YOUR_PASTED_KEY_HERE"; 
+const GEMINI_API_KEY = "AIzaSyDCTUwe0iM3Y4ypRH12b1elbwEGRgr6EXc"; 
 
 interface Message {
   role: "user" | "model"; // Gemini uses 'model', not 'assistant'
