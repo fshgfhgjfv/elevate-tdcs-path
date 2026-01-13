@@ -35,7 +35,7 @@ export const hardwareProducts: HardwareProduct[] = [
     rating: 4.9,
     reviewCount: 42,
     originalPrice: 3499,
-    salePrice: 2499,
+    salePrice: 999,
     isOutOfStock: false,
     description: "The TDCS Pro Ducky Pi is a stealthy, RP2040-powered Keystroke Injection tool designed for Red Team engagements. Fully compatible with DuckyScript™ payloads.",
     features: [
