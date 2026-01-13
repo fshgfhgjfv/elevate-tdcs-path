@@ -78,8 +78,8 @@ export const hardwareProducts: HardwareProduct[] = [
     ]
   },
   { 
-    id: "tdcs-wifi-deauther",
-    name: "TDCS WiFi Deauther Watch V3 (ESP8266)",
+    id: "CC1101+SMA (300Mz-938Mz) RF Module",
+    name: "CC1101+SMA (300Mz-938Mz) RF Module",
     images: [
       "https://blogger.googleusercontent.com/img/a/AVvXsEjUM60rdjnZLBIvc0mr-ZeUxBrF0MDxBFfRbqFRnO4C4FIariuai7Cx_wl5wzfG7v-qE1H-6BoxBm_AhvgMgkPKxQhY4FvgHf-XCYDIeEDyu5LkyGa0VSU0ZqaXnO0i2y-6lyXUwbXwCWjtVoUqCEupXukmeQkrqeoOxb12wiFdzwwWQ3h1SCJqIeoMSvDG",
 "https://blogger.googleusercontent.com/img/a/AVvXsEi3QytH2pOb56WXh8oY4_tllgVyjGy_XXrJb9qEw2LyJREo26hgRHk0hhAp6MtZIvN4xszGHtTW992rx17ZiVF7KgQnBM4xezFM7WvDYDF48XYEF3ZHbBjLn5RdpImY-alFiO2L-CEHUvfAVO-p1GxyxefmdUUfbp5ATwgAfLxHhbYORv-Ekvylq_wJ0JYM" 
@@ -87,11 +87,11 @@ export const hardwareProducts: HardwareProduct[] = [
     category: "WiFi Auditing",
     rating: 4.7,
     reviewCount: 89,
-    originalPrice: 4999,
-    salePrice: 3499,
+    originalPrice: 2999,
+    salePrice: 999,
     isOutOfStock: false,
-    description: "Wearable ESP8266 development board pre-flashed with Deauther firmware. Allows you to test 2.4GHz networks for deauthentication vulnerabilities.",
-    features: ["WiFi Deauth Attack", "Packet Monitor", "Clock & Laser Integration", "Completely Open Source"],
+    description: "The CC1101 + SMA RF Module is a high-performance, low-power sub-GHz wireless transceiver based on the Texas Instruments CC1101 chipset. Designed for reliable long-range communication, this module supports multiple frequency bands between 300 MHz and 938 MHz, making it ideal for industrial, IoT, remote control, and wireless data transmission applications.",
+    features: ["Operates from 300 MHz to 938 MHz", "Supports popular bands: 315 MHz, 433 MHz, 868 MHz, 915 MHz", "Ultra-low power sleep modes", "Ideal for battery-powered devices"],
     specifications: [
       { label: "Chipset", value: "ESP8266" },
       { label: "Display", value: "1.3 inch OLED" },
