@@ -594,7 +594,7 @@ export const hardwareProducts: HardwareProduct[] = [
   },
   {
     id: "tdcs-keylogger-usb",
-    name: "TDCS AirDrive WiFi Keylogger",
+    name: "TDCS Cyber-T",
     images: [
       "https://images.unsplash.com/photo-1611174743420-3d7df880ce32?auto=format&fit=crop&q=80&w=600"
     ],
@@ -602,9 +602,9 @@ export const hardwareProducts: HardwareProduct[] = [
     rating: 4.7,
     reviewCount: 18,
     originalPrice: 8500,
-    salePrice: 6999,
+    salePrice: 2580,
     isOutOfStock: false,
-    description: "The AirDrive Keylogger is an advanced USB hardware keylogger with a built-in WiFi module. It sits between the keyboard and the computer, recording every keystroke to its internal memory. Unlike traditional keyloggers that require physical retrieval, the AirDrive creates its own WiFi hotspot. You can connect to it wirelessly from your phone or laptop to view the logs or configure it to email you reports automatically.",
+    description: "The TDCS Cyber-T is a compact and powerful cybersecurity training platform designed for learning, experimentation, and authorized security testing. Built for students, researchers, and professionals, Cyber-T enables hands-on understanding of hardware security, communication protocols, and cyber defense concepts in a controlled environment.",
     features: [
       "Records all keystrokes to internal flash memory",
       "Undetectable by antivirus software (hardware-based)",
