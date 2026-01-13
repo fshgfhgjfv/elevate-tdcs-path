@@ -293,8 +293,8 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-proxmark3",
     name: "TDCS Proxmark3 Easy (RFID Cloner)",
     images: [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCl8g23rs-j0jkZNN-ycKiFsjsAGZmR2IOqg&s"
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLFrhyjIE8Lv8j-cj7hyPXT17Q5fIRXxeO0A&s"
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCl8g23rs-j0jkZNN-ycKiFsjsAGZmR2IOqg&s",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLFrhyjIE8Lv8j-cj7hyPXT17Q5fIRXxeO0A&s",
     ],
     category: "RFID / Access Control",
     rating: 4.8,
