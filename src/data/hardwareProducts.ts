@@ -606,10 +606,10 @@ export const hardwareProducts: HardwareProduct[] = [
     isOutOfStock: false,
     description: "The TDCS Cyber-T is a compact and powerful cybersecurity training platform designed for learning, experimentation, and authorized security testing. Built for students, researchers, and professionals, Cyber-T enables hands-on understanding of hardware security, communication protocols, and cyber defense concepts in a controlled environment.",
     features: [
-      "Records all keystrokes to internal flash memory",
-      "Undetectable by antivirus software (hardware-based)",
-      "WiFi Hotspot for remote data retrieval",
-      "Supports 40+ national keyboard layouts",
+      "Professional Cyber Kit",
+      "RISC-V ULP Co-processor",
+      "2.4GHz Wifi 4 (802.11b/g/n)",
+      "MicroSD card socket cleverly “hidden” under the USB connector",
       "Tiny footprint (less than 1 inch long)"
     ],
     specifications: [
