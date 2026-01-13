@@ -70,8 +70,8 @@ export const hardwareProducts: HardwareProduct[] = [
     description: "The ESP8266 Wi-Fi Development Kit is a compact, cost-effective solution designed to empower makers, students, and professional engineers with wireless connectivity. Built around the powerful ESP8266 microcontroller, this kit enables rapid development of Internet of Things (IoT) applications with seamless Wi-Fi connectivity, low power consumption, and easy programmability.",
     features: ["Powered by ESP8266 SoC", "Integrated Wi-Fi", "Supports Arduino IDE, MicroPython, Lua, and AT Command Firmware"],
     specifications: [
-      { label: "Duration", value: "Lifetime" },
-      { label: "Language", value: "English & Hindi" }
+      { label: "Microcontroller", value: "ESP8266 SoC" },
+      { label: "Wi-Fi Standard", value: "802.11 b/g/n" }
     ],
     reviews: [
       { id: "201", author: "Amit V.", rating: 5, date: "2024-03-01", comment: "Best investment for my career." }
