@@ -512,10 +512,10 @@ export const hardwareProducts: HardwareProduct[] = [
     reviews: []
   },
   {
-    id: "tdcs-gps-tracker",
+    id: "tdcs-",
     name: "TDCS Magnetic Asset Tracker",
     images: [
-      "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&q=80&w=600"
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwqB0xEjURP6pvMSubRFiccDIdA6CMzkE4Og&s"
     ],
     category: "Surveillance",
     rating: 4.2,
