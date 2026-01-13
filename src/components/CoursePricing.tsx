@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Calculator, CalendarClock } from "lucide-react";
 import { motion } from "framer-motion";
 
 const pricingData = {
@@ -10,6 +10,8 @@ const pricingData = {
     monthlyPrice: "₹999/month",
     originalPrice: "₹30,000",
     discountedPrice: "₹9,999",
+    // Added numeric price for calculations if needed later
+    numericPrice: 9999,
     accessDuration: "Lifetime Access to the Course",
     emiDetails: "5 month Zero cost EMI",
     features: [
@@ -29,9 +31,16 @@ const pricingData = {
     subtitle: "Starts As low as",
     monthlyPrice: "₹3,999/month",
     originalPrice: "₹1,00,000",
-    discountedPrice: "19,999/-",
+    discountedPrice: "₹19,999",
+    numericPrice: 19999, // Added for calculation
     accessDuration: "1 Year Access + Internship",
-    emiDetails: "12 month Zero cost EMI available",
+    // NEW EMI CONFIGURATION
+    emiConfig: {
+      enabled: true,
+      downPayment: 4999, // Initial payment
+      emiMonths: 6,      // Duration requested
+    },
+    emiDetails: "Custom EMI Plans Available", 
     features: [
       "06-Month Career-Oriented Courses",
       "Full payment gets special discount + gifts",
@@ -50,6 +59,7 @@ const pricingData = {
     monthlyPrice: "₹499/15days",
     originalPrice: "₹10,000",
     discountedPrice: "₹499",
+    numericPrice: 499,
     accessDuration: "Half Months Access to Content",
     emiDetails: null,
     features: [
@@ -70,6 +80,7 @@ const pricingData = {
     monthlyPrice: "₹2,400/month",
     originalPrice: "₹25,000",
     discountedPrice: "₹12,000",
+    numericPrice: 12000,
     accessDuration: "5 Months Live Training + Lifetime Access",
     emiDetails: "5 month Zero cost EMI available",
     features: [
@@ -97,6 +108,27 @@ export const CoursePricing = ({ onEnroll, courseId }: CoursePricingProps) => {
   // Default to blackhat if ID not found to prevent crash
   const pricing = pricingData[courseId as keyof typeof pricingData] || pricingData["cyber-blackhat"];
 
+  // Calculate EMI if config exists
+  const calculateEMI = () => {
+    // @ts-ignore - checking for property existence
+    if (pricing.emiConfig && pricing.emiConfig.enabled) {
+      // @ts-ignore
+      const { numericPrice, emiConfig } = pricing;
+      const loanAmount = numericPrice - emiConfig.downPayment;
+      const monthlyEMI = Math.ceil(loanAmount / emiConfig.emiMonths);
+      
+      return {
+        hasEMI: true,
+        downPay: emiConfig.downPayment,
+        monthly: monthlyEMI,
+        months: emiConfig.emiMonths
+      };
+    }
+    return { hasEMI: false };
+  };
+
+  const emiData = calculateEMI();
+
   return (
     <section className="py-16 bg-muted/20" id="pricing">
       <div className="container mx-auto px-4">
@@ -113,14 +145,34 @@ export const CoursePricing = ({ onEnroll, courseId }: CoursePricingProps) => {
           <CardHeader className="text-center border-b">
             <CardTitle className="text-2xl mb-2">{pricing.title}</CardTitle>
             <p className="text-muted-foreground">{pricing.subtitle}</p>
+            
+            {/* Main Price Display */}
             <div className="text-4xl font-bold gradient-text my-4">{pricing.monthlyPrice}</div>
             
             <div className="space-y-2 text-sm text-muted-foreground">
-              {/* NOW DYNAMIC: Uses the data from the object above */}
               {pricing.accessDuration && <p>{pricing.accessDuration}</p>}
               
-              {/* Only renders EMI line if emiDetails is not null */}
-              {pricing.emiDetails && <p>{pricing.emiDetails}</p>}
+              {/* EMI LOGIC: Show breakdown if calculated, otherwise show string */}
+              {emiData.hasEMI ? (
+                 <div className="bg-primary/10 rounded-lg p-3 my-3 border border-primary/20">
+                   <div className="flex items-center justify-center gap-2 font-semibold text-primary mb-2">
+                     <Calculator className="w-4 h-4" />
+                     <span>Smart EMI Breakdown</span>
+                   </div>
+                   <div className="grid grid-cols-2 gap-4 text-left px-4">
+                     <div>
+                       <span className="text-xs text-muted-foreground block">Down Payment</span>
+                       <span className="text-lg font-bold">₹{emiData.downPay?.toLocaleString()}</span>
+                     </div>
+                     <div>
+                       <span className="text-xs text-muted-foreground block">Monthly ({emiData.months} Months)</span>
+                       <span className="text-lg font-bold">₹{emiData.monthly?.toLocaleString()}</span>
+                     </div>
+                   </div>
+                 </div>
+              ) : (
+                pricing.emiDetails && <p>{pricing.emiDetails}</p>
+              )}
               
               <p className="text-primary font-semibold">{pricing.scholarship}</p>
             </div>
