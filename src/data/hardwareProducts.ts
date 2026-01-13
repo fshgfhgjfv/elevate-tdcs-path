@@ -62,7 +62,7 @@ export const hardwareProducts: HardwareProduct[] = [
       "https://blogger.googleusercontent.com/img/a/AVvXsEhSc57v-lais9H2HkY7LbEIAVffLLj-RaQ-APgWVjv06RGigXjIsqr2RQU-Ylnq-Mmxcacy6ceLRTPm2Jqfhhnk2m5Sp53KH8-lbbgAeM0QvOP1pKHwWOJD10WW5KVmxb9jh9XI9iJh70nVjNU8xgGw1bc8aqHUaYTE9txTh4qnnFnx_or_YItIWI97NEW3",
     
     ],
-    category: "Education",
+    category: "Network Auditing",
     rating: 4.8,
     reviewCount: 315,
     originalPrice: 1999,
