@@ -122,15 +122,14 @@ export const hardwareProducts: HardwareProduct[] = [
       "Ideal for IoT, edge computing, and wireless control",
       "Resolution: 240 × 135 pixels"
     ],
-    specifications: [
+   specifications: [
       { label: "Microcontroller", value: "ESP32" },
       { label: "Wireless", value: "Wi-Fi 802.11 b/g/n, Bluetooth BLE" },
       { label: "ADC/DAC", value: "8-bit" }
     ],
     reviews: []
   },
-    reviews: []
-  },
+  
   {
     id: "tdcs-rtl-sdr",
     name: "TDCS RTL-SDR Blog V3 (Dipole Antenna Kit)",
