@@ -37,12 +37,12 @@ export const hardwareProducts: HardwareProduct[] = [
     originalPrice: 3499,
     salePrice: 999,
     isOutOfStock: false,
-    description: "The TDCS Pro Ducky Pi is a stealthy, RP2040-powered Keystroke Injection tool designed for Red Team engagements. Fully compatible with DuckyScript™ payloads.",
+    description: "The Raspberry Pi Pico is a high-performance, low-cost microcontroller development board built around the powerful RP2040 microcontroller. Designed for embedded systems, IoT projects, and educational applications, the Pico offers exceptional processing power, flexible I/O options, and ease of programming, making it ideal for both beginners and professionals.",
     features: [
-      "Instant DuckyScript™ Payload Execution",
-      "Stealth Mode & Boot Selector Switch",
-      "Supports CircuitPython & MicroPython",
-      "Unbrickable Bootloader"
+      "Dual-core ARM® Cortex®-M0+ processor",
+      "Clock speed up to 133 MHz",
+      "High performance with low power consumption",
+      "Programmable using MicroPython and C/C++ SDK"
     ],
     specifications: [
       { label: "Microcontroller", value: "RP2040" },
