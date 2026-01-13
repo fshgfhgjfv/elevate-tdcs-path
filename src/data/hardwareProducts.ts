@@ -349,8 +349,8 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-lockpick-set",
     name: "TDCS Transparent Lock Pick Set",
     images: [
-      "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=600",
-      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=600"
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTosfajuGVJMavdbGk0vH1hyEw2z__-2QzQVw&s",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGuJxK2vAOk56cEMOgv0l4R6tyspqZDY5GsA&s"
     ],
     category: "Physical Security",
     rating: 4.5,
