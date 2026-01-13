@@ -487,8 +487,8 @@ export const hardwareProducts: HardwareProduct[] = [
     name: "TDCS RF Shielding Faraday Bag",
     images: [
       "https://blogger.googleusercontent.com/img/a/AVvXsEh71-8k07O9NEkuUcD81uYTMINuGfcfNdSko3MLY9c0ntp0tY1wdcjGc01_g3TSJsxdVnm97V5kFh9oQT3MhAhcR1f68G8eO9UTtf-jLSsfenyN2LQnWOxS6Gs5aygApO-_geI-36XtcSfd-7BX25eeNWW79lOUFv5ySb4_yRuRrcmhUR7Kt8Wz6cHpg3gA",
-      "https://m.media-amazon.com/images/I/71N-C+x0eKL._AC_SX679_.jpg",
-      "https://m.media-amazon.com/images/I/81hP-D+iK5L._AC_SX679_.jpg"
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNB2amtsmhpGWwPwPqj5mmngtKyT7ucdPT_XA9utXRww&s",
+      "http://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6ZwRton_1HsKpHKcWgef9bnlC28ZeOnmjrQ&s"
     ],
     category: "Forensics",
     rating: 4.6,
