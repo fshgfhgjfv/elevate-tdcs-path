@@ -624,7 +624,7 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-logic-analyzer",
     name: "TDCS USB Logic Analyzer 24MHz",
     images: [
-      "https://images.unsplash.com/photo-1581092334651-ddf26d9a09d0?auto=format&fit=crop&q=80&w=600"
+      "https://blogger.googleusercontent.com/img/a/AVvXsEh8uCeFk3wx1GidojQws0x5mDLqm16id0CfXfRNNyBUXpZ0_WY1CSCr48zOrYTPjsHcA6oZH9BI2gGJTCSahXopYNdLK2PpylxDFKQO6-zaBx0XIxiVY21wECIRFjAjmfl6QzeJ87-birXWVf5A96aLaytA_-q8zwKN9TznyM-F2XLf5x5RXlJ1gQR5o0z7"
     ],
     category: "Debugging",
     rating: 4.5,
