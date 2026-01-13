@@ -321,7 +321,8 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-acr122u",
     name: "TDCS ACR122U NFC Reader/Writer",
     images: [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyGBRnxYEON3kNGXoDQwqNwFWcAzcgYXhtyA&s"
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyGBRnxYEON3kNGXoDQwqNwFWcAzcgYXhtyA&s",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQi0kmyPwA81fmuz0YiwP5dRp7zhu0D7ycwAQ&s"
     ],
     category: "RFID / Access Control",
     rating: 4.3,
