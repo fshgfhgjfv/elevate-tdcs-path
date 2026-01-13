@@ -207,15 +207,15 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "flipper-zero-tdcs",
     name: "Flipper Zero Multi-tool",
     images: [
-      "https://upload.wikimedia.org/wikipedia/commons/e/e0/Flipper_Zero_front_view_in_hand.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/4/4e/Flipper_Zero_NFC_menu.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrXhEgFQxKSUMLMNnLKbDvUFH0aOEyAOi3xg&s",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmCzYa7L4FUxTtk7-lM795TheDO9YAOySooA&s",
       "https://upload.wikimedia.org/wikipedia/commons/6/6d/Flipper_Zero_back_view.jpg"
     ],
     category: "Hacking / Multi-tool",
     rating: 5.0,
     reviewCount: 1540,
-    originalPrice: 15000,
-    salePrice: 9999,
+    originalPrice: 40000,
+    salePrice: 29999,
     isOutOfStock: false,
     description: "The Flipper Zero is the ultimate portable multi-tool for engineers, geeks, and security professionals. Shaped like a toy, it is a fully capable autonomous device for exploring the digital world. It combines a Sub-GHz transceiver (for gates/barriers), 125kHz & NFC RFID (for access cards), Infrared (for TVs/ACs), and GPIO pins for hardware debugging. It gamifies the hacking experience with a 'Tamagotchi-style' cyber-dolphin that levels up as you use the tools.",
     features: [
