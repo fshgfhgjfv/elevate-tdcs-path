@@ -100,59 +100,6 @@ export const hardwareProducts: HardwareProduct[] = [
     ],
     reviews: []
   },
-{
-    id: "tdcs-m5stickc-plus2",
-    name: "TDCS M5StickC PLUS2",
-    images: [
-      "https://blogger.googleusercontent.com/img/a/AVvXsEgiEvVwPPSxB_jUcqIhWwrnbMvRQz8fUEMWV50pYU5Xi_txwbSoMIlNCF0VS8ksMY5zwMX5sy2Z0XUYj1ZzlpUjxdK0hYw4DPkS8Y_xgBRxmcuiJwVblJCu6jFEqwsIrbvALlN7biC8Napi2IevX2EZbvMiyUwBoSWIMML9sjgbyHVHa5LQ1boJo8M7FjiF",
-      "https://blogger.googleusercontent.com/img/a/AVvXsEiqZWyADzedT_L_MJP27icDZeVPnOfecyLXAI9Ly_zNMR8yfr33qJbchkQFq1Lv-e0j32716bpUCzQ_7bcCtTYGQHFwkJMnYSys-B4YlHeOsiG0HObgGsEIBctXWC4ZNr2-TEgYyiKVDDKUQynTt66BLjrB64-WQKELK9RKw1bvUJuU8RvD_UJis88H_cNL",
-      "https://blogger.googleusercontent.com/img/a/AVvXsEgAxnBiwyUY-7pvDFgM6kxexP4OpDLUWsPfvZQF77kQIFdHDoDjHNj-iJHnc3EGaoMOyOYMndDoeL25FElpRvPV1e4bDXkS7Z84sBDUU6c9BYJsolBrMGKeqmsoKSljCoI7zzgYVTB0W844E8Hr3CJbqhZiDFaxMpr8stqYzIk4sD8x9cJJ5GDObnmDEKmV",
-      "https://blogger.googleusercontent.com/img/a/AVvXsEhFrydXYFhR_LN9aPLPAjQZ4O24IwE5Mdgc-z7cTK55l49hbmKipNRP1dZbaeIHqS2tGLH1f9FbZ1rAzuiFpfleGeDZMCwvsQh8kwUNx0wN1SsATt75fV3cz_R-dAC81lksAhFo4hGtF_TCFe0sTW7I8d8CQqVV2i9ol85XD-XCnZUjCkY3lX7fbkR1k2mY"
-    ],
-    category: "Development / IoT",
-    rating: 5.0,
-    reviewCount: 15,
-    originalPrice: 5999,
-    salePrice: 3999,
-    isOutOfStock: false,
-    description: "The TDCS M5StickC PLUS2 is a compact, feature-rich ESP32-based IoT development kit designed for rapid prototyping, embedded development, and smart device applications. With an upgraded display, enhanced performance, and integrated sensors, it delivers a powerful all-in-one solution in an ultra-portable form factor.",
-    features: [
-      "Dual-core Xtensa® LX7 processor",
-      "Integrated Wi-Fi (2.4 GHz) and Bluetooth BLE",
-      "Ideal for IoT, edge computing, and wireless control",
-      "Resolution: 240 × 135 pixels"
-    ],
-   specifications: [
-      { label: "Microcontroller", value: "ESP32" },
-      { label: "Wireless", value: "Wi-Fi 802.11 b/g/n, Bluetooth BLE" },
-      { label: "ADC/DAC", value: "8-bit" }
-    ],
-    reviews: []
-  },
-  
-  { 
-    id: "CC1101+SMA (300Mz-938Mz) RF Module",
-    name: "CC1101+SMA (300Mz-938Mz) RF Module",
-    images: [
-      "https://blogger.googleusercontent.com/img/a/AVvXsEjUM60rdjnZLBIvc0mr-ZeUxBrF0MDxBFfRbqFRnO4C4FIariuai7Cx_wl5wzfG7v-qE1H-6BoxBm_AhvgMgkPKxQhY4FvgHf-XCYDIeEDyu5LkyGa0VSU0ZqaXnO0i2y-6lyXUwbXwCWjtVoUqCEupXukmeQkrqeoOxb12wiFdzwwWQ3h1SCJqIeoMSvDG",
-      "https://blogger.googleusercontent.com/img/a/AVvXsEi8aWW8Mhr_t69BDjT0bRm_VPmEEBJviVdK_J4q-MvhUndZ6VTJ6Y4i4WnFL8NdWI4guhsur7j3sBm8VzUcslFHiIqV9FJ5W2w7grdk5TdjmuLiXlyUF5nTU9Ghnt2bkO6FEc4Akio7UPgBHUkklwtOINVs0OQJMcsb0j4SALe6aT_1FBSRWO0G9JzhJF0p",
-      "https://blogger.googleusercontent.com/img/a/AVvXsEi3QytH2pOb56WXh8oY4_tllgVyjGy_XXrJb9qEw2LyJREo26hgRHk0hhAp6MtZIvN4xszGHtTW992rx17ZiVF7KgQnBM4xezFM7WvDYDF48XYEF3ZHbBjLn5RdpImY-alFiO2L-CEHUvfAVO-p1GxyxefmdUUfbp5ATwgAfLxHhbYORv-Ekvylq_wJ0JYM"
-    ],
-    category: "WiFi Auditing",
-    rating: 4.7,
-    reviewCount: 89,
-    originalPrice: 2999,
-    salePrice: 999,
-    isOutOfStock: false,
-    description: "The CC1101 + SMA RF Module is a high-performance, low-power sub-GHz wireless transceiver based on the Texas Instruments CC1101 chipset. Designed for reliable long-range communication, this module supports multiple frequency bands between 300 MHz and 938 MHz, making it ideal for industrial, IoT, remote control, and wireless data transmission applications.",
-    features: ["Operates from 300 MHz to 938 MHz", "Supports popular bands: 315 MHz, 433 MHz, 868 MHz, 915 MHz", "Ultra-low power sleep modes", "Ideal for battery-powered devices"],
-    specifications: [
-      { label: "Frequency Range", value: "300 MHz – 938 MHz" },
-      { label: "Output Power", value: "Up to +10 dBm" },
-      { label: "Operating Temperature", value: "-40°C to +85°C" }
-    ],
-    reviews: []
-  },
   {
     id: "tdcs-m5stickc-plus2",
     name: "TDCS M5StickC PLUS2",
@@ -275,3 +222,415 @@ export const hardwareProducts: HardwareProduct[] = [
     ],
     reviews: []
   },
+  {
+    id: "tdcs-rtl-sdr",
+    name: "TDCS RTL-SDR Blog V3 (Dipole Antenna Kit)",
+    images: [
+      "https://images.unsplash.com/photo-1515461971439-684260d8a57e?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "SDR / Radio",
+    rating: 4.5,
+    reviewCount: 120,
+    originalPrice: 3500,
+    salePrice: 2899,
+    isOutOfStock: false,
+    description: "The best entry-level SDR for beginners. Listen to aircraft (ADS-B), police radio, satellites (NOAA), and analyze GSM signals.",
+    features: ["Low Noise floor", "Direct Sampling Mode (HF)", "Bias Tee Powered", "Aluminum enclosure"],
+    specifications: [
+      { label: "Chipset", value: "RTL2832U + R820T2" },
+      { label: "Frequency", value: "500 kHz – 1.7 GHz" },
+      { label: "Connector", value: "SMA Female" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-cc1101-original",
+    name: "TDCS CC1101 Sub-GHz Transceiver Module (Basic)",
+    images: [
+      "https://images.unsplash.com/photo-1555664424-778a69022365?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "SDR / Radio",
+    rating: 4.2,
+    reviewCount: 34,
+    originalPrice: 899,
+    salePrice: 499,
+    isOutOfStock: false,
+    description: "High-power Sub-GHz module perfect for interacting with gates, cars, and remotes. Compatible with Flipper Zero, Arduino, and Raspberry Pi.",
+    features: ["Supports 315/433/868/915 MHz", "External Antenna for High Gain", "SPI Interface"],
+    specifications: [
+      { label: "Chip", value: "TI CC1101" },
+      { label: "Interface", value: "SPI" },
+      { label: "Range", value: "Up to 500m (LoS)" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-ubertooth",
+    name: "TDCS Ubertooth One (Bluetooth Sniffer)",
+    images: [
+      "https://images.unsplash.com/photo-1516110833967-0b5716ca1387?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Bluetooth",
+    rating: 4.6,
+    reviewCount: 12,
+    originalPrice: 12000,
+    salePrice: 9999,
+    isOutOfStock: true,
+    description: "Open source 2.4 GHz wireless development platform suitable for Bluetooth experimentation. The world's first affordable Bluetooth monitoring platform.",
+    features: ["Bluetooth Basic Rate Sniffing", "Spectrum Analysis", "2.4 GHz Transmit/Receive"],
+    specifications: [
+      { label: "Power", value: "USB" },
+      { label: "Range", value: "Comparable to Class 1 BT" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-proxmark3",
+    name: "TDCS Proxmark3 Easy (RFID/NFC Cloner)",
+    images: [
+      "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "RFID / Access Control",
+    rating: 4.8,
+    reviewCount: 56,
+    originalPrice: 6500,
+    salePrice: 4999,
+    isOutOfStock: false,
+    description: "The industry standard for RFID analysis. Clone, simulate, and analyze both High Frequency (13.56MHz) and Low Frequency (125kHz) cards and tags.",
+    features: ["Dual Frequency Support", "Standalone Mode", "Full Mifare Crack Support"],
+    specifications: [
+      { label: "HF Support", value: "13.56 MHz (Mifare, iClass)" },
+      { label: "LF Support", value: "125 kHz (HID, EM4100)" },
+      { label: "Firmware", value: "Iceman Repo Compatible" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-acr122u",
+    name: "TDCS ACR122U NFC Reader/Writer",
+    images: [
+      "https://images.unsplash.com/photo-1563206767-5b1d972d9323?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "RFID / Access Control",
+    rating: 4.3,
+    reviewCount: 200,
+    originalPrice: 3999,
+    salePrice: 2800,
+    isOutOfStock: false,
+    description: "Reliable USB NFC reader used in many security courses. Great for reading and writing Mifare Classic cards and basic NFC experimentation.",
+    features: ["Read/Write Speed up to 424 kbps", "Built-in Antenna", "Libnfc Compatible"],
+    specifications: [
+      { label: "Protocol", value: "ISO 14443 A/B" },
+      { label: "Frequency", value: "13.56 MHz" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-lockpick-set",
+    name: "TDCS Transparent Lock Pick Training Set",
+    images: [
+      "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=600",
+      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Physical Security",
+    rating: 4.5,
+    reviewCount: 310,
+    originalPrice: 1999,
+    salePrice: 1299,
+    isOutOfStock: false,
+    description: "Learn the art of lockpicking with this clear acrylic practice lock. See exactly how the pins move when you insert the key or pick.",
+    features: ["Transparent Casing", "12 Hardened Steel Picks", "Tension Wrenches Included"],
+    specifications: [
+      { label: "Material", value: "Acrylic & Stainless Steel" },
+      { label: "Pieces", value: "15 Total" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-magspoof",
+    name: "TDCS MagSpoof (Magnetic Stripe Emulator)",
+    images: [
+      "https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Physical Security",
+    rating: 5.0,
+    reviewCount: 8,
+    originalPrice: 2500,
+    salePrice: 1999,
+    isOutOfStock: true,
+    description: "A device that can emulate magnetic stripes wirelessly. It works by generating a strong electromagnetic field that mimics a traditional card swipe.",
+    features: ["Emulates Track 1, 2 & 3", "Wireless usage", "Tiny form factor"],
+    specifications: [
+      { label: "Controller", value: "ATtiny85" },
+      { label: "Power", value: "3.7V LiPo" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-pi5-kit",
+    name: "TDCS Raspberry Pi 5 Kali Linux Kit (8GB)",
+    images: [
+      "https://images.unsplash.com/photo-1647427060118-4911c9821b82?auto=format&fit=crop&q=80&w=600",
+      "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Single Board Computers",
+    rating: 4.9,
+    reviewCount: 65,
+    originalPrice: 12000,
+    salePrice: 9800,
+    isOutOfStock: false,
+    description: "The beast is here. Raspberry Pi 5 with 8GB RAM, pre-loaded with a customized TDCS Kali Linux build. Includes active cooling case.",
+    features: ["2.4GHz Quad-core CPU", "Dual 4K Support", "PCIe 2.0 Interface", "Active Cooler Included"],
+    specifications: [
+      { label: "RAM", value: "8GB LPDDR4X" },
+      { label: "Processor", value: "Broadcom BCM2712" },
+      { label: "OS", value: "Kali Linux (TDCS Mod)" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-esp32-cam",
+    name: "TDCS ESP32-CAM Spy Module",
+    images: [
+      "https://images.unsplash.com/photo-1622616239851-4091f09c7331?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Surveillance / IoT",
+    rating: 4.1,
+    reviewCount: 400,
+    originalPrice: 899,
+    salePrice: 599,
+    isOutOfStock: false,
+    description: "Tiny WiFi + Bluetooth development board with an OV2640 camera. Perfect for building remote surveillance cameras.",
+    features: ["Built-in Flash LED", "MicroSD Card Slot", "WiFi & BT 4.2"],
+    specifications: [
+      { label: "Camera", value: "OV2640 (2MP)" },
+      { label: "Clock", value: "160MHz" },
+      { label: "Voltage", value: "5V" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-digispark",
+    name: "TDCS BadUSB Digispark (Attiny85)",
+    images: [
+      "https://images.unsplash.com/photo-1608538260461-105c98d6c075?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Hardware / HID",
+    rating: 4.0,
+    reviewCount: 520,
+    originalPrice: 499,
+    salePrice: 299,
+    isOutOfStock: false,
+    description: "The cheapest way to get into HID attacks. This tiny development board plugs directly into USB and can be programmed with Arduino IDE.",
+    features: ["Tiny Form Factor", "Arduino Compatible", "USB 2.0 Software Implementation"],
+    specifications: [
+      { label: "Flash Memory", value: "8KB" },
+      { label: "I/O Pins", value: "6" },
+      { label: "Voltage", value: "5V USB" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-faraday-bag",
+    name: "TDCS Signal Blocking Faraday Bag",
+    images: [
+      "https://images.unsplash.com/photo-1617058866380-60b763dc369c?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Forensics",
+    rating: 4.6,
+    reviewCount: 92,
+    originalPrice: 1200,
+    salePrice: 899,
+    isOutOfStock: false,
+    description: "Military-grade signal blocking bag for phones, key fobs, and drives. Blocks WiFi, Bluetooth, GPS, RFID, and Cell signals.",
+    features: ["Double Layer Shielding", "Water Resistant", "Anti-tracking"],
+    specifications: [
+      { label: "Material", value: "Shielded Oxford Fabric" },
+      { label: "Size", value: "20cm x 10cm" },
+      { label: "Attenuation", value: ">85 dB" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-gps-tracker",
+    name: "TDCS Mini GPS/GSM Asset Tracker",
+    images: [
+      "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Surveillance",
+    rating: 4.2,
+    reviewCount: 45,
+    originalPrice: 2999,
+    salePrice: 1499,
+    isOutOfStock: false,
+    description: "Real-time magnetic GPS tracker with voice recording capabilities. Uses 2G GSM network for location uploads.",
+    features: ["Real-time Tracking", "Voice Monitor", "Magnetic Mount"],
+    specifications: [
+      { label: "Battery", value: "400mAh (4 Days)" },
+      { label: "Network", value: "GSM/GPRS" },
+      { label: "Accuracy", value: "10m" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-nodemcu",
+    name: "TDCS NodeMCU V3 LUA (WiFi Jammer Capable)",
+    images: [
+      "https://images.unsplash.com/photo-1553406830-ef2513450d76?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Development",
+    rating: 4.8,
+    reviewCount: 880,
+    originalPrice: 550,
+    salePrice: 349,
+    isOutOfStock: false,
+    description: "The classic ESP8266 development board. Can be used for IoT projects or flashed with Deauther to test WiFi networks.",
+    features: ["Open Source", "Interactive", "Low Cost", "WiFi Enabled"],
+    specifications: [
+      { label: "Chip", value: "ESP8266-12E" },
+      { label: "Flash", value: "4MB" },
+      { label: "Clock", value: "80MHz" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-usb-killer",
+    name: "TDCS USB Surge Tester (Pro)",
+    images: [
+      "https://images.unsplash.com/photo-1562408590-e32931084e23?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Hardware / Destructive",
+    rating: 4.9,
+    reviewCount: 14,
+    originalPrice: 4500,
+    salePrice: 3999,
+    isOutOfStock: true,
+    description: "Designed to test the surge protection of USB ports. Safely (or unsafely) discharges high voltage into the data lines.",
+    features: ["Rapid Pulse Discharge", "-200V Output", "Pulse Shield Included"],
+    specifications: [
+      { label: "Output Voltage", value: "-220V" },
+      { label: "Interface", value: "USB-A" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-lan-tap",
+    name: "TDCS Passive LAN Tap Star",
+    images: [
+      "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Network Auditing",
+    rating: 4.4,
+    reviewCount: 22,
+    originalPrice: 1500,
+    salePrice: 999,
+    isOutOfStock: false,
+    description: "A hardware device that allows you to monitor Ethernet traffic. It requires no power and is undetectable by the network.",
+    features: ["Passive Monitoring", "No Power Required", "Portable"],
+    specifications: [
+      { label: "Speed", value: "10/100 Base-T" },
+      { label: "Ports", value: "4 x RJ45" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-keylogger-usb",
+    name: "TDCS AirDrive Keylogger (WiFi)",
+    images: [
+      "https://images.unsplash.com/photo-1611174743420-3d7df880ce32?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Surveillance",
+    rating: 4.7,
+    reviewCount: 18,
+    originalPrice: 8500,
+    salePrice: 6999,
+    isOutOfStock: false,
+    description: "Advanced USB keylogger with WiFi access. Record keystrokes and access them remotely via a web browser.",
+    features: ["WiFi Access Point", "16MB Internal Memory", "Email Reports"],
+    specifications: [
+      { label: "Memory", value: "16MB (~16000 pages)" },
+      { label: "Dimensions", value: "10mm long" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-flipper-case",
+    name: "TDCS Silicone Case for Flipper Zero",
+    images: [
+      "https://images.unsplash.com/photo-1603539270381-b20f924151dc?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Accessories",
+    rating: 4.6,
+    reviewCount: 150,
+    originalPrice: 1200,
+    salePrice: 799,
+    isOutOfStock: false,
+    description: "Protective silicone bumper case for your Flipper Zero. Provides better grip and drop protection for your favorite multi-tool.",
+    features: ["Shock Absorption", "Access to GPIO", "Orange/White options"],
+    specifications: [
+      { label: "Material", value: "Food Grade Silicone" },
+      { label: "Compatibility", value: "Flipper Zero" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-hak5-field-kit",
+    name: "TDCS Red Team Field Kit (Bag Only)",
+    images: [
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Accessories",
+    rating: 4.8,
+    reviewCount: 35,
+    originalPrice: 3500,
+    salePrice: 2499,
+    isOutOfStock: false,
+    description: "Tactical organizer bag designed to hold all your pentesting gear. Specific compartments for Pineapple, Rubber Ducky, cables, and antennas.",
+    features: ["Water Resistant", "Cable Management Loops", "MOLLE System"],
+    specifications: [
+      { label: "Material", value: "1000D Nylon" },
+      { label: "Zippers", value: "YKK" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-sim800l",
+    name: "TDCS SIM800L GPRS Module",
+    images: [
+      "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Development",
+    rating: 4.1,
+    reviewCount: 67,
+    originalPrice: 450,
+    salePrice: 299,
+    isOutOfStock: false,
+    description: "Add cellular capability to your projects. Send SMS, make calls, or use GPRS data with this tiny module. Needs a stable power supply.",
+    features: ["Quad-band 850/900/1800/1900MHz", "Micro SIM Card", "TTL Serial"],
+    specifications: [
+      { label: "Voltage", value: "3.7V - 4.2V" },
+      { label: "Current", value: "2A Peak" }
+    ],
+    reviews: []
+  },
+  {
+    id: "tdcs-logic-analyzer",
+    name: "TDCS USB Logic Analyzer 24MHz 8Ch",
+    images: [
+      "https://images.unsplash.com/photo-1581092334651-ddf26d9a09d0?auto=format&fit=crop&q=80&w=600"
+    ],
+    category: "Debugging",
+    rating: 4.5,
+    reviewCount: 112,
+    originalPrice: 1200,
+    salePrice: 850,
+    isOutOfStock: false,
+    description: "Debug digital circuits easily. Compatible with Saleae Logic software (via open source drivers). Perfect for decoding UART, SPI, I2C protocols.",
+    features: ["24MHz Sampling Rate", "8 Channels", "Protocol Decoding"],
+    specifications: [
+      { label: "Input", value: "5V Tolerant" },
+      { label: "Connection", value: "Mini USB" }
+    ],
+    reviews: []
+  }
+];
