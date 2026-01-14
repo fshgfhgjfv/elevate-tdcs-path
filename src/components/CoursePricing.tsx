@@ -7,7 +7,7 @@ const pricingData = {
   "bug-hunting-pentest": {
     title: "Bug Bounty Hunter Pro",
     subtitle: "Starts As low as",
-    monthlyPrice: "₹999/month",
+    monthlyPrice: "₹2999/month",
     originalPrice: "₹30,000",
     discountedPrice: "₹9,999",
     // Added numeric price for calculations if needed later
