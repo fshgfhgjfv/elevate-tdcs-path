@@ -7,7 +7,7 @@ import { RecruiterTestimonial } from "@/components/RecruiterTestimonial";
 import { CourseFilters, FilterState } from "@/components/CourseFilters";
 import { CourseComparison } from "@/components/CourseComparison";
 
-// Data for the course perks sections
+// --- DATA ---
 const coursePerks = [
   {
     title: "Exclusive Swag Pack",
@@ -15,7 +15,7 @@ const coursePerks = [
       "Show off your skills with our exclusive kit, including a premium T-shirt, stickers, and other goodies delivered to your doorstep.",
     imageUrl:
       "https://blogger.googleusercontent.com/img/a/AVvXsEil9mJhJ3oPSOFn9MIYAJAzPKo8VlwNHCOBOhBjvYN6jQR-46Os1F1T9lyEG4je_R4_8aSgkiZ4Hepms5n3GRha0j8gFFP9xuU8H6mB7ksYKwCLMcEy4-l97j2dPaaYQLa8wjHX3uQUodD_OccAtOwFLF7eW_1R7JarpbXPOnt3MqrU8pL3sKmTvx6HxVf0",
-    layout: "text-left", // text-left, image-right
+    layout: "text-left",
   },
   {
     title: "Pro Hacking Toolkit",
@@ -23,7 +23,7 @@ const coursePerks = [
       "Gain access to a curated toolkit of premium cybersecurity software and platforms, the same tools used by professionals in the field.",
     imageUrl:
       "https://blogger.googleusercontent.com/img/a/AVvXsEihWInHX5K1pjWjTQG3H8iSoOm2erlLdBg9LEoWawrosqZZwd3cCfUMA72w1vVc9EFanLGEx9zid-QhTq3cEKYJf0xmwjARaHYNhTUZEvBH0fgt0qeO1jb3dziSk9VUx0nCf_cSKxWFck-7R3Ox6PZQYtNHAfjoLKGRQUDOmBkAHx0rzWMmwtUgnop-Znh7",
-    layout: "text-right", // text-right, image-left
+    layout: "text-right",
   },
   {
     title: "Premium Certification",
@@ -31,7 +31,7 @@ const coursePerks = [
       "Receive an industry-recognized certificate upon completion, validating your new skills and boosting your career prospects.",
     imageUrl:
       "https://blogger.googleusercontent.com/img/a/AVvXsEgQBCknDQq2PSSJ5SzQS6ei73FcO8IbRNgjKW3b9r3DtAnmMR_9OClnJXyZn9MEci-jQazc0qSX6nRaRn638FkssY5npovgqEHVu6o2FfNjB1oXXSbuxV9OCu2dArjAC1HOMOJHrP3-TvNgbHqIxfeIEf9H6BeQa2VziRX7w3u4Tx1QigCeDINCHEHPIsnm",
-    layout: "text-left", // text-left, image-right
+    layout: "text-left",
   },
   {
     title: "HACKER'S PENDRIVE",
@@ -39,8 +39,8 @@ const coursePerks = [
       "Get The Pendrive For Free With TDCS Courses. It comes pre-loaded with everything you need.",
     imageUrl:
       "https://blogger.googleusercontent.com/img/a/AVvXsEjcQA7l6TaSYW4QYsDfMXN_HqfBECITrE7LktjD2-41QpgpTQ29RL5xPgNs4vDAzPW6k0EM9p-OSdaTR3chzl97ZxiGAFRvfV4O4Im8i6JJZXT4IDK-LM2OIBG8N8tsf4Wwn4wTJaUzqtQJd3sdza1yhMvhj2KRPivVJyCCMzKp2WpX24VksPf3ceiItGl1",
-    layout: "text-right", // text-right, image-left
-    glowing: true, // Flag for the title
+    layout: "text-right",
+    glowing: true,
     features: [
       { text: "100+ Premium Tools", position: "top-[10%] right-[5%]" },
       { text: "WiFi Hacking Tool", position: "top-[33%] left-[5%]" },
@@ -50,7 +50,6 @@ const coursePerks = [
   },
 ];
 
-// --- NEW DATA FOR SWAG SECTION ---
 const swagImages = [
   "https://raw.githubusercontent.com/fshgfhgjfv/IMG_TDCS/refs/heads/main/IMG-20251026-WA0019.jpg",
   "https://blogger.googleusercontent.com/img/a/AVvXsEil9mJhJ3oPSOFn9MIYAJAzPKo8VlwNHCOBOhBjvYN6jQR-46Os1F1T9lyEG4je_R4_8aSgkiZ4Hepms5n3GRha0j8gFFP9xuU8H6mB7ksYKwCLMcEy4-l97j2dPaaYQLa8wjHX3uQUodD_OccAtOwFLF7eW_1R7JarpbXPOnt3MqrU8pL3sKmTvx6HxVf0",
@@ -69,16 +68,16 @@ const Courses = () => {
   });
   const categories = ["Live Courses", "Recorded Courses", "Offline Courses"];
 
-  // Filter live courses only — recorded/offline will show placeholders
+  // Filter logic
   const applyFilters = () => {
     let filtered = courses.filter((course) => course.category === "Live Online");
 
-    // Price filter
+    // Price
     filtered = filtered.filter(
       (course) => course.price >= filters.priceRange[0] && course.price <= filters.priceRange[1]
     );
 
-    // Duration filter
+    // Duration
     if (filters.duration.length > 0) {
       filtered = filtered.filter((course) => {
         if (filters.duration.includes("1-2 months") && course.duration.includes("2 months")) return true;
@@ -88,32 +87,39 @@ const Courses = () => {
       });
     }
 
-    // Placement filter
+    // Placement
     if (filters.placement === true) {
       filtered = filtered.filter(
         (course) => course.id === "cyber-blackhat" || course.id === "cyber-lite"
       );
     }
-
     return filtered;
   };
 
   const filteredCourses = selectedCategory === "Live Courses" ? applyFilters() : [];
 
-  // --- HOOKS FOR HORIZONTAL SCROLL ---
-  const scrollRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: scrollRef,
-    offset: ["start end", "end start"], // Animate while section is in view
-  });
-  // This transform maps vertical scroll (0 to 1) to horizontal movement
-  // Adjust "-80%" to control how much it scrolls. More negative = scrolls more.
-  const x = useTransform(scrollYProgress, [0.1, 0.9], ["5%", "-80%"]);
+  // --- CYBER ANIMATION VARIANTS ---
+  // Double data for infinite loop
+  const duplicatedSwag = [...swagImages, ...swagImages];
+
+  // Glitch shake effect
+  const glitchHover = {
+    rest: { x: 0, filter: "brightness(1) contrast(1)" },
+    hover: {
+      x: [0, -4, 4, -2, 2, 0],
+      filter: ["brightness(1)", "brightness(1.5) contrast(1.2)", "brightness(1)"],
+      transition: { 
+        duration: 0.2, 
+        repeat: Infinity,
+        repeatType: "mirror" as const // Correct type casting
+      },
+    },
+  };
 
   return (
-    <div className="pt-24 pb-16">
+    <div className="pt-24 pb-16 min-h-screen bg-background">
       <div className="container mx-auto px-4">
-        {/* ... (Page Title, Filters, Courses Grid, Coming Soon sections) ... */}
+        
         {/* Page Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -150,7 +156,7 @@ const Courses = () => {
           <CourseFilters onFilterChange={setFilters} />
         )}
 
-        {/* Courses Grid or Coming Soon - 2x2 Layout */}
+        {/* Courses Grid */}
         <motion.div
           layout
           className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"
@@ -161,7 +167,7 @@ const Courses = () => {
             ))}
         </motion.div>
 
-        {/* Coming Soon for Recorded/Offline */}
+        {/* Coming Soon Fallbacks */}
         {(selectedCategory === "Recorded Courses" ||
           selectedCategory === "Offline Courses") && (
           <div className="text-center py-20">
@@ -181,7 +187,6 @@ const Courses = () => {
           </div>
         )}
 
-        {/* No live courses fallback */}
         {selectedCategory === "Live Courses" && filteredCourses.length === 0 && (
           <div className="text-center py-20">
             <p className="text-xl text-muted-foreground">
@@ -191,7 +196,7 @@ const Courses = () => {
         )}
       </div>
 
-      {/* Course Comparison Section */}
+      {/* Course Comparison */}
       <div className="mt-24">
         <CourseComparison />
       </div>
@@ -236,8 +241,6 @@ const Courses = () => {
                 loading="lazy"
                 decoding="async"
               />
-
-              {/* Conditional overlay for features */}
               {perk.features && (
                 <div className="absolute inset-0 p-4">
                   {perk.features.map((feature, i) => (
@@ -262,15 +265,7 @@ const Courses = () => {
                         repeat: Infinity,
                         delay: i * 0.2,
                       }}
-                      className={`
-                        absolute 
-                        px-3 py-1 md:px-4 md:py-2
-                        bg-red-600 
-                        text-white text-[10px] sm:text-xs md:text-base font-bold text-center 
-                        rounded-full 
-                        whitespace-nowrap
-                        ${feature.position}
-                      `}
+                      className={`absolute px-3 py-1 md:px-4 md:py-2 bg-red-600 text-white text-[10px] sm:text-xs md:text-base font-bold text-center rounded-full whitespace-nowrap ${feature.position}`}
                     >
                       {feature.text}
                     </motion.span>
@@ -281,48 +276,98 @@ const Courses = () => {
           </motion.div>
         ))}
       </div>
-      {/* --- END OF Course Perks Section --- */}
 
-      {/* --- NEW SWAG & TOOLS SECTION --- */}
-      <div className="mt-24">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold gradient-text text-center mb-12">
-            Free Swags and Tools Get
-          </h2>
+      {/* --- NEW CYBER WAR SWAG SECTION --- */}
+      <div className="mt-32 relative py-12 bg-black/90 border-y border-red-600/30 overflow-hidden">
+        
+        {/* Background Grid Effect */}
+        <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" 
+             style={{ backgroundImage: 'linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 65, 0.1) 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
         </div>
 
-        {/* Horizontal Scroll Container */}
-        <div
-          ref={scrollRef}
-          className="relative w-full overflow-x-hidden pb-16"
-        >
+        <div className="container mx-auto px-4 relative z-10 mb-8">
+          <div className="flex flex-col items-center">
+            <span className="text-red-500 font-mono text-sm tracking-[0.3em] mb-2 animate-pulse">
+              // DEPLOYMENT_READY
+            </span>
+            <h2 className="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-white to-red-500 text-center uppercase tracking-tighter drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">
+              Tactical Gear & Tools
+            </h2>
+          </div>
+        </div>
+
+        {/* Infinite Scroll Track */}
+        <div className="flex w-full overflow-hidden relative">
+          
+          {/* Side Gradients for Fade Out */}
+          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-black via-black/80 to-transparent z-20 z-[20]"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-black via-black/80 to-transparent z-20 z-[20]"></div>
+
           <motion.div
-            className="flex w-max gap-6 sm:gap-8 px-4" // w-max forces it to be wide
-            style={{ x }} // Apply the horizontal scroll transform
+            className="flex gap-6 pl-4"
+            animate={{ x: ["0%", "-50%"] }} // Loops strictly
+            transition={{
+              x: {
+                repeat: Infinity,
+                repeatType: "loop",
+                duration: 20, // Adjust Speed
+                ease: "linear",
+              },
+            }}
+            style={{ width: "max-content" }}
           >
-            {swagImages.map((src, index) => (
+            {duplicatedSwag.map((src, index) => (
               <motion.div
                 key={index}
-                className="flex-shrink-0 w-72 md:w-96 rounded-lg shadow-xl overflow-hidden"
-                style={{ perspective: "1000px" }} // For 3D effect
-                whileHover={{ scale: 1.05, translateZ: "20px" }} // 3D pop effect
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                initial="rest"
+                whileHover="hover"
+                variants={glitchHover}
+                className="relative group w-72 md:w-96 flex-shrink-0 bg-gray-900 border border-gray-700/50 p-2 overflow-hidden"
+                style={{ clipPath: "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)" }} // Cyber Corner Cut
               >
-                <img
-                  src={src}
-                  alt={`Swag item ${index + 1}`}
-                  className="w-full h-auto object-cover rounded-lg"
-                  loading="lazy"
-                  decoding="async"
-                />
+                {/* HUD Corners */}
+                <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-red-500 z-30 transition-all group-hover:w-full group-hover:h-full group-hover:border-green-400 opacity-80"></div>
+                <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-red-500 z-30 transition-all group-hover:w-full group-hover:h-full group-hover:border-green-400 opacity-80"></div>
+
+                {/* Overlay Text */}
+                <div className="absolute top-2 right-2 z-30 text-[10px] text-green-500 font-mono bg-black/70 px-1 border border-green-500/30">
+                  ASSET_0{index % 5}
+                </div>
+
+                {/* The Image */}
+                <div className="relative overflow-hidden w-full h-56 md:h-64 bg-black">
+                  {/* Scanline Overlay */}
+                  <div className="absolute inset-0 z-10 opacity-20 pointer-events-none"
+                    style={{ background: "repeating-linear-gradient(0deg, transparent, transparent 2px, #000 3px)" }}
+                  ></div>
+                  
+                  <img
+                    src={src}
+                    alt={`Swag ${index}`}
+                    className="w-full h-full object-cover transition-all duration-300 grayscale-[30%] group-hover:grayscale-0"
+                  />
+                  
+                  {/* Scanning Bar Animation */}
+                  <motion.div 
+                    className="absolute top-0 bottom-0 w-[2px] bg-green-400 shadow-[0_0_15px_#4ade80] z-20"
+                    animate={{ left: ["0%", "100%"] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear", delay: index * 0.5 }}
+                  />
+                </div>
+
+                {/* Bottom Tech Text */}
+                <div className="mt-2 flex justify-between items-end font-mono text-[10px] text-gray-500">
+                  <span className="group-hover:text-green-400 transition-colors">STATUS: UNLOCKED</span>
+                  <span className="text-red-500/50 group-hover:text-red-500 animate-pulse">:: ENCRYPTED ::</span>
+                </div>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </div>
-      {/* --- END OF NEW SECTION --- */}
+      {/* --- END OF CYBER SWAG SECTION --- */}
 
-      {/* Hiring Partners Section */}
+      {/* Hiring Partners */}
       <div className="mt-24">
         <HiringPartners />
       </div>
