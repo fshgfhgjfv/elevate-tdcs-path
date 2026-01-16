@@ -2,18 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
 import { 
-  CalendarCheck, Globe, Radio, Zap, Terminal, Cpu, 
+  CalendarCheck, Radio, Terminal, Cpu, 
   Download, X, FileText, Activity, ChevronRight, Shield 
 } from "lucide-react";
 import { Button } from "@/components/ui/button"; 
 
 // --- CONSTANTS ---
 const COMMON_BROCHURE_URL = "https://drive.google.com/file/d/1_oWjtOS1hRyVolJv22tHwPxdv2t2ePau/view?usp=drive_link";
-const GRADIENT_TEXT = "text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600";
+const TDCS_COLOR = "#E5645F"; // coral / red-pink from logo
 
 // --- UTILS ---
 const alertMessage = (message: string, type: 'success' | 'error') => {
-    // Simple alert for now, replace with your Toast component if you have one
     const alertBox = document.getElementById('global-alert-hero');
     if (alertBox) {
         alertBox.textContent = `[${type.toUpperCase()}] ${message}`;
@@ -25,73 +24,8 @@ const alertMessage = (message: string, type: 'success' | 'error') => {
 };
 
 // ==========================================
-// 1. VISUAL HELPERS (Backgrounds, Sparks)
+// 1. VISUAL HELPERS (Backgrounds)
 // ==========================================
-
-// --- ⚡ Electric Spark Text (UPGRADED 3D TILT VERSION) ---
-const SparkText = ({ text }: { text: string }) => {
-    const x = useMotionValue(0);
-    const y = useMotionValue(0);
-
-    const rotateX = useTransform(y, [-50, 50], [12, -12]);
-    const rotateY = useTransform(x, [-50, 50], [-12, 12]);
-
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-
-        x.set(e.clientX - centerX);
-        y.set(e.clientY - centerY);
-    };
-
-    const resetTilt = () => {
-        x.set(0);
-        y.set(0);
-    };
-
-    return (
-        <motion.div
-            onMouseMove={handleMouseMove}
-            onMouseLeave={resetTilt}
-            style={{
-                rotateX,
-                rotateY,
-                transformStyle: "preserve-3d",
-            }}
-            className="relative inline-block perspective-[800px] cursor-default"
-        >
-            {/* Main Text */}
-            <span
-                className={`
-                    relative z-10 block
-                    ${GRADIENT_TEXT}
-                    font-black
-                    drop-shadow-[0_0_20px_rgba(34,211,238,0.6)]
-                `}
-                style={{ transform: "translateZ(40px)" }}
-            >
-                {text}
-            </span>
-
-            {/* Glow / Depth Layer */}
-            <span
-                className={`
-                    absolute inset-0
-                    ${GRADIENT_TEXT}
-                    blur-md opacity-40
-                `}
-                style={{ transform: "translateZ(10px)" }}
-            />
-
-            {/* Electric Sparks */}
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-0 hover:opacity-100 transition-opacity duration-200">
-                <div className="absolute top-1/2 left-0 w-full h-[2px] bg-cyan-400 animate-pulse shadow-[0_0_25px_#22d3ee]" />
-                <div className="absolute top-0 left-1/2 w-[2px] h-full bg-blue-500 animate-pulse shadow-[0_0_25px_#3b82f6]" />
-            </div>
-        </motion.div>
-    );
-};
 
 // --- 🌐 Cyber Matrix Background ---
 const CyberBackground = () => {
@@ -377,6 +311,9 @@ export const Hero = () => {
     const rotateY = useTransform(x, [-100, 100], [-5, 5]);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        // OPTIMIZATION: Disable heavy 3D calculations on mobile to save battery
+        if (window.innerWidth < 1024) return; 
+
         const rect = e.currentTarget.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
@@ -385,7 +322,7 @@ export const Hero = () => {
     };
 
     return (
-        <section className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden bg-black text-white selection:bg-cyan-500 selection:text-black font-sans">
+        <section className="relative min-h-screen flex items-center pt-28 pb-16 overflow-hidden bg-black text-white selection:bg-cyan-500 selection:text-black font-sans">
             
             <CyberBackground />
             
@@ -393,62 +330,83 @@ export const Hero = () => {
             <div id="global-alert-hero" className="hidden"></div>
 
             <div className="container mx-auto px-4 z-10 relative">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
                     
                     {/* --- LEFT COLUMN: TEXT CONTENT (Span 7) --- */}
-                    <div className="lg:col-span-7 space-y-8">
-                        <LocationHUD />
+                    <div className="lg:col-span-7 space-y-6 md:space-y-8 text-center lg:text-left">
+                        <div className="flex justify-center lg:justify-start">
+                            <LocationHUD />
+                        </div>
 
-                        <motion.h1 
-                            initial={{ opacity: 0, x: -50 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.8 }}
-                            className="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight"
+                        {/* --- UPDATED HEADING WITH BRAND COLOR --- */}
+                        <motion.h1
+                          initial={{ opacity: 0, y: 40 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.8 }}
+                          className="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight"
                         >
-                            STAY <span className="text-white">SECURE</span> WITH <br />
-                            <SparkText text="TDCS TECHNOLOGIES" /> <br />
-                            <span className="text-3xl md:text-5xl text-gray-400 font-bold">PRIVATE LIMITED</span>
+                          <span
+                            className="block"
+                            style={{
+                              color: TDCS_COLOR,
+                              textShadow: "0 0 25px rgba(229,100,95,0.6)",
+                            }}
+                          >
+                            TDCS TECHNOLOGIES
+                          </span>
+
+                          <span
+                            className="block text-3xl md:text-5xl font-bold mt-2"
+                            style={{
+                              color: TDCS_COLOR,
+                              opacity: 0.85,
+                            }}
+                          >
+                            PRIVATE LIMITED
+                          </span>
                         </motion.h1>
 
                         <motion.div 
                             initial={{ opacity: 0 }} 
                             animate={{ opacity: 1 }} 
                             transition={{ delay: 0.5 }}
-                            className="flex flex-col gap-4 border-l-2 border-gray-700 pl-6"
+                            // OPTIMIZATION: Centered border on mobile, left on desktop
+                            className="flex flex-col gap-4 border-l-0 lg:border-l-2 border-gray-700 lg:pl-6 items-center lg:items-start"
                         >
-                            <p className="text-lg md:text-xl text-gray-400 max-w-2xl">
+                            <p className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto lg:mx-0">
                                 Deploying Next-Gen Cybersecurity protocols from the <span className="text-cyan-400 font-bold">Kharagpur System</span> to the World. 
                                 We don't just patch bugs; we architect digital fortresses.
                             </p>
-                            <div className="flex flex-wrap gap-4 text-sm font-mono text-cyan-500">
-                                <span className="px-2 py-1 bg-cyan-950/30 border border-cyan-900 rounded">[ ISO_CERTIFIED ]</span>
-                                <span className="px-2 py-1 bg-cyan-950/30 border border-cyan-900 rounded">[ MSME_REGISTERED ]</span>
-                                <span className="px-2 py-1 bg-cyan-950/30 border border-cyan-900 rounded">[ 100%_PLACEMENT ]</span>
+                            
+                            {/* Tags */}
+                            <div className="flex flex-wrap justify-center lg:justify-start gap-2 md:gap-4 text-xs md:text-sm font-mono text-cyan-500">
+                                <span className="px-2 py-1 bg-cyan-950/30 border border-cyan-900 rounded whitespace-nowrap">[ ISO_CERTIFIED ]</span>
+                                <span className="px-2 py-1 bg-cyan-950/30 border border-cyan-900 rounded whitespace-nowrap">[ MSME_REGISTERED ]</span>
+                                <span className="px-2 py-1 bg-cyan-950/30 border border-cyan-900 rounded whitespace-nowrap">[ 100%_PLACEMENT ]</span>
                             </div>
                         </motion.div>
 
-                        <div className="flex flex-wrap gap-4 pt-4">
-                            <Link to="/courses">
-                                <Button className="h-14 px-8 bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-lg tracking-wide clip-path-slant shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all hover:scale-105">
+                        {/* Buttons Grid - Stack on mobile, Row on desktop */}
+                        <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center lg:justify-start w-full">
+                            <Link to="/courses" className="w-full sm:w-auto">
+                                <Button className="w-full sm:w-auto h-14 px-8 bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-lg tracking-wide clip-path-slant shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all hover:scale-105">
                                     <Terminal className="w-5 h-5 mr-2" />
-                                    INITIATE_PROTOCOL
+                                    INITIATE
                                 </Button>
                             </Link>
                             
-                            {/* DEMO BUTTON */}
                             <Button 
                                 variant="outline" 
-                                className="h-14 px-8 border-gray-600 text-gray-300 hover:text-white hover:border-cyan-400 hover:bg-cyan-500/10 font-mono text-lg transition-all"
+                                className="w-full sm:w-auto h-14 px-8 border-gray-600 text-gray-300 hover:text-white hover:border-cyan-400 hover:bg-cyan-500/10 font-mono text-lg transition-all"
                                 onClick={() => setIsDemoModalOpen(true)}
                             >
                                 <Cpu className="w-5 h-5 mr-2" />
-                                BOOK_DEMO_SESSION
+                                BOOK_DEMO
                             </Button>
                             
-                             {/* BROCHURE BUTTON */}
                              <Button 
                                 variant="ghost" 
-                                className="h-14 px-4 text-cyan-400 hover:text-cyan-300 hover:bg-transparent font-mono text-sm underline underline-offset-4"
+                                className="w-full sm:w-auto h-14 px-4 text-cyan-400 hover:text-cyan-300 hover:bg-transparent font-mono text-sm underline underline-offset-4"
                                 onClick={() => setIsBrochureModalOpen(true)}
                             >
                                 [ DOWNLOAD_INTEL ]
@@ -458,12 +416,16 @@ export const Hero = () => {
 
                     {/* --- RIGHT COLUMN: CYBER CARDS (Span 5) --- */}
                     <motion.div 
-                        className="lg:col-span-5 relative perspective-1000 mt-12 lg:mt-0"
+                        className="lg:col-span-5 relative perspective-1000 mt-8 lg:mt-0"
                         onMouseMove={handleMouseMove}
-                        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+                        style={{ 
+                            rotateX: window.innerWidth > 1024 ? rotateX : 0, 
+                            rotateY: window.innerWidth > 1024 ? rotateY : 0, 
+                            transformStyle: "preserve-3d" 
+                        }}
                     >
-                        {/* 1. CEO CARD - THE KHARAGPUR ADMIN */}
-                        <div className="relative z-30 mb-8 group">
+                        {/* 1. CEO CARD */}
+                        <div className="relative z-30 mb-6 md:mb-8 group">
                             {/* Glow Effect */}
                             <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl blur opacity-30 group-hover:opacity-75 transition duration-500"></div>
                             
@@ -473,27 +435,26 @@ export const Hero = () => {
                                 
                                 <div className="flex items-center justify-between relative z-10">
                                     <div className="space-y-1">
-                                        <h2 className="text-2xl font-black text-white italic">DIBYAJIT GHOSH</h2>
+                                        <h2 className="text-xl md:text-2xl font-black text-white italic">DIBYAJIT GHOSH</h2>
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xs font-bold bg-blue-600 text-white px-2 py-0.5 rounded">FOUNDER & CEO</span>
+                                            <span className="text-[10px] md:text-xs font-bold bg-blue-600 text-white px-2 py-0.5 rounded">FOUNDER & CEO</span>
                                             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                                         </div>
-                                        <div className="text-xs font-mono text-cyan-400 pt-2 space-y-0.5">
+                                        <div className="text-[10px] md:text-xs font-mono text-cyan-400 pt-2 space-y-0.5">
                                             <p>{`>> ROLE: SECURITY_ADMIN`}</p>
                                             <p>{`>> SYS: KHARAGPUR_GRID`}</p>
                                             <p>{`>> AUTH: LEVEL_5_ROOT`}</p>
                                         </div>
                                     </div>
                                     
-                                    {/* 📸 PHOTO: BIGGER & BREAKING OUT */}
-                                    <div className="relative w-40 h-40 md:w-56 md:h-56 -mt-20 -mr-6 md:-mr-12 perspective-500">
+                                    {/* 📸 PHOTO */}
+                                    <div className="relative w-32 h-32 md:w-56 md:h-56 -mt-10 md:-mt-20 -mr-2 md:-mr-12 perspective-500">
                                         <div className="absolute inset-0 bg-cyan-500 rounded-full blur-[50px] opacity-20"></div>
                                         <img 
                                             src="https://blogger.googleusercontent.com/img/a/AVvXsEhSzVolb4WlhIzCqb-NK2ZYkFzDbr6WTVD9BR8yCWkRFrAKMyKGstimmgcYr_vpFeEjKgRSSyirXi51bh0jJNQa9jrhs_VLcV1BKwcdCSV5pyYXNwlaTjpMc95-OnaQJj3ZIYa8Gd7DxFzhBbHiJToZswZp5zR99bW08LP4oI1LZ6CHd6FSaHpKkqbFt2EA" 
                                             alt="CEO"
-                                            className="w-full h-full object-cover rounded-full border-4 border-gray-900 shadow-2xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] transform transition-transform group-hover:scale-105"
+                                            className="w-full h-full object-cover rounded-full border-4 border-gray-900 shadow-2xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]"
                                         />
-                                        {/* Holographic Glitch Overlay */}
                                         <div className="absolute inset-0 rounded-full bg-gradient-to-t from-cyan-500/30 to-transparent opacity-50 mix-blend-overlay pointer-events-none"></div>
                                     </div>
                                 </div>
@@ -501,50 +462,42 @@ export const Hero = () => {
                         </div>
 
                         {/* 2. OPS & INTEL - SPLIT CARDS */}
-                        <div className="grid grid-cols-2 gap-4 relative z-20">
+                        <div className="grid grid-cols-2 gap-3 md:gap-4 relative z-20">
                             
-                            {/* SHIVAM SHING - OPS COMMANDER */}
+                            {/* SHIVAM SHING */}
                             <div className="relative group">
                                 <div className="absolute -inset-[1px] bg-gradient-to-br from-green-500 to-emerald-700 rounded-xl blur opacity-20 group-hover:opacity-60 transition duration-300"></div>
-                                <div className="relative bg-gray-900 border border-gray-800 p-4 rounded-xl h-full overflow-hidden">
+                                <div className="relative bg-gray-900 border border-gray-800 p-3 md:p-4 rounded-xl h-full overflow-hidden">
                                     <div className="flex flex-col h-full justify-between relative z-10">
                                         <div>
-                                            <h3 className="font-bold text-white text-lg">SHIVAM SHING</h3>
-                                            <p className="text-[10px] tracking-widest text-emerald-400 font-mono font-bold mt-1">OPS_COMMANDER</p>
+                                            <h3 className="font-bold text-white text-sm md:text-lg">SHIVAM SHING</h3>
+                                            <p className="text-[9px] md:text-[10px] tracking-widest text-emerald-400 font-mono font-bold mt-1">OPS_COMMANDER</p>
                                         </div>
-                                        {/* Photo - Pushed to bottom right */}
-                                        <div className="self-end mt-4 relative w-24 h-24 -mb-6 -mr-6">
+                                        <div className="self-end mt-4 relative w-16 h-16 md:w-24 md:h-24 -mb-4 md:-mb-6 -mr-4 md:-mr-6">
                                             <img 
                                                 src="https://blogger.googleusercontent.com/img/a/AVvXsEgiDtg5YtmQ7bdvNmeAAMyhwpc5tLm_RNR2Lv4y4u6hsMzTiuqNyxo7O0qU32donmMZoTduoxe-4WgWVdPh29JH9vmYXkqCI7hiyzwaYBxxXgTfKbCsjTST6gyIWQB230kRXgwfQvxV-dqB9V-Xqr3915tuA9d88D1rGY-l9sJy_vhC3HJR0pdEI6F3E8Nr" 
                                                 className="w-full h-full object-cover rounded-full border-2 border-emerald-500/50 grayscale group-hover:grayscale-0 transition-all duration-300"
                                             />
                                         </div>
                                     </div>
-                                    <div className="absolute bottom-2 left-2 text-[8px] text-gray-600 font-mono">
-                                        STATUS: DEPLOYED<br/>LOGISTICS: ACTIVE
-                                    </div>
                                 </div>
                             </div>
 
-                            {/* TUSHAR BHAKTA - MARKET INTEL */}
+                            {/* TUSHAR BHAKTA */}
                             <div className="relative group">
                                 <div className="absolute -inset-[1px] bg-gradient-to-br from-red-500 to-orange-600 rounded-xl blur opacity-20 group-hover:opacity-60 transition duration-300"></div>
-                                <div className="relative bg-gray-900 border border-gray-800 p-4 rounded-xl h-full overflow-hidden">
+                                <div className="relative bg-gray-900 border border-gray-800 p-3 md:p-4 rounded-xl h-full overflow-hidden">
                                     <div className="flex flex-col h-full justify-between relative z-10">
                                         <div>
-                                            <h3 className="font-bold text-white text-lg">TUSHAR BHAKTA</h3>
-                                            <p className="text-[10px] tracking-widest text-red-400 font-mono font-bold mt-1">MARKET_INTEL</p>
+                                            <h3 className="font-bold text-white text-sm md:text-lg">TUSHAR BHAKTA</h3>
+                                            <p className="text-[9px] md:text-[10px] tracking-widest text-red-400 font-mono font-bold mt-1">MARKET_INTEL</p>
                                         </div>
-                                        {/* Photo - Pushed to bottom right */}
-                                        <div className="self-end mt-4 relative w-24 h-24 -mb-6 -mr-6">
+                                        <div className="self-end mt-4 relative w-16 h-16 md:w-24 md:h-24 -mb-4 md:-mb-6 -mr-4 md:-mr-6">
                                             <img 
                                                 src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh68HDmzQ4YTj9g9soRrkq-eHc9cAfbC03ZOXSClA19NofdsJ2lzm2A29d2qxG3xXSUfuEVl-sGEVnkokdgS6snQn86My-Bekn2MLrF135mZPHpwXfsLg1XxhFaClj1Uebgi6IcxeseCR6rvwc3vg6IgYUm8voolffwjQhcY4haMotxomzPVjfJm7ylnHdF/s500/WhatsApp_Image_2025-10-26_at_15.47.33_7e411be4-removebg-preview.png" 
                                                 className="w-full h-full object-cover rounded-full border-2 border-red-500/50 grayscale group-hover:grayscale-0 transition-all duration-300"
                                             />
                                         </div>
-                                    </div>
-                                    <div className="absolute bottom-2 left-2 text-[8px] text-gray-600 font-mono">
-                                        DATA: SYNCED<br/>TARGETS: LOCKED
                                     </div>
                                 </div>
                             </div>
