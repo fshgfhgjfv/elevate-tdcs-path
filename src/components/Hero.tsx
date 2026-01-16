@@ -1,34 +1,35 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion, useMotionValue, useTransform, useInView, AnimatePresence } from "framer-motion";
+import { motion, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
 import { 
-  CalendarCheck, Globe, Radio, ShieldCheck, Zap, Terminal, Cpu, 
-  Download, X, FileText, Activity, ChevronRight, MapPin, Shield
+  CalendarCheck, Globe, Radio, Zap, Terminal, Cpu, 
+  Download, X, FileText, Activity, ChevronRight, Shield 
 } from "lucide-react";
-import { Button } from "@/components/ui/button"; // Assuming you have shadcn/ui or similar
+import { Button } from "@/components/ui/button"; 
 
 // --- CONSTANTS ---
 const COMMON_BROCHURE_URL = "https://drive.google.com/file/d/1_oWjtOS1hRyVolJv22tHwPxdv2t2ePau/view?usp=drive_link";
 const GRADIENT_TEXT = "text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600";
 
 // --- UTILS ---
-const alertMessage = (message, type) => {
-    // Replace this with your actual toast notification system (e.g., react-hot-toast)
-    console.log(`[${type.toUpperCase()}] ${message}`);
+const alertMessage = (message: string, type: 'success' | 'error') => {
+    // Simple alert for now, replace with your Toast component if you have one
     const alertBox = document.getElementById('global-alert-hero');
     if (alertBox) {
-        alertBox.textContent = message;
-        alertBox.className = `fixed top-4 right-4 z-[9999] p-4 rounded bg-gray-900 border border-cyan-500 text-cyan-400 font-mono text-sm shadow-[0_0_20px_rgba(6,182,212,0.3)] animate-in slide-in-from-right fade-in duration-300`;
-        setTimeout(() => alertBox.className += " hidden", 3000);
+        alertBox.textContent = `[${type.toUpperCase()}] ${message}`;
+        alertBox.className = `fixed top-4 right-4 z-[9999] p-4 rounded bg-gray-900 border border-cyan-500 text-cyan-400 font-mono text-sm shadow-[0_0_20px_rgba(6,182,212,0.3)] animate-in slide-in-from-right fade-in duration-300 block`;
+        setTimeout(() => { alertBox.className = "hidden"; }, 3000);
+    } else {
+        alert(`[${type.toUpperCase()}] ${message}`);
     }
 };
 
 // ==========================================
-// 1. VISUAL EFFECT COMPONENTS
+// 1. VISUAL HELPERS (Backgrounds, Sparks)
 // ==========================================
 
 // --- ⚡ Electric Spark Text ---
-const SparkText = ({ text }) => {
+const SparkText = ({ text }: { text: string }) => {
     return (
         <div className="relative inline-block group cursor-default">
             <span className={`relative z-10 ${GRADIENT_TEXT} font-black drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]`}>
@@ -105,11 +106,11 @@ const LocationHUD = () => {
 };
 
 // ==========================================
-// 2. MODAL SYSTEM (Cyber Style)
+// 2. CYBER MODAL SYSTEM
 // ==========================================
 
 // --- SUB-COMPONENT: Cyber Input Field ---
-const CyberInput = ({ label, icon: Icon, error, ...props }) => (
+const CyberInput = ({ label, icon: Icon, error, ...props }: any) => (
     <div className="relative group">
         <label className="block text-xs font-mono text-cyan-500/80 mb-1 tracking-widest uppercase">
             {label}
@@ -130,7 +131,7 @@ const CyberInput = ({ label, icon: Icon, error, ...props }) => (
 );
 
 // --- SUB-COMPONENT: Cyber Modal Frame ---
-const CyberModalFrame = ({ children, title, subtitle, icon: Icon, onClose, colorClass = "text-cyan-400 border-cyan-500" }) => {
+const CyberModalFrame = ({ children, title, subtitle, icon: Icon, onClose, colorClass = "text-cyan-400 border-cyan-500" }: any) => {
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -173,23 +174,15 @@ const CyberModalFrame = ({ children, title, subtitle, icon: Icon, onClose, color
             <div className="relative z-10 p-6">
                 {children}
             </div>
-            
-            <style>{`
-                @keyframes scan-down {
-                    0% { top: -10%; }
-                    100% { top: 110%; }
-                }
-                .animate-scan-down { animation: scan-down 4s linear infinite; }
-            `}</style>
         </motion.div>
     );
 };
 
 // --- BOOK DEMO MODAL ---
-const BookDemoModal = ({ isOpen, onClose }) => {
+const BookDemoModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
     if (!isOpen) return null;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log("Processing Demo Request...");
         alertMessage("Request Acknowledged. Agent will intercept shortly.", "success");
@@ -231,14 +224,14 @@ const BookDemoModal = ({ isOpen, onClose }) => {
 };
 
 // --- DOWNLOAD BROCHURE MODAL ---
-const DownloadBrochureModal = ({ isOpen, onClose }) => {
+const DownloadBrochureModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
     const [formData, setFormData] = useState({ name: "", email: "", phone: "", course: "" });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [phoneError, setPhoneError] = useState("");
     
-    const validatePhone = (phone) => /^[6-9]\d{9}$/.test(phone);
+    const validatePhone = (phone: string) => /^[6-9]\d{9}$/.test(phone);
 
-    const handlePhoneChange = (value) => {
+    const handlePhoneChange = (value: string) => {
         const cleaned = value.replace(/\D/g, '').slice(0, 10);
         setFormData({ ...formData, phone: cleaned });
         if (cleaned.length > 0 && (cleaned.length < 10 || !/^[6-9]/.test(cleaned))) {
@@ -248,7 +241,7 @@ const DownloadBrochureModal = ({ isOpen, onClose }) => {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!formData.course) return alertMessage("SELECT TARGET DATA FIRST", "error");
         if (!validatePhone(formData.phone)) return alertMessage("INVALID COMM CHANNEL", "error");
@@ -303,9 +296,9 @@ const DownloadBrochureModal = ({ isOpen, onClose }) => {
                         </div>
                     </div>
 
-                    <CyberInput label="AUTHORIZED_PERSONNEL" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="FULL NAME" icon={Terminal} required />
-                    <CyberInput label="DIGITAL_ID (EMAIL)" type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} placeholder="USER@DOMAIN.COM" icon={Activity} required />
-                    <CyberInput label="SECURE_LINE (PHONE)" type="tel" value={formData.phone} onChange={(e) => handlePhoneChange(e.target.value)} placeholder="98XXXXXXXX" icon={Activity} required error={phoneError} />
+                    <CyberInput label="AUTHORIZED_PERSONNEL" value={formData.name} onChange={(e: any) => setFormData({...formData, name: e.target.value})} placeholder="FULL NAME" icon={Terminal} required />
+                    <CyberInput label="DIGITAL_ID (EMAIL)" type="email" value={formData.email} onChange={(e: any) => setFormData({...formData, email: e.target.value})} placeholder="USER@DOMAIN.COM" icon={Activity} required />
+                    <CyberInput label="SECURE_LINE (PHONE)" type="tel" value={formData.phone} onChange={(e: any) => handlePhoneChange(e.target.value)} placeholder="98XXXXXXXX" icon={Activity} required error={phoneError} />
 
                     <button type="submit" disabled={isSubmitting} className="w-full relative group overflow-hidden bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-700 text-black font-bold py-3 px-4 rounded transition-all duration-300 clip-path-slant">
                         <span className="relative z-10 flex items-center justify-center gap-2 uppercase tracking-widest">
@@ -324,16 +317,17 @@ const DownloadBrochureModal = ({ isOpen, onClose }) => {
 // ==========================================
 
 export const Hero = () => {
+    // State for Modals
     const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
     const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
-    
+
     // 3D Motion Logic
     const x = useMotionValue(0);
     const y = useMotionValue(0);
     const rotateX = useTransform(y, [-100, 100], [5, -5]); 
     const rotateY = useTransform(x, [-100, 100], [-5, 5]);
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         const rect = e.currentTarget.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
@@ -391,6 +385,8 @@ export const Hero = () => {
                                     INITIATE_PROTOCOL
                                 </Button>
                             </Link>
+                            
+                            {/* DEMO BUTTON */}
                             <Button 
                                 variant="outline" 
                                 className="h-14 px-8 border-gray-600 text-gray-300 hover:text-white hover:border-cyan-400 hover:bg-cyan-500/10 font-mono text-lg transition-all"
@@ -400,6 +396,7 @@ export const Hero = () => {
                                 BOOK_DEMO_SESSION
                             </Button>
                             
+                             {/* BROCHURE BUTTON */}
                              <Button 
                                 variant="ghost" 
                                 className="h-14 px-4 text-cyan-400 hover:text-cyan-300 hover:bg-transparent font-mono text-sm underline underline-offset-4"
@@ -524,7 +521,7 @@ export const Hero = () => {
                 }
             `}</style>
             
-            {/* --- MODALS --- */}
+            {/* --- RENDER MODALS --- */}
             <AnimatePresence>
                 {isDemoModalOpen && <BookDemoModal isOpen={isDemoModalOpen} onClose={() => setIsDemoModalOpen(false)} />}
                 {isBrochureModalOpen && <DownloadBrochureModal isOpen={isBrochureModalOpen} onClose={() => setIsBrochureModalOpen(false)} />}
