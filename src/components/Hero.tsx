@@ -28,19 +28,68 @@ const alertMessage = (message: string, type: 'success' | 'error') => {
 // 1. VISUAL HELPERS (Backgrounds, Sparks)
 // ==========================================
 
-// --- ⚡ Electric Spark Text ---
+// --- ⚡ Electric Spark Text (UPGRADED 3D TILT VERSION) ---
 const SparkText = ({ text }: { text: string }) => {
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+
+    const rotateX = useTransform(y, [-50, 50], [12, -12]);
+    const rotateY = useTransform(x, [-50, 50], [-12, 12]);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        x.set(e.clientX - centerX);
+        y.set(e.clientY - centerY);
+    };
+
+    const resetTilt = () => {
+        x.set(0);
+        y.set(0);
+    };
+
     return (
-        <div className="relative inline-block group cursor-default">
-            <span className={`relative z-10 ${GRADIENT_TEXT} font-black drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]`}>
+        <motion.div
+            onMouseMove={handleMouseMove}
+            onMouseLeave={resetTilt}
+            style={{
+                rotateX,
+                rotateY,
+                transformStyle: "preserve-3d",
+            }}
+            className="relative inline-block perspective-[800px] cursor-default"
+        >
+            {/* Main Text */}
+            <span
+                className={`
+                    relative z-10 block
+                    ${GRADIENT_TEXT}
+                    font-black
+                    drop-shadow-[0_0_20px_rgba(34,211,238,0.6)]
+                `}
+                style={{ transform: "translateZ(40px)" }}
+            >
                 {text}
             </span>
-            {/* Electric Sparks (CSS Animation) */}
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-100">
-                <div className="absolute top-1/2 left-0 w-full h-[2px] bg-cyan-400 animate-pulse shadow-[0_0_20px_#22d3ee]"></div>
-                <div className="absolute top-0 left-1/2 w-[2px] h-full bg-blue-500 animate-pulse shadow-[0_0_20px_#3b82f6]"></div>
+
+            {/* Glow / Depth Layer */}
+            <span
+                className={`
+                    absolute inset-0
+                    ${GRADIENT_TEXT}
+                    blur-md opacity-40
+                `}
+                style={{ transform: "translateZ(10px)" }}
+            />
+
+            {/* Electric Sparks */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-0 hover:opacity-100 transition-opacity duration-200">
+                <div className="absolute top-1/2 left-0 w-full h-[2px] bg-cyan-400 animate-pulse shadow-[0_0_25px_#22d3ee]" />
+                <div className="absolute top-0 left-1/2 w-[2px] h-full bg-blue-500 animate-pulse shadow-[0_0_25px_#3b82f6]" />
             </div>
-        </div>
+        </motion.div>
     );
 };
 
@@ -55,7 +104,7 @@ const CyberBackground = () => {
             <div className="absolute inset-0 opacity-20"
                 style={{
                     backgroundImage: `linear-gradient(to right, #4f46e5 1px, transparent 1px),
-                                      linear-gradient(to bottom, #4f46e5 1px, transparent 1px)`,
+                                    linear-gradient(to bottom, #4f46e5 1px, transparent 1px)`,
                     backgroundSize: '50px 50px',
                     transform: 'perspective(1000px) rotateX(60deg) translateY(-100px) scale(2)',
                     animation: 'gridMove 15s linear infinite',
