@@ -1,7 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useNavigate, Routes, Route } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Trophy, Award, Settings, HelpCircle, Menu, X } from "lucide-react";
+import { BookOpen, Trophy, Award, Settings, HelpCircle, Menu, X, Package } from "lucide-react";
 import Sidebar, { SidebarItem } from "./Sidebar";
 import { User } from "./types";
 
@@ -11,6 +11,7 @@ const DashboardLeaderboard = lazy(() => import("./dashboard/DashboardLeaderboard
 const DashboardCertificates = lazy(() => import("./dashboard/DashboardCertificates"));
 const DashboardAccountSettings = lazy(() => import("./dashboard/DashboardAccountSettings"));
 const DashboardSupport = lazy(() => import("./dashboard/DashboardSupport"));
+const DashboardOrderHistory = lazy(() => import("./dashboard/DashboardOrderHistory"));
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ const Dashboard = () => {
 
   const sidebarItems: SidebarItem[] = [
     { icon: BookOpen, label: "My Courses", path: "/dashboard" },
+    { icon: Package, label: "Order History", path: "/dashboard/orders" },
     { icon: Trophy, label: "Student Leaderboard", path: "/dashboard/leaderboard" },
     { icon: Award, label: "Certificates", path: "/dashboard/certificates" },
     { icon: Settings, label: "Account Settings", path: "/dashboard/settings" },
@@ -43,6 +45,7 @@ const Dashboard = () => {
 
   const dashboardRoutes = [
     { path: "/", element: <DashboardMyCourses user={user} /> },
+    { path: "/orders", element: <DashboardOrderHistory /> },
     { path: "/leaderboard", element: <DashboardLeaderboard /> },
     { path: "/certificates", element: <DashboardCertificates /> },
     { path: "/settings", element: <DashboardAccountSettings user={user} setUser={setUser} /> },
