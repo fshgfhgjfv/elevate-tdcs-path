@@ -22,10 +22,11 @@ import { Loader2, Github, CheckCircle2, ShieldCheck } from "lucide-react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
 // --- CONFIGURATION ---
+// Make sure this Client ID is authorized for your localhost port in Google Cloud Console
 const googleClientId =
   "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
 
-// --- Floating Tools Data ---
+// --- Floating Tools Data (Unchanged) ---
 const tools = [
   {
     src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
@@ -64,15 +65,6 @@ const tools = [
   },
 ];
 
-const iconVariants = {
-  hidden: (side: "left" | "right") => ({
-    opacity: 0,
-    x: side === "left" ? -100 : 100,
-    scale: 0.5,
-  }),
-};
-
-// --- Google Icon Helper ---
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
     <path
@@ -106,15 +98,15 @@ const Signup = () => {
     confirmPassword: "",
   });
 
-  // --- Verification States ---
+  // --- Verification States (Removed Phone) ---
   const [verification, setVerification] = useState({
     email: { isVerifying: false, isVerified: false, otp: "" },
-    phone: { isVerifying: false, isVerified: false, otp: "" },
+    // Phone verification state removed
   });
 
   // --- Regex ---
   const gmailRegex = /^[a-zA-Z0-9.]+@gmail\.com$/;
-  const phoneRegex = /^[6-9]\d{9}$/;
+  // const phoneRegex = /^[6-9]\d{9}$/; // Optional: keep for simple validation if needed
 
   // --- Password Strength ---
   const [strength, setStrength] = useState(0);
@@ -134,14 +126,6 @@ const Signup = () => {
     setStrength(score);
   }, [formData.password]);
 
-  const getStrengthColor = (s: number) => {
-    if (s === 0) return "bg-muted";
-    if (s <= 2) return "bg-red-500";
-    if (s === 3) return "bg-yellow-500";
-    if (s >= 4) return "bg-green-500";
-    return "bg-muted";
-  };
-
   const getStrengthText = (s: number) => {
     if (s === 0) return "";
     if (s <= 2) return "Weak";
@@ -152,41 +136,29 @@ const Signup = () => {
   };
 
   // --- Verification Handlers ---
-  const startEmailVerify = () => {
+  // Note: This needs to actually call your PHP backend "sendotp" action
+  const startEmailVerify = async () => {
+    // START SIMULATION (Replace with fetch to your PHP backend)
     toast.info("OTP sent to your email (Simulated)");
+    // const formData = new FormData();
+    // formData.append('action', 'sendotp');
+    // formData.append('email', formData.email);
+    // await fetch('your-php-api-url.php', { method: 'POST', body: formData });
+    
     setVerification((prev) => ({
       ...prev,
       email: { ...prev.email, isVerifying: true },
     }));
   };
 
-  const confirmEmailOtp = () => {
+  const confirmEmailOtp = async () => {
+    // START SIMULATION (Replace with fetch to your PHP backend 'verifyotp')
     if (verification.email.otp.length === 6) {
       setVerification((prev) => ({
         ...prev,
         email: { ...prev.email, isVerifying: false, isVerified: true },
       }));
       toast.success("Email Verified Successfully!");
-    } else {
-      toast.error("Please enter a 6-digit OTP");
-    }
-  };
-
-  const startPhoneVerify = () => {
-    toast.info("OTP sent to your mobile (Simulated)");
-    setVerification((prev) => ({
-      ...prev,
-      phone: { ...prev.phone, isVerifying: true },
-    }));
-  };
-
-  const confirmPhoneOtp = () => {
-    if (verification.phone.otp.length === 6) {
-      setVerification((prev) => ({
-        ...prev,
-        phone: { ...prev.phone, isVerifying: false, isVerified: true },
-      }));
-      toast.success("Phone Number Verified Successfully!");
     } else {
       toast.error("Please enter a 6-digit OTP");
     }
@@ -209,11 +181,8 @@ const Signup = () => {
       setIsLoading(false);
       return;
     }
-    if (!verification.phone.isVerified) {
-      toast.error("Please verify your Phone Number first.");
-      setIsLoading(false);
-      return;
-    }
+    // REMOVED Phone Verification Check
+    
     if (password !== confirmPassword) {
       toast.error("Passwords don't match");
       setIsLoading(false);
@@ -232,6 +201,7 @@ const Signup = () => {
       return;
     }
 
+    // Call your PHP 'registration' action here
     setTimeout(() => {
       const newUser = {
         id: Date.now().toString(),
@@ -410,7 +380,6 @@ const Signup = () => {
                   </div>
                 </motion.div>
 
-                {/* --- UPDATED NAME FIELD --- */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="name">Full Name</Label>
                   <Input
@@ -427,7 +396,7 @@ const Signup = () => {
                   />
                 </motion.div>
 
-                {/* --- UPDATED EMAIL FIELD WITH OTP --- */}
+                {/* --- EMAIL FIELD WITH OTP --- */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="email">Email (Gmail Only)</Label>
                   <div className="flex gap-2">
@@ -447,7 +416,6 @@ const Signup = () => {
                           : ""
                       }`}
                     />
-                    {/* Verify Button */}
                     {verification.email.isVerified ? (
                       <div className="flex items-center justify-center px-3 bg-green-500/10 border border-green-500 rounded-md">
                         <CheckCircle2 className="h-5 w-5 text-green-500" />
@@ -519,7 +487,7 @@ const Signup = () => {
                   </AnimatePresence>
                 </motion.div>
 
-                {/* --- UPDATED PHONE SECTION WITH OTP --- */}
+                {/* --- MODIFIED PHONE SECTION (NO OTP) --- */}
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="number">Phone Number</Label>
                   <div className="flex gap-2">
@@ -537,84 +505,11 @@ const Signup = () => {
                           if (val.length <= 10)
                             setFormData({ ...formData, number: val });
                         }}
-                        disabled={isLoading || verification.phone.isVerified}
-                        className={`rounded-l-none bg-gray-900/50 ${
-                          verification.phone.isVerified
-                            ? "border-green-500 text-green-500"
-                            : ""
-                        }`}
+                        disabled={isLoading}
+                        className="rounded-l-none bg-gray-900/50"
                       />
                     </div>
-                    {/* Verify Button */}
-                    {verification.phone.isVerified ? (
-                      <div className="flex items-center justify-center px-3 bg-green-500/10 border border-green-500 rounded-md">
-                        <CheckCircle2 className="h-5 w-5 text-green-500" />
-                      </div>
-                    ) : (
-                      <AnimatePresence>
-                        {phoneRegex.test(formData.number) &&
-                          !verification.phone.isVerifying && (
-                            <motion.div
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0, scale: 0.8 }}
-                            >
-                              <Button
-                                type="button"
-                                variant="outline"
-                                onClick={startPhoneVerify}
-                                className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
-                              >
-                                Verify
-                              </Button>
-                            </motion.div>
-                          )}
-                      </AnimatePresence>
-                    )}
                   </div>
-                  {/* Phone OTP Input */}
-                  <AnimatePresence>
-                    {verification.phone.isVerifying && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="mt-2 p-3 border border-dashed border-gray-700 rounded-md bg-gray-900/30">
-                          <Label className="text-xs text-muted-foreground mb-1 block">
-                            Enter 6-digit OTP sent to mobile
-                          </Label>
-                          <div className="flex gap-2">
-                            <Input
-                              type="text"
-                              placeholder=" Enter 6-digit OTP"
-                              maxLength={6}
-                              className="text-center tracking-widest bg-gray-900/50"
-                              value={verification.phone.otp}
-                              onChange={(e) =>
-                                setVerification((prev) => ({
-                                  ...prev,
-                                  phone: {
-                                    ...prev.phone,
-                                    otp: e.target.value.replace(/\D/g, ""),
-                                  },
-                                }))
-                              }
-                            />
-                            <Button
-                              type="button"
-                              size="sm"
-                              onClick={confirmPhoneOtp}
-                              className="bg-green-600 hover:bg-green-700 text-white"
-                            >
-                              Confirm
-                            </Button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </motion.div>
 
                 {/* Password Section */}
