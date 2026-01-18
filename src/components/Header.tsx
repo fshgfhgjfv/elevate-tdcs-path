@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User, LogOut, Sun, Moon } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut, Sun, Moon, Truck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CartDrawer } from "./CartDrawer";
 
@@ -65,6 +65,7 @@ export const Header = () => {
     { name: "Home", path: "/" },
     { name: "Courses", path: "/courses" },
     { name: "Gallery", path: "/gallery" },
+    { name: "Track Order", path: "/track-order" },
     { name: "Contact", path: "/contact-us" },
   ];
 
