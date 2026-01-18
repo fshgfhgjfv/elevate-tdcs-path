@@ -136,6 +136,78 @@ export type Database = {
           },
         ]
       }
+      hardware_orders: {
+        Row: {
+          address: string
+          city: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          items: Json
+          order_number: string
+          order_status: string
+          phone: string
+          pincode: string
+          shipping: number
+          shiprocket_awb: string | null
+          shiprocket_tracking_id: string | null
+          state: string
+          subtotal: number
+          tax: number
+          total: number
+          transaction_id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          address: string
+          city: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          items: Json
+          order_number: string
+          order_status?: string
+          phone: string
+          pincode: string
+          shipping: number
+          shiprocket_awb?: string | null
+          shiprocket_tracking_id?: string | null
+          state: string
+          subtotal: number
+          tax: number
+          total: number
+          transaction_id: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          address?: string
+          city?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          items?: Json
+          order_number?: string
+          order_status?: string
+          phone?: string
+          pincode?: string
+          shipping?: number
+          shiprocket_awb?: string | null
+          shiprocket_tracking_id?: string | null
+          state?: string
+          subtotal?: number
+          tax?: number
+          total?: number
+          transaction_id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           created_at: string

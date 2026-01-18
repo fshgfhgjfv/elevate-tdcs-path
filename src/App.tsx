@@ -34,7 +34,8 @@ import HardwareServices from "./pages/HardwareServices";
 import WebsiteDevelopment from "./pages/website-development";
 import ProductDetail from "./pages/ProductDetail";
 import Checkout from "./pages/Checkout";
-import HardwareCheckout from "./pages/HardwareCheckout"; // ✅ Added Hardware Checkout
+import HardwareCheckout from "./pages/HardwareCheckout";
+import TrackOrder from "./pages/TrackOrder";
 
 // Specific Service Detail Pages
 import WebsiteSecurityDetails from "./pages/WebsiteSecurityDetails";
@@ -98,6 +99,7 @@ const App = () => (
               {/* Checkout Routes */}
               <Route path="/checkout" element={<Checkout />} /> {/* Software/Courses */}
               <Route path="/hardware-checkout" element={<HardwareCheckout />} /> {/* Hardware */}
+              <Route path="/track-order" element={<TrackOrder />} />
 
               {/* 🛠️ Admin Panel */}
               <Route path="/admintdcsd" element={<SimpleAdminPanel />} />
