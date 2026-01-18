@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Truck, ShieldCheck, Trash2, Copy, Check, Phone, Mail, User, MapPin, Package, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Truck, ShieldCheck, Trash2, Copy, Check, Phone, Mail, User, MapPin } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { toast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-
-const generateOrderNumber = () => {
-  const timestamp = Date.now().toString(36).toUpperCase();
-  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-  return `TDCS-${timestamp}-${random}`;
-};
 
 const HardwareCheckout = () => {
   const navigate = useNavigate();
@@ -19,8 +11,6 @@ const HardwareCheckout = () => {
 
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [orderSuccess, setOrderSuccess] = useState(false);
-  const [orderNumber, setOrderNumber] = useState('');
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -51,7 +41,7 @@ const HardwareCheckout = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.transactionId.trim()) {
@@ -60,96 +50,13 @@ const HardwareCheckout = () => {
     }
 
     setLoading(true);
-
-    try {
-      const newOrderNumber = generateOrderNumber();
-      
-      // Get current user if logged in
-      const { data: { user } } = await supabase.auth.getUser();
-
-      // Save order to database
-      const { error } = await supabase.from('hardware_orders').insert({
-        order_number: newOrderNumber,
-        user_id: user?.id || null,
-        full_name: formData.fullName,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        city: formData.city,
-        state: formData.state,
-        pincode: formData.pincode,
-        items: items.map(item => ({
-          id: item.id,
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-          image: item.image
-        })),
-        subtotal,
-        shipping,
-        tax,
-        total,
-        transaction_id: formData.transactionId,
-        order_status: 'pending'
-      });
-
-      if (error) throw error;
-
-      setOrderNumber(newOrderNumber);
-      setOrderSuccess(true);
-      clearCart();
-      toast({ title: 'Order Submitted!', description: `Order #${newOrderNumber} placed successfully.` });
-    } catch (err: any) {
-      console.error('Order submission error:', err);
-      toast({ 
-        title: 'Order Failed', 
-        description: err.message || 'Something went wrong. Please try again.', 
-        variant: 'destructive' 
-      });
-    } finally {
+    setTimeout(() => {
       setLoading(false);
-    }
+      clearCart();
+      toast({ title: 'Order Submitted!', description: 'Your order has been placed. We will verify payment and contact you soon.' });
+      navigate('/');
+    }, 2000);
   };
-
-  // Order Success Screen
-  if (orderSuccess) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-4">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-gray-900 rounded-2xl border border-gray-800 p-8 max-w-lg w-full text-center"
-        >
-          <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Check className="w-10 h-10 text-green-400" />
-          </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Order Placed Successfully!</h2>
-          <p className="text-gray-400 mb-6">Thank you for your order. We'll verify payment and ship soon.</p>
-          
-          <div className="bg-gray-800 rounded-xl p-4 mb-6">
-            <p className="text-sm text-gray-500 mb-1">Your Order Number</p>
-            <p className="text-2xl font-mono font-bold text-green-400">{orderNumber}</p>
-            <p className="text-xs text-gray-500 mt-2">Save this to track your order</p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Link 
-              to={`/track-order?order=${orderNumber}`}
-              className="flex-1 bg-green-600 hover:bg-green-500 text-black font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2"
-            >
-              <Package className="w-5 h-5" /> Track Order
-            </Link>
-            <Link 
-              to="/services/hardware"
-              className="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-6 rounded-xl transition-all"
-            >
-              Continue Shopping
-            </Link>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
 
   if (!items || items.length === 0) {
     return (
