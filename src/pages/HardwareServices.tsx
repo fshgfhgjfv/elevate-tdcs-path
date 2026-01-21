@@ -8,7 +8,8 @@ import {
   Star, 
   Cpu, 
   Wifi, 
-  Radio
+  Radio,
+  Package
 } from 'lucide-react';
 import { hardwareProducts } from '../data/hardwareProducts';
 
@@ -48,11 +49,31 @@ const HardwareServices = () => {
       <div className="container mx-auto px-4">
         
         {/* --- TOP BAR: SEARCH & RESULTS --- */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
           <h1 className="text-2xl font-bold text-white flex items-center">
             <Cpu className="w-6 h-6 mr-2 text-green-500" />
             ADD To Cart
           </h1>
+
+          <Link 
+            to="/track-parcel"
+            className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-black font-bold px-5 py-2.5 rounded-lg transition-all shadow-lg shadow-green-500/20"
+          >
+            <Package className="w-4 h-4" />
+            Track Your Parcel
+          </Link>
+        </div>
+
+        {/* Notice Banner */}
+        <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-lg p-3 mb-6 flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
+          <p className="text-gray-300 text-sm">
+            📦 After payment, please wait <span className="text-green-400 font-bold">1-2 hours</span> to receive your tracking ID via email/SMS. 
+            <Link to="/track-parcel" className="text-green-400 hover:underline ml-1">Track here →</Link>
+          </p>
+        </div>
+
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
 
           <div className="flex-1 w-full md:max-w-xl mx-4 relative">
             <input 
