@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Package, MapPin, Truck, CheckCircle, AlertCircle, Search, Terminal } from 'lucide-react';
+import { Package, MapPin, Truck, CheckCircle, AlertCircle, Search, Terminal, Warehouse, Home, Building2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface TrackingStep {
   location: string;
+  address: string;
   status: string;
-  timestamp: string;
+  date: string;
+  time: string;
   isCompleted: boolean;
   isCurrent: boolean;
+  icon: React.ReactNode;
 }
 
 const TrackParcel = () => {
@@ -23,25 +26,54 @@ const TrackParcel = () => {
 
   const trackingSteps: TrackingStep[] = [
     {
-      location: 'TDCS TECHNOLOGIES PRIVATE LIMITED',
+      location: 'TDCS Technologies Pvt. Ltd.',
+      address: 'Raskundu, Garhbeta, West Bengal',
       status: 'Order Dispatched',
-      timestamp: 'Raskundu, Garhbeta, West Bengal',
+      date: 'Jan 18, 2026',
+      time: '09:30 AM',
       isCompleted: true,
       isCurrent: false,
+      icon: <Package className="w-5 h-5" />,
     },
     {
-      location: 'Kolkata Headquarters',
-      status: 'In Transit - Processing Hub',
-      timestamp: 'Kolkata, West Bengal',
+      location: 'Kolkata Sorting Center',
+      address: 'Salt Lake, Kolkata, West Bengal',
+      status: 'Arrived at Hub',
+      date: 'Jan 19, 2026',
+      time: '02:15 PM',
       isCompleted: true,
       isCurrent: false,
+      icon: <Warehouse className="w-5 h-5" />,
+    },
+    {
+      location: 'Odisha Transit Hub',
+      address: 'Bhubaneswar, Odisha',
+      status: 'In Transit',
+      date: 'Jan 20, 2026',
+      time: '06:45 AM',
+      isCompleted: true,
+      isCurrent: false,
+      icon: <Truck className="w-5 h-5" />,
     },
     {
       location: 'Cuttack Distribution Center',
-      status: 'Delivered Successfully',
-      timestamp: 'Cuttack, Odisha',
+      address: 'Cuttack, Odisha',
+      status: 'Out for Delivery',
+      date: 'Jan 20, 2026',
+      time: '11:30 AM',
+      isCompleted: true,
+      isCurrent: false,
+      icon: <Building2 className="w-5 h-5" />,
+    },
+    {
+      location: 'Jagatpur, Cuttack',
+      address: 'Final Destination',
+      status: 'Delivered',
+      date: 'Jan 20, 2026',
+      time: '03:45 PM',
       isCompleted: true,
       isCurrent: true,
+      icon: <Home className="w-5 h-5" />,
     },
   ];
 
@@ -68,7 +100,6 @@ const TrackParcel = () => {
 
     setIsTracking(true);
 
-    // Terminal animation
     terminalMessages.forEach((msg, index) => {
       setTimeout(() => {
         setTerminalLines(prev => [...prev, msg]);
@@ -87,7 +118,7 @@ const TrackParcel = () => {
     trackingSteps.forEach((_, index) => {
       setTimeout(() => {
         setCurrentStep(index + 1);
-      }, index * 800);
+      }, index * 600);
     });
   };
 
@@ -100,9 +131,44 @@ const TrackParcel = () => {
         }} />
       </div>
 
+      {/* Animated grid lines */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute h-px bg-gradient-to-r from-transparent via-green-500/20 to-transparent w-full"
+            style={{ top: `${i * 5}%` }}
+            animate={{
+              opacity: [0, 0.5, 0],
+              x: ['-100%', '100%'],
+            }}
+            transition={{
+              duration: 8,
+              delay: i * 0.4,
+              repeat: Infinity,
+              ease: 'linear',
+            }}
+          />
+        ))}
+      </div>
+
       {/* Glowing orbs */}
-      <div className="absolute top-20 left-10 w-64 h-64 bg-green-500/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-green-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      <motion.div 
+        className="absolute top-20 left-10 w-64 h-64 bg-green-500/10 rounded-full blur-3xl"
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.1, 0.2, 0.1],
+        }}
+        transition={{ duration: 4, repeat: Infinity }}
+      />
+      <motion.div 
+        className="absolute bottom-20 right-10 w-96 h-96 bg-green-500/5 rounded-full blur-3xl"
+        animate={{
+          scale: [1, 1.3, 1],
+          opacity: [0.05, 0.15, 0.05],
+        }}
+        transition={{ duration: 5, repeat: Infinity, delay: 1 }}
+      />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Header */}
@@ -112,7 +178,12 @@ const TrackParcel = () => {
           className="text-center mb-12"
         >
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Terminal className="w-8 h-8 text-green-500" />
+            <motion.div
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+            >
+              <Terminal className="w-8 h-8 text-green-500" />
+            </motion.div>
             <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-green-600">
               Track Your Parcel
             </h1>
@@ -122,23 +193,51 @@ const TrackParcel = () => {
           </p>
         </motion.div>
 
-        {/* Notice Banner */}
+        {/* Notice Banner with Blink Effect */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
           className="max-w-2xl mx-auto mb-8"
         >
-          <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-lg p-4 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5 animate-pulse" />
+          <motion.div
+            animate={{
+              boxShadow: [
+                '0 0 0 0 rgba(234, 179, 8, 0)',
+                '0 0 20px 5px rgba(234, 179, 8, 0.3)',
+                '0 0 0 0 rgba(234, 179, 8, 0)',
+              ],
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-lg p-4 flex items-start gap-3"
+          >
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], opacity: [1, 0.5, 1] }}
+              transition={{ duration: 1, repeat: Infinity }}
+            >
+              <AlertCircle className="w-6 h-6 text-yellow-500 flex-shrink-0 mt-0.5" />
+            </motion.div>
             <div>
-              <p className="text-yellow-400 font-medium text-sm">📦 Important Notice</p>
+              <motion.p 
+                className="text-yellow-400 font-bold text-base"
+                animate={{ opacity: [1, 0.7, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                📦 Important Notice
+              </motion.p>
               <p className="text-gray-300 text-sm mt-1">
-                After completing payment on the hardware page, please wait <span className="text-green-400 font-bold">1-2 hours</span> to receive your tracking ID. 
-                You can then track your order here.
+                After completing payment on the hardware page, please wait{' '}
+                <motion.span 
+                  className="text-green-400 font-bold text-base"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 0.8, repeat: Infinity }}
+                >
+                  1-2 hours
+                </motion.span>{' '}
+                to receive your tracking ID via email/SMS. You can then track your order here.
               </p>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* Search Box */}
@@ -215,17 +314,27 @@ const TrackParcel = () => {
           )}
         </AnimatePresence>
 
-        {/* Tracking Result */}
+        {/* Tracking Result - Amazon/Flipkart Style */}
         <AnimatePresence>
           {showResult && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="max-w-3xl mx-auto"
+              className="max-w-4xl mx-auto"
             >
               {/* Status Header */}
-              <div className="bg-gradient-to-r from-green-500/10 to-green-600/10 border border-green-500/30 rounded-xl p-6 mb-8">
+              <motion.div 
+                className="bg-gradient-to-r from-green-500/10 to-green-600/10 border border-green-500/30 rounded-xl p-6 mb-8"
+                animate={{
+                  boxShadow: [
+                    '0 0 0 0 rgba(34, 197, 94, 0)',
+                    '0 0 30px 10px rgba(34, 197, 94, 0.2)',
+                    '0 0 0 0 rgba(34, 197, 94, 0)',
+                  ],
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <p className="text-gray-400 text-sm">Tracking ID</p>
@@ -234,103 +343,194 @@ const TrackParcel = () => {
                   <div className="flex items-center gap-3">
                     <motion.div
                       animate={{ 
-                        scale: [1, 1.2, 1],
-                        boxShadow: ['0 0 0 0 rgba(34, 197, 94, 0.4)', '0 0 0 10px rgba(34, 197, 94, 0)', '0 0 0 0 rgba(34, 197, 94, 0)']
+                        scale: [1, 1.3, 1],
+                        boxShadow: ['0 0 0 0 rgba(34, 197, 94, 0.7)', '0 0 0 15px rgba(34, 197, 94, 0)', '0 0 0 0 rgba(34, 197, 94, 0.7)']
                       }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
+                      transition={{ duration: 1.2, repeat: Infinity }}
                       className="w-4 h-4 rounded-full bg-green-500"
                     />
-                    <span className="text-green-400 font-bold text-lg">DELIVERED</span>
+                    <motion.span 
+                      className="text-green-400 font-bold text-xl font-mono"
+                      animate={{ 
+                        textShadow: [
+                          '0 0 5px rgba(34, 197, 94, 0.5)',
+                          '0 0 20px rgba(34, 197, 94, 1)',
+                          '0 0 5px rgba(34, 197, 94, 0.5)',
+                        ],
+                        opacity: [1, 0.7, 1],
+                      }}
+                      transition={{ duration: 0.8, repeat: Infinity }}
+                    >
+                      DELIVERED
+                    </motion.span>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Horizontal Progress Bar - Amazon Style */}
+              <div className="mb-10 hidden md:block">
+                <div className="relative">
+                  {/* Progress Line Background */}
+                  <div className="absolute top-8 left-0 right-0 h-1 bg-gray-800 rounded-full" />
+                  
+                  {/* Animated Progress Line */}
+                  <motion.div 
+                    className="absolute top-8 left-0 h-1 bg-gradient-to-r from-green-500 to-green-400 rounded-full"
+                    initial={{ width: '0%' }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 2.5, ease: 'easeOut' }}
+                  />
+
+                  {/* Wave Animation on Progress */}
+                  <motion.div
+                    className="absolute top-8 h-1 w-20 bg-gradient-to-r from-transparent via-white/50 to-transparent rounded-full"
+                    animate={{ left: ['0%', '100%'] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                  />
+
+                  {/* Step Indicators */}
+                  <div className="flex justify-between relative">
+                    {trackingSteps.map((step, index) => (
+                      <motion.div
+                        key={index}
+                        className="flex flex-col items-center"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={currentStep > index ? { opacity: 1, y: 0 } : { opacity: 0.3, y: 0 }}
+                        transition={{ delay: index * 0.3 }}
+                      >
+                        <motion.div
+                          className={`w-16 h-16 rounded-full flex items-center justify-center z-10 ${
+                            step.isCurrent 
+                              ? 'bg-green-500 shadow-lg shadow-green-500/50' 
+                              : currentStep > index 
+                                ? 'bg-green-600/30 border-2 border-green-500' 
+                                : 'bg-gray-800 border-2 border-gray-700'
+                          }`}
+                          animate={step.isCurrent ? {
+                            scale: [1, 1.1, 1],
+                            boxShadow: [
+                              '0 0 0 0 rgba(34, 197, 94, 0.7)',
+                              '0 0 0 20px rgba(34, 197, 94, 0)',
+                              '0 0 0 0 rgba(34, 197, 94, 0.7)',
+                            ],
+                          } : {}}
+                          transition={{ duration: 1.5, repeat: step.isCurrent ? Infinity : 0 }}
+                        >
+                          {step.isCurrent ? (
+                            <CheckCircle className="w-7 h-7 text-black" />
+                          ) : (
+                            <span className={currentStep > index ? 'text-green-400' : 'text-gray-500'}>
+                              {step.icon}
+                            </span>
+                          )}
+                        </motion.div>
+                        <div className="mt-3 text-center max-w-[120px]">
+                          <p className={`text-xs font-bold ${step.isCurrent ? 'text-green-400' : 'text-white'}`}>
+                            {step.location.split(' ').slice(0, 2).join(' ')}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">{step.date}</p>
+                        </div>
+                      </motion.div>
+                    ))}
                   </div>
                 </div>
               </div>
 
-              {/* Tracking Steps */}
-              <div className="relative">
-                {/* Wave Line */}
-                <div className="absolute left-8 top-0 bottom-0 w-0.5 overflow-hidden">
+              {/* Detailed Steps - Mobile & Desktop */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-green-500" />
+                  Shipment Journey
+                </h3>
+                
+                {trackingSteps.map((step, index) => (
                   <motion.div
-                    animate={{ 
-                      background: [
-                        'linear-gradient(to bottom, transparent, #22c55e, transparent)',
-                        'linear-gradient(to bottom, #22c55e, transparent, #22c55e)',
-                        'linear-gradient(to bottom, transparent, #22c55e, transparent)',
-                      ]
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="w-full h-full"
-                  />
-                </div>
+                    key={index}
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={currentStep > index ? { opacity: 1, x: 0 } : { opacity: 0.3, x: 0 }}
+                    transition={{ delay: index * 0.2, duration: 0.5 }}
+                    className="relative"
+                  >
+                    {/* Connecting Line */}
+                    {index < trackingSteps.length - 1 && (
+                      <motion.div 
+                        className="absolute left-8 top-16 w-0.5 h-8 bg-gradient-to-b from-green-500 to-green-500/30"
+                        initial={{ scaleY: 0 }}
+                        animate={currentStep > index ? { scaleY: 1 } : { scaleY: 0 }}
+                        transition={{ delay: index * 0.2 + 0.3 }}
+                        style={{ transformOrigin: 'top' }}
+                      />
+                    )}
 
-                <div className="space-y-6">
-                  {trackingSteps.map((step, index) => (
                     <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -30 }}
-                      animate={currentStep > index ? { opacity: 1, x: 0 } : { opacity: 0.3, x: 0 }}
-                      transition={{ delay: index * 0.3, duration: 0.5 }}
-                      className="relative flex items-start gap-6"
+                      className={`flex items-start gap-4 p-4 rounded-xl border transition-all ${
+                        step.isCurrent 
+                          ? 'bg-green-500/10 border-green-500/50 shadow-lg shadow-green-500/10' 
+                          : 'bg-gray-900/50 border-gray-800 hover:border-gray-700'
+                      }`}
+                      animate={step.isCurrent ? {
+                        boxShadow: [
+                          '0 0 0 0 rgba(34, 197, 94, 0.1)',
+                          '0 0 20px 5px rgba(34, 197, 94, 0.2)',
+                          '0 0 0 0 rgba(34, 197, 94, 0.1)',
+                        ],
+                      } : {}}
+                      transition={{ duration: 2, repeat: step.isCurrent ? Infinity : 0 }}
                     >
-                      {/* Step Indicator */}
+                      {/* Step Icon */}
                       <motion.div
-                        animate={step.isCurrent ? {
-                          scale: [1, 1.3, 1],
-                          boxShadow: ['0 0 0 0 rgba(34, 197, 94, 0.7)', '0 0 0 15px rgba(34, 197, 94, 0)', '0 0 0 0 rgba(34, 197, 94, 0.7)']
-                        } : {}}
-                        transition={{ duration: 1.5, repeat: step.isCurrent ? Infinity : 0 }}
-                        className={`relative z-10 w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        className={`w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 ${
                           step.isCurrent 
-                            ? 'bg-green-500 shadow-lg shadow-green-500/50' 
-                            : step.isCompleted 
-                              ? 'bg-green-600/30 border-2 border-green-500' 
-                              : 'bg-gray-800 border-2 border-gray-700'
+                            ? 'bg-green-500' 
+                            : 'bg-gray-800 border-2 border-green-500/30'
                         }`}
+                        animate={step.isCurrent ? {
+                          scale: [1, 1.05, 1],
+                        } : {}}
+                        transition={{ duration: 1, repeat: step.isCurrent ? Infinity : 0 }}
                       >
-                        {step.isCurrent ? (
-                          <CheckCircle className="w-8 h-8 text-black" />
-                        ) : index === 0 ? (
-                          <Package className="w-6 h-6 text-green-400" />
-                        ) : index === 1 ? (
-                          <Truck className="w-6 h-6 text-green-400" />
-                        ) : (
-                          <MapPin className="w-6 h-6 text-green-400" />
-                        )}
+                        <span className={step.isCurrent ? 'text-black' : 'text-green-400'}>
+                          {step.isCurrent ? <CheckCircle className="w-7 h-7" /> : step.icon}
+                        </span>
                       </motion.div>
 
                       {/* Step Content */}
-                      <div className={`flex-1 bg-gray-900/80 border rounded-xl p-5 ${
-                        step.isCurrent ? 'border-green-500/50 shadow-lg shadow-green-500/10' : 'border-gray-800'
-                      }`}>
-                        <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                           <div>
-                            <h3 className={`font-bold text-lg ${step.isCurrent ? 'text-green-400' : 'text-white'}`}>
+                            <h4 className={`font-bold text-lg ${step.isCurrent ? 'text-green-400' : 'text-white'}`}>
                               {step.location}
-                            </h3>
-                            <p className="text-gray-400 mt-1">{step.timestamp}</p>
+                            </h4>
+                            <p className="text-gray-400 text-sm">{step.address}</p>
                           </div>
-                          <motion.span
-                            animate={step.isCurrent ? { opacity: [1, 0.5, 1] } : {}}
-                            transition={{ duration: 0.8, repeat: step.isCurrent ? Infinity : 0 }}
-                            className={`px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
-                              step.isCurrent 
-                                ? 'bg-green-500/20 text-green-400 border border-green-500/50' 
-                                : 'bg-gray-800 text-gray-400'
-                            }`}
-                          >
-                            {step.status}
-                          </motion.span>
+                          <div className="flex flex-col items-start sm:items-end gap-1">
+                            <motion.span
+                              className={`px-3 py-1 rounded-full text-xs font-bold ${
+                                step.isCurrent 
+                                  ? 'bg-green-500/20 text-green-400 border border-green-500/50' 
+                                  : 'bg-gray-800 text-gray-400'
+                              }`}
+                              animate={step.isCurrent ? { opacity: [1, 0.5, 1] } : {}}
+                              transition={{ duration: 0.8, repeat: step.isCurrent ? Infinity : 0 }}
+                            >
+                              {step.status}
+                            </motion.span>
+                            <span className="text-xs text-gray-500 font-mono">
+                              {step.date} • {step.time}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </motion.div>
-                  ))}
-                </div>
+                  </motion.div>
+                ))}
               </div>
 
               {/* Success Message */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 2.5 }}
+                transition={{ delay: 3 }}
                 className="mt-10 text-center"
               >
                 <motion.div
@@ -345,9 +545,19 @@ const TrackParcel = () => {
                     transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
                     className="w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full"
                   />
-                  <span className="text-green-400 font-mono text-lg">
-                    ✓ Package Successfully Delivered to Destination
-                  </span>
+                  <motion.span 
+                    className="text-green-400 font-mono text-lg"
+                    animate={{ 
+                      textShadow: [
+                        '0 0 5px rgba(34, 197, 94, 0.5)',
+                        '0 0 15px rgba(34, 197, 94, 0.8)',
+                        '0 0 5px rgba(34, 197, 94, 0.5)',
+                      ],
+                    }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    ✓ Package Successfully Delivered to Jagatpur, Cuttack
+                  </motion.span>
                 </motion.div>
                 
                 <Link 
@@ -369,7 +579,12 @@ const TrackParcel = () => {
             transition={{ delay: 0.5 }}
             className="text-center text-gray-500 mt-16"
           >
-            <Package className="w-20 h-20 mx-auto mb-4 opacity-20" />
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <Package className="w-20 h-20 mx-auto mb-4 opacity-20" />
+            </motion.div>
             <p className="font-mono">Awaiting tracking ID input...</p>
           </motion.div>
         )}
