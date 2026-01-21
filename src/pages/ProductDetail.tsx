@@ -14,11 +14,31 @@ import {
   ChevronRight,
   Minus,
   Plus,
-  Heart
+  Heart,
+  Play,
+  Video
 } from 'lucide-react';
 import { hardwareProducts } from '../data/hardwareProducts';
 import { useCart } from '../contexts/CartContext';
 import { motion } from 'framer-motion';
+
+// Helper function to convert video URLs to embed format
+const getEmbedUrl = (url: string): string => {
+  // YouTube URL patterns
+  const youtubeMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (youtubeMatch) {
+    return `https://www.youtube.com/embed/${youtubeMatch[1]}?autoplay=1&mute=1`;
+  }
+  
+  // Google Drive URL patterns
+  const driveMatch = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([a-zA-Z0-9_-]+)/);
+  if (driveMatch) {
+    return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+  }
+  
+  // Return original URL if no pattern matches (might already be embed URL)
+  return url;
+};
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -274,6 +294,50 @@ const ProductDetail = () => {
             </div>
           </motion.div>
         </div>
+
+        {/* Video Review Section */}
+        {product.videoUrl && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="mt-16"
+          >
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+              <div className="p-2 bg-red-500/20 rounded-lg">
+                <Play className="w-6 h-6 text-red-500" />
+              </div>
+              Product Review Video
+            </h2>
+            <div className="bg-gray-900/50 border border-gray-800 rounded-2xl overflow-hidden">
+              <div className="aspect-video relative">
+                <iframe
+                  src={getEmbedUrl(product.videoUrl)}
+                  title={`${product.name} Review`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+                {/* Glow effect */}
+                <div className="absolute inset-0 pointer-events-none border-4 border-green-500/20 rounded-lg animate-pulse" />
+              </div>
+              <div className="p-4 border-t border-gray-800 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-gray-400">
+                  <Video className="w-4 h-4" />
+                  <span className="text-sm">Watch the full product review</span>
+                </div>
+                <a 
+                  href={product.videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green-400 hover:text-green-300 text-sm font-medium"
+                >
+                  Open in new tab →
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Specifications */}
         {product.specifications && product.specifications.length > 0 && (

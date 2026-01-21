@@ -64,13 +64,33 @@ const HardwareServices = () => {
           </Link>
         </div>
 
-        {/* Notice Banner */}
-        <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-lg p-3 mb-6 flex items-center gap-3">
-          <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
-          <p className="text-gray-300 text-sm">
-            📦 After payment, please wait <span className="text-green-400 font-bold">1-2 hours</span> to receive your tracking ID via email/SMS. 
-            <Link to="/track-parcel" className="text-green-400 hover:underline ml-1">Track here →</Link>
-          </p>
+        {/* Notice Banner with Blink Effect */}
+        <div className="relative mb-6">
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-xl blur-xl animate-pulse" />
+          <div className="relative bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-2 border-yellow-500/50 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="flex items-center gap-3 flex-1">
+              <div className="relative">
+                <div className="w-3 h-3 rounded-full bg-yellow-500 animate-ping absolute" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500" />
+              </div>
+              <div>
+                <p className="text-yellow-400 font-bold text-sm animate-pulse">📦 Important Notice</p>
+                <p className="text-gray-300 text-sm mt-1">
+                  After payment, please wait <span className="text-green-400 font-bold text-base animate-pulse">1-2 hours</span> to receive your tracking ID via email/SMS.
+                </p>
+              </div>
+            </div>
+            <Link 
+              to="/track-parcel"
+              className="relative group"
+            >
+              <div className="absolute inset-0 bg-green-500 rounded-lg blur-md opacity-50 group-hover:opacity-75 animate-pulse transition-all" />
+              <div className="relative bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-black font-bold px-6 py-3 rounded-lg flex items-center gap-2 shadow-lg shadow-green-500/30 transition-all transform hover:scale-105">
+                <Package className="w-5 h-5" />
+                Track Your Parcel
+              </div>
+            </Link>
+          </div>
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">

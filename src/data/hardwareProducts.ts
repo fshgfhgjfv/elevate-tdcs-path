@@ -11,6 +11,7 @@ export interface HardwareProduct {
   description: string;
   features: string[];
   specifications: { label: string; value: string }[];
+  videoUrl?: string; // YouTube or Google Drive video URL for product review
   reviews: {
     id: string;
     author: string;
