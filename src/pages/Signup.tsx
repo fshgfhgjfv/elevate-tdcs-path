@@ -1,14 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
 import {
   motion,
@@ -18,71 +17,27 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, Github, CheckCircle2, ShieldCheck } from "lucide-react";
+import { Loader2, ShieldCheck, Terminal, Cpu, Globe } from "lucide-react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
 // --- CONFIGURATION ---
-// Make sure this Client ID is authorized for your localhost port in Google Cloud Console
 const googleClientId =
   "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
 
-// --- Floating Tools Data (Unchanged) ---
+// --- Floating Icons Data ---
 const tools = [
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg",
-    alt: "Kali Linux",
-    side: "left" as "left" | "right",
-    delay: 0.2,
-    y: 150,
-  },
-  {
-    src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1",
-    alt: "Burp Suite",
-    side: "left" as "left" | "right",
-    delay: 0.4,
-    y: 350,
-  },
-  {
-    src: "https://github.com/fshgfhgjfv/elevate-tdcs-path/blob/main/png-transparent-wireshark-packet-analyzer-computer-software-protocol-analyzer-leopard-shark-thumbnail.png?raw=true",
-    alt: "Wireshark",
-    side: "right" as "left" | "right",
-    delay: 0.3,
-    y: 120,
-  },
-  {
-    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
-    alt: "Nmap",
-    side: "right" as "left" | "right",
-    delay: 0.5,
-    y: 320,
-  },
-  {
-    src: "https://assets.tryhackme.com/img/modules/metasploit.png",
-    alt: "Metasploit",
-    side: "left" as "left" | "right",
-    delay: 0.6,
-    y: 500,
-  },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg", delay: 0.2, x: "10%", y: "20%" },
+  { src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1", delay: 0.4, x: "80%", y: "15%" },
+  { src: "https://assets.tryhackme.com/img/modules/metasploit.png", delay: 0.6, x: "15%", y: "70%" },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/1200px-Tux.svg.png", delay: 0.8, x: "85%", y: "65%" },
 ];
 
-const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-    <path
-      fill="#FFC107"
-      d="M43.611,20.083H42V20H24v8h11.303c-1.659,4.696-6.142,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
-    />
-    <path
-      fill="#FF3D00"
-      d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
-    />
-    <path
-      fill="#4CAF50"
-      d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.16,0-9.658-3.302-11.303-7.918l-6.522,5.023C9.505,41.246,16.227,44,24,44z"
-    />
-    <path
-      fill="#1976D2"
-      d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C41.383,34.463,44,29.625,44,24C44,22.659,43.862,21.35,43.611,20.083z"
-    />
+const GoogleIcon = () => (
+  <svg className="w-5 h-5 mr-3" viewBox="0 0 48 48">
+    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.659,4.696-6.142,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.16,0-9.658-3.302-11.303-7.918l-6.522,5.023C9.505,41.246,16.227,44,24,44z" />
+    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C41.383,34.463,44,29.625,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
   </svg>
 );
 
@@ -90,550 +45,189 @@ const Signup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    number: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  // --- Verification States (Removed Phone) ---
-  const [verification, setVerification] = useState({
-    email: { isVerifying: false, isVerified: false, otp: "" },
-    // Phone verification state removed
-  });
-
-  // --- Regex ---
-  const gmailRegex = /^[a-zA-Z0-9.]+@gmail\.com$/;
-  // const phoneRegex = /^[6-9]\d{9}$/; // Optional: keep for simple validation if needed
-
-  // --- Password Strength ---
-  const [strength, setStrength] = useState(0);
-
-  useEffect(() => {
-    const pass = formData.password;
-    let score = 0;
-    if (!pass) {
-      setStrength(0);
-      return;
-    }
-    if (pass.length > 5) score += 1;
-    if (pass.length > 10) score += 1;
-    if (/[A-Z]/.test(pass)) score += 1;
-    if (/[0-9]/.test(pass)) score += 1;
-    if (/[^A-Za-z0-9]/.test(pass)) score += 1;
-    setStrength(score);
-  }, [formData.password]);
-
-  const getStrengthText = (s: number) => {
-    if (s === 0) return "";
-    if (s <= 2) return "Weak";
-    if (s === 3) return "Medium";
-    if (s >= 4) return "Strong";
-    if (s === 5) return "Very Strong";
-    return "";
-  };
-
-  // --- Verification Handlers ---
-  // Note: This needs to actually call your PHP backend "sendotp" action
-  const startEmailVerify = async () => {
-    // START SIMULATION (Replace with fetch to your PHP backend)
-    toast.info("OTP sent to your email (Simulated)");
-    // const formData = new FormData();
-    // formData.append('action', 'sendotp');
-    // formData.append('email', formData.email);
-    // await fetch('your-php-api-url.php', { method: 'POST', body: formData });
-    
-    setVerification((prev) => ({
-      ...prev,
-      email: { ...prev.email, isVerifying: true },
-    }));
-  };
-
-  const confirmEmailOtp = async () => {
-    // START SIMULATION (Replace with fetch to your PHP backend 'verifyotp')
-    if (verification.email.otp.length === 6) {
-      setVerification((prev) => ({
-        ...prev,
-        email: { ...prev.email, isVerifying: false, isVerified: true },
-      }));
-      toast.success("Email Verified Successfully!");
-    } else {
-      toast.error("Please enter a 6-digit OTP");
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
-    const { name, email, number, password, confirmPassword } = formData;
-
-    if (!name || !email || !number || !password || !confirmPassword) {
-      toast.error("Please fill in all fields");
-      setIsLoading(false);
-      return;
-    }
-    if (!verification.email.isVerified) {
-      toast.error("Please verify your Gmail first.");
-      setIsLoading(false);
-      return;
-    }
-    // REMOVED Phone Verification Check
-    
-    if (password !== confirmPassword) {
-      toast.error("Passwords don't match");
-      setIsLoading(false);
-      return;
-    }
-    if (strength <= 2) {
-      toast.error(
-        "Password is too weak! Add symbols, numbers, and uppercase letters."
-      );
-      setIsLoading(false);
-      return;
-    }
-    if (users.find((u: any) => u.email === email)) {
-      toast.error("User with this email already exists");
-      setIsLoading(false);
-      return;
-    }
-
-    // Call your PHP 'registration' action here
-    setTimeout(() => {
-      const newUser = {
-        id: Date.now().toString(),
-        name,
-        email,
-        number: `+91${number}`,
-        password,
-      };
-      users.push(newUser);
-      localStorage.setItem("tdcs_users", JSON.stringify(users));
-      const { password: _, ...userWithoutPassword } = newUser;
-      localStorage.setItem("tdcs_user", JSON.stringify(userWithoutPassword));
-      toast.success("Account created successfully!");
-      setIsLoading(false);
-      navigate("/dashboard");
-    }, 1000);
-  };
-
+  // --- Google Login Handler ---
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       setIsLoading(true);
+      console.log("Google Token:", tokenResponse);
+
+      // SIMULATION: In production, send tokenResponse.access_token to your PHP backend
       setTimeout(() => {
-        toast.success("Logged in with Google!");
+        // Mock User Data
+        const mockUser = {
+          name: "Google User",
+          email: "user@gmail.com",
+          photo: "https://lh3.googleusercontent.com/a/default-user",
+        };
+        localStorage.setItem("tdcs_user", JSON.stringify(mockUser));
+        
+        toast.success("Welcome to the Academy!");
         setIsLoading(false);
         navigate("/dashboard");
-      }, 1000);
+      }, 1500);
     },
-    onError: () => toast.error("Google Login Failed"),
+    onError: () => {
+      toast.error("Google Authentication Failed");
+      setIsLoading(false);
+    },
   });
 
-  const handleGitHubSignup = (p: string) => toast.info(`${p} not implemented.`);
-
-  // 3D Card Refs
+  // --- 3D Tilt Logic ---
   const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["20deg", "-20deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-20deg", "20deg"]);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
   const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ["0%", "100%"]);
   const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ["0%", "100%"]);
   const glareOpacity = useMotionValue(0);
-  const glareOpacitySpring = useSpring(glareOpacity, {
-    stiffness: 400,
-    damping: 30,
-  });
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     x.set((e.clientX - rect.left) / rect.width - 0.5);
     y.set((e.clientY - rect.top) / rect.height - 0.5);
-    glareOpacity.set(0.15);
+    glareOpacity.set(0.2); // Increased glare for impact
   };
+
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
     glareOpacity.set(0);
   };
 
-  const formVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-  };
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
-
   return (
-    <div className="min-h-screen pt-24 pb-16 flex items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        {tools.map((tool) => (
-          <motion.img
-            key={tool.alt}
-            src={tool.src}
-            className="absolute h-16 w-16 md:h-24 md:w-24 opacity-10"
-            style={{
-              top: tool.y,
-              ...(tool.side === "left" ? { left: "10%" } : { right: "10%" }),
-            }}
-            animate={{ y: [tool.y, tool.y + 20, tool.y] }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: tool.delay,
-            }}
-          />
-        ))}
-      </div>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black text-white selection:bg-red-500/30">
+      
+      {/* --- Dynamic Background --- */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black -z-20" />
+      <div className="absolute inset-0 -z-10 opacity-20" 
+           style={{ backgroundImage: "linear-gradient(#333 1px, transparent 1px), linear-gradient(to right, #333 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+      
+      {/* Floating Hacker Tools */}
+      {tools.map((tool, index) => (
+        <motion.img
+          key={index}
+          src={tool.src}
+          className="absolute w-20 h-20 md:w-32 md:h-32 opacity-20 blur-[1px]"
+          style={{ top: tool.y, left: tool.x }}
+          animate={{ 
+            y: ["0px", "-20px", "0px"], 
+            rotate: [0, 10, -10, 0],
+            scale: [1, 1.1, 1] 
+          }}
+          transition={{ duration: 5 + index, repeat: Infinity, ease: "easeInOut" }}
+        />
+      ))}
 
-      <div className="container mx-auto px-4">
+      {/* --- Main Card --- */}
+      <div className="container mx-auto px-4 z-10">
         <motion.div
           ref={cardRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           style={{ transformStyle: "preserve-3d", rotateX, rotateY }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
           className="max-w-md mx-auto"
         >
           <Card
-            className="shadow-glow-lg dark border border-red-600/50 bg-black/80 backdrop-blur-sm"
-            style={{
-              transform: "translateZ(100px)",
-              transformStyle: "preserve-3d",
-            }}
+            className="relative border-0 bg-zinc-900/80 backdrop-blur-xl shadow-2xl overflow-hidden"
+            style={{ transform: "translateZ(50px)" }}
           >
+            {/* Gradient Border Effect */}
+            <div className="absolute inset-0 p-[1px] bg-gradient-to-br from-red-500 via-transparent to-red-500 -z-10 rounded-xl" />
+            
+            {/* Dynamic Glare */}
             <motion.div
-              className="pointer-events-none absolute inset-0 rounded-[inherit]"
+              className="pointer-events-none absolute inset-0 z-50 rounded-xl"
               style={{
-                opacity: glareOpacitySpring,
+                opacity: glareOpacity,
                 background: useTransform(
                   [glareX, glareY],
-                  ([lx, ly]) =>
-                    `radial-gradient(800px circle at ${lx} ${ly}, rgba(255, 255, 255, 0.2), transparent 80%)`
+                  ([lx, ly]) => `radial-gradient(600px circle at ${lx} ${ly}, rgba(255, 255, 255, 0.4), transparent 60%)`
                 ),
-                zIndex: 1,
               }}
             />
 
-            <CardHeader style={{ position: "relative", zIndex: 2 }}>
-              <CardTitle className="text-3xl bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
-                Create Account
+            <CardHeader className="text-center pb-2">
+              <motion.div 
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="mx-auto bg-red-500/10 p-4 rounded-full w-20 h-20 flex items-center justify-center mb-4 border border-red-500/30"
+              >
+                <ShieldCheck className="w-10 h-10 text-red-500" />
+              </motion.div>
+              <CardTitle className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500">
+                Join the Elite
               </CardTitle>
-              <CardDescription>
-                Sign up to start your learning journey
+              <CardDescription className="text-gray-400">
+                Secure your spot in the TDCS Academy
               </CardDescription>
             </CardHeader>
 
-            <CardContent style={{ position: "relative", zIndex: 2 }}>
-              <motion.form
-                onSubmit={handleSubmit}
-                className="space-y-4"
-                variants={formVariants}
-                initial="hidden"
-                animate="visible"
-              >
-                {/* Social Login Buttons */}
-                <motion.div
-                  variants={itemVariants}
-                  className="flex flex-col sm:flex-row gap-3"
+            <CardContent className="space-y-8 pt-6">
+              
+              {/* Value Proposition List */}
+              <div className="grid gap-4">
+                {[
+                  { icon: Terminal, text: "Access 50+ Virtual Hacking Labs" },
+                  { icon: Cpu, text: "Industry Standard Certification" },
+                  { icon: Globe, text: "Global Placement Network" }
+                ].map((item, i) => (
+                  <motion.div 
+                    key={i}
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 + (i * 0.1) }}
+                    className="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors"
+                  >
+                    <item.icon className="w-5 h-5 text-red-500" />
+                    <span className="text-sm font-medium text-gray-200">{item.text}</span>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* The Only Google Button */}
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200" />
+                <Button
+                  onClick={() => googleLogin()}
+                  disabled={isLoading}
+                  className="relative w-full h-14 bg-white text-black hover:bg-gray-100 text-lg font-bold shadow-xl transition-all active:scale-[0.98]"
                 >
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => googleLogin()}
-                    type="button"
-                    disabled={isLoading}
-                  >
-                    <GoogleIcon className="mr-2 h-4 w-4" />
-                    Google
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => handleGitHubSignup("GitHub")}
-                    type="button"
-                    disabled={isLoading}
-                  >
-                    <Github className="mr-2 h-4 w-4" />
-                    GitHub
-                  </Button>
-                </motion.div>
+                  {isLoading ? (
+                    <Loader2 className="w-6 h-6 animate-spin text-black" />
+                  ) : (
+                    <>
+                      <GoogleIcon />
+                      Continue with Google
+                    </>
+                  )}
+                </Button>
+              </div>
 
-                <motion.div variants={itemVariants} className="relative py-2">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-gray-700" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-black px-2 text-muted-foreground">
-                      Or email
-                    </span>
-                  </div>
-                </motion.div>
-
-                <motion.div variants={itemVariants}>
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="your full name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    required
-                    disabled={isLoading}
-                    className="bg-gray-900/50"
-                  />
-                </motion.div>
-
-                {/* --- EMAIL FIELD WITH OTP --- */}
-                <motion.div variants={itemVariants}>
-                  <Label htmlFor="email">Email (Gmail Only)</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="example@gmail.com"
-                      value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                      required
-                      disabled={isLoading || verification.email.isVerified}
-                      className={`bg-gray-900/50 ${
-                        verification.email.isVerified
-                          ? "border-green-500 text-green-500"
-                          : ""
-                      }`}
-                    />
-                    {verification.email.isVerified ? (
-                      <div className="flex items-center justify-center px-3 bg-green-500/10 border border-green-500 rounded-md">
-                        <CheckCircle2 className="h-5 w-5 text-green-500" />
-                      </div>
-                    ) : (
-                      <AnimatePresence>
-                        {gmailRegex.test(formData.email) &&
-                          !verification.email.isVerifying && (
-                            <motion.div
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0, scale: 0.8 }}
-                            >
-                              <Button
-                                type="button"
-                                variant="outline"
-                                onClick={startEmailVerify}
-                                className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
-                              >
-                                Verify
-                              </Button>
-                            </motion.div>
-                          )}
-                      </AnimatePresence>
-                    )}
-                  </div>
-                  {/* Email OTP Input */}
-                  <AnimatePresence>
-                    {verification.email.isVerifying && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="mt-2 p-3 border border-dashed border-gray-700 rounded-md bg-gray-900/30">
-                          <Label className="text-xs text-muted-foreground mb-1 block">
-                            Enter 6-digit OTP sent to email
-                          </Label>
-                          <div className="flex gap-2">
-                            <Input
-                              type="text"
-                              placeholder="Enter Your OTP"
-                              maxLength={6}
-                              className="text-center tracking-widest bg-gray-900/50"
-                              value={verification.email.otp}
-                              onChange={(e) =>
-                                setVerification((prev) => ({
-                                  ...prev,
-                                  email: {
-                                    ...prev.email,
-                                    otp: e.target.value.replace(/\D/g, ""),
-                                  },
-                                }))
-                              }
-                            />
-                            <Button
-                              type="button"
-                              size="sm"
-                              onClick={confirmEmailOtp}
-                              className="bg-green-600 hover:bg-green-700 text-white"
-                            >
-                              Confirm
-                            </Button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-
-                {/* --- MODIFIED PHONE SECTION (NO OTP) --- */}
-                <motion.div variants={itemVariants}>
-                  <Label htmlFor="number">Phone Number</Label>
-                  <div className="flex gap-2">
-                    <div className="flex items-center flex-1">
-                      <span className="px-3 py-2 bg-gray-900/50 rounded-l-md border border-r-0 border-input text-sm text-muted-foreground h-10 flex items-center">
-                        +91
-                      </span>
-                      <Input
-                        id="number"
-                        type="text"
-                        placeholder="Enter Mobile Number"
-                        value={formData.number}
-                        onChange={(e) => {
-                          const val = e.target.value.replace(/\D/g, "");
-                          if (val.length <= 10)
-                            setFormData({ ...formData, number: val });
-                        }}
-                        disabled={isLoading}
-                        className="rounded-l-none bg-gray-900/50"
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Password Section */}
-                <motion.div variants={itemVariants}>
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
-                    }
-                    required
-                    disabled={isLoading}
-                    className="bg-gray-900/50"
-                  />
-                  <AnimatePresence>
-                    {formData.password && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="mt-2 space-y-2"
-                      >
-                        <div className="flex gap-1 h-1.5">
-                          {[1, 2, 3, 4].map((l) => (
-                            <div
-                              key={l}
-                              className="h-full flex-1 rounded-full bg-gray-800 overflow-hidden"
-                            >
-                              <motion.div
-                                initial={{ width: "0%" }}
-                                animate={{
-                                  width: strength >= l ? "100%" : "0%",
-                                  backgroundColor:
-                                    strength >= l
-                                      ? l === 1
-                                        ? "rgb(239 68 68)"
-                                        : l === 2 && strength <= 2
-                                        ? "rgb(239 68 68)"
-                                        : l <= 2 && strength >= 3
-                                        ? "rgb(234 179 8)"
-                                        : l === 3 && strength === 3
-                                        ? "rgb(234 179 8)"
-                                        : "rgb(34 197 94)"
-                                      : "transparent",
-                                }}
-                                className="h-full w-full"
-                                transition={{ duration: 0.3 }}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                        <div className="flex justify-between items-center text-xs">
-                          <span
-                            className={`font-medium ${
-                              strength <= 2
-                                ? "text-red-500"
-                                : strength === 3
-                                ? "text-yellow-500"
-                                : "text-green-500"
-                            }`}
-                          >
-                            Strength: {getStrengthText(strength)}{" "}
-                            {strength <= 2 && " (Too Weak)"}
-                          </span>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-
-                <motion.div variants={itemVariants}>
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="••••••••"
-                    value={formData.confirmPassword}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        confirmPassword: e.target.value,
-                      })
-                    }
-                    required
-                    disabled={isLoading}
-                    className="bg-gray-900/50"
-                  />
-                </motion.div>
-
-                <motion.div
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white border-0"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <ShieldCheck className="mr-2 h-4 w-4" />
-                    )}
-                    {isLoading ? "Creating Account..." : "Sign Up"}
-                  </Button>
-                </motion.div>
-              </motion.form>
-
-              <div className="mt-6 text-center">
-                <p className="text-sm text-muted-foreground">
-                  Already have an account?{" "}
-                  <Link
-                    to="/login"
-                    className="text-red-500 hover:text-red-400 hover:underline font-semibold"
-                  >
-                    Login
-                  </Link>
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground px-8">
+                  By clicking continue, you agree to our{" "}
+                  <Link to="/terms" className="underline hover:text-white">Terms of Service</Link> and{" "}
+                  <Link to="/privacy" className="underline hover:text-white">Privacy Policy</Link>.
                 </p>
               </div>
             </CardContent>
+
+            <CardFooter className="bg-black/20 border-t border-white/5 py-4 justify-center">
+              <p className="text-sm text-gray-400">
+                Already have an account?{" "}
+                <Link to="/login" className="text-red-500 hover:text-red-400 font-semibold transition-colors">
+                  Sign In
+                </Link>
+              </p>
+            </CardFooter>
           </Card>
         </motion.div>
       </div>
@@ -641,6 +235,7 @@ const Signup = () => {
   );
 };
 
+// Wrapper for OAuth Context
 const SignupWithGoogleAuth = () => (
   <GoogleOAuthProvider clientId={googleClientId}>
     <Signup />
