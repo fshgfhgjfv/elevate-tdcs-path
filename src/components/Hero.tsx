@@ -451,7 +451,7 @@ export const Hero = () => {
                                 className="h-14 px-4 text-cyan-400 hover:text-cyan-300 hover:bg-transparent font-mono text-sm underline underline-offset-4"
                                 onClick={() => setIsBrochureModalOpen(true)}
                             >
-                                [ DOWNLOAD_INTEL ]
+                                [ DOWNLOAD_Brochure ]
                             </Button>
                         </div>
                     </div>
