@@ -22,7 +22,8 @@ import { Loader2, Mail, Lock, User, Github, Phone } from "lucide-react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
 // --- CONFIGURATION ---
-const googleClientId = "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
+// I have updated this with your NEW Client ID:
+const googleClientId = "608143065275-uk0254ebnpmrepto7ssb2ee103odutgk.apps.googleusercontent.com";
 
 // --- Floating Icons Data ---
 const tools = [
@@ -89,7 +90,6 @@ const Signup = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Phone Validation
     if (formData.phone.length !== 10) {
       toast.error("Please enter a valid 10-digit phone number");
       setIsLoading(false);
@@ -102,22 +102,19 @@ const Signup = () => {
       return;
     }
 
-    // Simulate Signup
     setTimeout(() => {
       toast.success("Account Created Successfully!");
       navigate("/dashboard");
     }, 1500);
   };
 
-  // --- Phone Number Input Handler ---
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, ""); // Remove non-digits
+    const value = e.target.value.replace(/\D/g, "");
     if (value.length <= 10) {
       setFormData({ ...formData, phone: value });
     }
   };
 
-  // --- 3D Card Logic ---
   const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -141,12 +138,10 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black text-white selection:bg-teal-500/30">
       
-      {/* --- Dynamic Background --- */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-900 via-black to-black -z-20" />
       <div className="absolute inset-0 -z-10 opacity-20" 
            style={{ backgroundImage: "linear-gradient(#333 1px, transparent 1px), linear-gradient(to right, #333 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
       
-      {/* Floating Tools (Optimized size for mobile) */}
       {tools.map((tool, index) => (
         <motion.img
           key={index}
@@ -158,7 +153,6 @@ const Signup = () => {
         />
       ))}
 
-      {/* --- Main Card --- */}
       <div className="container mx-auto px-4 z-10 py-6 md:py-10">
         <motion.div
           ref={cardRef}
@@ -173,7 +167,6 @@ const Signup = () => {
             className="relative border border-white/10 bg-zinc-950/80 backdrop-blur-xl shadow-2xl overflow-hidden my-4 md:my-0"
             style={{ transform: "translateZ(50px)" }}
           >
-            {/* Top Glow Bar */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 via-cyan-500 to-teal-500" />
             
             <CardHeader className="text-center pb-2 pt-6 md:pt-8">
@@ -185,7 +178,6 @@ const Signup = () => {
 
             <CardContent className="space-y-5 px-4 md:px-6">
               
-              {/* --- Social Login Section --- */}
               <div className="grid gap-3">
                 <Button 
                   variant="outline" 
@@ -204,7 +196,6 @@ const Signup = () => {
                 </Button>
               </div>
 
-              {/* Divider */}
               <div className="relative my-2">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t border-zinc-800" />
@@ -214,10 +205,8 @@ const Signup = () => {
                 </div>
               </div>
 
-              {/* --- Manual Form Section --- */}
               <form onSubmit={handleManualSubmit} className="space-y-4">
                 
-                {/* Name */}
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-zinc-300 text-xs md:text-sm">Full Name</Label>
                   <div className="relative">
@@ -233,7 +222,6 @@ const Signup = () => {
                   </div>
                 </div>
 
-                {/* Indian Phone Number (New Field) */}
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="text-zinc-300 text-xs md:text-sm">Phone Number</Label>
                   <div className="relative">
@@ -245,7 +233,6 @@ const Signup = () => {
                       id="phone" 
                       type="tel"
                       placeholder="98765 43210" 
-                      // Added padding-left to accommodate Icon + Prefix
                       className="pl-16 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base"
                       value={formData.phone}
                       onChange={handlePhoneChange}
@@ -255,7 +242,6 @@ const Signup = () => {
                   </div>
                 </div>
 
-                {/* Email */}
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-zinc-300 text-xs md:text-sm">Email Address</Label>
                   <div className="relative">
@@ -272,7 +258,6 @@ const Signup = () => {
                   </div>
                 </div>
 
-                {/* Password */}
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-zinc-300 text-xs md:text-sm">Password</Label>
                   <div className="relative">
@@ -288,7 +273,6 @@ const Signup = () => {
                     />
                   </div>
                   
-                  {/* Strength Meter */}
                   <div className="flex gap-1 h-1 mt-2">
                     {[1, 2, 3, 4, 5].map((i) => (
                       <motion.div
@@ -330,7 +314,6 @@ const Signup = () => {
   );
 };
 
-// Wrapper for OAuth Context
 const SignupWithGoogleAuth = () => (
   <GoogleOAuthProvider clientId={googleClientId}>
     <Signup />
