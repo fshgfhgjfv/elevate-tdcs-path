@@ -39,13 +39,11 @@ export const ChatBot = () => {
 
   const sendMessageToGemini = async (currentHistory: Message[]) => {
     try {
-      // 1. Format the history for Gemini API
       const contents = currentHistory.map((msg) => ({
         role: msg.role,
         parts: [{ text: msg.content }],
       }));
 
-      // 2. Make the API Call (Using Standard GenerateContent, not stream for stability)
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
         {
@@ -61,7 +59,6 @@ export const ChatBot = () => {
         throw new Error(data.error?.message || "API Error");
       }
 
-      // 3. Extract the response text
       const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
       if (reply) {
@@ -85,14 +82,39 @@ export const ChatBot = () => {
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
     
-    const userMessage: Message = { role: "user", content: input };
-    const newHistory = [...messages, userMessage];
+    const userText = input.trim();
+    const userMessage: Message = { role: "user", content: userText };
     
+    // Update UI immediately with user message
+    const newHistory = [...messages, userMessage];
     setMessages(newHistory);
     setInput("");
     setIsLoading(true);
 
-    await sendMessageToGemini(newHistory);
+    // --- CUSTOM GREETING CHECK ---
+    const greetings = ["hi", "hii", "hiiii", "hello", "hallo", "hy", "hey"];
+    const lowerInput = userText.toLowerCase();
+
+    // Check if the user input matches any of the greetings exactly
+    if (greetings.includes(lowerInput) || greetings.some(g => lowerInput.startsWith(g + " "))) {
+      
+      // Simulate a small delay for natural feeling
+      setTimeout(() => {
+        setMessages((prev) => [
+          ...prev, 
+          { 
+            role: "model", 
+            // I corrected the typos slightly to look professional, but you can change it back!
+            content: "Hallo! I am the Associate Premium Bro of TDCS Technologies Pvt Ltd." 
+          }
+        ]);
+        setIsLoading(false);
+      }, 600);
+
+    } else {
+      // If not a greeting, send to Gemini API
+      await sendMessageToGemini(newHistory);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -104,7 +126,6 @@ export const ChatBot = () => {
 
   return (
     <>
-      {/* Floating Chat Button */}
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
@@ -119,7 +140,6 @@ export const ChatBot = () => {
         </Button>
       </motion.div>
 
-      {/* Chat Window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -130,7 +150,6 @@ export const ChatBot = () => {
           >
             <Card className="shadow-2xl backdrop-blur-xl bg-gray-950/90 border border-cyan-500/30 rounded-2xl overflow-hidden flex flex-col h-[600px]">
               
-              {/* Header */}
               <div className="p-4 border-b border-cyan-900/50 bg-gradient-to-r from-gray-900 to-gray-950 flex items-center gap-3 relative overflow-hidden">
                 <div className="absolute inset-0 bg-cyan-500/5 animate-pulse" />
                 <div className="relative z-10 flex items-center gap-3">
@@ -151,7 +170,6 @@ export const ChatBot = () => {
                 </div>
               </div>
 
-              {/* Messages Area */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
                 {messages.map((msg, idx) => (
                   <div
@@ -215,7 +233,6 @@ export const ChatBot = () => {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Input Area */}
               <div className="p-4 bg-gray-900/50 border-t border-cyan-900/30">
                 <div className="relative flex items-center gap-2">
                   <Input
