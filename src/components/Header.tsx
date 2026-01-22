@@ -158,6 +158,14 @@ export const Header = () => {
                     >
                       Website Development
                     </Link>
+                    <a
+                      href="https://www.tdcs.in/intelligence"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block px-4 py-2 rounded-md hover:bg-accent text-primary font-semibold"
+                    >
+                      🔍 Intelligence
+                    </a>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -282,6 +290,16 @@ export const Header = () => {
                     Website Development
                   </Button>
                 </Link>
+                <a
+                  href="https://www.tdcs.in/intelligence"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Button variant="ghost" className="w-full text-left text-primary font-semibold">
+                    🔍 Intelligence
+                  </Button>
+                </a>
               </div>
 
               {/* Auth Buttons */}
