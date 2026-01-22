@@ -2,16 +2,16 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { MessageCircle, X, Send, User, Sparkles, Bot } from "lucide-react";
+import { X, Send, User, Sparkles, Bot } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import ReactMarkdown from "react-markdown"; // Optional: Remove if you don't want to install it
+import ReactMarkdown from "react-markdown";
 
-// 🔒 Replace this with your key, but keep it out of public repos!
+// ⚠️ WARNING: In a real app, use a Backend Proxy to hide this key!
 const GEMINI_API_KEY = "AIzaSyDCTUwe0iM3Y4ypRH12b1elbwEGRgr6EXc"; 
 
 interface Message {
-  role: "user" | "model"; // Gemini uses 'model', not 'assistant'
+  role: "user" | "model";
   content: string;
 }
 
@@ -35,19 +35,19 @@ export const ChatBot = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isLoading, isOpen]);
 
-  const streamGeminiChat = async (history: Message[]) => {
+  const sendMessageToGemini = async (currentHistory: Message[]) => {
     try {
-      // Format messages for Gemini API
-      // Note: Gemini expects { role: "user", parts: [{ text: "..." }] }
-      const contents = history.map((msg) => ({
+      // 1. Format the history for Gemini API
+      const contents = currentHistory.map((msg) => ({
         role: msg.role,
         parts: [{ text: msg.content }],
       }));
 
+      // 2. Make the API Call (Using Standard GenerateContent, not stream for stability)
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:streamGenerateContent?key=${GEMINI_API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -55,49 +55,30 @@ export const ChatBot = () => {
         }
       );
 
-      if (!response.ok) throw new Error("Gemini API Error");
-      if (!response.body) throw new Error("No response body");
+      const data = await response.json();
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let assistantContent = "";
-
-      // Add empty model message to start streaming into
-      setMessages((prev) => [...prev, { role: "model", content: "" }]);
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        
-        // Gemini sends multiple JSON objects in one stream, we need to parse them locally
-        // This simple regex splitting handles the standard stream format
-        const lines = chunk.split("\n").filter((line) => line.trim() !== "");
-        
-        for (const line of lines) {
-           const cleanedLine = line.replace(/^,/, ""); // Remove leading commas from stream
-           try {
-             const parsed = JSON.parse(cleanedLine);
-             const text = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
-             
-             if (text) {
-               assistantContent += text;
-               setMessages((prev) => {
-                 const newMessages = [...prev];
-                 newMessages[newMessages.length - 1].content = assistantContent;
-                 return newMessages;
-               });
-             }
-           } catch (e) {
-             // Stream chunks sometimes arrive incomplete, ignore parse errors
-           }
-        }
+      if (!response.ok) {
+        throw new Error(data.error?.message || "API Error");
       }
-    } catch (error) {
-      console.error(error);
-      toast.error("AI Connection Failed.");
-      setMessages((prev) => prev.slice(0, -1)); // Remove the empty message
+
+      // 3. Extract the response text
+      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (reply) {
+        setMessages((prev) => [...prev, { role: "model", content: reply }]);
+      } else {
+        throw new Error("No response content");
+      }
+
+    } catch (error: any) {
+      console.error("Gemini Error:", error);
+      toast.error("AI Error: " + error.message);
+      setMessages((prev) => [
+        ...prev,
+        { role: "model", content: `⚠️ **System Error:** ${error.message}. Please check your API Key.` }
+      ]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -105,15 +86,13 @@ export const ChatBot = () => {
     if (!input.trim() || isLoading) return;
     
     const userMessage: Message = { role: "user", content: input };
-    const updatedMessages = [...messages, userMessage];
+    const newHistory = [...messages, userMessage];
     
-    setMessages(updatedMessages);
+    setMessages(newHistory);
     setInput("");
     setIsLoading(true);
 
-    await streamGeminiChat(updatedMessages);
-    
-    setIsLoading(false);
+    await sendMessageToGemini(newHistory);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -194,7 +173,6 @@ export const ChatBot = () => {
                           : "bg-gray-800/80 text-gray-100 border border-gray-700 rounded-tl-none"
                       }`}
                     >
-                      {/* Markdown Support: If you didn't install react-markdown, change this back to <p>{msg.content}</p> */}
                       {msg.role === "model" ? (
                          <ReactMarkdown 
                             components={{
