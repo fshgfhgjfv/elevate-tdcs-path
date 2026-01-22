@@ -265,7 +265,7 @@ const BookDemoModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
                         </span>
                         <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                     </button>
-                    <p className="text-[10px] text-gray-500 text-center font-mono">// ENCRYPTED CONNECTION ESTABLISHED //</p>
+                    <p className="text-[10px] text-gray-500 text-center font-mono"> ENCRYPTED CONNECTION ESTABLISHED //</p>
                 </form>
             </CyberModalFrame>
         </div>
