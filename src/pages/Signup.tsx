@@ -1,6 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -17,23 +19,22 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, ShieldCheck, Terminal, Cpu, Globe } from "lucide-react";
+import { Loader2, ShieldCheck, Mail, Lock, User, Github } from "lucide-react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
 // --- CONFIGURATION ---
-const googleClientId =
-  "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
+const googleClientId = "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googleusercontent.com";
 
 // --- Floating Icons Data ---
 const tools = [
-  { src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg", delay: 0.2, x: "10%", y: "20%" },
-  { src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1", delay: 0.4, x: "80%", y: "15%" },
-  { src: "https://assets.tryhackme.com/img/modules/metasploit.png", delay: 0.6, x: "15%", y: "70%" },
-  { src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/1200px-Tux.svg.png", delay: 0.8, x: "85%", y: "65%" },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg", delay: 0, x: "10%", y: "10%" },
+  { src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1", delay: 2, x: "80%", y: "20%" },
+  { src: "https://assets.tryhackme.com/img/modules/metasploit.png", delay: 4, x: "15%", y: "70%" },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/1200px-Tux.svg.png", delay: 1, x: "85%", y: "80%" },
 ];
 
 const GoogleIcon = () => (
-  <svg className="w-5 h-5 mr-3" viewBox="0 0 48 48">
+  <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48">
     <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.659,4.696-6.142,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
     <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
     <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.16,0-9.658-3.302-11.303-7.918l-6.522,5.023C9.505,41.246,16.227,44,24,44z" />
@@ -44,35 +45,63 @@ const GoogleIcon = () => (
 const Signup = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  
+  // --- Form State ---
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [strength, setStrength] = useState(0);
 
-  // --- Google Login Handler ---
+  // --- Password Logic ---
+  useEffect(() => {
+    const pass = formData.password;
+    let score = 0;
+    if (!pass) { setStrength(0); return; }
+    if (pass.length > 5) score += 1;
+    if (pass.length > 10) score += 1;
+    if (/[A-Z]/.test(pass)) score += 1;
+    if (/[0-9]/.test(pass)) score += 1;
+    if (/[^A-Za-z0-9]/.test(pass)) score += 1;
+    setStrength(score);
+  }, [formData.password]);
+
+  const getStrengthColor = (s: number) => {
+    if (s <= 2) return "bg-red-500";
+    if (s === 3) return "bg-yellow-500";
+    return "bg-teal-500";
+  };
+
+  // --- Handlers ---
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       setIsLoading(true);
-      console.log("Google Token:", tokenResponse);
-
-      // SIMULATION: In production, send tokenResponse.access_token to your PHP backend
+      // Simulate Backend Verification
       setTimeout(() => {
-        // Mock User Data
-        const mockUser = {
-          name: "Google User",
-          email: "user@gmail.com",
-          photo: "https://lh3.googleusercontent.com/a/default-user",
-        };
-        localStorage.setItem("tdcs_user", JSON.stringify(mockUser));
-        
-        toast.success("Welcome to the Academy!");
-        setIsLoading(false);
+        toast.success("Google Login Successful!");
         navigate("/dashboard");
       }, 1500);
     },
-    onError: () => {
-      toast.error("Google Authentication Failed");
-      setIsLoading(false);
-    },
+    onError: () => toast.error("Google Login Failed"),
   });
 
-  // --- 3D Tilt Logic ---
+  const handleManualSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    if (strength < 3) {
+      toast.error("Password is too weak");
+      setIsLoading(false);
+      return;
+    }
+    // Simulate Signup
+    setTimeout(() => {
+      toast.success("Account Created Successfully!");
+      navigate("/dashboard");
+    }, 1500);
+  };
+
+  // --- 3D Card Logic ---
   const cardRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -80,151 +109,175 @@ const Signup = () => {
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
-  const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ["0%", "100%"]);
-  const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ["0%", "100%"]);
-  const glareOpacity = useMotionValue(0);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     x.set((e.clientX - rect.left) / rect.width - 0.5);
     y.set((e.clientY - rect.top) / rect.height - 0.5);
-    glareOpacity.set(0.2); // Increased glare for impact
   };
 
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
-    glareOpacity.set(0);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black text-white selection:bg-red-500/30">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black text-white selection:bg-teal-500/30">
       
       {/* --- Dynamic Background --- */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black -z-20" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-900 via-black to-black -z-20" />
       <div className="absolute inset-0 -z-10 opacity-20" 
            style={{ backgroundImage: "linear-gradient(#333 1px, transparent 1px), linear-gradient(to right, #333 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
       
-      {/* Floating Hacker Tools */}
+      {/* Floating Tools */}
       {tools.map((tool, index) => (
         <motion.img
           key={index}
           src={tool.src}
-          className="absolute w-20 h-20 md:w-32 md:h-32 opacity-20 blur-[1px]"
+          className="absolute w-16 h-16 md:w-24 md:h-24 opacity-10 blur-[1px]"
           style={{ top: tool.y, left: tool.x }}
-          animate={{ 
-            y: ["0px", "-20px", "0px"], 
-            rotate: [0, 10, -10, 0],
-            scale: [1, 1.1, 1] 
-          }}
-          transition={{ duration: 5 + index, repeat: Infinity, ease: "easeInOut" }}
+          animate={{ y: ["0px", "-20px", "0px"], rotate: [0, 5, -5, 0] }}
+          transition={{ duration: 6 + index, repeat: Infinity, ease: "easeInOut" }}
         />
       ))}
 
       {/* --- Main Card --- */}
-      <div className="container mx-auto px-4 z-10">
+      <div className="container mx-auto px-4 z-10 py-10">
         <motion.div
           ref={cardRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           style={{ transformStyle: "preserve-3d", rotateX, rotateY }}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-md mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-[450px] mx-auto"
         >
           <Card
-            className="relative border-0 bg-zinc-900/80 backdrop-blur-xl shadow-2xl overflow-hidden"
+            className="relative border border-white/10 bg-zinc-950/80 backdrop-blur-xl shadow-2xl overflow-hidden"
             style={{ transform: "translateZ(50px)" }}
           >
-            {/* Gradient Border Effect */}
-            <div className="absolute inset-0 p-[1px] bg-gradient-to-br from-red-500 via-transparent to-red-500 -z-10 rounded-xl" />
+            {/* Top Glow Bar */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 via-cyan-500 to-teal-500" />
             
-            {/* Dynamic Glare */}
-            <motion.div
-              className="pointer-events-none absolute inset-0 z-50 rounded-xl"
-              style={{
-                opacity: glareOpacity,
-                background: useTransform(
-                  [glareX, glareY],
-                  ([lx, ly]) => `radial-gradient(600px circle at ${lx} ${ly}, rgba(255, 255, 255, 0.4), transparent 60%)`
-                ),
-              }}
-            />
-
             <CardHeader className="text-center pb-2">
-              <motion.div 
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="mx-auto bg-red-500/10 p-4 rounded-full w-20 h-20 flex items-center justify-center mb-4 border border-red-500/30"
-              >
-                <ShieldCheck className="w-10 h-10 text-red-500" />
-              </motion.div>
-              <CardTitle className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500">
-                Join the Elite
-              </CardTitle>
-              <CardDescription className="text-gray-400">
-                Secure your spot in the TDCS Academy
+              <CardTitle className="text-3xl font-bold text-white mb-2">Sign Up</CardTitle>
+              <CardDescription className="text-zinc-400">
+                Create an account to unlock exclusive labs.
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-8 pt-6">
+            <CardContent className="space-y-6">
               
-              {/* Value Proposition List */}
-              <div className="grid gap-4">
-                {[
-                  { icon: Terminal, text: "Access 50+ Virtual Hacking Labs" },
-                  { icon: Cpu, text: "Industry Standard Certification" },
-                  { icon: Globe, text: "Global Placement Network" }
-                ].map((item, i) => (
-                  <motion.div 
-                    key={i}
-                    initial={{ x: -20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 + (i * 0.1) }}
-                    className="flex items-center space-x-3 p-3 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors"
-                  >
-                    <item.icon className="w-5 h-5 text-red-500" />
-                    <span className="text-sm font-medium text-gray-200">{item.text}</span>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* The Only Google Button */}
-              <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200" />
-                <Button
+              {/* --- Social Login Section --- */}
+              <div className="grid gap-3">
+                <Button 
+                  variant="outline" 
                   onClick={() => googleLogin()}
-                  disabled={isLoading}
-                  className="relative w-full h-14 bg-white text-black hover:bg-gray-100 text-lg font-bold shadow-xl transition-all active:scale-[0.98]"
+                  className="w-full h-12 bg-white text-black hover:bg-zinc-200 border-0 font-medium text-md transition-transform active:scale-95"
                 >
-                  {isLoading ? (
-                    <Loader2 className="w-6 h-6 animate-spin text-black" />
-                  ) : (
-                    <>
-                      <GoogleIcon />
-                      Continue with Google
-                    </>
-                  )}
+                  <GoogleIcon />
+                  Sign up with Google
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full h-12 bg-zinc-900 border-zinc-800 text-white hover:bg-zinc-800 hover:text-white transition-transform active:scale-95"
+                >
+                  <Github className="w-5 h-5 mr-2" />
+                  Sign up with GitHub
                 </Button>
               </div>
 
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground px-8">
-                  By clicking continue, you agree to our{" "}
-                  <Link to="/terms" className="underline hover:text-white">Terms of Service</Link> and{" "}
-                  <Link to="/privacy" className="underline hover:text-white">Privacy Policy</Link>.
-                </p>
+              {/*Divider */}
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-zinc-800" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-zinc-950 px-2 text-zinc-500">Or continue with email</span>
+                </div>
               </div>
+
+              {/* --- Manual Form Section --- */}
+              <form onSubmit={handleManualSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-zinc-300">Full Name</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                    <Input 
+                      id="name" 
+                      placeholder="John Doe" 
+                      className="pl-10 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600"
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-zinc-300">Email Address</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      placeholder="you@example.com" 
+                      className="pl-10 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-zinc-300">Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                    <Input 
+                      id="password" 
+                      type="password" 
+                      placeholder="••••••••" 
+                      className="pl-10 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600"
+                      value={formData.password}
+                      onChange={(e) => setFormData({...formData, password: e.target.value})}
+                      required
+                    />
+                  </div>
+                  
+                  {/* Strength Meter */}
+                  <div className="flex gap-1 h-1 mt-2">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <motion.div
+                        key={i}
+                        className={`h-full flex-1 rounded-full ${i <= strength ? getStrengthColor(strength) : "bg-zinc-800"}`}
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        transition={{ duration: 0.2 }}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-xs text-right text-zinc-500">
+                    Strength: <span className={strength > 2 ? "text-teal-500" : "text-zinc-500"}>{strength > 3 ? "Strong" : strength > 1 ? "Medium" : "Weak"}</span>
+                  </p>
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 bg-teal-500 hover:bg-teal-600 text-black font-bold text-md shadow-[0_0_20px_rgba(20,184,166,0.3)] transition-all hover:shadow-[0_0_30px_rgba(20,184,166,0.5)]"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign Up"}
+                </Button>
+              </form>
             </CardContent>
 
-            <CardFooter className="bg-black/20 border-t border-white/5 py-4 justify-center">
-              <p className="text-sm text-gray-400">
+            <CardFooter className="justify-center border-t border-white/5 pt-4">
+              <p className="text-sm text-zinc-400">
                 Already have an account?{" "}
-                <Link to="/login" className="text-red-500 hover:text-red-400 font-semibold transition-colors">
-                  Sign In
+                <Link to="/login" className="text-teal-400 hover:text-teal-300 font-semibold hover:underline">
+                  Login
                 </Link>
               </p>
             </CardFooter>
