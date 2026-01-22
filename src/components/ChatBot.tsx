@@ -15,12 +15,37 @@ interface Message {
   content: string;
 }
 
+// --- 🧠 CUSTOM KNOWLEDGE BASE ---
+// Add any specific questions and answers here!
+const KNOWLEDGE_BASE = [
+  {
+    triggers: ["hi", "hii", "hiiii", "hello", "hallo", "hy", "hey"],
+    answer: "Hallo! I am the Associate Premium Bro of TDCS Technologies Pvt Ltd. How can I help you today?"
+  },
+  {
+    triggers: ["who are you", "what are you", "your name"],
+    answer: "I am the TDCS Advanced AI Assistant, here to help you with code, security, and course details."
+  },
+  {
+    triggers: ["dibyajit", "dibjoyti", "dibajotit", "ghose", "owner", "founder", "ceo"],
+    answer: "Mr. Dibyajit Ghose is the Owner and Founder of TDCS Technologies Pvt Ltd. The company is headquartered in Kharagpur, Kolkata, India."
+  },
+  {
+    triggers: ["location", "address", "where is", "situated"],
+    answer: "TDCS Technologies Pvt Ltd is located in Kharagpur, Kolkata, India."
+  },
+  {
+    triggers: ["tdcs", "company", "full form"],
+    answer: "TDCS Technologies Pvt Ltd is a leading cybersecurity and software development company focused on bridging the gap between education and industry."
+  }
+];
+
 export const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "model",
-      content: "Hello! I am the TDCS Advanced AI. I can write code, answer questions, and help with security analysis. How can I assist you?",
+      content: "Hello! I am the TDCS Advanced AI. Ask me about our courses, security, or our founder!",
     },
   ]);
   const [input, setInput] = useState("");
@@ -85,34 +110,31 @@ export const ChatBot = () => {
     const userText = input.trim();
     const userMessage: Message = { role: "user", content: userText };
     
-    // Update UI immediately with user message
+    // 1. Add User Message to UI
     const newHistory = [...messages, userMessage];
     setMessages(newHistory);
     setInput("");
     setIsLoading(true);
 
-    // --- CUSTOM GREETING CHECK ---
-    const greetings = ["hi", "hii", "hiiii", "hello", "hallo", "hy", "hey"];
+    // 2. CHECK CUSTOM KNOWLEDGE BASE
     const lowerInput = userText.toLowerCase();
+    
+    // Find a matching rule from our KNOWLEDGE_BASE
+    const matchedRule = KNOWLEDGE_BASE.find(rule => 
+      rule.triggers.some(trigger => lowerInput.includes(trigger))
+    );
 
-    // Check if the user input matches any of the greetings exactly
-    if (greetings.includes(lowerInput) || greetings.some(g => lowerInput.startsWith(g + " "))) {
-      
-      // Simulate a small delay for natural feeling
+    if (matchedRule) {
+      // If we found a match, reply instantly (simulated delay)
       setTimeout(() => {
         setMessages((prev) => [
           ...prev, 
-          { 
-            role: "model", 
-            // I corrected the typos slightly to look professional, but you can change it back!
-            content: "Hallo! I am the Associate Premium Bro of TDCS Technologies Pvt Ltd." 
-          }
+          { role: "model", content: matchedRule.answer }
         ]);
         setIsLoading(false);
       }, 600);
-
     } else {
-      // If not a greeting, send to Gemini API
+      // 3. If no custom match, ask Google Gemini
       await sendMessageToGemini(newHistory);
     }
   };
