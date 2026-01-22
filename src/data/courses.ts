@@ -60,7 +60,7 @@ export interface HiringDrive {
 export const courses: Course[] = [
   {
     id: "cyber-lite",
-    title: "Cyber Master's Pro Lite",
+    title: "Cyber Master's Pro Blackhat Lite",
     description:
       "Foundational ethical hacking & network security program for beginners.",
     price: 499,
