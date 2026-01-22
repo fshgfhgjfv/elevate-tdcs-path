@@ -16,10 +16,9 @@ import {
   useMotionValue,
   useTransform,
   useSpring,
-  AnimatePresence,
 } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, ShieldCheck, Mail, Lock, User, Github } from "lucide-react";
+import { Loader2, Mail, Lock, User, Github, Phone } from "lucide-react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
 // --- CONFIGURATION ---
@@ -27,10 +26,10 @@ const googleClientId = "736905272101-bfolp8smrdkl2eg59ss9n5oihcb5ph9n.apps.googl
 
 // --- Floating Icons Data ---
 const tools = [
-  { src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg", delay: 0, x: "10%", y: "10%" },
-  { src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1", delay: 2, x: "80%", y: "20%" },
-  { src: "https://assets.tryhackme.com/img/modules/metasploit.png", delay: 4, x: "15%", y: "70%" },
-  { src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/1200px-Tux.svg.png", delay: 1, x: "85%", y: "80%" },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg", delay: 0, x: "5%", y: "5%" },
+  { src: "https://i0.wp.com/davidjmcclelland.com/wp-content/uploads/2021/11/burpSuiteLogo.png?resize=220%2C220&ssl=1", delay: 2, x: "85%", y: "10%" },
+  { src: "https://assets.tryhackme.com/img/modules/metasploit.png", delay: 4, x: "10%", y: "85%" },
+  { src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/1200px-Tux.svg.png", delay: 1, x: "80%", y: "80%" },
 ];
 
 const GoogleIcon = () => (
@@ -49,6 +48,7 @@ const Signup = () => {
   // --- Form State ---
   const [formData, setFormData] = useState({
     name: "",
+    phone: "",
     email: "",
     password: "",
   });
@@ -77,7 +77,6 @@ const Signup = () => {
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       setIsLoading(true);
-      // Simulate Backend Verification
       setTimeout(() => {
         toast.success("Google Login Successful!");
         navigate("/dashboard");
@@ -89,16 +88,33 @@ const Signup = () => {
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
+    // Phone Validation
+    if (formData.phone.length !== 10) {
+      toast.error("Please enter a valid 10-digit phone number");
+      setIsLoading(false);
+      return;
+    }
+
     if (strength < 3) {
       toast.error("Password is too weak");
       setIsLoading(false);
       return;
     }
+
     // Simulate Signup
     setTimeout(() => {
       toast.success("Account Created Successfully!");
       navigate("/dashboard");
     }, 1500);
+  };
+
+  // --- Phone Number Input Handler ---
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, ""); // Remove non-digits
+    if (value.length <= 10) {
+      setFormData({ ...formData, phone: value });
+    }
   };
 
   // --- 3D Card Logic ---
@@ -107,8 +123,8 @@ const Signup = () => {
   const y = useMotionValue(0);
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current) return;
@@ -130,12 +146,12 @@ const Signup = () => {
       <div className="absolute inset-0 -z-10 opacity-20" 
            style={{ backgroundImage: "linear-gradient(#333 1px, transparent 1px), linear-gradient(to right, #333 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
       
-      {/* Floating Tools */}
+      {/* Floating Tools (Optimized size for mobile) */}
       {tools.map((tool, index) => (
         <motion.img
           key={index}
           src={tool.src}
-          className="absolute w-16 h-16 md:w-24 md:h-24 opacity-10 blur-[1px]"
+          className="absolute w-12 h-12 md:w-24 md:h-24 opacity-10 blur-[1px]"
           style={{ top: tool.y, left: tool.x }}
           animate={{ y: ["0px", "-20px", "0px"], rotate: [0, 5, -5, 0] }}
           transition={{ duration: 6 + index, repeat: Infinity, ease: "easeInOut" }}
@@ -143,7 +159,7 @@ const Signup = () => {
       ))}
 
       {/* --- Main Card --- */}
-      <div className="container mx-auto px-4 z-10 py-10">
+      <div className="container mx-auto px-4 z-10 py-6 md:py-10">
         <motion.div
           ref={cardRef}
           onMouseMove={handleMouseMove}
@@ -151,45 +167,45 @@ const Signup = () => {
           style={{ transformStyle: "preserve-3d", rotateX, rotateY }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-[450px] mx-auto"
+          className="max-w-[450px] mx-auto w-full"
         >
           <Card
-            className="relative border border-white/10 bg-zinc-950/80 backdrop-blur-xl shadow-2xl overflow-hidden"
+            className="relative border border-white/10 bg-zinc-950/80 backdrop-blur-xl shadow-2xl overflow-hidden my-4 md:my-0"
             style={{ transform: "translateZ(50px)" }}
           >
             {/* Top Glow Bar */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 via-cyan-500 to-teal-500" />
             
-            <CardHeader className="text-center pb-2">
-              <CardTitle className="text-3xl font-bold text-white mb-2">Sign Up</CardTitle>
-              <CardDescription className="text-zinc-400">
+            <CardHeader className="text-center pb-2 pt-6 md:pt-8">
+              <CardTitle className="text-2xl md:text-3xl font-bold text-white mb-2">Sign Up</CardTitle>
+              <CardDescription className="text-zinc-400 text-sm md:text-base">
                 Create an account to unlock exclusive labs.
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-5 px-4 md:px-6">
               
               {/* --- Social Login Section --- */}
               <div className="grid gap-3">
                 <Button 
                   variant="outline" 
                   onClick={() => googleLogin()}
-                  className="w-full h-12 bg-white text-black hover:bg-zinc-200 border-0 font-medium text-md transition-transform active:scale-95"
+                  className="w-full h-10 md:h-12 bg-white text-black hover:bg-zinc-200 border-0 font-medium text-sm md:text-md transition-transform active:scale-95 flex items-center justify-center gap-2"
                 >
                   <GoogleIcon />
                   Sign up with Google
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="w-full h-12 bg-zinc-900 border-zinc-800 text-white hover:bg-zinc-800 hover:text-white transition-transform active:scale-95"
+                  className="w-full h-10 md:h-12 bg-zinc-900 border-zinc-800 text-white hover:bg-zinc-800 hover:text-white transition-transform active:scale-95 flex items-center justify-center gap-2"
                 >
-                  <Github className="w-5 h-5 mr-2" />
+                  <Github className="w-5 h-5" />
                   Sign up with GitHub
                 </Button>
               </div>
 
-              {/*Divider */}
-              <div className="relative">
+              {/* Divider */}
+              <div className="relative my-2">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t border-zinc-800" />
                 </div>
@@ -200,14 +216,16 @@ const Signup = () => {
 
               {/* --- Manual Form Section --- */}
               <form onSubmit={handleManualSubmit} className="space-y-4">
+                
+                {/* Name */}
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-zinc-300">Full Name</Label>
+                  <Label htmlFor="name" className="text-zinc-300 text-xs md:text-sm">Full Name</Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                    <User className="absolute left-3 top-2.5 md:top-3 h-4 w-4 text-zinc-500" />
                     <Input 
                       id="name" 
                       placeholder="John Doe" 
-                      className="pl-10 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600"
+                      className="pl-10 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base"
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                       required
@@ -215,15 +233,38 @@ const Signup = () => {
                   </div>
                 </div>
 
+                {/* Indian Phone Number (New Field) */}
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-zinc-300">Email Address</Label>
+                  <Label htmlFor="phone" className="text-zinc-300 text-xs md:text-sm">Phone Number</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                    <Phone className="absolute left-3 top-2.5 md:top-3 h-4 w-4 text-zinc-500" />
+                    <span className="absolute left-9 top-2.5 md:top-3 text-zinc-400 text-sm md:text-base font-medium select-none">
+                      +91
+                    </span>
+                    <Input 
+                      id="phone" 
+                      type="tel"
+                      placeholder="98765 43210" 
+                      // Added padding-left to accommodate Icon + Prefix
+                      className="pl-16 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base"
+                      value={formData.phone}
+                      onChange={handlePhoneChange}
+                      required
+                      maxLength={10}
+                    />
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-zinc-300 text-xs md:text-sm">Email Address</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-2.5 md:top-3 h-4 w-4 text-zinc-500" />
                     <Input 
                       id="email" 
                       type="email" 
                       placeholder="you@example.com" 
-                      className="pl-10 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600"
+                      className="pl-10 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base"
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
                       required
@@ -231,15 +272,16 @@ const Signup = () => {
                   </div>
                 </div>
 
+                {/* Password */}
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-zinc-300">Password</Label>
+                  <Label htmlFor="password" className="text-zinc-300 text-xs md:text-sm">Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
+                    <Lock className="absolute left-3 top-2.5 md:top-3 h-4 w-4 text-zinc-500" />
                     <Input 
                       id="password" 
                       type="password" 
                       placeholder="••••••••" 
-                      className="pl-10 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600"
+                      className="pl-10 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base"
                       value={formData.password}
                       onChange={(e) => setFormData({...formData, password: e.target.value})}
                       required
@@ -265,7 +307,7 @@ const Signup = () => {
 
                 <Button 
                   type="submit" 
-                  className="w-full h-12 bg-teal-500 hover:bg-teal-600 text-black font-bold text-md shadow-[0_0_20px_rgba(20,184,166,0.3)] transition-all hover:shadow-[0_0_30px_rgba(20,184,166,0.5)]"
+                  className="w-full h-10 md:h-12 bg-teal-500 hover:bg-teal-600 text-black font-bold text-sm md:text-md shadow-[0_0_20px_rgba(20,184,166,0.3)] transition-all hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] mt-4"
                   disabled={isLoading}
                 >
                   {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign Up"}
@@ -273,7 +315,7 @@ const Signup = () => {
               </form>
             </CardContent>
 
-            <CardFooter className="justify-center border-t border-white/5 pt-4">
+            <CardFooter className="justify-center border-t border-white/5 pt-4 pb-6">
               <p className="text-sm text-zinc-400">
                 Already have an account?{" "}
                 <Link to="/login" className="text-teal-400 hover:text-teal-300 font-semibold hover:underline">
