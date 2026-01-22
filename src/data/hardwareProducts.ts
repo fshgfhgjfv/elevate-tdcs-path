@@ -51,6 +51,7 @@ export const hardwareProducts: HardwareProduct[] = [
       { label: "Storage", value: "2MB Q-SPI Flash" },
       { label: "Voltage", value: "1.8V - 5.5V" }
     ],
+    videoUrl: "https://www.youtube.com/watch?v=Zy64kZEM_bg",
     reviews: [
       { id: "101", author: "Rohan K.", rating: 5, date: "2024-02-14", comment: "Incredible value. Drag-and-drop works perfectly." }
     ]
@@ -82,6 +83,7 @@ export const hardwareProducts: HardwareProduct[] = [
       { label: "Clock Speed", value: "80 MHz / 160 MHz" },
       { label: "Flash Memory", value: "4 MB" }
     ],
+    videoUrl: "https://www.youtube.com/watch?v=6He9pXwVFNQ",
     reviews: [
       { id: "201", author: "Amit V.", rating: 5, date: "2024-03-01", comment: "Best investment for my career." }
     ]
@@ -232,6 +234,7 @@ export const hardwareProducts: HardwareProduct[] = [
       { label: "Screen", value: "1.4\" Monochrome LCD" },
       { label: "Battery", value: "2000mAh (7+ days)" }
     ],
+    videoUrl: "https://www.youtube.com/watch?v=nLIp4wd0oXs",
     reviews: []
   },
   {

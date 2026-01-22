@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-
+import CertificateRequestModal from "@/components/CertificateRequestModal";
 interface VideoLesson {
   id: string;
   title: string;
@@ -263,9 +263,9 @@ const CourseContent = () => {
   const [quizAnswers, setQuizAnswers] = useState<Record<number, string>>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [earnedBadges, setEarnedBadges] = useState<string[]>([]);
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
   const playerRef = useRef<any>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
-
   useEffect(() => {
     // Check enrollment status
     const enrollmentKey = `tdcs_purchased_${id}`;
@@ -749,13 +749,22 @@ const CourseContent = () => {
               <p className="mb-6 opacity-90">
                 Finish all modules to earn your professional certificate
               </p>
-              <Link to="/certificate-download">
-                <Button variant="outline" className="bg-white text-primary hover:bg-white/90">
-                  View Certificate
-                </Button>
-              </Link>
+              <Button 
+                variant="outline" 
+                className="bg-white text-primary hover:bg-white/90"
+                onClick={() => setShowCertificateModal(true)}
+              >
+                View Certificate
+              </Button>
             </CardContent>
           </Card>
+
+          {/* Certificate Request Modal */}
+          <CertificateRequestModal
+            isOpen={showCertificateModal}
+            onClose={() => setShowCertificateModal(false)}
+            courseName={course.title}
+          />
         </motion.div>
       </div>
     </div>
