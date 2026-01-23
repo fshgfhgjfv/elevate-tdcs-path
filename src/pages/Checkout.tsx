@@ -52,6 +52,7 @@ export default function Checkout() {
   const itemName = serviceName || courseName || "Unknown Item";
   const itemType = isCourse ? "Course Enrollment" : "Premium Tool";
 
+  // Strict check for the Lite course
   const isLiteCourse = courseName === TARGET_LITE_COURSE;
 
   // --- PRICE PARSING ---
@@ -88,6 +89,7 @@ export default function Checkout() {
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponError, setCouponError] = useState("");
 
+  // Force Full Payment if it is the Lite course
   useEffect(() => {
     if (isLiteCourse) {
       setPaymentMode("full");
@@ -98,10 +100,12 @@ export default function Checkout() {
   const getEffectivePrice = () => {
     if (!isCourse) return basePrice;
 
+    // Priority 1: Special Coupon for Lite Course (70% OFF)
     if (isLiteCourse && couponApplied) {
         return Math.floor(basePrice * (1 - SPECIAL_DISCOUNT_PERCENT / 100));
     }
 
+    // Priority 2: Standard Student Discount (15% OFF)
     if (userType === 'student') {
       return Math.floor(basePrice * (1 - STUDENT_DISCOUNT_PERCENT / 100));
     }
@@ -146,11 +150,7 @@ export default function Checkout() {
     if (couponInput.trim() === "") return;
 
     if (couponInput.trim() === SPECIAL_COUPON_CODE) {
-        if (isLiteCourse) {
-            setCouponApplied(true);
-        } else {
-            setCouponError("This coupon is only valid for Lite courses.");
-        }
+        setCouponApplied(true);
     } else {
         setCouponError("Invalid coupon code.");
     }
@@ -239,7 +239,7 @@ export default function Checkout() {
               <CardHeader><CardTitle className="flex items-center gap-2"><Lock className="w-5 h-5 text-primary" /> Billing Details</CardTitle></CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Name & Phone */}
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Full Name</Label>
@@ -251,7 +251,6 @@ export default function Checkout() {
                     </div>
                   </div>
 
-                  {/* Email */}
                   <div className="space-y-2">
                     <Label>Email Address</Label>
                     <Input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="bg-muted/30" />
@@ -289,7 +288,7 @@ export default function Checkout() {
                      </div>
                   )}
 
-                  {/* EMI Option (Hidden for Lite Course) */}
+                  {/* EMI OPTION - HIDDEN for Lite Course */}
                   {isCourse && !isLiteCourse && (
                     <div className="space-y-4 pt-4 border-t">
                         <Label className="text-base font-semibold flex items-center gap-2"><Calculator className="w-4 h-4 text-primary" /> Payment Plan</Label>
@@ -360,23 +359,22 @@ export default function Checkout() {
                     </div>
                 </div>
 
-                {/* --- PROMO CODE SECTION WITH GLOW ANIMATION --- */}
-                {isCourse && !couponApplied && (
+                {/* --- PROMO CODE SECTION: ONLY VISIBLE FOR LITE COURSE --- */}
+                {isCourse && isLiteCourse && !couponApplied && (
                     <motion.div 
                         className="mb-6 p-2 rounded-lg"
-                        // Only animate if it's the Lite course
-                        animate={isLiteCourse ? {
+                        animate={{
                             boxShadow: [
-                                "0px 0px 0px rgba(168, 85, 247, 0)", // Transparent
-                                "0px 0px 15px rgba(168, 85, 247, 0.5)", // Glowing Purple
-                                "0px 0px 0px rgba(168, 85, 247, 0)"  // Back to Transparent
+                                "0px 0px 0px rgba(168, 85, 247, 0)", 
+                                "0px 0px 15px rgba(168, 85, 247, 0.5)", 
+                                "0px 0px 0px rgba(168, 85, 247, 0)" 
                             ],
                             borderColor: [
                                 "rgba(168, 85, 247, 0)",
                                 "rgba(168, 85, 247, 0.8)",
                                 "rgba(168, 85, 247, 0)"
                             ]
-                        } : {}}
+                        }}
                         transition={{
                             duration: 2,
                             repeat: Infinity,
@@ -384,16 +382,16 @@ export default function Checkout() {
                         }}
                     >
                         <Label className="text-xs font-semibold uppercase text-muted-foreground mb-1.5 block">
-                            Promo Code {isLiteCourse && <span className="text-primary animate-pulse ml-2">(Special Offer Available!)</span>}
+                            Promo Code <span className="text-primary animate-pulse ml-2">(Special Offer Available!)</span>
                         </Label>
                         <div className="flex gap-2">
                             <Input 
                                 placeholder="Enter Coupon" 
                                 value={couponInput}
                                 onChange={(e) => setCouponInput(e.target.value)}
-                                className={`bg-background ${isLiteCourse ? "border-primary/50" : ""}`}
+                                className="bg-background border-primary/50"
                             />
-                            <Button variant={isLiteCourse ? "default" : "outline"} onClick={handleApplyCoupon}>
+                            <Button variant="default" onClick={handleApplyCoupon}>
                                 <TicketPercent className="w-4 h-4" />
                             </Button>
                         </div>
@@ -425,7 +423,7 @@ export default function Checkout() {
                     </div>
                   )}
 
-                  {/* Special Coupon Discount - Highlights when applied */}
+                  {/* Special Coupon Discount - 70% OFF */}
                   {isCourse && couponApplied && (
                     <motion.div 
                         initial={{ scale: 0.95, opacity: 0 }}
