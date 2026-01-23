@@ -278,7 +278,7 @@ const Login = () => {
                     to="/signup"
                     className="text-primary hover:underline font-semibold"
                   >
-                    Sign up
+                    Sign up.
                   </Link>
                 </p>
               </motion.div>
