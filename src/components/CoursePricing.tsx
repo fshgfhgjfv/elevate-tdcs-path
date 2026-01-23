@@ -28,19 +28,18 @@ const pricingData = {
   },
   "cyber-blackhat": {
     title: "Cyber Master's Pro Black Hat",
-    subtitle: "Starts As low as",
-    monthlyPrice: "₹3,999/month",
+    subtitle: "Limited Time Offer",
+    monthlyPrice: "₹5,999",
     originalPrice: "₹1,00,000",
     discountedPrice: "₹19,999",
-    numericPrice: 19999, // Added for calculation
+    numericPrice: 19999,
     accessDuration: "1 Year Access + Internship",
-    // NEW EMI CONFIGURATION
-    emiConfig: {
-      enabled: true,
-      downPayment: 4999, // Initial payment
-      emiMonths: 6,      // Duration requested
-    },
-    emiDetails: "Custom EMI Plans Available", 
+    // EMI REMOVED for cyber-blackhat
+    emiConfig: null,
+    emiDetails: null, 
+    // 70% OFF COUPON
+    couponCode: "BLACKHAT70",
+    couponDiscount: 70,
     features: [
       "06-Month Career-Oriented Courses",
       "Full payment gets special discount + gifts",
@@ -54,14 +53,17 @@ const pricingData = {
     scholarship: "Additional Scholarships Up To ₹15,000",
   },
   "cyber-lite": {
-    title: "Cyber Master's Pro Lite",
-    subtitle: "Starts As low as",
-    monthlyPrice: "₹499/15days",
+    title: "Cyber Master's Pro Black-Hat Lite",
+    subtitle: "Special Student Offer",
+    monthlyPrice: "₹249/15days",
     originalPrice: "₹10,000",
     discountedPrice: "₹499",
     numericPrice: 499,
     accessDuration: "Half Months Access to Content",
     emiDetails: null,
+    // 50% OFF COUPON for new students
+    couponCode: "NEWSTUDENTFRO50%",
+    couponDiscount: 50,
     features: [
       "Aptitude Training",
       "Soft Skills Training",
@@ -129,6 +131,9 @@ export const CoursePricing = ({ onEnroll, courseId }: CoursePricingProps) => {
 
   const emiData = calculateEMI();
 
+  // @ts-ignore - Check for coupon
+  const hasCoupon = pricing.couponCode && pricing.couponDiscount;
+
   return (
     <section className="py-16 bg-muted/20" id="pricing">
       <div className="container mx-auto px-4">
@@ -145,6 +150,26 @@ export const CoursePricing = ({ onEnroll, courseId }: CoursePricingProps) => {
           <CardHeader className="text-center border-b">
             <CardTitle className="text-2xl mb-2">{pricing.title}</CardTitle>
             <p className="text-muted-foreground">{pricing.subtitle}</p>
+            
+            {/* Coupon Code Badge */}
+            {hasCoupon && (
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="my-4"
+              >
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-2 border-dashed border-green-500 rounded-lg px-4 py-2">
+                  <span className="text-2xl">🎟️</span>
+                  <div className="text-left">
+                    <p className="text-xs text-green-600 font-medium">USE COUPON CODE</p>
+                    <p className="text-lg font-bold text-green-500">{(pricing as any).couponCode}</p>
+                  </div>
+                  <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse">
+                    {(pricing as any).couponDiscount}% OFF
+                  </div>
+                </div>
+              </motion.div>
+            )}
             
             {/* Main Price Display */}
             <div className="text-4xl font-bold gradient-text my-4">{pricing.monthlyPrice}</div>

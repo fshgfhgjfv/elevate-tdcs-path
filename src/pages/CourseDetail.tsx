@@ -41,14 +41,9 @@ export default function CourseDetail() {
   }, [id]);
 
   const handleEnroll = () => {
-    if (!user) {
-      toast.error("Please login first to enroll");
-      navigate("/login", { state: { from: `/courses/${id}` } });
-      return;
-    }
     if (!course) return;
 
-    // Navigate to checkout for manual payment
+    // Navigate directly to checkout (no login required first)
     navigate("/checkout", { state: { courseId: id, courseName: course.title, price: course.price } });
   };
 
