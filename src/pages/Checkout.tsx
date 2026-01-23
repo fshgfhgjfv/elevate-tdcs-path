@@ -16,7 +16,7 @@ import {
   ShieldCheck, 
   CreditCard, 
   Linkedin,
-  TicketPercent // Added icon for coupon
+  TicketPercent 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,9 +30,9 @@ import { Badge } from "@/components/ui/badge";
 // --- Configuration ---
 const UPI_ID = "tdcsorganization@sbi"; 
 const STUDENT_DISCOUNT_PERCENT = 15; 
-const TARGET_LITE_COURSE = "Cyber Master's Pro Black-Hat Lite"; // The specific course
-const SPECIAL_COUPON_CODE = "NEWSTUDENTFRO50%"; // The code user enters
-const SPECIAL_DISCOUNT_PERCENT = 70; // The 70% discount requested
+const TARGET_LITE_COURSE = "Cyber Master's Pro Black-Hat Lite"; 
+const SPECIAL_COUPON_CODE = "NEWSTUDENTFRO50%"; 
+const SPECIAL_DISCOUNT_PERCENT = 70; 
 
 const QR_CODE_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEiYxV2ayi-nLo4GdGqaDDKDg9OpUiRjbmyav9HoiZp_qm2Zt1-x8jQ7Y4S5gMQSeKrIuZKolSVxZ0c817cdvXKG5IbRLWEngQOEBC8Gah6Edi2snbD0vbr6y-0nJSq8rdvCR4HJIcRJhRDlSTYA9EeYdGj-U6QaRM365bjvdR85QjaR3s4rm1oYOTYTl8gU";
 
@@ -52,7 +52,6 @@ export default function Checkout() {
   const itemName = serviceName || courseName || "Unknown Item";
   const itemType = isCourse ? "Course Enrollment" : "Premium Tool";
 
-  // Check if this is the specific "Lite" course
   const isLiteCourse = courseName === TARGET_LITE_COURSE;
 
   // --- PRICE PARSING ---
@@ -89,7 +88,6 @@ export default function Checkout() {
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponError, setCouponError] = useState("");
 
-  // Force Full Payment if it is the Lite course
   useEffect(() => {
     if (isLiteCourse) {
       setPaymentMode("full");
@@ -100,12 +98,10 @@ export default function Checkout() {
   const getEffectivePrice = () => {
     if (!isCourse) return basePrice;
 
-    // Priority 1: Special Coupon for Lite Course (70% OFF)
     if (isLiteCourse && couponApplied) {
         return Math.floor(basePrice * (1 - SPECIAL_DISCOUNT_PERCENT / 100));
     }
 
-    // Priority 2: Standard Student Discount (15% OFF)
     if (userType === 'student') {
       return Math.floor(basePrice * (1 - STUDENT_DISCOUNT_PERCENT / 100));
     }
@@ -206,7 +202,7 @@ export default function Checkout() {
               <p className="text-muted-foreground text-sm lg:text-base">Completing purchase for <span className="text-primary font-semibold">{itemName}</span></p>
             </div>
 
-            {/* Student Selector - COURSES ONLY */}
+            {/* Student Selector */}
             {isCourse && (
                 <Card className="border-primary/20 bg-primary/5">
                     <CardContent className="pt-6">
@@ -243,8 +239,7 @@ export default function Checkout() {
               <CardHeader><CardTitle className="flex items-center gap-2"><Lock className="w-5 h-5 text-primary" /> Billing Details</CardTitle></CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  
-                  {/* Row 1: Name & Phone */}
+                  {/* Name & Phone */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Full Name</Label>
@@ -256,13 +251,13 @@ export default function Checkout() {
                     </div>
                   </div>
 
-                  {/* Row 2: Email */}
+                  {/* Email */}
                   <div className="space-y-2">
                     <Label>Email Address</Label>
                     <Input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="bg-muted/30" />
                   </div>
 
-                  {/* === STUDENT VERIFICATION SECTION === */}
+                  {/* Student Verification */}
                   {isCourse && userType === 'student' && (
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-green-500/5 p-4 rounded-xl border border-green-500/20 animate-in fade-in slide-in-from-top-2">
                         <div className="col-span-1 md:col-span-2 pb-2 border-b border-green-500/10 mb-2">
@@ -271,8 +266,6 @@ export default function Checkout() {
                             </h4>
                             <p className="text-xs text-green-600/80 mt-1">Please provide details to verify your student status.</p>
                         </div>
-
-                        {/* College & Parent Phone */}
                         <div className="space-y-2">
                             <Label>College Name</Label>
                             <Input name="collegeName" required placeholder="e.g. IIT Bombay" value={formData.collegeName} onChange={handleInputChange} className="bg-white/50 border-green-500/20 focus:border-green-500"/>
@@ -281,39 +274,22 @@ export default function Checkout() {
                             <Label>Parent's Phone No.</Label>
                             <Input name="parentPhone" type="tel" required placeholder="Parent's Mobile" value={formData.parentPhone} onChange={handleInputChange} className="bg-white/50 border-green-500/20 focus:border-green-500" />
                         </div>
-
-                        {/* Aadhar & LinkedIn */}
                         <div className="space-y-2">
                             <Label className="flex items-center gap-2 text-xs uppercase text-muted-foreground font-bold">
                                 <CreditCard className="w-3 h-3"/> Aadhar Number
                             </Label>
-                            <Input 
-                                name="aadharNumber" 
-                                required 
-                                placeholder="XXXX XXXX XXXX" 
-                                maxLength={12}
-                                value={formData.aadharNumber} 
-                                onChange={handleInputChange} 
-                                className="bg-white/50 border-green-500/20 focus:border-green-500 font-mono" 
-                            />
+                            <Input name="aadharNumber" required placeholder="XXXX XXXX XXXX" maxLength={12} value={formData.aadharNumber} onChange={handleInputChange} className="bg-white/50 border-green-500/20 focus:border-green-500 font-mono" />
                         </div>
                         <div className="space-y-2">
                             <Label className="flex items-center gap-2 text-xs uppercase text-muted-foreground font-bold">
                                 <Linkedin className="w-3 h-3"/> LinkedIn Profile
                             </Label>
-                            <Input 
-                                name="linkedinProfile" 
-                                placeholder="linkedin.com/in/..." 
-                                value={formData.linkedinProfile} 
-                                onChange={handleInputChange} 
-                                className="bg-white/50 border-green-500/20 focus:border-green-500" 
-                            />
+                            <Input name="linkedinProfile" placeholder="linkedin.com/in/..." value={formData.linkedinProfile} onChange={handleInputChange} className="bg-white/50 border-green-500/20 focus:border-green-500" />
                         </div>
                      </div>
                   )}
 
-                  {/* EMI PLAN - COURSES ONLY */}
-                  {/* HIDE EMI if it's the LITE course */}
+                  {/* EMI Option (Hidden for Lite Course) */}
                   {isCourse && !isLiteCourse && (
                     <div className="space-y-4 pt-4 border-t">
                         <Label className="text-base font-semibold flex items-center gap-2"><Calculator className="w-4 h-4 text-primary" /> Payment Plan</Label>
@@ -384,23 +360,45 @@ export default function Checkout() {
                     </div>
                 </div>
 
-                {/* --- COUPON INPUT SECTION --- */}
+                {/* --- PROMO CODE SECTION WITH GLOW ANIMATION --- */}
                 {isCourse && !couponApplied && (
-                    <div className="mb-6">
-                        <Label className="text-xs font-semibold uppercase text-muted-foreground mb-1.5 block">Promo Code</Label>
+                    <motion.div 
+                        className="mb-6 p-2 rounded-lg"
+                        // Only animate if it's the Lite course
+                        animate={isLiteCourse ? {
+                            boxShadow: [
+                                "0px 0px 0px rgba(168, 85, 247, 0)", // Transparent
+                                "0px 0px 15px rgba(168, 85, 247, 0.5)", // Glowing Purple
+                                "0px 0px 0px rgba(168, 85, 247, 0)"  // Back to Transparent
+                            ],
+                            borderColor: [
+                                "rgba(168, 85, 247, 0)",
+                                "rgba(168, 85, 247, 0.8)",
+                                "rgba(168, 85, 247, 0)"
+                            ]
+                        } : {}}
+                        transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
+                    >
+                        <Label className="text-xs font-semibold uppercase text-muted-foreground mb-1.5 block">
+                            Promo Code {isLiteCourse && <span className="text-primary animate-pulse ml-2">(Special Offer Available!)</span>}
+                        </Label>
                         <div className="flex gap-2">
                             <Input 
                                 placeholder="Enter Coupon" 
                                 value={couponInput}
                                 onChange={(e) => setCouponInput(e.target.value)}
-                                className="bg-background"
+                                className={`bg-background ${isLiteCourse ? "border-primary/50" : ""}`}
                             />
-                            <Button variant="outline" onClick={handleApplyCoupon}>
+                            <Button variant={isLiteCourse ? "default" : "outline"} onClick={handleApplyCoupon}>
                                 <TicketPercent className="w-4 h-4" />
                             </Button>
                         </div>
                         {couponError && <p className="text-xs text-red-500 mt-1">{couponError}</p>}
-                    </div>
+                    </motion.div>
                 )}
 
                 {couponApplied && (
@@ -420,7 +418,6 @@ export default function Checkout() {
                     <span>₹{basePrice.toLocaleString()}</span>
                   </div>
                   
-                  {/* Standard Student Discount */}
                   {isCourse && userType === 'student' && !couponApplied && (
                     <div className="flex justify-between text-sm text-green-600 font-medium">
                       <span>Student Discount (15%)</span>
@@ -428,12 +425,16 @@ export default function Checkout() {
                     </div>
                   )}
 
-                  {/* Special Coupon Discount */}
+                  {/* Special Coupon Discount - Highlights when applied */}
                   {isCourse && couponApplied && (
-                    <div className="flex justify-between text-sm text-purple-600 font-bold">
+                    <motion.div 
+                        initial={{ scale: 0.95, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="flex justify-between text-sm text-purple-600 font-bold p-1 bg-purple-50 rounded"
+                    >
                       <span>Special Offer (70%)</span>
                       <span>- ₹{discountAmount.toLocaleString()}</span>
-                    </div>
+                    </motion.div>
                   )}
 
                   {paymentMode === 'emi' && isCourse && !isLiteCourse && (
@@ -445,7 +446,6 @@ export default function Checkout() {
 
                   <Separator className="my-2"/>
                   
-                  {/* FINAL PAYABLE */}
                   <div className="flex justify-between items-center pt-2">
                     <div className="flex flex-col">
                         <span className="font-bold text-lg">Due Today</span>
