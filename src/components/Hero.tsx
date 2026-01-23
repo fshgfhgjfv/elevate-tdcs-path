@@ -336,7 +336,7 @@ const DownloadBrochureModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: 
                                 className="block w-full pl-10 pr-3 py-2.5 bg-black/50 border border-gray-700 rounded-md text-gray-100 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 appearance-none font-mono text-sm shadow-[0_0_10px_rgba(6,182,212,0.1)]"
                             >
                                 <option value="" disabled>SELECT_PROTOCOL...</option>
-                                <option value="cyber-lite">[LITE] CYBER MASTER PRO</option>
+                                <option value="cyber-lite">[LITE] CYBER MASTER PRO BLACK-HAT</option>
                                 <option value="cyber-blackhat">[BLACK_HAT] OFFENSIVE OPS</option>
                                 <option value="bug-hunting-pentest">[HUNT] BUG BOUNTY</option>
                                 <option value="network-security-defense">[DEFENSE] NETSEC</option>

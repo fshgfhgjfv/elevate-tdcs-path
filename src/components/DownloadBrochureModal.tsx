@@ -136,7 +136,7 @@ export const DownloadBrochureModal = ({ isOpen, onClose, preselectedCourse }: Do
                 {/* Order: Cyber Master's Pro -> Black Hat -> Bug Hunting -> Network Security */}
                 <SelectItem value="cyber-lite">
                   <span className="flex items-center gap-2">
-                    🔐 Cyber Master's Pro (₹499 - 2 months)
+                    🔐 Cyber Master's Pro Black-Hat Lite (₹499 - 15 days)
                   </span>
                 </SelectItem>
                 <SelectItem value="cyber-blackhat">

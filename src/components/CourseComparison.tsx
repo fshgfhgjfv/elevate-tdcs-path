@@ -43,7 +43,7 @@ const COURSES: Course[] = [
   },
   {
     id: "cyber-lite",
-    name: "Cyber Master's Pro Lite",
+    name: "Cyber Master's Pro Black-Hat Lite",
     tagline: "Essential Skills",
     highlight: "Best Value",
     accessor: "lite",
@@ -53,7 +53,8 @@ const COURSES: Course[] = [
 const FEATURES: FeatureRow[] = [
   { name: "Duration", bugBounty: "2 months", blackHat: "6 months", lite: "15 days" },
   { name: "Price", bugBounty: "₹6,999", blackHat: "₹19,000", lite: "₹499" },
-  { name: "EMI Option", bugBounty: "₹2,999/mo", blackHat: "₹2,833/mo", lite: "₹230/mo" },
+  { name: "EMI Option", bugBounty: "₹2,999/mo", blackHat: "Not Available", lite: "₹230/mo" },
+  { name: "Coupon", bugBounty: false, blackHat: "70% OFF", lite: "50% OFF" },
   { name: "Live Bug Hunting", bugBounty: true, blackHat: false, lite: false },
   { name: "Private Platforms Access", bugBounty: true, blackHat: false, lite: false },
   { name: "CVE Documentation", bugBounty: true, blackHat: false, lite: false },

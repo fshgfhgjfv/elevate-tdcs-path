@@ -10,7 +10,7 @@ import {
 const INITIAL_COURSES = [
   { 
     id: 1, 
-    title: "Cyber Master's Pro Lite", 
+    title: "Cyber Master's Pro Black-Hat Lite", 
     description: "Foundational ethical hacking & network security program for beginners.", 
     price: 499, 
     mode: "Live Online",

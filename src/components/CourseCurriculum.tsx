@@ -109,7 +109,7 @@ const COURSES = [
   },
   {
     id: "lite",
-    name: "Cyber Master's Pro Lite",
+    name: "Cyber Master's Pro Black-Hat Lite",
     icon: <Zap className="w-5 h-5" />,
     description: "A fast-track 15-day course covering essential security skills.",
     curriculum: [
