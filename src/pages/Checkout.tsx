@@ -1,21 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   ArrowLeft, 
   CheckCircle, 
-  Loader2,
-  BookOpen,
-  Zap,
-  Lock,
-  GraduationCap,
-  Briefcase,
-  Copy,
-  Calculator,
-  CalendarClock,
-  ShieldCheck,
-  CreditCard,
-  Linkedin
+  Loader2, 
+  BookOpen, 
+  Zap, 
+  Lock, 
+  GraduationCap, 
+  Briefcase, 
+  Copy, 
+  Calculator, 
+  CalendarClock, 
+  ShieldCheck, 
+  CreditCard, 
+  Linkedin,
+  TicketPercent // Added icon for coupon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,10 @@ import { Badge } from "@/components/ui/badge";
 // --- Configuration ---
 const UPI_ID = "tdcsorganization@sbi"; 
 const STUDENT_DISCOUNT_PERCENT = 15; 
+const TARGET_LITE_COURSE = "Cyber Master's Pro Black-Hat Lite"; // The specific course
+const SPECIAL_COUPON_CODE = "NEWSTUDENTFRO50%"; // The code user enters
+const SPECIAL_DISCOUNT_PERCENT = 70; // The 70% discount requested
+
 const QR_CODE_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEiYxV2ayi-nLo4GdGqaDDKDg9OpUiRjbmyav9HoiZp_qm2Zt1-x8jQ7Y4S5gMQSeKrIuZKolSVxZ0c817cdvXKG5IbRLWEngQOEBC8Gah6Edi2snbD0vbr6y-0nJSq8rdvCR4HJIcRJhRDlSTYA9EeYdGj-U6QaRM365bjvdR85QjaR3s4rm1oYOTYTl8gU";
 
 const EMI_CONFIG = {
@@ -46,6 +51,9 @@ export default function Checkout() {
   const isCourse = !!courseName; 
   const itemName = serviceName || courseName || "Unknown Item";
   const itemType = isCourse ? "Course Enrollment" : "Premium Tool";
+
+  // Check if this is the specific "Lite" course
+  const isLiteCourse = courseName === TARGET_LITE_COURSE;
 
   // --- PRICE PARSING ---
   const parsePrice = (inputPrice: any) => {
@@ -76,9 +84,28 @@ export default function Checkout() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  // --- COUPON STATE ---
+  const [couponInput, setCouponInput] = useState("");
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [couponError, setCouponError] = useState("");
+
+  // Force Full Payment if it is the Lite course
+  useEffect(() => {
+    if (isLiteCourse) {
+      setPaymentMode("full");
+    }
+  }, [isLiteCourse]);
+
   // 3. Price Calculation
   const getEffectivePrice = () => {
     if (!isCourse) return basePrice;
+
+    // Priority 1: Special Coupon for Lite Course (70% OFF)
+    if (isLiteCourse && couponApplied) {
+        return Math.floor(basePrice * (1 - SPECIAL_DISCOUNT_PERCENT / 100));
+    }
+
+    // Priority 2: Standard Student Discount (15% OFF)
     if (userType === 'student') {
       return Math.floor(basePrice * (1 - STUDENT_DISCOUNT_PERCENT / 100));
     }
@@ -101,8 +128,8 @@ export default function Checkout() {
     
     return {
       totalCost: downPayment + totalLoanAmount, 
-      downPayment,       
-      monthlyEMI,        
+      downPayment,        
+      monthlyEMI,         
       interest: interestAmount,
       payNow: downPayment > 0 ? downPayment : monthlyEMI 
     };
@@ -110,12 +137,27 @@ export default function Checkout() {
 
   const emiDetails = calculateEMI();
   
-  const amountDueNow = (paymentMode === 'emi' && isCourse)
+  const amountDueNow = (paymentMode === 'emi' && isCourse && !isLiteCourse)
     ? emiDetails.payNow 
     : effectivePrice;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleApplyCoupon = () => {
+    setCouponError("");
+    if (couponInput.trim() === "") return;
+
+    if (couponInput.trim() === SPECIAL_COUPON_CODE) {
+        if (isLiteCourse) {
+            setCouponApplied(true);
+        } else {
+            setCouponError("This coupon is only valid for Lite courses.");
+        }
+    } else {
+        setCouponError("Invalid coupon code.");
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -186,8 +228,8 @@ export default function Checkout() {
                                 <RadioGroupItem value="student" id="r-student" />
                                 <Label htmlFor="r-student" className="cursor-pointer flex-1">
                                     <div className="flex items-center gap-2 font-bold text-green-600">
-                                        <GraduationCap className="w-4 h-4"/> Student
-                                        <Badge className="bg-green-500 hover:bg-green-600 text-[10px] h-5 px-1.5 ml-auto">15% OFF</Badge>
+                                            <GraduationCap className="w-4 h-4"/> Student
+                                            <Badge className="bg-green-500 hover:bg-green-600 text-[10px] h-5 px-1.5 ml-auto">15% OFF</Badge>
                                     </div>
                                     <div className="text-xs text-muted-foreground">Valid ID Required</div>
                                 </Label>
@@ -220,7 +262,7 @@ export default function Checkout() {
                     <Input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="bg-muted/30" />
                   </div>
 
-                  {/* === STUDENT VERIFICATION SECTION (Verification + Aadhar + LinkedIn) === */}
+                  {/* === STUDENT VERIFICATION SECTION === */}
                   {isCourse && userType === 'student' && (
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-green-500/5 p-4 rounded-xl border border-green-500/20 animate-in fade-in slide-in-from-top-2">
                         <div className="col-span-1 md:col-span-2 pb-2 border-b border-green-500/10 mb-2">
@@ -271,7 +313,8 @@ export default function Checkout() {
                   )}
 
                   {/* EMI PLAN - COURSES ONLY */}
-                  {isCourse && (
+                  {/* HIDE EMI if it's the LITE course */}
+                  {isCourse && !isLiteCourse && (
                     <div className="space-y-4 pt-4 border-t">
                         <Label className="text-base font-semibold flex items-center gap-2"><Calculator className="w-4 h-4 text-primary" /> Payment Plan</Label>
                         <RadioGroup value={paymentMode} onValueChange={(val: "full" | "emi") => setPaymentMode(val)} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -341,20 +384,59 @@ export default function Checkout() {
                     </div>
                 </div>
 
+                {/* --- COUPON INPUT SECTION --- */}
+                {isCourse && !couponApplied && (
+                    <div className="mb-6">
+                        <Label className="text-xs font-semibold uppercase text-muted-foreground mb-1.5 block">Promo Code</Label>
+                        <div className="flex gap-2">
+                            <Input 
+                                placeholder="Enter Coupon" 
+                                value={couponInput}
+                                onChange={(e) => setCouponInput(e.target.value)}
+                                className="bg-background"
+                            />
+                            <Button variant="outline" onClick={handleApplyCoupon}>
+                                <TicketPercent className="w-4 h-4" />
+                            </Button>
+                        </div>
+                        {couponError && <p className="text-xs text-red-500 mt-1">{couponError}</p>}
+                    </div>
+                )}
+
+                {couponApplied && (
+                    <div className="mb-6 p-3 bg-green-500/10 border border-green-500/20 rounded-lg flex justify-between items-center">
+                        <span className="text-sm text-green-700 font-medium flex items-center gap-2">
+                            <CheckCircle className="w-4 h-4"/> Coupon Applied
+                        </span>
+                        <Button variant="ghost" size="sm" className="h-6 text-xs text-red-500 hover:text-red-600 hover:bg-red-100" onClick={() => setCouponApplied(false)}>
+                            Remove
+                        </Button>
+                    </div>
+                )}
+
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Base Price</span>
                     <span>₹{basePrice.toLocaleString()}</span>
                   </div>
                   
-                  {isCourse && userType === 'student' && (
+                  {/* Standard Student Discount */}
+                  {isCourse && userType === 'student' && !couponApplied && (
                     <div className="flex justify-between text-sm text-green-600 font-medium">
                       <span>Student Discount (15%)</span>
                       <span>- ₹{discountAmount.toLocaleString()}</span>
                     </div>
                   )}
 
-                  {paymentMode === 'emi' && isCourse && (
+                  {/* Special Coupon Discount */}
+                  {isCourse && couponApplied && (
+                    <div className="flex justify-between text-sm text-purple-600 font-bold">
+                      <span>Special Offer (70%)</span>
+                      <span>- ₹{discountAmount.toLocaleString()}</span>
+                    </div>
+                  )}
+
+                  {paymentMode === 'emi' && isCourse && !isLiteCourse && (
                       <div className="flex justify-between text-sm text-orange-500">
                           <span>EMI Interest ({userType === 'student' ? '3.5%' : '5%'})</span>
                           <span>+ ₹{emiDetails.interest.toLocaleString()}</span>
@@ -378,7 +460,7 @@ export default function Checkout() {
                     </span>
                   </div>
                   
-                  {paymentMode === 'emi' && isCourse && (
+                  {paymentMode === 'emi' && isCourse && !isLiteCourse && (
                       <div className="mt-4 flex items-start gap-2 text-xs text-muted-foreground bg-yellow-500/5 p-3 rounded border border-yellow-500/20">
                           <CalendarClock className="w-4 h-4 mt-0.5 text-yellow-600 shrink-0" />
                           <div>
