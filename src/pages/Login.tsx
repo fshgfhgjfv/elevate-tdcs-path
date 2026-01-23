@@ -6,7 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Github } from "lucide-react";
+import { Github, Loader2 } from "lucide-react";
+import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
+
+// --- CONFIGURATION ---
+const googleClientId = "608143065275-uk0254ebnpmrepto7ssb2ee103odutgk.apps.googleusercontent.com";
 
 // SVG for Google icon
 const GoogleIcon = () => (
@@ -22,6 +26,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [formData, setFormData] = useState({ emailOrNumber: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const user = localStorage.getItem("tdcs_user");
@@ -30,46 +35,82 @@ const Login = () => {
     }
   }, [navigate]);
 
+  // --- GOOGLE LOGIN HANDLER ---
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setIsLoading(true);
+      console.log("Google Token:", tokenResponse);
+      
+      // SIMULATION: In a real app, send tokenResponse.access_token to your backend
+      setTimeout(() => {
+        // Create a mock session for Google User
+        const mockGoogleUser = {
+          name: "Google User",
+          email: "user@gmail.com",
+          photo: "https://lh3.googleusercontent.com/a/default-user",
+          method: "google"
+        };
+        localStorage.setItem("tdcs_user", JSON.stringify(mockGoogleUser));
+        
+        toast.success("Logged in with Google!");
+        setIsLoading(false);
+        const from = (location.state as any)?.from || "/dashboard";
+        navigate(from);
+      }, 1500);
+    },
+    onError: () => {
+      toast.error("Google Login Failed");
+      setIsLoading(false);
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const { emailOrNumber, password } = formData;
 
     if (!emailOrNumber || !password) {
       toast.error("Please fill in all fields");
+      setIsLoading(false);
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
+    // Simulate Network Request
+    setTimeout(() => {
+        const users = JSON.parse(localStorage.getItem("tdcs_users") || "[]");
 
-    // Detect if input is an email or a phone number
-    let user;
-    if (emailOrNumber.includes("@")) {
-      user = users.find(
-        (u: any) => u.email === emailOrNumber && u.password === password
-      );
-    } else {
-      // For number, allow 10-digit input or +91XXXXXXXXXX format
-      const normalizedNumber = emailOrNumber.replace(/\D/g, ""); // only digits
-      if (normalizedNumber.length !== 10) {
-        toast.error("Please enter a valid 10-digit number");
-        return;
-      }
-      const formattedNumber = `+91${normalizedNumber}`;
-      user = users.find(
-        (u: any) => u.number === formattedNumber && u.password === password
-      );
-    }
+        // Detect if input is an email or a phone number
+        let user;
+        if (emailOrNumber.includes("@")) {
+            user = users.find(
+                (u: any) => u.email === emailOrNumber && u.password === password
+            );
+        } else {
+            // For number, allow 10-digit input or +91XXXXXXXXXX format
+            const normalizedNumber = emailOrNumber.replace(/\D/g, ""); // only digits
+            if (normalizedNumber.length !== 10) {
+                toast.error("Please enter a valid 10-digit number");
+                setIsLoading(false);
+                return;
+            }
+            const formattedNumber = `+91${normalizedNumber}`;
+            user = users.find(
+                (u: any) => u.number === formattedNumber && u.password === password
+            );
+        }
 
-    if (user) {
-      const { password: _, ...userWithoutPassword } = user;
-      localStorage.setItem("tdcs_user", JSON.stringify(userWithoutPassword));
-      toast.success("Login successful!");
-      const from = (location.state as any)?.from || "/dashboard";
-      navigate(from);
-    } else {
-      toast.error("Invalid credentials");
-    }
+        if (user) {
+            const { password: _, ...userWithoutPassword } = user;
+            localStorage.setItem("tdcs_user", JSON.stringify(userWithoutPassword));
+            toast.success("Login successful!");
+            const from = (location.state as any)?.from || "/dashboard";
+            navigate(from);
+        } else {
+            toast.error("Invalid credentials");
+        }
+        setIsLoading(false);
+    }, 1000);
   };
 
   return (
@@ -132,6 +173,7 @@ const Login = () => {
                       type="text"
                       placeholder="your@email.com or 10-digit number"
                       value={formData.emailOrNumber}
+                      disabled={isLoading}
                       onChange={(e) => {
                         const value = e.target.value;
                         // If number, allow only digits up to 10
@@ -161,6 +203,7 @@ const Login = () => {
                     type="password"
                     placeholder="••••••••"
                     value={formData.password}
+                    disabled={isLoading}
                     onChange={(e) =>
                       setFormData({ ...formData, password: e.target.value })
                     }
@@ -172,9 +215,10 @@ const Login = () => {
                   <Button
                     type="submit"
                     variant="gradient"
+                    disabled={isLoading}
                     className="w-full text-lg py-6 font-semibold shadow-lg"
                   >
-                    Login
+                    {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Login"}
                   </Button>
                 </motion.div>
 
@@ -196,10 +240,11 @@ const Login = () => {
                     <Button
                       type="button"
                       variant="outline"
+                      disabled={isLoading}
                       className="w-full py-6"
-                      onClick={() => toast.info("Google sign-in coming soon!")}
+                      onClick={() => googleLogin()}
                     >
-                      <GoogleIcon />
+                      {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
                       <span className="ml-2">Continue with Google</span>
                     </Button>
                   </motion.div>
@@ -245,4 +290,11 @@ const Login = () => {
   );
 };
 
-export default Login;
+// Wrapper for OAuth Context
+const LoginWithGoogleAuth = () => (
+  <GoogleOAuthProvider clientId={googleClientId}>
+    <Login />
+  </GoogleOAuthProvider>
+);
+
+export default LoginWithGoogleAuth;
