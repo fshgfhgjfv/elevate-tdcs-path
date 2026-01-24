@@ -31,7 +31,7 @@ import { Badge } from "@/components/ui/badge";
 const UPI_ID = "tdcsorganization@sbi"; 
 const STUDENT_DISCOUNT_PERCENT = 15; 
 const TARGET_LITE_COURSE = "Cyber Master's Pro Black-Hat Lite"; 
-const SPECIAL_COUPON_CODE = "NEWSTUDENTFRO50%"; 
+const SPECIAL_COUPON_CODE = "NEWSTUDENTFRO70%"; 
 const SPECIAL_DISCOUNT_PERCENT = 70; 
 
 const QR_CODE_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEiYxV2ayi-nLo4GdGqaDDKDg9OpUiRjbmyav9HoiZp_qm2Zt1-x8jQ7Y4S5gMQSeKrIuZKolSVxZ0c817cdvXKG5IbRLWEngQOEBC8Gah6Edi2snbD0vbr6y-0nJSq8rdvCR4HJIcRJhRDlSTYA9EeYdGj-U6QaRM365bjvdR85QjaR3s4rm1oYOTYTl8gU";
