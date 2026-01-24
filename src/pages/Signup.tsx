@@ -22,8 +22,8 @@ import { Loader2, Mail, Lock, User, Github, Phone } from "lucide-react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 
 // --- CONFIGURATION ---
-// I have updated this with your NEW Client ID:
 const googleClientId = "608143065275-uk0254ebnpmrepto7ssb2ee103odutgk.apps.googleusercontent.com";
+const GITHUB_CLIENT_ID = "Ov23lilb9RXtyct9hKN9";
 
 // --- Floating Icons Data ---
 const tools = [
@@ -85,6 +85,17 @@ const Signup = () => {
     },
     onError: () => toast.error("Google Login Failed"),
   });
+
+  // --- GITHUB HANDLER (NEW) ---
+  const handleGithubLogin = () => {
+    setIsLoading(true);
+    // Construct the GitHub authorization URL
+    // This redirects the user away from your app to GitHub
+    const redirectUri = `${window.location.origin}/auth/github/callback`;
+    const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${redirectUri}&scope=user:email`;
+    
+    window.location.href = githubUrl;
+  };
 
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -189,6 +200,8 @@ const Signup = () => {
                 </Button>
                 <Button 
                   variant="outline" 
+                  onClick={handleGithubLogin} // <--- ATTACHED HANDLER HERE
+                  disabled={isLoading}
                   className="w-full h-10 md:h-12 bg-zinc-900 border-zinc-800 text-white hover:bg-zinc-800 hover:text-white transition-transform active:scale-95 flex items-center justify-center gap-2"
                 >
                   <Github className="w-5 h-5" />
