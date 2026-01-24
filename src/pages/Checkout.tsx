@@ -45,8 +45,38 @@ export default function Checkout() {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // 1. Retrieve Data
-  const { serviceName, courseName, price, courseId } = location.state || {};
+  // --- FIXED DATA RETRIEVAL LOGIC START ---
+  
+  // 1. Helper to find data from Router State OR Session Storage
+  const getInitialData = () => {
+    // Priority 1: Fresh data passed via navigation
+    if (location.state) return location.state;
+    
+    // Priority 2: Saved data from session storage (handles page refresh)
+    const stored = sessionStorage.getItem("checkoutPending");
+    return stored ? JSON.parse(stored) : null;
+  };
+
+  const checkoutData = getInitialData();
+
+  // 2. Effect to Persistence or Redirect
+  useEffect(() => {
+    if (location.state) {
+      // If we have fresh state, save it so it survives a refresh
+      sessionStorage.setItem("checkoutPending", JSON.stringify(location.state));
+    } else if (!checkoutData) {
+      // If we have NO state and NO storage, kick user back to Home
+      navigate('/', { replace: true });
+    }
+  }, [location.state, checkoutData, navigate]);
+
+  // 3. Prevent rendering "Unknown Item" while redirecting
+  if (!checkoutData) {
+    return null; // Or return <Loader2 className="animate-spin" />
+  }
+
+  const { serviceName, courseName, price, courseId } = checkoutData;
+  // --- FIXED DATA RETRIEVAL LOGIC END ---
   
   const isCourse = !!courseName; 
   const itemName = serviceName || courseName || "Unknown Item";
@@ -129,7 +159,7 @@ export default function Checkout() {
     return {
       totalCost: downPayment + totalLoanAmount, 
       downPayment,        
-      monthlyEMI,         
+      monthlyEMI,           
       interest: interestAmount,
       payNow: downPayment > 0 ? downPayment : monthlyEMI 
     };
@@ -162,6 +192,8 @@ export default function Checkout() {
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
+      // Clean up storage after successful purchase
+      sessionStorage.removeItem("checkoutPending");
       if (isCourse && courseId) localStorage.setItem(`tdcs_purchased_${courseId}`, "true");
     }, 2000);
   };
@@ -258,7 +290,7 @@ export default function Checkout() {
 
                   {/* Student Verification */}
                   {isCourse && userType === 'student' && (
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-green-500/5 p-4 rounded-xl border border-green-500/20 animate-in fade-in slide-in-from-top-2">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-green-500/5 p-4 rounded-xl border border-green-500/20 animate-in fade-in slide-in-from-top-2">
                         <div className="col-span-1 md:col-span-2 pb-2 border-b border-green-500/10 mb-2">
                             <h4 className="text-sm font-semibold text-green-700 flex items-center gap-2">
                                 <ShieldCheck className="w-4 h-4"/> Student Verification Required
@@ -285,7 +317,7 @@ export default function Checkout() {
                             </Label>
                             <Input name="linkedinProfile" placeholder="linkedin.com/in/..." value={formData.linkedinProfile} onChange={handleInputChange} className="bg-white/50 border-green-500/20 focus:border-green-500" />
                         </div>
-                     </div>
+                      </div>
                   )}
 
                   {/* EMI OPTION - HIDDEN for Lite Course */}
@@ -319,7 +351,7 @@ export default function Checkout() {
                                 </Select>
                             </div>
                         )}
-                     </div>
+                      </div>
                   )}
 
                   <Separator className="my-4" />
