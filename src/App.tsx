@@ -36,13 +36,13 @@ import ProductDetail from "./pages/ProductDetail";
 import Checkout from "./pages/Checkout";
 import HardwareCheckout from "./pages/HardwareCheckout";
 import TrackParcel from "./pages/TrackParcel";
-
-// Specific Service Detail Pages
 import WebsiteSecurityDetails from "./pages/WebsiteSecurityDetails";
 import PenetrationTestingPage from "./pages/PenetrationTestingPage";
 import WebDevelopmentPage from "./pages/WebDevelopmentPage";
-
 import SimpleAdminPanel from "./pages/admintdcsd/SimpleAdminPanel";
+
+// 👇 1. ADD THIS IMPORT 👇
+import GithubCallback from "./pages/GithubCallback"; 
 
 const queryClient = new QueryClient();
 
@@ -58,7 +58,6 @@ const App = () => (
             <Header />
 
             <Routes>
-              {/* 🌐 Main Pages */}
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact-us" element={<ContactUs />} />
@@ -66,23 +65,21 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
 
-              {/* 🎓 Courses */}
               <Route path="/courses" element={<Courses />} />
               <Route path="/courses/:id" element={<CourseDetail />} />
               <Route path="/courses/:id/content" element={<CourseContent />} />
 
-              {/* 👤 Auth & Profile */}
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/dashboard/*" element={<Dashboard />} />
               <Route path="/my-profile" element={<MyProfile />} />
 
-              {/* 🪪 Certificates */}
+              {/* 👇 2. ADD THIS ROUTE 👇 */}
+              <Route path="/auth/github/callback" element={<GithubCallback />} />
+
               <Route path="/verify-certificate" element={<VerifyCertificate />} />
               <Route path="/certificate-download" element={<CertificateDownload />} />
-
-              {/* 🧰 Services */}
               <Route path="/services" element={<Services />} />
               <Route path="/services/software" element={<Services />} />
               <Route path="/services/hardware" element={<HardwareServices />} />
@@ -92,21 +89,11 @@ const App = () => (
               <Route path="/services/penetration-testing" element={<PenetrationTestingPage />} />
               <Route path="/services/web-development" element={<WebDevelopmentPage />} />
               <Route path="/services/:serviceId" element={<ServiceDetail />} />
-
-              {/* 🛒 E-commerce */}
               <Route path="/hardware/product/:id" element={<ProductDetail />} />
-              
-              {/* Checkout Routes */}
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/hardware-checkout" element={<HardwareCheckout />} />
-              
-              {/* Track Parcel */}
               <Route path="/track-parcel" element={<TrackParcel />} />
-
-              {/* 🛠️ Admin Panel */}
               <Route path="/admintdcsd" element={<SimpleAdminPanel />} />
-
-              {/* 🚫 404 Fallback */}
               <Route path="*" element={<NotFound />} />
             </Routes>
 
