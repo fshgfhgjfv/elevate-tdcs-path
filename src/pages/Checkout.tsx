@@ -16,7 +16,8 @@ import {
   ShieldCheck, 
   CreditCard, 
   Linkedin,
-  TicketPercent 
+  TicketPercent,
+  AlertCircle // Added for the error icon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,20 +60,41 @@ export default function Checkout() {
 
   const checkoutData = getInitialData();
 
-  // 2. Effect to Persistence or Redirect
+  // 2. Effect to Persist State (Removed the redirect logic here)
   useEffect(() => {
     if (location.state) {
       // If we have fresh state, save it so it survives a refresh
       sessionStorage.setItem("checkoutPending", JSON.stringify(location.state));
-    } else if (!checkoutData) {
-      // If we have NO state and NO storage, kick user back to Home
-      navigate('/', { replace: true });
     }
-  }, [location.state, checkoutData, navigate]);
+  }, [location.state]);
 
-  // 3. Prevent rendering "Unknown Item" while redirecting
+  // 3. SHOW 404 ERROR IF NO DATA FOUND
   if (!checkoutData) {
-    return null; // Or return <Loader2 className="animate-spin" />
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="max-w-md w-full border-red-500/20 shadow-lg bg-background/95 backdrop-blur">
+            <CardHeader className="text-center pb-2">
+                <div className="mx-auto w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-4">
+                    <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-500" />
+                </div>
+                <CardTitle className="text-2xl font-bold text-foreground">No Item Selected</CardTitle>
+                <CardDescription className="text-base mt-2">
+                   We couldn't find the item you are trying to purchase.
+                   <br/>
+                   <span className="text-red-500 font-medium">Please select a course or tool from our website first.</span>
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 pt-4">
+                <Button className="w-full h-12 text-base" onClick={() => navigate("/")}>
+                    Return Home
+                </Button>
+                <Button variant="outline" className="w-full h-12 text-base" onClick={() => navigate("/courses")}>
+                    Browse Courses
+                </Button>
+            </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   const { serviceName, courseName, price, courseId } = checkoutData;
