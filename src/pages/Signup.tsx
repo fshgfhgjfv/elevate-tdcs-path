@@ -18,12 +18,17 @@ import {
   useSpring,
 } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, Mail, Lock, User, Github, Phone } from "lucide-react";
-import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
+import { Loader2, Mail, Lock, User, Phone } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { z } from "zod";
 
-// --- CONFIGURATION ---
-const googleClientId = "608143065275-uk0254ebnpmrepto7ssb2ee103odutgk.apps.googleusercontent.com";
-const GITHUB_CLIENT_ID = "Ov23lilb9RXtyct9hKN9";
+// Input validation schema
+const signupSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name is too long"),
+  phone: z.string().length(10, "Phone number must be 10 digits"),
+  email: z.string().email("Please enter a valid email address").max(255, "Email is too long"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
 
 // --- Floating Icons Data ---
 const tools = [
@@ -33,18 +38,11 @@ const tools = [
   { src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/1200px-Tux.svg.png", delay: 1, x: "80%", y: "80%" },
 ];
 
-const GoogleIcon = () => (
-  <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48">
-    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.659,4.696-6.142,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
-    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
-    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.16,0-9.658-3.302-11.303-7.918l-6.522,5.023C9.505,41.246,16.227,44,24,44z" />
-    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C41.383,34.463,44,29.625,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
-  </svg>
-);
-
 const Signup = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const { user, loading, signUp } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; phone?: string; email?: string; password?: string }>({});
   
   // --- Form State ---
   const [formData, setFormData] = useState({
@@ -54,6 +52,12 @@ const Signup = () => {
     password: "",
   });
   const [strength, setStrength] = useState(0);
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [user, loading, navigate]);
 
   // --- Password Logic ---
   useEffect(() => {
@@ -74,49 +78,55 @@ const Signup = () => {
     return "bg-teal-500";
   };
 
-  // --- Handlers ---
-  const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setIsLoading(true);
-      setTimeout(() => {
-        toast.success("Google Login Successful!");
-        navigate("/dashboard");
-      }, 1500);
-    },
-    onError: () => toast.error("Google Login Failed"),
-  });
-
-  // --- GITHUB HANDLER (NEW) ---
-  const handleGithubLogin = () => {
-    setIsLoading(true);
-    // Construct the GitHub authorization URL
-    // This redirects the user away from your app to GitHub
-    const redirectUri = `${window.location.origin}/auth/github/callback`;
-    const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${redirectUri}&scope=user:email`;
-    
-    window.location.href = githubUrl;
+  const validateForm = () => {
+    try {
+      signupSchema.parse(formData);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: typeof errors = {};
+        error.errors.forEach((err) => {
+          const field = err.path[0] as keyof typeof errors;
+          newErrors[field] = err.message;
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
   };
 
-  const handleManualSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    if (formData.phone.length !== 10) {
-      toast.error("Please enter a valid 10-digit phone number");
-      setIsLoading(false);
-      return;
-    }
+    
+    if (!validateForm()) return;
 
     if (strength < 3) {
-      toast.error("Password is too weak");
-      setIsLoading(false);
+      toast.error("Password is too weak. Add uppercase letters, numbers, or special characters.");
       return;
     }
 
-    setTimeout(() => {
-      toast.success("Account Created Successfully!");
-      navigate("/dashboard");
-    }, 1500);
+    setIsSubmitting(true);
+
+    const { error } = await signUp(
+      formData.email,
+      formData.password,
+      formData.name,
+      `+91${formData.phone}`
+    );
+
+    if (error) {
+      if (error.message.includes("already registered")) {
+        toast.error("This email is already registered. Please login instead.");
+      } else {
+        toast.error(error.message || "Signup failed");
+      }
+      setIsSubmitting(false);
+      return;
+    }
+
+    toast.success("Account created successfully! Please check your email to confirm.");
+    navigate("/login");
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,6 +155,14 @@ const Signup = () => {
     x.set(0);
     y.set(0);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <Loader2 className="h-8 w-8 animate-spin text-teal-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black text-white selection:bg-teal-500/30">
@@ -188,37 +206,7 @@ const Signup = () => {
             </CardHeader>
 
             <CardContent className="space-y-5 px-4 md:px-6">
-              
-              <div className="grid gap-3">
-                <Button 
-                  variant="outline" 
-                  onClick={() => googleLogin()}
-                  className="w-full h-10 md:h-12 bg-white text-black hover:bg-zinc-200 border-0 font-medium text-sm md:text-md transition-transform active:scale-95 flex items-center justify-center gap-2"
-                >
-                  <GoogleIcon />
-                  Sign up with Google
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={handleGithubLogin} // <--- ATTACHED HANDLER HERE
-                  disabled={isLoading}
-                  className="w-full h-10 md:h-12 bg-zinc-900 border-zinc-800 text-white hover:bg-zinc-800 hover:text-white transition-transform active:scale-95 flex items-center justify-center gap-2"
-                >
-                  <Github className="w-5 h-5" />
-                  Sign up with GitHub
-                </Button>
-              </div>
-
-              <div className="relative my-2">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-zinc-800" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-zinc-950 px-2 text-zinc-500">Or continue with email</span>
-                </div>
-              </div>
-
-              <form onSubmit={handleManualSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-zinc-300 text-xs md:text-sm">Full Name</Label>
@@ -227,12 +215,14 @@ const Signup = () => {
                     <Input 
                       id="name" 
                       placeholder="John Doe" 
-                      className="pl-10 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base"
+                      className={`pl-10 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base ${errors.name ? "border-red-500" : ""}`}
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      disabled={isSubmitting}
                       required
                     />
                   </div>
+                  {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -246,13 +236,15 @@ const Signup = () => {
                       id="phone" 
                       type="tel"
                       placeholder="98765 43210" 
-                      className="pl-16 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base"
+                      className={`pl-16 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base ${errors.phone ? "border-red-500" : ""}`}
                       value={formData.phone}
                       onChange={handlePhoneChange}
+                      disabled={isSubmitting}
                       required
                       maxLength={10}
                     />
                   </div>
+                  {errors.phone && <p className="text-xs text-red-500">{errors.phone}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -263,12 +255,14 @@ const Signup = () => {
                       id="email" 
                       type="email" 
                       placeholder="you@example.com" 
-                      className="pl-10 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base"
+                      className={`pl-10 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base ${errors.email ? "border-red-500" : ""}`}
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      disabled={isSubmitting}
                       required
                     />
                   </div>
+                  {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -279,12 +273,14 @@ const Signup = () => {
                       id="password" 
                       type="password" 
                       placeholder="••••••••" 
-                      className="pl-10 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base"
+                      className={`pl-10 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base ${errors.password ? "border-red-500" : ""}`}
                       value={formData.password}
                       onChange={(e) => setFormData({...formData, password: e.target.value})}
+                      disabled={isSubmitting}
                       required
                     />
                   </div>
+                  {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
                   
                   <div className="flex gap-1 h-1 mt-2">
                     {[1, 2, 3, 4, 5].map((i) => (
@@ -305,9 +301,9 @@ const Signup = () => {
                 <Button 
                   type="submit" 
                   className="w-full h-10 md:h-12 bg-teal-500 hover:bg-teal-600 text-black font-bold text-sm md:text-md shadow-[0_0_20px_rgba(20,184,166,0.3)] transition-all hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] mt-4"
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                 >
-                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign Up"}
+                  {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign Up"}
                 </Button>
               </form>
             </CardContent>
@@ -327,10 +323,4 @@ const Signup = () => {
   );
 };
 
-const SignupWithGoogleAuth = () => (
-  <GoogleOAuthProvider clientId={googleClientId}>
-    <Signup />
-  </GoogleOAuthProvider>
-);
-
-export default SignupWithGoogleAuth;
+export default Signup;

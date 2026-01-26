@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User, LogOut, Sun, Moon } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut, Sun, Moon, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CartDrawer } from "./CartDrawer";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const LOGO_URL =
   "https://blogger.googleusercontent.com/img/a/AVvXsEh6t9BjBO7igeafdAkeEQW1JNA1TAfi2lIR0Nr857ozJmsC-qPIm9m2BbQi8JkDD3TmGVuyKAyxnIc88lETBh18Xia9FqGTkGdtzD7215GLuqRBIhm9UCh7F4FDB9BsKHg78TKGkSUfCtTHefuZ5LwuXqdGLzO50ulgxWj2b-6gGAZJHE15AEKDUnwStMAm";
@@ -12,17 +14,16 @@ export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   
-  // --- UPDATED Theme State ---
-  // Initializes from localStorage or defaults to "dark"
+  // --- Theme State ---
   const [theme, setTheme] = useState(
     localStorage.getItem("tdcs_theme") || "dark"
   );
-  // --- End Updated Theme State ---
 
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, loading, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -30,13 +31,7 @@ export const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    const userData = localStorage.getItem("tdcs_user");
-    if (userData) setUser(JSON.parse(userData));
-  }, [location]);
-
   // --- Theme Effect ---
-  // Applies the 'dark' class to <html> and saves to localStorage
   useEffect(() => {
     const root = window.document.documentElement;
     if (theme === "dark") {
@@ -50,15 +45,18 @@ export const Header = () => {
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };
-  // --- End Theme Effect ---
 
-  const handleLogout = () => {
-    localStorage.removeItem("tdcs_user");
-    Object.keys(localStorage).forEach((key) => {
-      if (key.startsWith("tdcs_purchased_")) localStorage.removeItem(key);
-    });
-    setUser(null);
-    navigate("/");
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await signOut();
+      toast.success("Logged out successfully");
+      navigate("/");
+    } catch (error) {
+      toast.error("Failed to logout");
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   const navLinks = [
@@ -188,7 +186,9 @@ export const Header = () => {
               <Moon className="h-5 w-5 hidden dark:block" />
             </Button>
 
-            {user ? (
+            {loading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : user ? (
               <>
                 <Link to="/dashboard">
                   <Button variant="outline" className="gap-2">
@@ -199,9 +199,14 @@ export const Header = () => {
                 <Button
                   variant="destructive"
                   onClick={handleLogout}
+                  disabled={isLoggingOut}
                   className="gap-2"
                 >
-                  <LogOut className="w-4 h-4" />
+                  {isLoggingOut ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <LogOut className="w-4 h-4" />
+                  )}
                   Logout
                 </Button>
               </>
@@ -314,9 +319,12 @@ export const Header = () => {
                   <Moon className="w-4 h-4 hidden dark:block" />
                   <span>{theme === "light" ? "Dark" : "Light"} Mode</span>
                 </Button>
-                {/* End Theme Toggle Button */}
 
-                {user ? (
+                {loading ? (
+                  <div className="flex justify-center py-2">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  </div>
+                ) : user ? (
                   <>
                     <Link
                       to="/dashboard"
@@ -331,12 +339,17 @@ export const Header = () => {
                     <Button
                       variant="destructive"
                       className="w-full gap-2"
+                      disabled={isLoggingOut}
                       onClick={() => {
                         handleLogout();
                         setIsMobileMenuOpen(false);
                       }}
                     >
-                      <LogOut className="w-4 h-4" />
+                      {isLoggingOut ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <LogOut className="w-4 h-4" />
+                      )}
                       Logout
                     </Button>
                   </>
