@@ -6,21 +6,18 @@ import { X, Send, User, Sparkles, Bot } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
-
-// ⚠️ WARNING: In a real app, use a Backend Proxy to hide this key!
-const GEMINI_API_KEY = "AIzaSyDCTUwe0iM3Y4ypRH12b1elbwEGRgr6EXc"; 
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
-  role: "user" | "model";
+  role: "user" | "assistant";
   content: string;
 }
 
 // --- 🧠 CUSTOM KNOWLEDGE BASE ---
-// Add any specific questions and answers here!
 const KNOWLEDGE_BASE = [
   {
     triggers: ["hi", "hii", "hiiii", "hello", "hallo", "hy", "hey"],
-    answer: "Hallo! I am the Associate Premium Bro of TDCS Technologies Pvt Ltd. How can I help you today?"
+    answer: "Hello! I am the TDCS AI Assistant. How can I help you today?"
   },
   {
     triggers: ["who are you", "what are you", "your name"],
@@ -44,8 +41,8 @@ export const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
-      role: "model",
-      content: "Hello! I am the TDCS Advanced AI. Ask me about our courses, security, or our founder!",
+      role: "assistant",
+      content: "Hello! I am the TDCS AI. Ask me about our courses, security, or our founder!",
     },
   ]);
   const [input, setInput] = useState("");
@@ -62,42 +59,69 @@ export const ChatBot = () => {
     scrollToBottom();
   }, [messages, isLoading, isOpen]);
 
-  const sendMessageToGemini = async (currentHistory: Message[]) => {
+  const sendMessageToAI = async (currentHistory: Message[]) => {
     try {
-      const contents = currentHistory.map((msg) => ({
-        role: msg.role,
-        parts: [{ text: msg.content }],
-      }));
-
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ contents }),
+      const response = await supabase.functions.invoke('chat', {
+        body: { 
+          messages: currentHistory.map(msg => ({
+            role: msg.role,
+            content: msg.content
+          }))
         }
-      );
+      });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error?.message || "API Error");
+      if (response.error) {
+        throw new Error(response.error.message || "Failed to get response");
       }
 
-      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-      if (reply) {
-        setMessages((prev) => [...prev, { role: "model", content: reply }]);
-      } else {
-        throw new Error("No response content");
+      // Handle streaming response
+      if (response.data) {
+        // If it's a stream, we need to parse it
+        const reader = response.data.getReader?.();
+        if (reader) {
+          let fullResponse = "";
+          const decoder = new TextDecoder();
+          
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            const chunk = decoder.decode(value);
+            const lines = chunk.split('\n');
+            
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                const data = line.slice(6);
+                if (data === '[DONE]') continue;
+                try {
+                  const parsed = JSON.parse(data);
+                  const content = parsed.choices?.[0]?.delta?.content;
+                  if (content) {
+                    fullResponse += content;
+                  }
+                } catch {
+                  // Skip invalid JSON
+                }
+              }
+            }
+          }
+          
+          if (fullResponse) {
+            setMessages(prev => [...prev, { role: "assistant", content: fullResponse }]);
+          }
+        } else if (typeof response.data === 'string') {
+          // Handle non-streaming text response
+          setMessages(prev => [...prev, { role: "assistant", content: response.data }]);
+        } else if (response.data.error) {
+          throw new Error(response.data.error);
+        }
       }
-
     } catch (error: any) {
-      console.error("Gemini Error:", error);
-      toast.error("AI Error: " + error.message);
-      setMessages((prev) => [
+      console.error("Chat Error:", error);
+      toast.error("Failed to get response. Please try again.");
+      setMessages(prev => [
         ...prev,
-        { role: "model", content: `⚠️ **System Error:** ${error.message}. Please check your API Key.` }
+        { role: "assistant", content: "I'm having trouble connecting right now. Please try again later." }
       ]);
     } finally {
       setIsLoading(false);
@@ -110,32 +134,30 @@ export const ChatBot = () => {
     const userText = input.trim();
     const userMessage: Message = { role: "user", content: userText };
     
-    // 1. Add User Message to UI
+    // Add User Message to UI
     const newHistory = [...messages, userMessage];
     setMessages(newHistory);
     setInput("");
     setIsLoading(true);
 
-    // 2. CHECK CUSTOM KNOWLEDGE BASE
+    // Check custom knowledge base first
     const lowerInput = userText.toLowerCase();
-    
-    // Find a matching rule from our KNOWLEDGE_BASE
     const matchedRule = KNOWLEDGE_BASE.find(rule => 
       rule.triggers.some(trigger => lowerInput.includes(trigger))
     );
 
     if (matchedRule) {
-      // If we found a match, reply instantly (simulated delay)
+      // Reply from knowledge base
       setTimeout(() => {
-        setMessages((prev) => [
+        setMessages(prev => [
           ...prev, 
-          { role: "model", content: matchedRule.answer }
+          { role: "assistant", content: matchedRule.answer }
         ]);
         setIsLoading(false);
       }, 600);
     } else {
-      // 3. If no custom match, ask Google Gemini
-      await sendMessageToGemini(newHistory);
+      // Call the secure edge function
+      await sendMessageToAI(newHistory);
     }
   };
 
@@ -200,7 +222,7 @@ export const ChatBot = () => {
                       msg.role === "user" ? "justify-end" : "justify-start"
                     }`}
                   >
-                    {msg.role === "model" && (
+                    {msg.role === "assistant" && (
                       <div className="w-8 h-8 rounded-full bg-gray-800 border border-cyan-500/30 flex items-center justify-center flex-shrink-0">
                          <Bot className="w-5 h-5 text-cyan-400" />
                       </div>
@@ -213,7 +235,7 @@ export const ChatBot = () => {
                           : "bg-gray-800/80 text-gray-100 border border-gray-700 rounded-tl-none"
                       }`}
                     >
-                      {msg.role === "model" ? (
+                      {msg.role === "assistant" ? (
                          <ReactMarkdown 
                             components={{
                                 code: ({node, inline, className, children, ...props}: any) => (
@@ -275,7 +297,7 @@ export const ChatBot = () => {
                   </Button>
                 </div>
                 <div className="text-center mt-2">
-                    <span className="text-[10px] text-gray-500">Powered by Google Gemini • TDCS Secure</span>
+                    <span className="text-[10px] text-gray-500">Powered by Lovable AI • TDCS Secure</span>
                 </div>
               </div>
 

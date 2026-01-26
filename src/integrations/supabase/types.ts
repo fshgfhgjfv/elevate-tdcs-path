@@ -339,6 +339,38 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_order_by_tracking: {
+        Args: { p_email: string; p_order_number: string }
+        Returns: {
+          address: string
+          city: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          items: Json
+          order_number: string
+          order_status: string
+          phone: string
+          pincode: string
+          shipping: number
+          shiprocket_awb: string | null
+          shiprocket_tracking_id: string | null
+          state: string
+          subtotal: number
+          tax: number
+          total: number
+          transaction_id: string
+          updated_at: string
+          user_id: string | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "hardware_orders"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

@@ -1,9 +1,10 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useNavigate, Routes, Route } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Trophy, Award, Settings, HelpCircle, Menu, X } from "lucide-react";
+import { BookOpen, Trophy, Award, Settings, HelpCircle, Menu, X, Loader2 } from "lucide-react";
 import Sidebar, { SidebarItem } from "./Sidebar";
-import { User } from "./types";
+import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
 
 // Lazy loaded pages
 const DashboardMyCourses = lazy(() => import("./dashboard/DashboardMyCourses"));
@@ -14,24 +15,27 @@ const DashboardSupport = lazy(() => import("./dashboard/DashboardSupport"));
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
+  const { user, loading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    try {
-      const userData = localStorage.getItem("tdcs_user");
-      if (!userData) {
-        navigate("/login");
-        return;
-      }
-      setUser(JSON.parse(userData));
-    } catch (error) {
-      console.error("Failed to parse user data:", error);
-      navigate("/login");
+    if (!loading && !user) {
+      navigate("/login", { state: { from: "/dashboard" } });
     }
-  }, [navigate]);
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (!user) return null;
+
+  // Get user display name from metadata or email
+  const userName = user.user_metadata?.full_name || user.email?.split("@")[0] || "User";
 
   const sidebarItems: SidebarItem[] = [
     { icon: BookOpen, label: "My Courses", path: "/dashboard" },
@@ -41,11 +45,18 @@ const Dashboard = () => {
     { icon: HelpCircle, label: "Support / Help", path: "/dashboard/support" },
   ];
 
+  // Create a user object compatible with the dashboard components
+  const dashboardUser = {
+    name: userName,
+    email: user.email || "",
+    id: user.id,
+  };
+
   const dashboardRoutes = [
-    { path: "/", element: <DashboardMyCourses user={user} /> },
+    { path: "/", element: <DashboardMyCourses user={dashboardUser} /> },
     { path: "/leaderboard", element: <DashboardLeaderboard /> },
     { path: "/certificates", element: <DashboardCertificates /> },
-    { path: "/settings", element: <DashboardAccountSettings user={user} setUser={setUser} /> },
+    { path: "/settings", element: <DashboardAccountSettings user={dashboardUser} setUser={() => {}} /> },
     { path: "/support", element: <DashboardSupport /> },
   ];
 
@@ -76,8 +87,8 @@ const Dashboard = () => {
 
         {/* Main Content */}
         <main className="flex-1 p-4 md:p-8">
-          <h1 className="text-xl font-semibold mb-4">Welcome back, {user.name} 👋</h1>
-          <Suspense fallback={<div className="text-center py-20">Loading...</div>}>
+          <h1 className="text-xl font-semibold mb-4">Welcome back, {userName} 👋</h1>
+          <Suspense fallback={<div className="text-center py-20"><Loader2 className="h-8 w-8 animate-spin mx-auto" /></div>}>
             <Routes>
               {dashboardRoutes.map((route) => (
                 <Route key={route.path} path={route.path} element={route.element} />

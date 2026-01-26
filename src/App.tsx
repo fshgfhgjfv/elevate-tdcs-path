@@ -8,6 +8,7 @@ import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { CartProvider } from "./contexts/CartContext";
 import { CurrencyProvider } from "./contexts/CurrencyContext";
+import { AuthProvider } from "./hooks/useAuth";
 
 // --- Pages ---
 import Home from "./pages/Home";
@@ -40,8 +41,6 @@ import WebsiteSecurityDetails from "./pages/WebsiteSecurityDetails";
 import PenetrationTestingPage from "./pages/PenetrationTestingPage";
 import WebDevelopmentPage from "./pages/WebDevelopmentPage";
 import SimpleAdminPanel from "./pages/admintdcsd/SimpleAdminPanel";
-
-// 👇 1. ADD THIS IMPORT 👇
 import GithubCallback from "./pages/GithubCallback"; 
 
 const queryClient = new QueryClient();
@@ -54,50 +53,51 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <ScrollToTop />
-            <Header />
+            <AuthProvider>
+              <ScrollToTop />
+              <Header />
 
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact-us" element={<ContactUs />} />
-              <Route path="/gallery" element={<Gallery />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact-us" element={<ContactUs />} />
+                <Route path="/gallery" element={<Gallery />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
 
-              <Route path="/courses" element={<Courses />} />
-              <Route path="/courses/:id" element={<CourseDetail />} />
-              <Route path="/courses/:id/content" element={<CourseContent />} />
+                <Route path="/courses" element={<Courses />} />
+                <Route path="/courses/:id" element={<CourseDetail />} />
+                <Route path="/courses/:id/content" element={<CourseContent />} />
 
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/dashboard/*" element={<Dashboard />} />
-              <Route path="/my-profile" element={<MyProfile />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/dashboard/*" element={<Dashboard />} />
+                <Route path="/my-profile" element={<MyProfile />} />
 
-              {/* 👇 2. ADD THIS ROUTE 👇 */}
-              <Route path="/auth/github/callback" element={<GithubCallback />} />
+                <Route path="/auth/github/callback" element={<GithubCallback />} />
 
-              <Route path="/verify-certificate" element={<VerifyCertificate />} />
-              <Route path="/certificate-download" element={<CertificateDownload />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/services/software" element={<Services />} />
-              <Route path="/services/hardware" element={<HardwareServices />} />
-              <Route path="/services/legal" element={<AdvocateConstruction />} />
-              <Route path="/services/website-development" element={<WebsiteDevelopment />} />
-              <Route path="/services/website-security" element={<WebsiteSecurityDetails />} />
-              <Route path="/services/penetration-testing" element={<PenetrationTestingPage />} />
-              <Route path="/services/web-development" element={<WebDevelopmentPage />} />
-              <Route path="/services/:serviceId" element={<ServiceDetail />} />
-              <Route path="/hardware/product/:id" element={<ProductDetail />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/hardware-checkout" element={<HardwareCheckout />} />
-              <Route path="/track-parcel" element={<TrackParcel />} />
-              <Route path="/admintdcsd" element={<SimpleAdminPanel />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+                <Route path="/verify-certificate" element={<VerifyCertificate />} />
+                <Route path="/certificate-download" element={<CertificateDownload />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/services/software" element={<Services />} />
+                <Route path="/services/hardware" element={<HardwareServices />} />
+                <Route path="/services/legal" element={<AdvocateConstruction />} />
+                <Route path="/services/website-development" element={<WebsiteDevelopment />} />
+                <Route path="/services/website-security" element={<WebsiteSecurityDetails />} />
+                <Route path="/services/penetration-testing" element={<PenetrationTestingPage />} />
+                <Route path="/services/web-development" element={<WebDevelopmentPage />} />
+                <Route path="/services/:serviceId" element={<ServiceDetail />} />
+                <Route path="/hardware/product/:id" element={<ProductDetail />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/hardware-checkout" element={<HardwareCheckout />} />
+                <Route path="/track-parcel" element={<TrackParcel />} />
+                <Route path="/admintdcsd" element={<SimpleAdminPanel />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
 
-            <Footer />
+              <Footer />
+            </AuthProvider>
           </BrowserRouter>
         </TooltipProvider>
       </CartProvider>
