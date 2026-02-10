@@ -3,8 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// CHANGED: Import supabase client instead of lovable
-import { supabase } from "@/integrations/supabase/client"; 
+import { lovable } from "@/integrations/lovable";
 import {
   Card,
   CardContent,
@@ -139,30 +138,18 @@ const Signup = () => {
     }
   };
 
-  // --- UPDATED GOOGLE SIGN IN LOGIC ---
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          // This ensures the user is sent back to your dashboard after Google login
-          redirectTo: `${window.location.origin}/dashboard`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-        },
+      const { error } = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
       });
-      
-      if (error) throw error;
-      
-      // Note: We don't need navigate() here because the browser will 
-      // be redirected to Google's auth page automatically.
-      
-    } catch (err: any) {
-      console.error("Google Auth Error:", err);
-      toast.error(err.message || "Google sign-in failed. Please try again.");
+      if (error) {
+        toast.error(error.message || "Google sign-in failed");
+      }
+    } catch (err) {
+      toast.error("Google sign-in failed. Please try again.");
+    } finally {
       setIsGoogleLoading(false);
     }
   };
