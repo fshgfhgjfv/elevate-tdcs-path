@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+// CHANGED: Import supabase client instead of lovable
 import { supabase } from "@/integrations/supabase/client"; 
 import {
   Card,
@@ -138,23 +139,32 @@ const Signup = () => {
     }
   };
 
-  // --- MODIFIED GOOGLE LOGIC: Fake Loading then "Manual Only" Error ---
-  const handleGoogleSignIn = () => {
+  // --- UPDATED GOOGLE SIGN IN LOGIC ---
+  const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
-    
-    // Simulate "Working Mode" for 2.5 seconds
-    setTimeout(() => {
-      setIsGoogleLoading(false);
-      
-      // Show the rejection message
-      toast.error("Google Server Unreachable. Please sign up manually with email.", {
-        description: "Secure handshake failed due to firewall settings.",
-        duration: 4000,
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          // This ensures the user is sent back to your dashboard after Google login
+          redirectTo: `${window.location.origin}/dashboard`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
       });
-
-      // Focus the name field to guide the user
-      document.getElementById("name")?.focus();
-    }, 2500);
+      
+      if (error) throw error;
+      
+      // Note: We don't need navigate() here because the browser will 
+      // be redirected to Google's auth page automatically.
+      
+    } catch (err: any) {
+      console.error("Google Auth Error:", err);
+      toast.error(err.message || "Google sign-in failed. Please try again.");
+      setIsGoogleLoading(false);
+    }
   };
 
   const cardRef = useRef<HTMLDivElement>(null);
@@ -287,7 +297,7 @@ const Signup = () => {
                     <Input 
                       id="phone" 
                       type="tel"
-                      placeholder="Enter Your Number" 
+                      placeholder="98765 43210" 
                       className={`pl-16 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base ${errors.phone ? "border-red-500" : ""}`}
                       value={formData.phone}
                       onChange={handlePhoneChange}
@@ -306,7 +316,7 @@ const Signup = () => {
                     <Input 
                       id="email" 
                       type="email" 
-                      placeholder="Give your Email " 
+                      placeholder="you@example.com" 
                       className={`pl-10 h-10 md:h-12 bg-zinc-900/50 border-zinc-800 focus:border-teal-500 text-white placeholder:text-zinc-600 text-sm md:text-base ${errors.email ? "border-red-500" : ""}`}
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
