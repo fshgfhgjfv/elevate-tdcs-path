@@ -1,23 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring, useMotionValue, useMotionTemplate } from "framer-motion";
-import { Target, Eye, Users, ArrowRight, Zap, Globe, Shield } from "lucide-react";
-import { cn } from "@/lib/utils"; // Assuming you have a standard shadcn utility or clsx/tailwind-merge
+import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
+import { Target, Eye, Users, ArrowRight, Zap, Globe, Shield, Youtube, Instagram } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // --- Utility Components ---
-
-// 1. Animated Counter for Stats
 const AnimatedCounter = ({ value, duration = 2 }: { value: number; duration?: number }) => {
   const [count, setCount] = useState(0);
-  const nodeRef = useRef(null);
-  const isInView = useInView(nodeRef); // Custom hook or framer's whileInView logic
+  const nodeRef = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(nodeRef);
 
   useEffect(() => {
     if (isInView) {
       let start = 0;
       const end = value;
-      const incrementTime = (duration / end) * 1000;
-      
-      // Simple easing logic for large numbers
       let timer = setInterval(() => {
         start += Math.ceil(end / 100);
         if (start > end) start = end;
@@ -31,7 +26,6 @@ const AnimatedCounter = ({ value, duration = 2 }: { value: number; duration?: nu
   return <span ref={nodeRef}>{count.toLocaleString()}+</span>;
 };
 
-// Helper for InView (Simple version)
 function useInView(ref: React.RefObject<HTMLElement>) {
   const [isIntersecting, setIntersecting] = useState(false);
   useEffect(() => {
@@ -42,7 +36,6 @@ function useInView(ref: React.RefObject<HTMLElement>) {
   return isIntersecting;
 }
 
-// 2. 3D Tilt Card Component
 const TiltCard = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -60,7 +53,7 @@ const TiltCard = ({ children, className }: { children: React.ReactNode; classNam
 
   return (
     <motion.div
-      className={cn("relative preserve-3d", className)}
+      className={cn("relative", className)}
       onMouseMove={onMouseMove}
       onMouseLeave={() => { x.set(0); y.set(0); }}
       style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
@@ -70,20 +63,18 @@ const TiltCard = ({ children, className }: { children: React.ReactNode; classNam
   );
 };
 
-// 3. Background Grid Animation
 const AnimatedBackground = () => (
   <div className="absolute inset-0 -z-10 overflow-hidden">
     <div className="absolute inset-0 bg-background/90" />
     <motion.div
       className="absolute inset-0 opacity-20"
       style={{
-        backgroundImage: "linear-gradient(#4f46e5 1px, transparent 1px), linear-gradient(to right, #4f46e5 1px, transparent 1px)",
+        backgroundImage: "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(to right, hsl(var(--primary)) 1px, transparent 1px)",
         backgroundSize: "4rem 4rem",
       }}
       animate={{ backgroundPosition: ["0px 0px", "64px 64px"] }}
       transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
     />
-    {/* Floating Orbs */}
     <motion.div
       className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/30 rounded-full blur-[128px]"
       animate={{ x: [0, 100, 0], y: [0, -50, 0], scale: [1, 1.2, 1] }}
@@ -98,15 +89,14 @@ const AnimatedBackground = () => (
 );
 
 // --- Main Component ---
-
 const About = () => {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, -100]); // Parallax effect
+  const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
   const cards = [
     { title: "Mission", icon: Target, color: "text-blue-500", desc: "Bridging the education-employment gap with high-impact, hands-on tactical training." },
-    { title: "Vision", icon: Eye, color: "text-purple-500", desc: "Forging India’s premier ecosystem for cybersecurity innovation and technical mastery." },
+    { title: "Vision", icon: Eye, color: "text-purple-500", desc: "Forging India's premier ecosystem for cybersecurity innovation and technical mastery." },
     { title: "Community", icon: Users, color: "text-green-500", desc: "A global network of 35k+ alumni leading the charge in top-tier tech firms." },
   ];
 
@@ -115,7 +105,7 @@ const About = () => {
       <AnimatedBackground />
 
       <div className="container mx-auto px-4 pt-32 pb-24 relative z-10">
-        
+
         {/* --- Hero Section --- */}
         <div className="flex flex-col items-center text-center mb-24">
           <motion.div
@@ -134,8 +124,7 @@ const About = () => {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-6xl md:text-8xl font-extrabold tracking-tighter mb-8 bg-clip-text text-transparent bg-gradient-to-r from-foreground via-primary to-foreground bg-[length:200%_auto] animate-gradient"
-            style={{ animation: "gradient 8s linear infinite" }}
+            className="text-6xl md:text-8xl font-extrabold tracking-tighter mb-8 bg-clip-text text-transparent bg-gradient-to-r from-foreground via-primary to-foreground"
           >
             About TDCS
           </motion.h1>
@@ -152,8 +141,66 @@ const About = () => {
           </motion.p>
         </div>
 
+        {/* --- About Us Section: Photo Right, Description Left --- */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-24"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            Who We <span className="text-primary">Are</span>
+          </h2>
+          <div className="grid md:grid-cols-2 gap-10 items-center max-w-5xl mx-auto">
+            {/* Left: Description */}
+            <div className="space-y-5">
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                <strong className="text-foreground">TDCS Technologies</strong> is a leading cybersecurity education and services company based in India. We provide hands-on training programs, professional tools, and real-world security solutions to students and professionals worldwide.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Our mission is to bridge the gap between academic learning and industry requirements. With 35,000+ students trained and 5,000+ placements, we are building India's largest cybersecurity community.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                From ethical hacking courses to pre-programmed hardware tools, from software services to legal advisory — we are a one-stop ecosystem for the next generation of cyber defenders.
+              </p>
+
+              {/* Social Links */}
+              <div className="flex items-center gap-4 pt-4">
+                <a
+                  href="https://youtube.com/@TDCS"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-red-700 transition-colors text-sm"
+                >
+                  <Youtube className="w-5 h-5" />
+                  YouTube
+                </a>
+                <a
+                  href="https://instagram.com/TDCS"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 transition-opacity text-sm"
+                >
+                  <Instagram className="w-5 h-5" />
+                  Instagram
+                </a>
+              </div>
+            </div>
+
+            {/* Right: Photo */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/10 rounded-2xl blur-2xl" />
+              <img
+                src="https://blogger.googleusercontent.com/img/a/AVvXsEh6t9BjBO7igeafdAkeEQW1JNA1TAfi2lIR0Nr857ozJmsC-qPIm9m2BbQi8JkDD3TmGVuyKAyxnIc88lETBh18Xia9FqGTkGdtzD7215GLuqRBIhm9UCh7F4FDB9BsKHg78TKGkSUfCtTHefuZ5LwuXqdGLzO50ulgxWj2b-6gGAZJHE15AEKDUnwStMAm"
+                alt="TDCS Technologies"
+                className="relative w-full rounded-2xl border border-border shadow-xl object-cover aspect-square"
+              />
+            </div>
+          </div>
+        </motion.div>
+
         {/* --- Stats Strip --- */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-24 border-y border-white/10 py-10 bg-white/5 backdrop-blur-sm">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-24 border-y border-border/30 py-10 bg-muted/10 backdrop-blur-sm rounded-xl">
           {[
             { label: "Students Trained", value: 35000, icon: Users },
             { label: "Placements", value: 5000, icon: Zap },
@@ -178,7 +225,7 @@ const About = () => {
         </div>
 
         {/* --- 3D Cards Section --- */}
-        <div className="grid md:grid-cols-3 gap-8 mb-32 perspective-1000">
+        <div className="grid md:grid-cols-3 gap-8 mb-32">
           {cards.map((item, index) => (
             <TiltCard key={index} className="h-full">
               <motion.div
@@ -186,17 +233,16 @@ const About = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.2 }}
-                className="h-full p-8 rounded-2xl bg-gradient-to-br from-card/50 to-background border border-white/10 backdrop-blur-md shadow-2xl hover:border-primary/50 transition-colors group"
-                style={{ transformStyle: "preserve-3d" }}
+                className="h-full p-8 rounded-2xl bg-gradient-to-br from-card/50 to-background border border-border/30 backdrop-blur-md shadow-2xl hover:border-primary/50 transition-colors group"
               >
-                <div className="transform translate-z-20 mb-6 relative">
+                <div className="mb-6 relative">
                   <div className={`absolute inset-0 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity ${item.color.replace('text', 'bg')}`} />
                   <item.icon className={`w-12 h-12 ${item.color} relative z-10`} />
                 </div>
-                <h3 className="text-2xl font-bold mb-4 transform translate-z-10 text-foreground group-hover:text-primary transition-colors">
+                <h3 className="text-2xl font-bold mb-4 text-foreground group-hover:text-primary transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-muted-foreground leading-relaxed transform translate-z-10">
+                <p className="text-muted-foreground leading-relaxed">
                   {item.desc}
                 </p>
               </motion.div>
@@ -204,22 +250,17 @@ const About = () => {
           ))}
         </div>
 
-        {/* --- Story Section with Glassmorphism --- */}
-        <motion.div
-          style={{ y }}
-          className="relative max-w-5xl mx-auto"
-        >
-          {/* Decorative elements behind the card */}
+        {/* --- Story Section --- */}
+        <motion.div style={{ y }} className="relative max-w-5xl mx-auto">
           <div className="absolute -top-20 -left-20 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-pulse" />
           <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-700" />
 
-          <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 md:p-16 overflow-hidden">
-            {/* Shimmer Effect */}
+          <div className="relative rounded-3xl border border-border/30 bg-card/30 backdrop-blur-xl p-8 md:p-16 overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
-            
+
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <motion.h2 
+                <motion.h2
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   className="text-4xl md:text-5xl font-bold mb-8"
@@ -231,30 +272,29 @@ const About = () => {
                     <strong className="text-foreground">TDCS Technologies</strong> wasn't built in a boardroom. It was built in a terminal. Born from a necessity to bridge the widening chasm between academic theory and industry reality.
                   </p>
                   <p>
-                    We deploy <span className="text-primary font-medium">military-grade discipline</span> in our training modules, focusing on 
+                    We deploy <span className="text-primary font-medium">military-grade discipline</span> in our training modules, focusing on
                     <span className="text-primary font-medium"> Cybersecurity, DevSecOps,</span> and <span className="text-primary font-medium">Next-Gen Tech</span>.
                   </p>
                 </div>
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="mt-8 px-8 py-4 bg-primary text-primary-foreground rounded-full font-bold flex items-center gap-2 group hover:shadow-[0_0_20px_rgba(var(--primary),0.5)] transition-all"
+                  className="mt-8 px-8 py-4 bg-primary text-primary-foreground rounded-full font-bold flex items-center gap-2 group hover:shadow-lg transition-all"
                 >
                   Join the Revolution <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
               </div>
 
               <div className="relative">
-                {/* Abstract graphic representing the story */}
                 <motion.div
-                   initial={{ rotate: 0 }}
-                   animate={{ rotate: 360 }}
-                   transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                   className="w-full aspect-square rounded-full border border-dashed border-white/20 relative flex items-center justify-center"
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  className="w-full aspect-square rounded-full border border-dashed border-border/30 relative flex items-center justify-center"
                 >
-                    <div className="w-2/3 h-2/3 rounded-full border border-white/10 animate-spin-slow" />
-                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-full blur-2xl" />
-                    <div className="absolute text-5xl font-black text-white/5 z-0">TDCS</div>
+                  <div className="w-2/3 h-2/3 rounded-full border border-border/20" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-full blur-2xl" />
+                  <div className="absolute text-5xl font-black text-muted-foreground/10 z-0">TDCS</div>
                 </motion.div>
               </div>
             </div>
