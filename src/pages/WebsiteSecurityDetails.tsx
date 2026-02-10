@@ -101,7 +101,16 @@ export default function WebsiteSecurityDetails() {
                   </li>
                 ))}
               </ul>
-              <Button variant="default" className="gradient-primary">Choose Plan</Button>
+              <Button
+                variant="default"
+                className="gradient-primary"
+                onClick={() => {
+                  const message = encodeURIComponent(`Hi, I'm interested in the ${plan.title} Website Security plan (₹${plan.price}/mo). Please share more details.`);
+                  window.open(`https://wa.me/919876543210?text=${message}`, "_blank");
+                }}
+              >
+                Choose Plan
+              </Button>
             </motion.div>
           ))}
         </div>
