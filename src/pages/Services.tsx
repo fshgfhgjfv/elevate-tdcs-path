@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ import {
   Globe,
   Palette,
   Terminal,
+  Package,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -427,6 +429,13 @@ const Services = () => {
             <p className="text-muted-foreground text-lg max-w-xl">
               Equip yourself with industry-standard software, AI models, and security tools at a fraction of the cost.
             </p>
+            <Link
+              to="/track-parcel"
+              className="inline-flex items-center gap-2 mt-4 bg-primary text-primary-foreground font-semibold px-5 py-2.5 rounded-lg hover:opacity-90 transition-opacity text-sm"
+            >
+              <Package className="w-4 h-4" />
+              Track Your Parcel
+            </Link>
           </motion.div>
           
           {/* Search & Mobile Filter Toggle */}
