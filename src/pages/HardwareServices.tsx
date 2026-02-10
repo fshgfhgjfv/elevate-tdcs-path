@@ -1,15 +1,33 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, ShoppingCart, Star, Package, SlidersHorizontal } from 'lucide-react';
+import { Search, Star, Package, ArrowRight } from 'lucide-react';
 import { hardwareProducts } from '../data/hardwareProducts';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const HardwareServices = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
 
-  const categories = ['All', ...Array.from(new Set(hardwareProducts.map(p => p.category.split('/')[0].trim())))];
+  // 1. Force White Background for this page only
+  useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).backgroundColor;
+    const originalColor = window.getComputedStyle(document.body).color;
+
+    // Apply white background to the body
+    document.body.style.setProperty('background-color', '#ffffff', 'important');
+    document.body.style.setProperty('color', '#0f172a', 'important');
+
+    return () => {
+      // Revert to original theme when leaving the page
+      document.body.style.backgroundColor = originalStyle;
+      document.body.style.color = originalColor;
+    };
+  }, []);
+
+  const categories = useMemo(() => {
+    return ['All', ...Array.from(new Set(hardwareProducts.map(p => p.category.split('/')[0].trim())))];
+  }, []);
 
   const filteredProducts = useMemo(() => {
     return hardwareProducts
@@ -30,33 +48,34 @@ const HardwareServices = () => {
   const discount = (orig: number, sale: number) => Math.round(((orig - sale) / orig) * 100);
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-24 pb-16">
+    // bg-white and text-slate-900 override any global dark mode CSS variables
+    <div className="min-h-screen bg-white text-slate-900 pt-24 pb-16">
       <div className="container mx-auto px-4">
 
         {/* Header */}
         <div className="text-center mb-10">
-          <h1 className="text-3xl md:text-5xl font-extrabold">
-            Our Pre-Programmed <span className="text-primary">Hardware</span>
+          <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900">
+            Our Pre-Programmed <span className="text-blue-600">Hardware</span>
           </h1>
-          <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
+          <p className="text-slate-500 mt-3 max-w-xl mx-auto">
             Professional-grade security tools, pre-configured and ready to deploy.
           </p>
         </div>
 
-        {/* Notice Banner */}
-        <div className="mb-8 bg-primary/10 border border-primary/30 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        {/* Notice Banner - Adjusted for white background */}
+        <div className="mb-8 bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 shadow-sm">
           <div className="flex items-center gap-3 flex-1">
             <div className="relative">
-              <div className="w-3 h-3 rounded-full bg-primary animate-ping absolute" />
-              <div className="w-3 h-3 rounded-full bg-primary" />
+              <div className="w-3 h-3 rounded-full bg-blue-500 animate-ping absolute" />
+              <div className="w-3 h-3 rounded-full bg-blue-500" />
             </div>
-            <p className="text-sm text-muted-foreground">
-              📦 After payment, tracking ID is sent within <span className="text-primary font-bold">1-2 hours</span> via email/SMS.
+            <p className="text-sm text-slate-600">
+              📦 After payment, tracking ID is sent within <span className="text-blue-600 font-bold">1-2 hours</span>.
             </p>
           </div>
           <Link
             to="/track-parcel"
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-5 py-2.5 rounded-lg hover:opacity-90 transition-opacity text-sm"
+            className="inline-flex items-center gap-2 bg-slate-900 text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-slate-800 transition-colors text-sm shadow-md"
           >
             <Package className="w-4 h-4" />
             Track Your Parcel
@@ -66,13 +85,13 @@ const HardwareServices = () => {
         {/* Filters Bar */}
         <div className="flex flex-col md:flex-row gap-4 mb-8 items-center">
           <div className="relative flex-1 w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
             <input
               type="text"
               placeholder="Search hardware..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-muted/50 border border-border rounded-lg py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-slate-900"
             />
           </div>
           <div className="flex gap-2 flex-wrap">
@@ -80,10 +99,10 @@ const HardwareServices = () => {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-full text-xs font-medium border transition-all ${
+                className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all ${
                   selectedCategory === cat
-                    ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-muted/50 border-border hover:border-primary/50'
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                    : 'bg-white text-slate-600 border-slate-200 hover:border-blue-400'
                 }`}
               >
                 {cat}
@@ -93,7 +112,7 @@ const HardwareServices = () => {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-muted/50 border border-border text-sm rounded-lg px-3 py-2.5 outline-none focus:border-primary"
+            className="bg-white border border-slate-200 text-slate-700 text-sm rounded-lg px-3 py-2.5 outline-none focus:border-blue-500 cursor-pointer"
           >
             <option value="featured">Featured</option>
             <option value="price-low">Price: Low → High</option>
@@ -103,93 +122,80 @@ const HardwareServices = () => {
         </div>
 
         {/* Product Grid */}
-        {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.map((product, idx) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.05 }}
-              >
-                <Link
-                  to={`/hardware/product/${product.id}`}
-                  className="group block bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg transition-all duration-300"
+        <AnimatePresence>
+          {filteredProducts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredProducts.map((product, idx) => (
+                <motion.div
+                  key={product.id}
+                  layout
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
                 >
-                  {/* Image */}
-                  <div className="relative aspect-square bg-muted/30 overflow-hidden">
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
-                    />
-                    {/* Sale Badge */}
-                    {product.originalPrice > product.salePrice && !product.isOutOfStock && (
-                      <span className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs font-bold px-2.5 py-1 rounded-full">
-                        -{discount(product.originalPrice, product.salePrice)}%
-                      </span>
-                    )}
-                    {/* Out of Stock Overlay */}
-                    {product.isOutOfStock && (
-                      <div className="absolute inset-0 bg-background/70 backdrop-blur-sm flex items-center justify-center">
-                        <span className="text-destructive font-bold border-2 border-destructive px-4 py-1.5 rounded text-sm uppercase tracking-wider">
-                          Out of Stock
+                  <Link
+                    to={`/hardware/product/${product.id}`}
+                    className="group block bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-blue-400 hover:shadow-xl transition-all duration-300 h-full"
+                  >
+                    <div className="relative aspect-square bg-slate-100 overflow-hidden">
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      {product.originalPrice > product.salePrice && !product.isOutOfStock && (
+                        <span className="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm">
+                          -{discount(product.originalPrice, product.salePrice)}%
                         </span>
-                      </div>
-                    )}
-                  </div>
+                      )}
+                    </div>
 
-                  {/* Content */}
-                  <div className="p-4">
-                    <p className="text-xs text-muted-foreground mb-1">{product.category.split('/')[0]}</p>
-                    <h3 className="font-semibold text-sm leading-tight line-clamp-2 mb-2 group-hover:text-primary transition-colors">
-                      {product.name}
-                    </h3>
+                    <div className="p-4">
+                      <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-1">
+                        {product.category.split('/')[0]}
+                      </p>
+                      <h3 className="font-bold text-slate-900 text-sm leading-tight line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors">
+                        {product.name}
+                      </h3>
 
-                    {/* Rating */}
-                    {product.rating > 0 && (
                       <div className="flex items-center gap-1 mb-3">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <Star
                             key={i}
-                            className={`w-3 h-3 ${i < Math.round(product.rating) ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/30'}`}
+                            className={`w-3 h-3 ${i < Math.round(product.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-slate-200'}`}
                           />
                         ))}
-                        <span className="text-xs text-muted-foreground ml-1">({product.reviewCount})</span>
+                        <span className="text-xs text-slate-400 ml-1">({product.reviewCount})</span>
                       </div>
-                    )}
 
-                    {/* Price */}
-                    <div className="flex items-center gap-2">
-                      {product.originalPrice > product.salePrice && (
-                        <span className="text-xs text-muted-foreground line-through">
-                          ₹{product.originalPrice.toLocaleString()}
+                      <div className="flex items-baseline gap-2 mt-auto">
+                        <span className="text-lg font-bold text-slate-900">
+                          ₹{product.salePrice.toLocaleString()}
                         </span>
-                      )}
-                      <span className="text-lg font-bold">
-                        ₹{product.salePrice.toLocaleString()}
-                      </span>
+                        {product.originalPrice > product.salePrice && (
+                          <span className="text-xs text-slate-400 line-through font-medium">
+                            ₹{product.originalPrice.toLocaleString()}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20 bg-muted/30 rounded-xl border border-dashed border-border">
-            <Search className="w-12 h-12 text-muted-foreground/50 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-muted-foreground">No products found</h3>
-            <p className="text-sm text-muted-foreground/70 mt-1">Try adjusting your search or filters.</p>
-            <button
-              onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
-              className="mt-4 text-primary hover:underline text-sm"
-            >
-              Clear all filters
-            </button>
-          </div>
-        )}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
+              <Search className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-slate-600">No products found</h3>
+              <button
+                onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
+                className="mt-4 text-blue-600 font-bold hover:underline text-sm"
+              >
+                Reset Search
+              </button>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
