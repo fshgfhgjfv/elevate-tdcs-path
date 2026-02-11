@@ -555,7 +555,7 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-",
     name: "TDCS Magnetic Asset Tracker",
     images: [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwqB0xEjURP6pvMSubRFiccDIdA6CMzkE4Og&s"
+      "https://blogger.googleusercontent.com/img/a/AVvXsEhob6O5ikyRd-NoEzZojYaHGXOj29CtisflMbBBgoUbYwnV-xRFLi5myKxPh8cqJ9joSvQf1hWv4BqiqSeoVSNkG7dYDasFV2pzqP91y8RXpL-8WMv1zBwW0auzcb45Bhg0ID0LyTMCQHMMe8xZAd_4BXa9v-JFV4wPWXm1AmoT2KPEfUHMYZOCgsigdcOv"
     ],
     category: "Surveillance",
     rating: 4.2,
