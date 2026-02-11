@@ -12,7 +12,6 @@ import {
   RotateCcw,
   Package,
   ChevronRight,
-  ChevronDown,
   Minus,
   Plus,
   Heart,
@@ -25,12 +24,20 @@ import {
   Box,
   FileText,
   Info,
-  ThumbsUp
+  ThumbsUp,
+  Send,
+  Clock,
+  MapPin,
+  Phone,
+  Mail,
+  Globe
 } from 'lucide-react';
 import { hardwareProducts } from '../data/hardwareProducts';
 import { getDefaultPackageContents, defaultLegal, defaultDisclaimer, defaultDelivery, defaultSupport } from '../data/productDefaults';
 import { useCart } from '../contexts/CartContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../hooks/useAuth';
+import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 const getEmbedUrl = (url: string): string => {
   const youtubeMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
@@ -48,54 +55,38 @@ const RatingStars = ({ rating, size = 'w-4 h-4' }: { rating: number; size?: stri
   </div>
 );
 
-interface AccordionSectionProps {
-  icon: React.ReactNode;
-  title: string;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-  badge?: string;
-  badgeColor?: string;
-}
-
-const AccordionSection = ({ icon, title, children, defaultOpen = false, badge, badgeColor = 'bg-green-500/20 text-green-400' }: AccordionSectionProps) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-  return (
-    <div className="border border-gray-800 rounded-xl overflow-hidden">
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-5 hover:bg-gray-900/50 transition-colors"
-      >
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-gray-800 rounded-lg">{icon}</div>
-          <span className="font-semibold text-white text-left">{title}</span>
-          {badge && <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${badgeColor}`}>{badge}</span>}
-        </div>
-        <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+const ClickableStars = ({ rating, onRate, size = 'w-7 h-7' }: { rating: number; onRate: (r: number) => void; size?: string }) => (
+  <div className="flex items-center gap-1">
+    {[1, 2, 3, 4, 5].map((i) => (
+      <button key={i} onClick={() => onRate(i)} className="transition-transform hover:scale-125">
+        <Star className={`${size} cursor-pointer ${i <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-600 hover:text-yellow-400/50'}`} />
       </button>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="overflow-hidden"
-          >
-            <div className="px-5 pb-5 border-t border-gray-800 pt-4">{children}</div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
+    ))}
+  </div>
+);
+
+const SectionHeader = ({ icon, title, badge, badgeColor = 'bg-green-500/20 text-green-400' }: { icon: React.ReactNode; title: string; badge?: string; badgeColor?: string }) => (
+  <div className="flex items-center gap-3 mb-5">
+    <div className="p-2.5 bg-gray-800/80 rounded-xl">{icon}</div>
+    <h3 className="text-xl font-bold text-white">{title}</h3>
+    {badge && <span className={`text-xs font-bold px-3 py-1 rounded-full ${badgeColor}`}>{badge}</span>}
+  </div>
+);
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { addToCart, items } = useCart();
+  const { user } = useAuth();
   const [product, setProduct] = useState(hardwareProducts.find(p => p.id === id));
   const [activeImage, setActiveImage] = useState(0);
   const [isAdded, setIsAdded] = useState(false);
   const [quantity, setQuantity] = useState(1);
+
+  // Review form state
+  const [reviewTitle, setReviewTitle] = useState('');
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewRating, setReviewRating] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const found = hardwareProducts.find(p => p.id === id);
@@ -138,6 +129,20 @@ const ProductDetail = () => {
     }
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
+  };
+
+  const handleSubmitReview = () => {
+    if (!reviewRating) { toast.error('Please select a rating'); return; }
+    if (!reviewTitle.trim()) { toast.error('Please enter a review title'); return; }
+    if (!reviewComment.trim()) { toast.error('Please enter your review'); return; }
+    setIsSubmitting(true);
+    setTimeout(() => {
+      toast.success('Review submitted successfully! It will appear after moderation.');
+      setReviewTitle('');
+      setReviewComment('');
+      setReviewRating(0);
+      setIsSubmitting(false);
+    }, 1000);
   };
 
   const relatedProducts = hardwareProducts
@@ -276,100 +281,106 @@ const ProductDetail = () => {
           </motion.div>
         </div>
 
-        {/* === DETAILED SECTIONS BELOW === */}
-        <div className="mt-16 space-y-4">
+        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* ALL SECTIONS ALWAYS VISIBLE — NO ACCORDION / NO CLICK TO VIEW */}
+        {/* ══════════════════════════════════════════════════════════════ */}
 
-          {/* Full Description */}
-          <AccordionSection 
-            icon={<FileText className="w-5 h-5 text-blue-400" />} 
-            title="Detailed Description" 
-            defaultOpen={true}
-          >
-            <p className="text-gray-300 leading-relaxed whitespace-pre-line">{longDesc}</p>
-          </AccordionSection>
+        {/* ─── Detailed Description ─── */}
+        <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16 bg-gray-900/40 border border-gray-800/60 rounded-2xl p-6 md:p-8">
+          <SectionHeader icon={<FileText className="w-5 h-5 text-blue-400" />} title="Detailed Description" />
+          <p className="text-gray-300 leading-relaxed whitespace-pre-line text-[15px]">{longDesc}</p>
+        </motion.section>
 
-          {/* Package Contents */}
-          <AccordionSection 
-            icon={<Box className="w-5 h-5 text-purple-400" />} 
-            title="Package Included" 
-            badge="What's in the Box"
-            badgeColor="bg-purple-500/20 text-purple-400"
-            defaultOpen={true}
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {packageContents.map((item, i) => (
-                <div key={i} className="flex items-center gap-3 bg-gray-900/50 rounded-lg p-3 border border-gray-800">
-                  <div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Check className="w-4 h-4 text-purple-400" />
-                  </div>
-                  <span className="text-gray-300 text-sm">{item}</span>
+        {/* ─── Package Contents ─── */}
+        <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-6 bg-gray-900/40 border border-gray-800/60 rounded-2xl p-6 md:p-8">
+          <SectionHeader icon={<Box className="w-5 h-5 text-purple-400" />} title="Package Included" badge="What's in the Box" badgeColor="bg-purple-500/20 text-purple-400" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {packageContents.map((item, i) => (
+              <div key={i} className="flex items-center gap-3 bg-gray-800/40 rounded-xl p-4 border border-gray-700/40">
+                <div className="w-9 h-9 bg-purple-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check className="w-4 h-4 text-purple-400" />
+                </div>
+                <span className="text-gray-200 text-sm font-medium">{item}</span>
+              </div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* ─── Technical Specifications — Alternating Row Table ─── */}
+        {product.specifications && product.specifications.length > 0 && (
+          <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-6 bg-gray-900/40 border border-gray-800/60 rounded-2xl p-6 md:p-8">
+            <SectionHeader icon={<Zap className="w-5 h-5 text-yellow-400" />} title="Technical Specifications" badge="Full Specs" badgeColor="bg-yellow-500/20 text-yellow-400" />
+            <div className="rounded-xl overflow-hidden border border-gray-700/50">
+              <div className="grid grid-cols-2 bg-gray-800/80 px-5 py-3 border-b border-gray-700/50">
+                <span className="text-xs uppercase tracking-wider text-gray-400 font-bold">Specification</span>
+                <span className="text-xs uppercase tracking-wider text-gray-400 font-bold">Details</span>
+              </div>
+              {product.specifications.map((spec, idx) => (
+                <div key={idx} className={`grid grid-cols-2 px-5 py-3.5 ${idx % 2 === 0 ? 'bg-gray-800/30' : 'bg-gray-900/20'} ${idx !== product.specifications.length - 1 ? 'border-b border-gray-800/40' : ''}`}>
+                  <span className="text-gray-400 font-medium text-sm">{spec.label}</span>
+                  <span className="text-white font-semibold text-sm">{spec.value}</span>
                 </div>
               ))}
             </div>
-          </AccordionSection>
+          </motion.section>
+        )}
 
-          {/* Specifications */}
-          {product.specifications && product.specifications.length > 0 && (
-            <AccordionSection 
-              icon={<Zap className="w-5 h-5 text-yellow-400" />} 
-              title="Technical Specifications"
-              defaultOpen={true}
-            >
-              <div className="rounded-xl overflow-hidden border border-gray-800">
-                {product.specifications.map((spec, idx) => (
-                  <div key={idx} className={`flex justify-between py-3 px-5 ${idx % 2 === 0 ? 'bg-gray-900/40' : 'bg-gray-900/20'} ${idx !== product.specifications.length - 1 ? 'border-b border-gray-800' : ''}`}>
-                    <span className="text-gray-400 font-medium">{spec.label}</span>
-                    <span className="text-white font-semibold">{spec.value}</span>
-                  </div>
-                ))}
+        {/* ─── Delivery Information — Badges Layout ─── */}
+        <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-6 bg-gray-900/40 border border-gray-800/60 rounded-2xl p-6 md:p-8">
+          <SectionHeader icon={<Truck className="w-5 h-5 text-green-400" />} title="Delivery Information" badge="Fast Shipping" badgeColor="bg-green-500/20 text-green-400" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
+            {[
+              { icon: <Truck className="w-5 h-5" />, title: "Standard Delivery", desc: "5-7 business days", color: "text-blue-400 bg-blue-500/10 border-blue-500/20" },
+              { icon: <Zap className="w-5 h-5" />, title: "Express Delivery", desc: "2-3 business days", color: "text-green-400 bg-green-500/10 border-green-500/20" },
+              { icon: <MapPin className="w-5 h-5" />, title: "Pan-India Shipping", desc: "Insured with tracking", color: "text-orange-400 bg-orange-500/10 border-orange-500/20" },
+            ].map((item, i) => (
+              <div key={i} className={`rounded-xl p-4 border ${item.color} flex flex-col items-center text-center gap-2`}>
+                <div className={`p-2.5 rounded-full ${item.color}`}>{item.icon}</div>
+                <span className="font-semibold text-white text-sm">{item.title}</span>
+                <span className="text-xs text-gray-400">{item.desc}</span>
               </div>
-            </AccordionSection>
-          )}
+            ))}
+          </div>
+          <p className="text-gray-400 text-sm leading-relaxed">{delivery}</p>
+        </motion.section>
 
-          {/* Delivery */}
-          <AccordionSection 
-            icon={<Truck className="w-5 h-5 text-green-400" />} 
-            title="Delivery Information"
-            badge="Fast Shipping"
-            badgeColor="bg-green-500/20 text-green-400"
-          >
-            <p className="text-gray-300 leading-relaxed">{delivery}</p>
-          </AccordionSection>
+        {/* ─── Warranty & Support ─── */}
+        <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-6 bg-gray-900/40 border border-gray-800/60 rounded-2xl p-6 md:p-8">
+          <SectionHeader icon={<Shield className="w-5 h-5 text-cyan-400" />} title="Warranty & Support" badge="30-Day Warranty" badgeColor="bg-cyan-500/20 text-cyan-400" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+            {[
+              { icon: <Shield className="w-5 h-5 text-cyan-400" />, title: "30-Day Warranty", desc: "Manufacturing defects covered" },
+              { icon: <Phone className="w-5 h-5 text-green-400" />, title: "WhatsApp Support", desc: "Mon-Sat, 10AM - 7PM IST" },
+              { icon: <Mail className="w-5 h-5 text-blue-400" />, title: "Email Support", desc: "hardware@tdcs.in" },
+              { icon: <Globe className="w-5 h-5 text-purple-400" />, title: "Community Access", desc: "Forums & firmware guides" },
+            ].map((item, i) => (
+              <div key={i} className="bg-gray-800/40 border border-gray-700/40 rounded-xl p-4 flex items-start gap-3">
+                <div className="p-2 bg-gray-700/50 rounded-lg flex-shrink-0">{item.icon}</div>
+                <div>
+                  <span className="font-semibold text-white text-sm block">{item.title}</span>
+                  <span className="text-xs text-gray-400">{item.desc}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-gray-400 text-sm leading-relaxed">{support}</p>
+        </motion.section>
 
-          {/* Support */}
-          <AccordionSection 
-            icon={<Headphones className="w-5 h-5 text-cyan-400" />} 
-            title="Warranty & Support"
-            badge="30-Day Warranty"
-            badgeColor="bg-cyan-500/20 text-cyan-400"
-          >
-            <p className="text-gray-300 leading-relaxed">{support}</p>
-          </AccordionSection>
+        {/* ─── Legal Information ─── */}
+        <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-6 bg-gray-900/40 border border-gray-800/60 rounded-2xl p-6 md:p-8">
+          <SectionHeader icon={<Scale className="w-5 h-5 text-orange-400" />} title="Legal Information" />
+          <p className="text-gray-400 leading-relaxed text-sm">{legal}</p>
+        </motion.section>
 
-          {/* Legal */}
-          <AccordionSection 
-            icon={<Scale className="w-5 h-5 text-orange-400" />} 
-            title="Legal Information"
-          >
-            <p className="text-gray-300 leading-relaxed">{legal}</p>
-          </AccordionSection>
+        {/* ─── Disclaimer ─── */}
+        <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-6 bg-red-500/5 border border-red-500/20 rounded-2xl p-6 md:p-8">
+          <SectionHeader icon={<AlertTriangle className="w-5 h-5 text-red-400" />} title="⚠️ Important Disclaimer" badge="Read Before Use" badgeColor="bg-red-500/20 text-red-400" />
+          <p className="text-red-300/80 leading-relaxed text-sm">{disclaimer}</p>
+        </motion.section>
 
-          {/* Disclaimer */}
-          <AccordionSection 
-            icon={<AlertTriangle className="w-5 h-5 text-red-400" />} 
-            title="⚠️ Important Disclaimer"
-            badge="Read Before Use"
-            badgeColor="bg-red-500/20 text-red-400"
-          >
-            <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-4">
-              <p className="text-red-300/90 leading-relaxed">{disclaimer}</p>
-            </div>
-          </AccordionSection>
-        </div>
-
-        {/* Video Review Section */}
+        {/* ─── Video Review Section ─── */}
         {product.videoUrl && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mt-16">
+          <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-10">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
               <div className="p-2 bg-red-500/20 rounded-lg"><Play className="w-6 h-6 text-red-500" /></div>
               Product Review Video
@@ -383,11 +394,13 @@ const ProductDetail = () => {
                 <a href={product.videoUrl} target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 text-sm font-medium">Open in new tab →</a>
               </div>
             </div>
-          </motion.div>
+          </motion.section>
         )}
 
-        {/* Customer Reviews Section */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-16">
+        {/* ═══════════════════════════════════════════════ */}
+        {/* CUSTOMER REVIEWS + WRITE A REVIEW              */}
+        {/* ═══════════════════════════════════════════════ */}
+        <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16">
           <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
             <div className="p-2 bg-yellow-500/20 rounded-lg"><MessageCircle className="w-6 h-6 text-yellow-500" /></div>
             Customer Reviews
@@ -444,11 +457,69 @@ const ProductDetail = () => {
               )}
             </div>
           </div>
-        </motion.div>
+
+          {/* ─── Write a Review Form ─── */}
+          <div className="mt-10 bg-gray-900/50 border border-gray-800 rounded-2xl p-6 md:p-8">
+            <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
+              <Send className="w-5 h-5 text-green-400" /> Write a Review
+            </h3>
+            {user ? (
+              <div className="mt-5 space-y-5">
+                {/* Star Rating */}
+                <div>
+                  <label className="text-sm text-gray-400 font-medium block mb-2">Your Rating *</label>
+                  <ClickableStars rating={reviewRating} onRate={setReviewRating} />
+                </div>
+
+                {/* Title */}
+                <div>
+                  <label className="text-sm text-gray-400 font-medium block mb-2">Review Title *</label>
+                  <input
+                    type="text"
+                    value={reviewTitle}
+                    onChange={e => setReviewTitle(e.target.value)}
+                    placeholder="Summarize your experience"
+                    maxLength={100}
+                    className="w-full bg-gray-800/60 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all text-sm"
+                  />
+                </div>
+
+                {/* Comment */}
+                <div>
+                  <label className="text-sm text-gray-400 font-medium block mb-2">Your Review *</label>
+                  <textarea
+                    value={reviewComment}
+                    onChange={e => setReviewComment(e.target.value)}
+                    placeholder="Share your experience with this product..."
+                    maxLength={1000}
+                    rows={4}
+                    className="w-full bg-gray-800/60 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all text-sm resize-none"
+                  />
+                </div>
+
+                <button
+                  onClick={handleSubmitReview}
+                  disabled={isSubmitting}
+                  className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-500 text-black font-bold rounded-xl hover:from-green-500 hover:to-green-400 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {isSubmitting ? <><Clock className="w-4 h-4 animate-spin" /> Submitting...</> : <><Send className="w-4 h-4" /> Submit Review</>}
+                </button>
+              </div>
+            ) : (
+              <div className="mt-4 bg-gray-800/40 border border-gray-700/40 rounded-xl p-6 text-center">
+                <MessageCircle className="w-10 h-10 text-gray-500 mx-auto mb-3" />
+                <p className="text-gray-400 mb-3">Please log in to write a review</p>
+                <Link to="/login" className="inline-flex items-center gap-2 px-6 py-2.5 bg-green-600 text-black font-bold rounded-xl hover:bg-green-500 transition-colors text-sm">
+                  Login to Review
+                </Link>
+              </div>
+            )}
+          </div>
+        </motion.section>
 
         {/* Related Products */}
         {relatedProducts.length > 0 && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mt-16">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16">
             <h2 className="text-2xl font-bold text-white mb-6">Related Products</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedProducts.map((p) => (
