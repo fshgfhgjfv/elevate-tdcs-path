@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Star, Package, ArrowRight } from 'lucide-react';
+import { Search, Star, Package } from 'lucide-react';
 import { hardwareProducts } from '../data/hardwareProducts';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -8,20 +8,28 @@ const HardwareServices = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
+  
+  // Rotating Text State
+  const rotatingWords = ["Hardware", "Devices", "Gadgets", "Tools"];
+  const [wordIndex, setWordIndex] = useState(0);
 
-  // 1. Force White Background for this page only
+  // 1. Force White Background & Handle Text Rotation Timer
   useEffect(() => {
+    // Background Styles
     const originalStyle = window.getComputedStyle(document.body).backgroundColor;
     const originalColor = window.getComputedStyle(document.body).color;
-
-    // Apply white background to the body
     document.body.style.setProperty('background-color', '#ffffff', 'important');
     document.body.style.setProperty('color', '#0f172a', 'important');
 
+    // Rotation Timer
+    const rotationTimer = setInterval(() => {
+      setWordIndex((prev) => (prev + 1) % rotatingWords.length);
+    }, 2500);
+
     return () => {
-      // Revert to original theme when leaving the page
       document.body.style.backgroundColor = originalStyle;
       document.body.style.color = originalColor;
+      clearInterval(rotationTimer);
     };
   }, []);
 
@@ -45,24 +53,37 @@ const HardwareServices = () => {
       });
   }, [searchQuery, selectedCategory, sortBy]);
 
-  const discount = (orig: number, sale: number) => Math.round(((orig - sale) / orig) * 100);
+  const discount = (orig, sale) => Math.round(((orig - sale) / orig) * 100);
 
   return (
-    // bg-white and text-slate-900 override any global dark mode CSS variables
     <div className="min-h-screen bg-white text-slate-900 pt-24 pb-16">
       <div className="container mx-auto px-4">
 
-        {/* Header */}
+        {/* Header with Rotating Text */}
         <div className="text-center mb-10">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900">
-            Our Pre-Programmed <span className="text-blue-600">Hardware</span>
+          <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 flex flex-col items-center justify-center gap-2">
+            <span>Our Pre-Programmed</span>
+            <div className="h-[1.2em] relative flex items-center justify-center min-w-[300px]">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={rotatingWords[wordIndex]}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="text-blue-600 absolute"
+                >
+                  {rotatingWords[wordIndex]}
+                </motion.span>
+              </AnimatePresence>
+            </div>
           </h1>
-          <p className="text-slate-500 mt-3 max-w-xl mx-auto">
+          <p className="text-slate-500 mt-6 max-w-xl mx-auto">
             Professional-grade security tools, pre-configured and ready to deploy.
           </p>
         </div>
 
-        {/* Notice Banner - Adjusted for white background */}
+        {/* Notice Banner */}
         <div className="mb-8 bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 shadow-sm">
           <div className="flex items-center gap-3 flex-1">
             <div className="relative">
@@ -94,7 +115,7 @@ const HardwareServices = () => {
               className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-slate-900"
             />
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap justify-center">
             {categories.map(cat => (
               <button
                 key={cat}
@@ -129,9 +150,10 @@ const HardwareServices = () => {
                 <motion.div
                   key={product.id}
                   layout
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
                 >
                   <Link
                     to={`/hardware/product/${product.id}`}
