@@ -361,7 +361,7 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-acr122u",
     name: "TDCS ACR122U NFC Reader/Writer",
     images: [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyGBRnxYEON3kNGXoDQwqNwFWcAzcgYXhtyA&s",
+      "https://blogger.googleusercontent.com/img/a/AVvXsEibsrJgKLapPhniIFOjyMCSCLpuFzqw-0answVKxHrlPa_yCx4UeQO1m4HmSaFJFszz5tLtJ4Z9DgkbwQaGJGVQ_yKyAiyeSBdGjfCtGhOSUQ72bdBaR3lpMLjrBFVnHrd6bdYvWVKoLKfgcuuG2-E9S65RurVdPXnMMNKh1XfC3RoOXZ753tjgNysvWx4o",
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQi0kmyPwA81fmuz0YiwP5dRp7zhu0D7ycwAQ&s"
     ],
     category: "RFID / Access Control",
@@ -389,7 +389,7 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-lockpick-set",
     name: "TDCS Transparent Lock Pick Set",
     images: [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTosfajuGVJMavdbGk0vH1hyEw2z__-2QzQVw&s",
+      "https://blogger.googleusercontent.com/img/a/AVvXsEgM83jcbdWDFiFOgTj4ExrnZagzQ86nTB9bm5mhKg9ymuvEtK8BGcOK_PiH8hpxpjEhJY5in5DnFxrjXi9AbHSSyOg29O-s-nwi9lTvBdPVTFoFKSfu6aFTZdZeCfpzIMFXzMjG2T14BVDnAilZMsfliuscr6E0EYBKiPWFFkxzHFH2rYrHWW1LbmkBe1lg",
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGuJxK2vAOk56cEMOgv0l4R6tyspqZDY5GsA&s"
     ],
     category: "Physical Security",
