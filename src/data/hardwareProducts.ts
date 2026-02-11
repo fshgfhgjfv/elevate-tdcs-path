@@ -9,15 +9,23 @@ export interface HardwareProduct {
   salePrice: number;
   isOutOfStock: boolean;
   description: string;
+  longDescription?: string;
   features: string[];
   specifications: { label: string; value: string }[];
-  videoUrl?: string; // YouTube or Google Drive video URL for product review
+  videoUrl?: string;
+  packageContents?: string[];
+  legal?: string;
+  disclaimer?: string;
+  delivery?: string;
+  support?: string;
   reviews: {
     id: string;
     author: string;
     rating: number;
     date: string;
     comment: string;
+    title?: string;
+    verified?: boolean;
   }[];
 }
 
@@ -39,6 +47,7 @@ export const hardwareProducts: HardwareProduct[] = [
     salePrice: 999,
     isOutOfStock: false,
     description: "The Raspberry Pi Pico is a radical change from the previous Pis, because it’s not a Linux computer—it’s a microcontroller. Built around the RP2040 chip designed by Raspberry Pi themselves, it features a dual-core ARM Cortex-M0+ processor running at 133MHz. This board is perfect for low-latency hardware interaction, BadUSB scripting (using CircuitPython or Pico Ducky), and embedded security projects. It's incredibly power-efficient and versatile.",
+    longDescription: "The Raspberry Pi Pico represents a paradigm shift in the Raspberry Pi lineup. Unlike its predecessors that run full Linux distributions, the Pico is a bare-metal microcontroller board built around the custom-designed RP2040 chip. This dual-core ARM Cortex-M0+ processor clocked at 133MHz delivers exceptional performance for embedded applications while maintaining incredibly low power consumption. The board's 8 Programmable I/O (PIO) state machines are a standout feature, enabling you to implement custom communication protocols, drive displays, or create precise timing-critical applications without burdening the main CPU cores. In the cybersecurity domain, the Pico has become the go-to platform for BadUSB projects — using CircuitPython or the popular Pico Ducky script, you can program it to emulate a USB keyboard and execute pre-programmed keystroke sequences in milliseconds. This makes it an invaluable tool for penetration testers demonstrating the dangers of unattended workstations. The drag-and-drop UF2 firmware loading via USB makes it incredibly beginner-friendly — simply hold the BOOTSEL button, plug it in, and drag your firmware file onto the drive that appears.",
     features: [
       "Dual-core ARM® Cortex®-M0+ @ 133MHz",
       "264kB on-chip SRAM & 2MB onboard Flash",
@@ -46,6 +55,17 @@ export const hardwareProducts: HardwareProduct[] = [
       "8 × Programmable I/O (PIO) state machines",
       "Ideal for HID Attacks and Hardware Implants"
     ],
+    packageContents: [
+      "1x Raspberry Pi Pico (TDCS Edition)",
+      "1x Micro-USB Cable (1m)",
+      "1x Pin Header Set (pre-soldered)",
+      "1x Quick Start Guide",
+      "1x TDCS Sticker Pack"
+    ],
+    legal: "This product is sold exclusively for educational purposes, authorized security testing, and legitimate research. Unauthorized use of this device for malicious activities, including but not limited to unauthorized computer access, is strictly prohibited and may violate local, state, and federal laws. The buyer assumes all responsibility for the legal and ethical use of this product.",
+    disclaimer: "TDCS and its affiliates are not responsible for any misuse of this product. By purchasing, you agree that you will only use this device in compliance with all applicable laws and regulations. This product should only be used on systems you own or have explicit written authorization to test.",
+    delivery: "Standard delivery: 5-7 business days. Express delivery: 2-3 business days (additional charges apply). All orders are shipped via insured courier with tracking. Orders placed before 2 PM IST on business days are dispatched the same day.",
+    support: "30-day replacement warranty for manufacturing defects. Dedicated WhatsApp support available Mon-Sat (10 AM - 7 PM IST). Email support: hardware@tdcs.in. Community forum access included with purchase. Free firmware update guides.",
     specifications: [
       { label: "Microcontroller", value: "RP2040" },
       { label: "Storage", value: "2MB Q-SPI Flash" },
@@ -53,7 +73,9 @@ export const hardwareProducts: HardwareProduct[] = [
     ],
     videoUrl: "https://www.youtube.com/watch?v=Zy64kZEM_bg",
     reviews: [
-      { id: "101", author: "Rohan K.", rating: 5, date: "2024-02-14", comment: "Incredible value. Drag-and-drop works perfectly." }
+      { id: "101", author: "Rohan K.", rating: 5, date: "2024-02-14", comment: "Incredible value. Drag-and-drop works perfectly.", title: "Best Budget HID Device", verified: true },
+      { id: "102", author: "Priya S.", rating: 5, date: "2024-03-20", comment: "Used this for my OSCP prep lab. Pico Ducky scripts worked flawlessly out of the box. The pre-soldered headers saved me so much time.", title: "Perfect for Pentesting Labs", verified: true },
+      { id: "103", author: "Arjun M.", rating: 4, date: "2024-04-05", comment: "Good board for the price. Only wish it had WiFi built-in, but for HID attacks this is unbeatable.", title: "Great for HID, misses WiFi", verified: true }
     ]
   },
   {
@@ -71,6 +93,7 @@ export const hardwareProducts: HardwareProduct[] = [
     salePrice: 499,
     isOutOfStock: false,
     description: "The ESP8266 NodeMCU is the legendary board that democratized WiFi hacking and IoT. Famous for being the hardware behind the 'WiFi Deauther' project, this board allows you to monitor packets, create fake access points (Beacon Spam), and test network resilience. It features a full TCP/IP stack and can be programmed easily using the Arduino IDE or Lua script.",
+    longDescription: "The ESP8266 NodeMCU is arguably the single most important board in the WiFi hacking revolution. Before it arrived, experimenting with WiFi required expensive, specialized equipment. The ESP8266 changed everything by putting a full TCP/IP stack and 802.11 b/g/n WiFi into a $5 module. Its claim to fame in the security community is the WiFi Deauther project by Spacehuhn — a firmware that exploits a well-known vulnerability in the 802.11 protocol to send deauthentication frames, disconnecting clients from their networks. Beyond deauth attacks, you can use it for Beacon Spam (creating hundreds of fake SSIDs), Probe Request sniffing, and building Evil Twin access points for authorized phishing assessments. The NodeMCU variant adds a CP2102 USB-to-serial converter, making programming as easy as plugging in a USB cable and uploading code from the Arduino IDE.",
     features: [
       "Integrated 802.11 b/g/n WiFi 2.4GHz",
       "Support for WiFi Deauther firmware",
@@ -78,6 +101,17 @@ export const hardwareProducts: HardwareProduct[] = [
       "Deep sleep power saving mode",
       "Breadboard friendly form-factor"
     ],
+    packageContents: [
+      "1x ESP8266 WiFi Development Board",
+      "1x Micro-USB Cable (1m)",
+      "1x Breadboard (400 tie-points)",
+      "1x Jumper Wire Set (20 pieces)",
+      "1x Setup & Flashing Guide"
+    ],
+    legal: "This product is sold exclusively for educational purposes, authorized security testing, and legitimate research. Sending deauthentication frames on networks you do not own or have authorization to test is illegal in most jurisdictions. The buyer assumes all responsibility for legal and ethical use.",
+    disclaimer: "WiFi Deauther functionality should only be used on your own networks or with explicit written permission. TDCS is not responsible for any unauthorized or illegal use. Misuse may violate the Computer Fraud and Abuse Act and equivalent international laws.",
+    delivery: "Standard delivery: 5-7 business days. Express delivery: 2-3 business days (additional charges apply). All orders shipped with tracking and insurance.",
+    support: "30-day replacement warranty. WhatsApp support Mon-Sat (10 AM - 7 PM IST). Email: hardware@tdcs.in. Includes access to TDCS firmware flashing tutorials.",
     specifications: [
       { label: "Chipset", value: "ESP8266-12E" },
       { label: "Clock Speed", value: "80 MHz / 160 MHz" },
@@ -85,7 +119,9 @@ export const hardwareProducts: HardwareProduct[] = [
     ],
     videoUrl: "https://www.youtube.com/watch?v=6He9pXwVFNQ",
     reviews: [
-      { id: "201", author: "Amit V.", rating: 5, date: "2024-03-01", comment: "Best investment for my career." }
+      { id: "201", author: "Amit V.", rating: 5, date: "2024-03-01", comment: "Best investment for my career. Learned WiFi security fundamentals hands-on.", title: "Career-Changing Board", verified: true },
+      { id: "202", author: "Sneha R.", rating: 5, date: "2024-04-15", comment: "Deauther firmware installed in under 10 minutes. TDCS guide was crystal clear. Amazing for the price!", title: "Easy Setup, Great Results", verified: true },
+      { id: "203", author: "Karan D.", rating: 4, date: "2024-05-02", comment: "Works great for 2.4GHz. Wish it supported 5GHz too but at this price can't complain.", title: "Excellent Value", verified: true }
     ]
   },
   { 
