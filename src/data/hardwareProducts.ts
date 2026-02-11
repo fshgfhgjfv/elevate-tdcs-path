@@ -582,7 +582,7 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "tdcs-usb-killer",
     name: "TDCS USB Surge Tester Pro",
     images: [
-      "https://blogger.googleusercontent.com/img/a/AVvXsEjXWC81FcRGOHzlnaMitnIQ3Y9fnk-X-Wi2EcSikpFOnkIdZHbHriBWvPytKgofh9lJSX1No39vBwjdJz0X2d4c_gB-xWnPnMg7ajfkFE_VMk-sskSt-bn6HD8trkPoaBW38rwoa0uDAQHXtf_nQUdi-plYUlpVipX079W_RBqCSRGYhQ_9d2avdhnPT2W_"
+      "https://blogger.googleusercontent.com/img/a/AVvXsEibrUYqIBDK0fN3Ylfa7oAJkLfPP4Mdwr5JjD71XIfveMwA5zhcHSywcUYsJOqjmX2Q3DVuNXSOaTN8e2Dmu50823KAlFPUpKAwUyct2q7ryDW8Ru6unTQdixWJH9bWWZ_8r0XXdMFcQg87YZbkwH-XwoZqQu7wMZbhVmDfJc1pxPykQEg-p0jfUKLnJAKU"
     ],
     category: "Hardware / Destructive",
     rating: 4.9,
