@@ -469,6 +469,34 @@ export const hardwareProducts: HardwareProduct[] = [
     reviews: []
   },
   {
+    id: "CYD-ESP32(Marauder)",
+    name: "CYD-ESP32(Marauder) Cyber Edition",
+    images: [
+      "https://blogger.googleusercontent.com/img/a/AVvXsEjOqZpmFAWAR7XVU48uatUmzyGF3xGS4r9e9i3FLoqS--WRmyiQK26R-iQkUDU_cCUeJ9GX-YpkRtrNphB2ZkcXSNH-AFOedWqLXh_aGEjEYvDosEVQ6NARaazfs-y4OhHA8ejuQsKNYyJ48b7nFszgOJ3LP1-fPG-8iEjfd57tVyLAlPTv4MP10a6AErWy",
+      "https://blogger.googleusercontent.com/img/a/AVvXsEgCeQ9fjfiFYZKcLrbLeDelO0yZ43PijFs3b2hKSE0mWMCZNtOVdxb3qjEgYY2wmHZn5xyGVQC-KzHbOAdfNgaZqHHoBY6ujiuNJIJzbjFgN4PeSQZX8uNnVnWkHJBj_x4Vk38CxW3TKEhPyPqENY2XOlCDONNMmMLOJFyJP10RuxNvRQ-EaseToMk6oB2e"
+    ],
+    category: "Single Board Computers",
+    rating: 4.9,
+    reviewCount: 65,
+    originalPrice: 12000,
+    salePrice: 9800,
+    isOutOfStock: false,
+    description: "The ultimate ARM-based hacking station. This kit includes the powerful Raspberry Pi 5 with 8GB RAM, capable of running a full desktop environment with ease. It comes pre-flashed with a custom build of Kali Linux, optimized for the Pi 5's architecture. Whether you are cracking hashes with Hashcat or running vulnerability scans with OpenVAS, this board handles it all without breaking a sweat.",
+    features: [
+      "Broadcom BCM2712 Quad-core Cortex-A76 @ 2.4GHz",
+      "8GB LPDDR4X SDRAM",
+      "Dual 4K Micro-HDMI Output",
+      "PCIe 2.0 interface for high-speed NVMe storage",
+      "Includes Active Cooler and Official Power Supply"
+    ],
+    specifications: [
+      { label: "RAM", value: "8GB" },
+      { label: "OS", value: "Kali Linux ARM64" },
+      { label: "Connectivity", value: "Gigabit LAN + WiFi 5" }
+    ],
+    reviews: []
+  },
+  {
     id: "tdcs-esp32-cam",
     name: "TDCS ESP32-CAM Spy Module",
     images: [
