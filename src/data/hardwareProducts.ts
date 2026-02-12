@@ -277,7 +277,7 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "cyd-esp32-marauder-cyber",
     name: "CYD-ESP32(Marauder) Cyber Edition",
     images: [
-      "https://blogger.googleusercontent.com/img/a/AVvXsEjOqZpmFAWAR7XVU48uatUmzyGF3xGS4r9e9i3FLoqS--WRmyiQK26R-iQkUDU_cCUeJ9GX-YpkRtrNphB2ZkcXSNH-AFOedWqLXh_aGEjEYvDosEVQ6NARaazfs-y4OhHA8ejuQsKNYyJ48b7nFszgOJ3LP1-fPG-8iEjfd57tVyLAlPTv4MP10a6AErWy",
+      "https://blogger.googleusercontent.com/img/a/AVvXsEh-SH8QiTSKP0yckpY0M1uWW9t1szyWPzM5oiAZHpO0vhM6cyceydNTFjr-aOeagd1nAoAf_1txxqcU-FRfLxWZOlef3v-Hz0LbpQX7QTVxIqZshfiEqjlXn4XqHyDyiAeJCROdyhQtqha2YqmSd2e8_uXC9pbXDchi1wEq6Hc04Wo_YIJhxyusYs85j64d",
       "https://blogger.googleusercontent.com/img/a/AVvXsEgCeQ9fjfiFYZKcLrbLeDelO0yZ43PijFs3b2hKSE0mWMCZNtOVdxb3qjEgYY2wmHZn5xyGVQC-KzHbOAdfNgaZqHHoBY6ujiuNJIJzbjFgN4PeSQZX8uNnVnWkHJBj_x4Vk38CxW3TKEhPyPqENY2XOlCDONNMmMLOJFyJP10RuxNvRQ-EaseToMk6oB2e"
     ],
     category: "Hardware / IoT",
