@@ -759,7 +759,7 @@ export const hardwareProducts: HardwareProduct[] = [
 
     name: "Rasp-AtomDuck (Wi-Fi Ducky)",
 
-    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEj_example_atomduck"],
+    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEjaTtPecihy0Ldu9HJsZ7FBrCatgr9-lB9yrYvQmiuARnG3rPeKei0Ns1bN_cMvALsvBIhYGyUKBiCf_7jNw7W6ELzNRe6zmJfz_juZ9dV5dQlzxAT9FZQdDn0axoQGQbbsw09ciKEjWCZlN-NKbvdDJxpcQyk_JOu4DooMPTPd2Gb84rXqkGSNDwutFDmC"],
 
     category: "Hardware / HID",
 
