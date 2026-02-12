@@ -475,7 +475,7 @@ export const hardwareProducts: HardwareProduct[] = [
 
     name: "AtomS3U (Rubber-Duck-Kit)",
 
-    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEgj_example_atoms3u"],
+    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEhfmpu_OSNR8mjcz_O04RYCpPUrkAkmthNEA2rG_2hC1CpqnM5JEGy_7AA_gYaRKeptV5J0cHbwf__u-l-fxY2g8GTinozAIxap0_LFcD1dTnkPqJkhWS_XVkY7IaTVXD_vdO51COqr6Z9_vu7Wtzj5tV9koSQK4pRRN4seCXy8qmL2SJ92r9k-C6xRfWII"],
 
     category: "Hardware / HID",
 
