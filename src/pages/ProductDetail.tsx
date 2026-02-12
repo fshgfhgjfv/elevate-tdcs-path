@@ -443,15 +443,6 @@ const ProductDetail = () => {
                     )}
                   </div>
                   <p className="text-gray-300 mb-3">{review.comment}</p>
-                  {review.images && review.images.length > 0 && (
-                    <div className="flex gap-2 mb-3 flex-wrap">
-                      {review.images.map((img, imgIdx) => (
-                        <a key={imgIdx} href={img} target="_blank" rel="noopener noreferrer" className="block w-20 h-20 rounded-lg overflow-hidden border border-gray-700 hover:border-green-500 transition-colors">
-                          <img src={img} alt={`Review photo ${imgIdx + 1}`} className="w-full h-full object-cover" />
-                        </a>
-                      ))}
-                    </div>
-                  )}
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <span className="font-medium">{review.author}</span>
                     <span>{new Date(review.date).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
