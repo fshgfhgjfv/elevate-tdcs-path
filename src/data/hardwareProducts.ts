@@ -752,49 +752,6 @@ export const hardwareProducts: HardwareProduct[] = [
     ]
 
   },
-  {
-    id: "cyd-esp32-marauder-cyber",
-    name: "CYD-ESP32(Marauder) Cyber Edition",
-    images: [
-      "https://blogger.googleusercontent.com/img/a/AVvXsEjOqZpmFAWAR7XVU48uatUmzyGF3xGS4r9e9i3FLoqS--WRmyiQK26R-iQkUDU_cCUeJ9GX-YpkRtrNphB2ZkcXSNH-AFOedWqLXh_aGEjEYvDosEVQ6NARaazfs-y4OhHA8ejuQsKNYyJ48b7nFszgOJ3LP1-fPG-8iEjfd57tVyLAlPTv4MP10a6AErWy",
-      "https://blogger.googleusercontent.com/img/a/AVvXsEgCeQ9fjfiFYZKcLrbLeDelO0yZ43PijFs3b2hKSE0mWMCZNtOVdxb3qjEgYY2wmHZn5xyGVQC-KzHbOAdfNgaZqHHoBY6ujiuNJIJzbjFgN4PeSQZX8uNnVnWkHJBj_x4Vk38CxW3TKEhPyPqENY2XOlCDONNMmMLOJFyJP10RuxNvRQ-EaseToMk6oB2e"
-    ],
-    category: "Hardware / IoT",
-    rating: 5.0,
-    reviewCount: 86,
-    originalPrice: 3999,
-    salePrice: 2450,
-    isOutOfStock: true, // As per your listing
-    description: "The Cyber Edition CYD (Cheap Yellow Display) is a powerhouse for ESP32 display projects, featuring pre-installed Bruce/Marauder firmware and high-range external antenna support.",
-    longDescription: "The CYD-ESP32 Marauder Cyber Edition is a significant upgrade over standard development boards, specifically engineered for the security research community. At its core is the powerful ESP32-D0WDQ6 dual-core processor, but the standout feature is the vibrant 2.8-inch TFT touch display that provides a full graphical user interface for mobile auditing. This 'Cyber Edition' is uniquely equipped with an Ipex SMA version for external antenna support, drastically extending your Wi-Fi and Bluetooth range compared to onboard PCB antennas. It comes pre-programmed with Bruce and Marauder firmware, making it a ready-to-use alternative to the M5StickC Plus2 for those who require a larger touch-screen interface and more processing headroom. Whether you are running deauthentication tests, sniffing packets, or building custom IoT dashboards, the Cyber Edition offers the perfect blend of high-performance hardware and portability.",
-    features: [
-      "Pre-installed Bruce & Marauder Firmware",
-      "Ipex SMA Version for External High-Range Antenna",
-      "2.8-inch TFT Touch Display (Big Size)",
-      "Type-C USB Support for Modern Connectivity",
-      "Multi-Firmware Support (Bruce, Marauder, etc.)",
-      "Videos and GUI Support"
-    ],
-    specifications: [
-      { label: "Controller", value: "ESP32-D0WDQ6 Dual-Core" },
-      { label: "Clock Speed", value: "Up to 240MHz" },
-      { label: "Display", value: "2.8\" TFT LCD (240x320)" },
-      { label: "Touch", value: "Resistive Touch Screen" },
-      { label: "Connectivity", value: "WiFi + Bluetooth + SMA External" }
-    ],
-    packageContents: [
-      "1x CYD-ESP32u (Cyber Edition)",
-      "1x Stylus Pen (SPen)",
-      "4x Male to Female Jumper Wires",
-      "1x USB-C to USB-A Cable",
-      "1x Custom Device Cover",
-      "1x Protective Case Box"
-    ],
-
-    reviews: [
-      { id: "rev-901", author: "Aman T.", rating: 5, date: "2024-02-05", comment: "The touch screen is very responsive. Bruce firmware works flawlessly for my display projects.", title: "Best CYD Variant", verified: true }
-    ]
-  }
 
   {
 
