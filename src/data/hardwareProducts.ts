@@ -640,7 +640,10 @@ export const hardwareProducts: HardwareProduct[] = [
 
     name: "ESP32/2NRF Kit (Bluetooth Penetration)",
 
-    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEj_example_2nrf"],
+    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEi68_YWdSI2DmZGXZitZaPlTZMZBSjWlaLsq6pS2bUFRHyJMhoFQcJ-LVtAex50LVts4HmkvmLveMsJKIHg31mfMbZBdsvR1rceJgHR2NZzNdO5ENPsl-qqpE0VYesUU5fWH7TY4VGwXGlkkQSvmvAL8dKUWGFSWoNJ8XMVOubDzUCjUR5WCGEIUrCFmY00" , 
+            "https://blogger.googleusercontent.com/img/a/AVvXsEgRy2nwKgbSlSguENpdhAxFHDRFA50ShwJD7-BvdGWal4QPA0HLqTRj7a-NyUoYzVNyC0UGreWXmbvMnB57DbL8G8wwCCYdaOLjUk7OEGv3Wa0donMaECtbOu2_roROdtolWk1Eg3F5dE4VKLEoGesP7NLucJq92BhEL6K3aXHvBTd9aA2I1XV9ciUQEA7n",
+             "https://blogger.googleusercontent.com/img/a/AVvXsEh_28AxEklT2xdPFlMp-JwcByC-oVIhhNqdpf5xLGoS77_pIMIFdrV2-jMouaEmWmloSKSdbWH-UR5GtRzPkAuMK5giVQ8YAAu6hVs2AVBjCP7o0Ku0UiLuMNMXNVCW5HxfxUCfLKLXwrvuVCYy5uEXXoPF3KvfwQs_4DA7dqqN5sQMTithDI9eTxZamOmq",
+            "https://blogger.googleusercontent.com/img/a/AVvXsEgOz0hSfh1ZuON4W5vQcZM0vu2mGXKMHn83hGfH8qAP7KoO_QvfD0SLiZL81LWJSqxbGiPVWxIRrWGbZJXQe_HfSKC3vnexv_CY8ciyN6emsuRy8341c0insfHJSC4tyTibVju_A3ThWlAcFy6MGFL2Tm747NKum5gmSsYBeGtzxA3gM7M8kOW7c8SX8b6A"],
 
     category: "Hardware / Bluetooth",
 
