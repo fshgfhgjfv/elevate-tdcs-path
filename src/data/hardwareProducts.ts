@@ -533,7 +533,7 @@ export const hardwareProducts: HardwareProduct[] = [
 
     name: "BW16-5Ghz Kit (Pre-Installed Firmware)",
 
-    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEj_example_bw16"],
+    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEjuNFzIvDDuC72chrhYlYf4MMNLsbXpnENbqXSM1TH46iKAGecfmmgmssAZy2F44ZBF_W-7t_O9H_JZcgKgBLA3j57sFs4FvgWm9qnRbNOmMD_ThbLDWmAQTqUydlKd0PtI_KLgm7F29EIwo-tOy4gzDHxkVmqSx4qWBKuNs8lWX_ltPnrNrskVDkEFwDkM"],
 
     category: "Hardware / Network",
 
