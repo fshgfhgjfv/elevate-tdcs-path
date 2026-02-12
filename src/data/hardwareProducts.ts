@@ -530,21 +530,14 @@ export const hardwareProducts: HardwareProduct[] = [
   {
 
     id: "bw16-5ghz-kit",
-
     name: "BW16-5Ghz Kit (Pre-Installed Firmware)",
-
-    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEjuNFzIvDDuC72chrhYlYf4MMNLsbXpnENbqXSM1TH46iKAGecfmmgmssAZy2F44ZBF_W-7t_O9H_JZcgKgBLA3j57sFs4FvgWm9qnRbNOmMD_ThbLDWmAQTqUydlKd0PtI_KLgm7F29EIwo-tOy4gzDHxkVmqSx4qWBKuNs8lWX_ltPnrNrskVDkEFwDkM"],
-
+    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEgJDZ7GkOjcqT7MITchdktdW7Jo2btIGUvALRuvkQlxcpRGRNJBMn7flCr1MJ4lkyB2Xbi4nvznMxoj-rb73uLvZpwPU30BBH5eUvEUxA-3Ut9wNzT7Uwh_nGuuAiS-QBZioOo-v1denCYv6hHPwQQhkZevGMdV_XwV6q58aSb6Fo9S6_Vp4MrMwSf9MewI",
+          "https://blogger.googleusercontent.com/img/a/AVvXsEgBF3Yago9mlTEYP4__csBkOqXIeuUSsDvYSNJ_qGoY2jQQnB_h6gqxyAAiL6Kc__ANA2IzIn-alpkWfRpzCzDqWo7E98Uw_NH8Ove65-3eThDMGE6I-YFDupn0YwDH53ku-AWWfel0caL94ejW5yXlVfYeAvG8Z0paIIcgNhrgm_1XHDAdNdhz_m7aCG3q" ],
     category: "Hardware / Network",
-
     rating: 5.0,
-
     reviewCount: 28,
-
     originalPrice: 1999,
-
     salePrice: 1499,
-
     isOutOfStock: true,
 
     description: "The BW16 is a dual-band Wi-Fi module supporting both 2.4GHz and 5GHz frequencies, making it a rare and powerful tool for modern network auditing.",
@@ -554,13 +547,11 @@ export const hardwareProducts: HardwareProduct[] = [
     features: [
 
       "Dual-Band Wi-Fi (2.4GHz & 5GHz)",
-
+"Penetration 5Ghz WiFi", 
+      "Ipex SMA Version",
       "Bluetooth Low Energy (BLE 5.0) support",
-
       "Pre-installed specialized auditing firmware",
-
       "Internal and External antenna support",
-
       "Low power consumption for portable use"
 
     ],
