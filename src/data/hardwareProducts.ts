@@ -582,7 +582,7 @@ export const hardwareProducts: HardwareProduct[] = [
 
     name: "EBYTE E01-2G4M27D NRF24l01 PA LNA (Long Range)",
 
-    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEi_example_nrf24"],
+    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEjy3ck0diGoois9CV2sofy77X8WutD_HlVA1TGZLFW_-j3o_UIvJmixANrwjh12AJ0jPuWA8x9DRshtQq5TOx1yDQM-6cS3bTeflSRyk2EWrCPvv4hOFcEEdx7TO72ShFCOXGaurC7UNTXO97N4yGqoYw_4cSDFj3MNRBxkRglLiXyfKZQvF_43NNDuYLKd"],
 
     category: "Hardware / RF",
 
