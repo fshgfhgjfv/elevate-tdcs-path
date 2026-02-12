@@ -759,7 +759,8 @@ export const hardwareProducts: HardwareProduct[] = [
 
     name: "Rasp-AtomDuck (Wi-Fi Ducky)",
 
-    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEjaTtPecihy0Ldu9HJsZ7FBrCatgr9-lB9yrYvQmiuARnG3rPeKei0Ns1bN_cMvALsvBIhYGyUKBiCf_7jNw7W6ELzNRe6zmJfz_juZ9dV5dQlzxAT9FZQdDn0axoQGQbbsw09ciKEjWCZlN-NKbvdDJxpcQyk_JOu4DooMPTPd2Gb84rXqkGSNDwutFDmC"],
+    images: ["https://blogger.googleusercontent.com/img/a/AVvXsEgJ1FZEGYGKQy-KXA7kTuGYLoAfaqFyF2TVnhiiUB9dtaQcGyY9etDu-1_EHsA3ejwcaS7v1dPD8RIbMHyZhBRgwbeai0WC4mSrXHr-sLapyz4mmw1IxyvAINYmCGqHwfhw2M6TUUHr6fa5qBRa2ojgs9Hf-847TM07psnO9QGB6T7lsrVpQq1gbmTnyl9s", 
+            "https://www.google.com/imgres?q=Rasp-AtomDuck%20(Wi-Fi%20Ducky)%0D%0A%20image&imgurl=https%3A%2F%2Fwww.aidanwoods.com%2Fapi%2Fposts%2Fbuilding-a-wifi-enabled-usb-rubber-ducky%2Fcover-image&imgrefurl=https%3A%2F%2Fwww.aidanwoods.com%2Fblog%2Fbuilding-a-wifi-enabled-usb-rubber-ducky&docid=ckHtXGHu-54EbM&tbnid=1sMRijSdnyRt8M&vet=12ahUKEwjcw5P4zNOSAxWR4jgGHZImCI4QnPAOegQIHxAB..i&w=1071&h=629&hcb=2&ved=2ahUKEwjcw5P4zNOSAxWR4jgGHZImCI4QnPAOegQIHxAB"],
 
     category: "Hardware / HID",
 
