@@ -790,9 +790,7 @@ export const hardwareProducts: HardwareProduct[] = [
       "1x Custom Device Cover",
       "1x Protective Case Box"
     ],
-    legal: "Users are responsible for ensuring their use of the CYD-ESP32 device complies with all applicable laws and regulations. Linuxndroid/TDCS disclaims any liability for misuse of this educational hardware.",
-    delivery: "Free Shipping all over India. Prepaid only. 1–2 days dispatch with delivery via Bluedart, DTDC, or Amazon Shipping.",
-    support: "24x7 WhatsApp & Call Support. Quality tested before shipping. Pre-programmed and ready to use.",
+
     reviews: [
       { id: "rev-901", author: "Aman T.", rating: 5, date: "2024-02-05", comment: "The touch screen is very responsive. Bruce firmware works flawlessly for my display projects.", title: "Best CYD Variant", verified: true }
     ]
