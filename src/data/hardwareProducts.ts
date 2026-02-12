@@ -532,7 +532,7 @@ export const hardwareProducts: HardwareProduct[] = [
     id: "bw16-5ghz-kit",
     name: "BW16-5Ghz Kit (Pre-Installed Firmware)",
     images: ["https://blogger.googleusercontent.com/img/a/AVvXsEgJDZ7GkOjcqT7MITchdktdW7Jo2btIGUvALRuvkQlxcpRGRNJBMn7flCr1MJ4lkyB2Xbi4nvznMxoj-rb73uLvZpwPU30BBH5eUvEUxA-3Ut9wNzT7Uwh_nGuuAiS-QBZioOo-v1denCYv6hHPwQQhkZevGMdV_XwV6q58aSb6Fo9S6_Vp4MrMwSf9MewI",
-          "https://blogger.googleusercontent.com/img/a/AVvXsEgBF3Yago9mlTEYP4__csBkOqXIeuUSsDvYSNJ_qGoY2jQQnB_h6gqxyAAiL6Kc__ANA2IzIn-alpkWfRpzCzDqWo7E98Uw_NH8Ove65-3eThDMGE6I-YFDupn0YwDH53ku-AWWfel0caL94ejW5yXlVfYeAvG8Z0paIIcgNhrgm_1XHDAdNdhz_m7aCG3q" ],
+          "https://blogger.googleusercontent.com/img/a/AVvXsEgBF3Yago9mlTEYP4__csBkOqXIeuUSsDvYSNJ_qGoY2jQQnB_h6gqxyAAiL6Kc__ANA2IzIn-alpkWfRpzCzDqWo7E98Uw_NH8Ove65-3eThDMGE6I-YFDupn0YwDH53ku-AWWfel0caL94ejW5yXlVfYeAvG8Z0paIIcgNhrgm_1XHDAdNdhz_m7aCG3q", ],
     category: "Hardware / Network",
     rating: 5.0,
     reviewCount: 28,
@@ -542,8 +542,7 @@ export const hardwareProducts: HardwareProduct[] = [
 
     description: "The BW16 is a dual-band Wi-Fi module supporting both 2.4GHz and 5GHz frequencies, making it a rare and powerful tool for modern network auditing.",
 
-    longDescription: "In today’s rapidly evolving wireless landscape, most enterprise and advanced home networks operate primarily on the 5GHz spectrum, leaving traditional 2.4GHz-only auditing hardware outdated and incomplete. The BW16-5GHz Kit, powered by the high-performance RTL8720DN dual-band SoC, is purpose-built to meet the demands of modern Wi-Fi environments. Supporting 802.11 a/b/g/n protocols across both 2.4GHz and 5.8GHz bands, this compact yet powerful device provides the full-spectrum visibility required for professional wireless assessments, research, and authorized security testing.",
-"For professionals building or upgrading their wireless auditing toolkit, the BW16-5GHz Kit bridges the gap between legacy hardware and today’s high-frequency Wi-Fi networks. It offers the reliability, compatibility, and spectrum coverage required to properly assess modern 5GHz infrastructure—ensuring you can see, monitor, and evaluate the networks that older 2.4GHz-only devices simply cannot detect.",
+    longDescription: "In an era where most enterprise and home networks have migrated to the 5GHz spectrum to avoid congestion, standard 2.4GHz auditing tools often fall short. The BW16-5Ghz Kit bridges this gap, featuring the RTL8720DN dual-band SoC which supports both 802.11 a/b/g/n protocols. This kit comes pre-installed with specialized security firmware, allowing researchers to scan, monitor, and analyze traffic on the high-frequency 5.8GHz band. Its compact design includes an onboard antenna with an option for external SMA expansion, ensuring you can maintain a high-gain connection during long-range reconnaissance. For cybersecurity professionals, the BW16 is an essential addition to the 'war-driving' kit, providing the visibility required to audit modern Wi-Fi 5 environments that older hardware simply cannot see.",
 
     features: [
 
