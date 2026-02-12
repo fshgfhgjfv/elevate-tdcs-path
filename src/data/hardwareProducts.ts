@@ -468,180 +468,353 @@ export const hardwareProducts: HardwareProduct[] = [
     ],
     reviews: []
   },
-  export const newHardwareProducts: HardwareProduct[] = [
+  
   {
+
     id: "atoms3u-rubber-duck",
+
     name: "AtomS3U (Rubber-Duck-Kit)",
+
     images: ["https://blogger.googleusercontent.com/img/a/AVvXsEgj_example_atoms3u"],
+
     category: "Hardware / HID",
+
     rating: 5.0,
+
     reviewCount: 12,
+
     originalPrice: 2999,
+
     salePrice: 2340,
+
     isOutOfStock: true,
+
     description: "The AtomS3U is a U-disk form factor controller based on the ESP32-S3 chip, pre-configured as a high-performance Rubber Ducky style HID injection tool.",
+
     longDescription: "The AtomS3U Rubber-Duck-Kit represents the next generation of Human Interface Device (HID) injection tools. Moving beyond the limitations of legacy 8-bit microcontrollers, this kit utilizes the dual-core ESP32-S3 processor to deliver unmatched payload execution speeds and stability. Its ultra-compact USB-A form factor allows it to blend seamlessly into any workstation environment, appearing to the operating system as a standard, trusted keyboard. What sets the AtomS3U apart is its integrated Wi-Fi and Bluetooth stack, enabling red-teamers to remotely trigger, pause, or switch between multiple payloads from a smartphone or laptop. Whether you are automating administrative tasks or demonstrating keystroke injection vulnerabilities during a penetration test, the AtomS3U provides a professional-grade, 'cyberpunk' styled solution that fits on a keychain.",
+
     features: [
+
       "ESP32-S3 Dual-core processor",
+
       "USB-A Form Factor for stealth",
+
       "Integrated Wi-Fi for remote payload triggering",
+
       "Programmable RGB LED for status feedback",
+
       "Compatible with advanced HID injection scripts"
+
     ],
+
     specifications: [
+
       { label: "SoC", value: "ESP32-S3" },
+
       { label: "Interface", value: "USB-A" },
+
       { label: "Connectivity", value: "2.4GHz Wi-Fi / BLE 5.0" }
+
     ],
+
     reviews: [
+
       { id: "rev-301", author: "Deepak R.", rating: 5, date: "2024-11-10", comment: "The Wi-Fi triggering is a game changer. I can plug it in and wait for the right moment to fire the payload from my phone.", title: "Stealthy and Powerful", verified: true },
+
       { id: "rev-302", author: "Sarah J.", rating: 5, date: "2024-12-05", comment: "Much faster than the old ATtiny85 boards. The S3 chip handles complex scripts without any lag.", title: "Superior to Digispark", verified: true }
+
     ]
+
   },
+
   {
+
     id: "bw16-5ghz-kit",
+
     name: "BW16-5Ghz Kit (Pre-Installed Firmware)",
+
     images: ["https://blogger.googleusercontent.com/img/a/AVvXsEj_example_bw16"],
+
     category: "Hardware / Network",
+
     rating: 5.0,
+
     reviewCount: 28,
+
     originalPrice: 1999,
+
     salePrice: 1499,
+
     isOutOfStock: true,
+
     description: "The BW16 is a dual-band Wi-Fi module supporting both 2.4GHz and 5GHz frequencies, making it a rare and powerful tool for modern network auditing.",
+
     longDescription: "In an era where most enterprise and home networks have migrated to the 5GHz spectrum to avoid congestion, standard 2.4GHz auditing tools often fall short. The BW16-5Ghz Kit bridges this gap, featuring the RTL8720DN dual-band SoC which supports both 802.11 a/b/g/n protocols. This kit comes pre-installed with specialized security firmware, allowing researchers to scan, monitor, and analyze traffic on the high-frequency 5.8GHz band. Its compact design includes an onboard antenna with an option for external SMA expansion, ensuring you can maintain a high-gain connection during long-range reconnaissance. For cybersecurity professionals, the BW16 is an essential addition to the 'war-driving' kit, providing the visibility required to audit modern Wi-Fi 5 environments that older hardware simply cannot see.",
+
     features: [
+
       "Dual-Band Wi-Fi (2.4GHz & 5GHz)",
+
       "Bluetooth Low Energy (BLE 5.0) support",
+
       "Pre-installed specialized auditing firmware",
+
       "Internal and External antenna support",
+
       "Low power consumption for portable use"
+
     ],
+
     specifications: [
+
       { label: "Chipset", value: "RTL8720DN" },
+
       { label: "Frequency", value: "2.4GHz / 5.8GHz" },
+
       { label: "Flash", value: "2MB" }
+
     ],
+
     reviews: [
+
       { id: "rev-401", author: "Vikram K.", rating: 5, date: "2024-10-12", comment: "Finally a budget-friendly 5GHz tool! Most office networks are 5G now, so this is essential for my kit.", title: "Essential for 5GHz Auditing", verified: true },
+
       { id: "rev-402", author: "Leo G.", rating: 5, date: "2024-11-20", comment: "The pre-installed firmware is stable. Caught several handshakes on the 5.8GHz band within minutes.", title: "Works as Advertised", verified: true }
+
     ]
+
   },
+
   {
+
     id: "ebyte-nrf24l01-pa-lna",
+
     name: "EBYTE E01-2G4M27D NRF24l01 PA LNA (Long Range)",
+
     images: ["https://blogger.googleusercontent.com/img/a/AVvXsEi_example_nrf24"],
+
     category: "Hardware / RF",
+
     rating: 4.8,
+
     reviewCount: 45,
+
     originalPrice: 950,
+
     salePrice: 795,
+
     isOutOfStock: false,
+
     description: "An industrial-grade 2.4GHz wireless module with Power Amplifier (PA) and Low Noise Amplifier (LNA) for extreme long-range communication and sniffing.",
+
     longDescription: "The EBYTE NRF24L01+ PA + LNA is the gold standard for long-range 2.4GHz RF experimentation. Unlike standard low-power modules, this industrial-grade unit features an integrated Power Amplifier (PA) for transmission and a Low Noise Amplifier (LNA) for extreme reception sensitivity, theoretically reaching distances of up to 2.5km with a clear line of sight. In the security community, this module is legendary for its role in 'MouseJack' attacks, allowing researchers to sniff and inject keystrokes into vulnerable wireless keyboards and mice from across a parking lot or office floor. The module is encased in a metal shield to minimize EMI interference and comes equipped with an SMA connector for attaching high-gain directional antennas. It is an indispensable component for building high-performance RF sniffers or long-distance sensor networks.",
+
     features: [
+
       "27dBm High power output (PA)",
+
       "LNA for high-sensitivity reception",
+
       "Long range up to 2500 meters",
+
       "Shielded case for anti-interference",
+
       "SMA Connector for external antennas"
+
     ],
+
     specifications: [
+
       { label: "Frequency", value: "2.4GHz - 2.525GHz" },
+
       { label: "Power", value: "500mW" },
+
       { label: "Protocol", value: "Enhanced ShockBurst" }
+
     ],
+
     reviews: [
+
       { id: "rev-501", author: "Animesh M.", rating: 4, date: "2024-09-15", comment: "Solid range. Combined this with a Yagi antenna and I could sniff traffic from the other side of the building.", title: "Incredible Range", verified: true },
+
       { id: "rev-502", author: "CyberWolf", rating: 5, date: "2024-10-02", comment: "Best NRF24 module I've used. The shielding really helps with noise in urban areas.", title: "High Quality Build", verified: true }
+
     ]
+
   },
+
   {
+
     id: "esp32-2nrf-kit",
+
     name: "ESP32/2NRF Kit (Bluetooth Penetration)",
+
     images: ["https://blogger.googleusercontent.com/img/a/AVvXsEj_example_2nrf"],
+
     category: "Hardware / Bluetooth",
+
     rating: 4.6,
+
     reviewCount: 34,
+
     originalPrice: 2499,
+
     salePrice: 1580,
+
     isOutOfStock: true,
+
     description: "A specialized multi-radio kit combining an ESP32 with dual NRF24 modules for advanced Bluetooth and 2.4GHz spectrum research.",
+
     longDescription: "Designed for deep-dive wireless research, the ESP32/2NRF Kit is a powerhouse for multi-channel auditing. By pairing the versatile Wi-Fi and Bluetooth capabilities of the ESP32 with two independent NRF24L01 radios, this kit allows for simultaneous operations that single-radio boards cannot handle. For example, you can use one NRF radio to sniff for vulnerable wireless peripherals while the second radio performs a continuous 'jamming' or 'injection' test on a separate channel, all while the ESP32 master controller hosts a web interface or logs data to a server. This hardware is a favorite for researchers studying the security of non-standard 2.4GHz protocols used in smart homes, wireless gaming peripherals, and industrial control systems. It provides a modular, breadboard-friendly platform that is as capable on the workbench as it is in the field.",
+
     features: [
+
       "Dual NRF24L01 radio modules",
+
       "ESP32 Master controller (Wi-Fi/BT)",
+
       "Supports multi-channel 2.4GHz sniffing",
+
       "Ideal for MouseJack and HID-over-RF research",
+
       "Modular design for custom pin configurations"
+
     ],
+
     specifications: [
+
       { label: "Controller", value: "ESP32-WROOM" },
+
       { label: "Radios", value: "2x NRF24L01+ PA/LNA" },
+
       { label: "Interface", value: "SPI / UART" }
+
     ],
+
     reviews: [
+
       { id: "rev-601", author: "Tushar P.", rating: 5, date: "2024-08-22", comment: "The dual NRF setup allows me to sniff on one channel while injecting on another. Very useful for physical security audits.", title: "Professional Grade", verified: true },
+
       { id: "rev-602", author: "Alex Chen", rating: 4, date: "2024-09-01", comment: "A bit of a learning curve for the setup, but once it's running, it's a beast for 2.4GHz research.", title: "Powerful Multi-Tool", verified: true }
+
     ]
+
   },
+
   {
+
     id: "m5-pcb-cc1101-nrf",
+
     name: "M5-PCB (CC1101/NRF/SD)",
+
     images: ["https://blogger.googleusercontent.com/img/a/AVvXsEj_example_m5pcb"],
+
     category: "Hardware / Expansion",
+
     rating: 5.0,
+
     reviewCount: 19,
+
     originalPrice: 990,
+
     salePrice: 640,
+
     isOutOfStock: false,
+
     description: "A custom-designed expansion PCB for the M5StickC series that adds CC1101 Sub-GHz, NRF24, and SD card functionality in one compact board.",
+
     longDescription: "Elevate your M5StickC Plus or Plus2 into a professional-grade wireless auditing tool with this all-in-one expansion PCB. Custom-engineered for a perfect 'HAT' fit, this board integrates the TI CC1101 transceiver for exploring Sub-GHz frequencies (300MHz-928MHz) and an NRF24L01 for 2.4GHz analysis. Additionally, it features a built-in MicroSD card slot, solving the primary storage limitation of the M5 series and allowing for the logging of massive signal captures or handshake files during mobile operations. This PCB eliminates the need for messy jumper wires or external breadboards, providing a rugged and professional solution that turns your mini-development board into a portable signal analyzer. It is a must-have for users running specialized 'Marauder' or 'Nemo' firmware variants that require multiple radios for advanced network testing.",
+
     features: [
+
       "Integrated CC1101 Sub-GHz support",
+
       "Integrated NRF24L01 support",
+
       "Built-in MicroSD card slot for data logging",
+
       "Perfect fit for M5StickC Plus / Plus2",
+
       "High-quality gold-plated PCB finish"
+
     ],
+
     specifications: [
+
       { label: "Form Factor", value: "M5 Hat Compatible" },
+
       { label: "Storage", value: "MicroSD (up to 32GB)" },
+
       { label: "Radio", value: "Multi-band RF expansion" }
+
     ],
+
     reviews: [
+
       { id: "rev-701", author: "Rahul S.", rating: 5, date: "2024-11-28", comment: "Makes the M5Stick much more useful. No more dangling wires when I'm testing garage door signals.", title: "Cleaner Setup", verified: true },
+
       { id: "rev-702", author: "Jessica M.", rating: 5, date: "2024-12-10", comment: "The SD slot is great for saving captured signals on the go. High build quality.", title: "Must-have for M5 owners", verified: true }
+
     ]
+
   },
+
   {
+
     id: "rasp-atomduck",
+
     name: "Rasp-AtomDuck (Wi-Fi Ducky)",
+
     images: ["https://blogger.googleusercontent.com/img/a/AVvXsEj_example_atomduck"],
+
     category: "Hardware / HID",
+
     rating: 5.0,
+
     reviewCount: 15,
+
     originalPrice: 1999,
+
     salePrice: 1250,
+
     isOutOfStock: false,
+
     description: "The Rasp-AtomDuck is a Wi-Fi enabled keystroke injection tool that allows for real-time payload management via a web interface.",
+
     longDescription: "The Rasp-AtomDuck is a highly versatile wireless HID injection platform that blends the ease of Ducky Script with the power of the ESP32 ecosystem. Unlike traditional USB injection tools that require physical access to change code, the AtomDuck hosts its own Wi-Fi Access Point and Web Server. This allows a security professional to plug the device into a target machine and then remotely manage, edit, and execute scripts from a smartphone's web browser up to 50 meters away. This 'Air-Gap' management style is vital for complex red-team scenarios where the operator needs to wait for a specific window of opportunity to trigger a payload. With its sleek black-and-orange aesthetic and pre-installed open-source Wi-Fi Ducky firmware, it is a ready-to-use tool for demonstrating the inherent risks of unattended USB ports and Human Interface Device vulnerabilities.",
+
     features: [
+
       "Wi-Fi Web Interface for payload management",
+
       "Real-time script editing and execution",
+
       "Support for multiple Ducky Scripts",
+
       "Stealthy USB form factor",
+
       "Pre-installed open-source Wi-Fi Ducky firmware"
+
     ],
+
     specifications: [
+
       { label: "Chip", value: "ESP32 Series" },
+
       { label: "Interface", value: "USB-A" },
+
       { label: "Web UI", value: "Mobile Responsive" }
+
     ],
+
     reviews: [
+
       { id: "rev-801", author: "Hacker_X", rating: 5, date: "2024-11-05", comment: "The ability to edit scripts live over Wi-Fi is incredible. Saved me so much time during my last engagement.", title: "Ultimate HID Tool", verified: true },
+
       { id: "rev-802", author: "Sameer V.", rating: 5, date: "2024-12-01", comment: "Web UI is very intuitive. Works perfectly with all my standard ducky scripts.", title: "Super Easy to Use", verified: true }
+
     ]
+
   },
   {
     id: "tdcs-esp32-cam",
