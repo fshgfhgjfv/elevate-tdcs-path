@@ -41,7 +41,8 @@ import WebsiteSecurityDetails from "./pages/WebsiteSecurityDetails";
 import PenetrationTestingPage from "./pages/PenetrationTestingPage";
 import WebDevelopmentPage from "./pages/WebDevelopmentPage";
 import SimpleAdminPanel from "./pages/admintdcsd/SimpleAdminPanel";
-import GithubCallback from "./pages/GithubCallback"; 
+import GithubCallback from "./pages/GithubCallback";
+import DatabaseTest from "./pages/DatabaseTest"; 
 
 const queryClient = new QueryClient();
 
@@ -93,6 +94,7 @@ const App = () => (
                 <Route path="/hardware-checkout" element={<HardwareCheckout />} />
                 <Route path="/track-parcel" element={<TrackParcel />} />
                 <Route path="/admintdcsd" element={<SimpleAdminPanel />} />
+                <Route path="/db-test" element={<DatabaseTest />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
 
