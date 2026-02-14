@@ -5,23 +5,40 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Phone } from "lucide-react";
+import { dbService } from "@/services/database";
 
 export const CounselorForm = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    degree: "",
-    state: "",
-  });
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", degree: "", state: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.phone) {
+    if (!formData.name || !formData.phone || !formData.email) {
       toast.error("Please fill in all required fields");
       return;
     }
-    toast.success("Request submitted! Our counselor will contact you soon.");
-    setFormData({ name: "", phone: "", degree: "", state: "" });
+    if (!/^[0-9]{10}$/.test(formData.phone)) {
+      toast.error("Please enter a valid 10-digit phone number");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await dbService.createLead({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        message: `Counselor Request - Degree: ${formData.degree || 'N/A'}, State: ${formData.state || 'N/A'}`,
+        source: 'counselor_form',
+      });
+      toast.success("Request submitted! Our counselor will contact you soon.");
+      setFormData({ name: "", email: "", phone: "", degree: "", state: "" });
+    } catch (error) {
+      console.error("Counselor form error:", error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -31,34 +48,15 @@ export const CounselorForm = () => {
           <Phone className="w-12 h-12 mx-auto mb-3 text-primary" />
           <h3 className="text-xl font-bold gradient-text mb-2">Talk To Our Counsellor</h3>
         </div>
-        
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Input
-              placeholder="Full Name *"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
-          </div>
-          
+          <Input placeholder="Full Name *" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
+          <Input type="email" placeholder="Email Address *" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required />
           <div className="flex gap-2">
-            <div className="w-16">
-              <Input value="+91" disabled className="text-center" />
-            </div>
-            <Input
-              placeholder="Phone Number *"
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              required
-            />
+            <div className="w-16"><Input value="+91" disabled className="text-center" /></div>
+            <Input placeholder="Phone Number *" type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })} required maxLength={10} />
           </div>
-          
           <Select value={formData.degree} onValueChange={(value) => setFormData({ ...formData, degree: value })}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select Degree" />
-            </SelectTrigger>
+            <SelectTrigger><SelectValue placeholder="Select Degree" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="btech">B.Tech</SelectItem>
               <SelectItem value="bca">BCA</SelectItem>
@@ -66,11 +64,8 @@ export const CounselorForm = () => {
               <SelectItem value="other">Other</SelectItem>
             </SelectContent>
           </Select>
-          
           <Select value={formData.state} onValueChange={(value) => setFormData({ ...formData, state: value })}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select State" />
-            </SelectTrigger>
+            <SelectTrigger><SelectValue placeholder="Select State" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="delhi">Delhi</SelectItem>
               <SelectItem value="up">Uttar Pradesh</SelectItem>
@@ -79,14 +74,10 @@ export const CounselorForm = () => {
               <SelectItem value="other">Other</SelectItem>
             </SelectContent>
           </Select>
-          
-          <Button type="submit" variant="gradient" className="w-full">
-            Request Callback
+          <Button type="submit" variant="gradient" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Request Callback"}
           </Button>
-          
-          <p className="text-xs text-muted-foreground text-center">
-            By clicking 'Request Callback', you agree to our Terms & Conditions
-          </p>
+          <p className="text-xs text-muted-foreground text-center">By clicking 'Request Callback', you agree to our Terms & Conditions</p>
         </form>
       </CardContent>
     </Card>

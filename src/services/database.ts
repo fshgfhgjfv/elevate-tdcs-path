@@ -2,10 +2,10 @@ import { supabase } from '@/integrations/supabase/client';
 
 export const dbService = {
   // Profiles
-  async createProfile(userId: string, name: string, role: string = 'student') {
+  async createProfile(userId: string, fullName: string, _role: string = 'student') {
     const { data, error } = await supabase
       .from('profiles')
-      .insert({ id: userId, name, role })
+      .insert({ user_id: userId, full_name: fullName })
       .select()
       .maybeSingle();
 
@@ -17,18 +17,18 @@ export const dbService = {
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', userId)
+      .eq('user_id', userId)
       .maybeSingle();
 
     if (error) throw error;
     return data;
   },
 
-  async updateProfile(userId: string, updates: { name?: string; role?: string }) {
+  async updateProfile(userId: string, updates: { full_name?: string; phone?: string; enrolled_course?: string; enrollment_status?: string }) {
     const { data, error } = await supabase
       .from('profiles')
       .update(updates)
-      .eq('id', userId)
+      .eq('user_id', userId)
       .select()
       .maybeSingle();
 
@@ -37,28 +37,11 @@ export const dbService = {
   },
 
   // Courses
-  async createCourse(course: {
-    course_name: string;
-    description?: string;
-    category?: string;
-    price?: number;
-    level?: string;
-    duration_weeks?: number;
-  }) {
-    const { data, error } = await supabase
-      .from('courses')
-      .insert([course])
-      .select()
-      .maybeSingle();
-
-    if (error) throw error;
-    return data;
-  },
-
   async getCourses() {
     const { data, error } = await supabase
       .from('courses')
       .select('*')
+      .eq('published', true)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -76,54 +59,23 @@ export const dbService = {
     return data;
   },
 
-  async updateCourse(courseId: string, updates: Partial<{
-    course_name: string;
-    description: string;
-    category: string;
-    price: number;
-    level: string;
-    duration_weeks: number;
-  }>) {
+  // Course Access
+  async getUserCourseAccess(userId: string) {
     const { data, error } = await supabase
-      .from('courses')
-      .update(updates)
-      .eq('id', courseId)
-      .select()
-      .maybeSingle();
-
-    if (error) throw error;
-    return data;
-  },
-
-  // Purchases
-  async createPurchase(userId: string, courseId: string) {
-    const { data, error } = await supabase
-      .from('purchases')
-      .insert([{ user_id: userId, course_id: courseId }])
-      .select()
-      .maybeSingle();
-
-    if (error) throw error;
-    return data;
-  },
-
-  async getUserPurchases(userId: string) {
-    const { data, error } = await supabase
-      .from('purchases')
-      .select('id, course_id, courses(id, course_name, description, price)')
-      .eq('user_id', userId)
-      .order('purchased_at', { ascending: false });
+      .from('course_access')
+      .select('*')
+      .eq('user_id', userId);
 
     if (error) throw error;
     return data || [];
   },
 
-  async checkPurchase(userId: string, courseId: string) {
+  async checkCourseAccess(userId: string, courseName: string) {
     const { data, error } = await supabase
-      .from('purchases')
+      .from('course_access')
       .select('id')
       .eq('user_id', userId)
-      .eq('course_id', courseId)
+      .eq('course_name', courseName)
       .maybeSingle();
 
     if (error) throw error;
@@ -131,109 +83,94 @@ export const dbService = {
   },
 
   // Course Recordings
-  async createRecording(recording: {
-    course_id: string;
-    title: string;
-    recording_url: string;
-    duration_minutes?: number;
-  }) {
-    const { data, error } = await supabase
-      .from('course_recordings')
-      .insert([recording])
-      .select()
-      .maybeSingle();
-
-    if (error) throw error;
-    return data;
-  },
-
-  async getCourseRecordings(courseId: string) {
+  async getCourseRecordings(courseName: string) {
     const { data, error } = await supabase
       .from('course_recordings')
       .select('*')
-      .eq('course_id', courseId)
-      .order('uploaded_at', { ascending: false });
+      .eq('course_name', courseName)
+      .order('created_at', { ascending: false });
 
     if (error) throw error;
     return data || [];
   },
 
-  // Video Progress
-  async updateVideoProgress(userId: string, recordingId: string, progressData: {
-    progress_percent?: number;
-    completed?: boolean;
-  }) {
-    const { data: existing } = await supabase
-      .from('video_progress')
-      .select('id')
-      .eq('user_id', userId)
-      .eq('recording_id', recordingId)
-      .maybeSingle();
-
-    if (existing) {
-      const { data, error } = await supabase
-        .from('video_progress')
-        .update(progressData)
-        .eq('user_id', userId)
-        .eq('recording_id', recordingId)
-        .select()
-        .maybeSingle();
-
-      if (error) throw error;
-      return data;
-    } else {
-      const { data, error } = await supabase
-        .from('video_progress')
-        .insert([{ user_id: userId, recording_id: recordingId, ...progressData }])
-        .select()
-        .maybeSingle();
-
-      if (error) throw error;
-      return data;
-    }
-  },
-
-  async getVideoProgress(userId: string, recordingId: string) {
-    const { data, error } = await supabase
-      .from('video_progress')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('recording_id', recordingId)
-      .maybeSingle();
-
-    if (error) throw error;
-    return data;
-  },
-
-  // Contact
-  async createContact(contact: {
-    name: string;
-    email: string;
-    message: string;
-  }) {
-    const { data, error } = await supabase
-      .from('contact')
-      .insert([contact])
-      .select()
-      .maybeSingle();
-
-    if (error) throw error;
-    return data;
-  },
-
-  // Leads
+  // Leads (Contact, Book Demo, Brochure, Counselor)
   async createLead(lead: {
     name: string;
     email: string;
-    type: 'Book Demo' | 'Download Brochure' | 'Shipping Info';
+    phone: string;
+    message?: string;
+    source?: string;
   }) {
     const { data, error } = await supabase
       .from('leads')
-      .insert([lead])
+      .insert({
+        name: lead.name,
+        email: lead.email,
+        phone: lead.phone,
+        message: lead.message || null,
+        source: lead.source || null,
+      })
       .select()
       .maybeSingle();
 
     if (error) throw error;
     return data;
+  },
+
+  // Payment Submissions
+  async createPaymentSubmission(submission: {
+    user_id: string;
+    full_name: string;
+    email: string;
+    phone: string;
+    course_name: string;
+    transaction_id: string;
+    amount_paid: number;
+    screenshot_url?: string;
+  }) {
+    const { data, error } = await supabase
+      .from('payment_submissions')
+      .insert(submission)
+      .select()
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async getUserPaymentSubmissions(userId: string) {
+    const { data, error } = await supabase
+      .from('payment_submissions')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Enrollments
+  async getUserEnrollments(userId: string) {
+    const { data, error } = await supabase
+      .from('enrollments')
+      .select('*, courses(*)')
+      .eq('user_id', userId)
+      .order('enrolled_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Hardware Orders
+  async trackOrder(orderNumber: string, email: string) {
+    const { data, error } = await supabase
+      .rpc('get_order_by_tracking', {
+        p_order_number: orderNumber,
+        p_email: email,
+      });
+
+    if (error) throw error;
+    return data || [];
   },
 };
