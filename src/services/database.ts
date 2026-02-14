@@ -102,7 +102,7 @@ export const dbService = {
     message?: string;
     source?: string;
   }) {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('leads')
       .insert({
         name: lead.name,
@@ -110,12 +110,10 @@ export const dbService = {
         phone: lead.phone,
         message: lead.message || null,
         source: lead.source || null,
-      })
-      .select()
-      .maybeSingle();
+      });
 
     if (error) throw error;
-    return data;
+    return true;
   },
 
   // Payment Submissions
