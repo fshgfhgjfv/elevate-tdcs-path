@@ -6,6 +6,7 @@ import {
   Download, X, FileText, Activity, ChevronRight, Shield 
 } from "lucide-react";
 import { Button } from "@/components/ui/button"; 
+import { dbService } from "@/services/database";
 
 // --- CONSTANTS ---
 const COMMON_BROCHURE_URL = "https://drive.google.com/file/d/1_oWjtOS1hRyVolJv22tHwPxdv2t2ePau/view?usp=drive_link";
@@ -229,13 +230,34 @@ const CyberModalFrame = ({ children, title, subtitle, icon: Icon, onClose, color
 
 // --- BOOK DEMO MODAL ---
 const BookDemoModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+    const [formData, setFormData] = useState({ name: "", phone: "" });
+    const [isSubmitting, setIsSubmitting] = useState(false);
     if (!isOpen) return null;
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("Processing Demo Request...");
-        alertMessage("Request Acknowledged. Agent will intercept shortly.", "success");
-        onClose();
+        if (!/^[6-9]\d{9}$/.test(formData.phone)) {
+            alertMessage("INVALID COMM CHANNEL: 10 DIGITS REQ", "error");
+            return;
+        }
+        setIsSubmitting(true);
+        try {
+            await dbService.createLead({
+                name: formData.name,
+                email: "not-provided@demo.com",
+                phone: formData.phone,
+                message: "Demo session request from Hero",
+                source: "hero_book_demo",
+            });
+            alertMessage("Request Acknowledged. Agent will intercept shortly.", "success");
+            setFormData({ name: "", phone: "" });
+            onClose();
+        } catch (error) {
+            console.error("Book demo error:", error);
+            alertMessage("CONNECTION FAILED. RETRY.", "error");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -256,10 +278,10 @@ const BookDemoModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
                 colorClass="text-red-500 border-red-500"
             >
                 <form onSubmit={handleSubmit} className="space-y-5">
-                    <CyberInput label="OPERATOR_NAME" id="modal-demo-name" placeholder="ENTER IDENTIFIER" required icon={Terminal} />
-                    <CyberInput label="COMM_CHANNEL (PHONE)" id="modal-demo-phone" type="tel" placeholder="+91-XXXXXXXXXX" required icon={Activity} />
+                    <CyberInput label="OPERATOR_NAME" id="modal-demo-name" placeholder="ENTER IDENTIFIER" required icon={Terminal} value={formData.name} onChange={(e: any) => setFormData({...formData, name: e.target.value})} />
+                    <CyberInput label="COMM_CHANNEL (PHONE)" id="modal-demo-phone" type="tel" placeholder="+91-XXXXXXXXXX" required icon={Activity} value={formData.phone} onChange={(e: any) => setFormData({...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} />
 
-                    <button type="submit" className="w-full relative group overflow-hidden bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-4 rounded transition-all duration-300 clip-path-slant">
+                    <button type="submit" disabled={isSubmitting} className="w-full relative group overflow-hidden bg-red-600 hover:bg-red-500 disabled:bg-gray-700 text-white font-bold py-3 px-4 rounded transition-all duration-300 clip-path-slant">
                         <span className="relative z-10 flex items-center justify-center gap-2 uppercase tracking-widest">
                             <CalendarCheck className="w-5 h-5" /> Confirm_Uplink
                         </span>
@@ -296,14 +318,24 @@ const DownloadBrochureModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: 
         if (!validatePhone(formData.phone)) return alertMessage("INVALID COMM CHANNEL", "error");
 
         setIsSubmitting(true);
-        await new Promise(resolve => setTimeout(resolve, 1500)); 
-
-        alertMessage("DATA PACKET RECEIVED. DECRYPTING...", "success");
-        window.open(COMMON_BROCHURE_URL, '_blank');
-
-        setIsSubmitting(false);
-        onClose();
-        setFormData({ name: "", email: "", phone: "", course: "" });
+        try {
+            await dbService.createLead({
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                message: `Brochure download: ${formData.course}`,
+                source: "hero_brochure_download",
+            });
+            alertMessage("DATA PACKET RECEIVED. DECRYPTING...", "success");
+            window.open(COMMON_BROCHURE_URL, '_blank');
+            setFormData({ name: "", email: "", phone: "", course: "" });
+            onClose();
+        } catch (error) {
+            console.error("Brochure download error:", error);
+            alertMessage("CONNECTION FAILED. RETRY.", "error");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     if (!isOpen) return null;
