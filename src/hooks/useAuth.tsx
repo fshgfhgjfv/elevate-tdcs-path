@@ -63,6 +63,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (error) throw error;
 
+      if (data.user?.id) {
+        await dbService.createProfile(data.user.id, fullName, 'student');
+      }
+
       return { error: null };
     } catch (error) {
       return { error: error as Error };
