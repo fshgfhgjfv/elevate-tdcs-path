@@ -262,6 +262,24 @@ export default function CourseDetail() {
         )}
       </motion.section>
 
+      {/* Counselor Form - Floating sidebar on desktop */}
+      <div className="fixed right-4 top-1/3 z-30 hidden lg:block w-80">
+        <CounselorForm />
+      </div>
+
+      {/* Counselor Form - Mobile section */}
+      <motion.section
+        className="py-12 lg:hidden px-4"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7 }}
+      >
+        <div className="max-w-md mx-auto">
+          <CounselorForm />
+        </div>
+      </motion.section>
+
       {/* Brochure Download Modal */}
       <DownloadBrochureModal
         isOpen={showBrochureModal}
