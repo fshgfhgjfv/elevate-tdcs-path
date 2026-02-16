@@ -85,11 +85,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    // Clean up all localStorage data
+    // Clean up ALL user-specific localStorage data
     localStorage.removeItem("tdcs_user");
     localStorage.removeItem("tdcs_users");
+    // Remove all purchase keys (both legacy and namespaced)
     Object.keys(localStorage).forEach((key) => {
-      if (key.startsWith("tdcs_purchased_")) localStorage.removeItem(key);
+      if (key.startsWith("tdcs_purchased_") || key.includes(":tdcs_purchased_")) {
+        localStorage.removeItem(key);
+      }
     });
   };
 

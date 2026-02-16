@@ -14,6 +14,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { BookOpen, Play, ChevronRight, CheckCircle, Clock } from "lucide-react";
 import { courses } from "@/data/courses";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/backend/client";
 
 interface EnrolledCourse {
   courseId: string;
@@ -21,6 +23,7 @@ interface EnrolledCourse {
   paymentId: string;
   progress?: number;
   lastAccessed?: string;
+  source: "db" | "local";
 }
 
 interface DashboardMyCoursesProps {
@@ -29,58 +32,118 @@ interface DashboardMyCoursesProps {
 
 const DashboardMyCourses = ({ user }: DashboardMyCoursesProps) => {
   const { toast } = useToast();
+  const { user: authUser } = useAuth();
   const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"date" | "progress">("date");
   const [activeTab, setActiveTab] = useState("all");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const enrolled: EnrolledCourse[] = [];
-    Object.keys(localStorage).forEach((key) => {
-      if (key.startsWith("tdcs_purchased_")) {
-        const courseId = key.replace("tdcs_purchased_", "");
-        const data = JSON.parse(localStorage.getItem(key) || "{}");
-        enrolled.push({
-          ...data,
-          courseId,
-          progress: data.progress || Math.floor(Math.random() * 80),
-          lastAccessed: data.lastAccessed || new Date().toISOString(),
+    const loadCourses = async () => {
+      setLoading(true);
+      const enrolled: EnrolledCourse[] = [];
+      const addedCourseIds = new Set<string>();
+
+      if (authUser?.id) {
+        try {
+          // 1. Primary source of truth: course_access table (verified purchases)
+          const { data: accessData } = await supabase
+            .from("course_access")
+            .select("*")
+            .eq("user_id", authUser.id);
+
+          if (accessData) {
+            for (const access of accessData) {
+              // Find course ID by matching course name to course title
+              const matchedCourse = courses.find(c => c.title === access.course_name);
+              if (matchedCourse) {
+                addedCourseIds.add(matchedCourse.id);
+                enrolled.push({
+                  courseId: matchedCourse.id,
+                  date: access.unlocked_at,
+                  paymentId: "",
+                  progress: 0,
+                  lastAccessed: access.unlocked_at,
+                  source: "db",
+                });
+              }
+            }
+          }
+
+          // 2. Secondary: pending payment submissions (not yet verified)
+          const { data: pendingPayments } = await supabase
+            .from("payment_submissions")
+            .select("*")
+            .eq("user_id", authUser.id)
+            .eq("status", "pending");
+
+          if (pendingPayments) {
+            for (const payment of pendingPayments) {
+              const matchedCourse = courses.find(c => c.title === payment.course_name);
+              if (matchedCourse && !addedCourseIds.has(matchedCourse.id)) {
+                addedCourseIds.add(matchedCourse.id);
+                enrolled.push({
+                  courseId: matchedCourse.id,
+                  date: payment.created_at,
+                  paymentId: payment.transaction_id,
+                  progress: 0,
+                  lastAccessed: payment.created_at,
+                  source: "db",
+                });
+              }
+            }
+          }
+
+          // 3. Fallback: user-namespaced localStorage keys
+          const prefix = `${authUser.id}:tdcs_purchased_`;
+          Object.keys(localStorage).forEach((key) => {
+            if (key.startsWith(prefix)) {
+              const courseId = key.replace(prefix, "");
+              if (!addedCourseIds.has(courseId)) {
+                addedCourseIds.add(courseId);
+                enrolled.push({
+                  courseId,
+                  date: new Date().toISOString(),
+                  paymentId: "",
+                  progress: 0,
+                  lastAccessed: new Date().toISOString(),
+                  source: "local",
+                });
+              }
+            }
+          });
+        } catch (err) {
+          console.error("Error loading courses from DB:", err);
+        }
+      }
+
+      // Legacy: non-namespaced keys (only if no auth user, for backwards compat)
+      if (!authUser?.id) {
+        Object.keys(localStorage).forEach((key) => {
+          if (key.startsWith("tdcs_purchased_") && !key.includes(":")) {
+            const courseId = key.replace("tdcs_purchased_", "");
+            if (!addedCourseIds.has(courseId)) {
+              addedCourseIds.add(courseId);
+              enrolled.push({
+                courseId,
+                date: new Date().toISOString(),
+                paymentId: "",
+                progress: 0,
+                lastAccessed: new Date().toISOString(),
+                source: "local",
+              });
+            }
+          }
         });
       }
-    });
-    setEnrolledCourses(enrolled);
-  }, []);
 
-  // Handle updating course progress
-  const updateProgress = (courseId: string, completed = false) => {
-    const updated = enrolledCourses.map((course) =>
-      course.courseId === courseId
-        ? {
-            ...course,
-            progress: completed ? 100 : Math.min((course.progress || 0) + 10, 100),
-            lastAccessed: new Date().toISOString(),
-          }
-        : course
-    );
-    setEnrolledCourses(updated);
-    const storedKey = `tdcs_purchased_${courseId}`;
-    const stored = JSON.parse(localStorage.getItem(storedKey) || "{}");
-    localStorage.setItem(
-      storedKey,
-      JSON.stringify({
-        ...stored,
-        progress: completed ? 100 : Math.min((stored.progress || 0) + 10, 100),
-        lastAccessed: new Date().toISOString(),
-      })
-    );
+      setEnrolledCourses(enrolled);
+      setLoading(false);
+    };
 
-    toast({
-      title: completed ? "Course completed!" : "Progress saved",
-      description: completed
-        ? "You've successfully completed this course!"
-        : "Your progress has been updated.",
-    });
-  };
+    loadCourses();
+  }, [authUser?.id]);
 
   const filteredCourses = enrolledCourses
     .filter((course) => {
@@ -163,7 +226,11 @@ const DashboardMyCourses = ({ user }: DashboardMyCoursesProps) => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {filteredCourses.length === 0 ? (
+                  {loading ? (
+                    <div className="text-center py-12">
+                      <p className="text-muted-foreground">Loading your courses...</p>
+                    </div>
+                  ) : filteredCourses.length === 0 ? (
                     <div className="text-center py-12">
                       <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
                       <h3 className="text-xl font-semibold mb-2">
@@ -244,12 +311,7 @@ const DashboardMyCourses = ({ user }: DashboardMyCoursesProps) => {
 
                                   {/* Actions */}
                                   <div className="flex flex-col gap-2">
-                                    <Link
-                                      to={`/courses/${course.id}/content`}
-                                      onClick={() =>
-                                        updateProgress(course.id, false)
-                                      }
-                                    >
+                                    <Link to={`/courses/${course.id}/content`}>
                                       <Button
                                         variant="default"
                                         className="gradient-primary gap-2"
@@ -264,9 +326,6 @@ const DashboardMyCourses = ({ user }: DashboardMyCoursesProps) => {
                                       <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() =>
-                                          updateProgress(enrolled.courseId, true)
-                                        }
                                         className="gap-2"
                                       >
                                         <CheckCircle className="w-4 h-4 text-green-600" />

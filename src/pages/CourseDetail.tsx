@@ -21,6 +21,7 @@ import { CyberLiteCurriculum } from "@/components/CyberLiteCurriculum";
 import { CyberBlackhatCurriculum } from "@/components/CyberBlackhatCurriculum";
 import { BugHuntingCurriculum } from "@/components/BugHuntingCurriculum";
 import { DownloadBrochureModal } from "@/components/DownloadBrochureModal";
+import { supabase } from "@/integrations/backend/client";
 
 export default function CourseDetail() {
   const { id } = useParams();
@@ -34,22 +35,45 @@ export default function CourseDetail() {
   const { scrollYProgress } = useScroll();
   const y1 = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
 
-  const checkPurchaseKey = useCallback(() => {
-    if (localStorage.getItem(`tdcs_purchased_${id}`)) setIsEnrolled(true);
+  // Check purchase: DB first (source of truth), then namespaced localStorage as fallback
+  const checkPurchaseStatus = useCallback(async () => {
+    try {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (authUser && id) {
+        // 1. Check DB (course_access table) — the real source of truth
+        const { data: access } = await supabase
+          .from("course_access")
+          .select("id")
+          .eq("user_id", authUser.id)
+          .eq("course_name", courses.find(c => c.id === id)?.title || "")
+          .maybeSingle();
+        if (access) { setIsEnrolled(true); return; }
+
+        // 2. Check namespaced localStorage (pending verification)
+        if (localStorage.getItem(`${authUser.id}:tdcs_purchased_${id}`)) {
+          setIsEnrolled(true); return;
+        }
+      }
+      // 3. Legacy fallback for non-logged-in users
+      if (localStorage.getItem(`tdcs_purchased_${id}`)) {
+        setIsEnrolled(true);
+      }
+    } catch {
+      // Fallback to localStorage if DB check fails
+      if (localStorage.getItem(`tdcs_purchased_${id}`)) setIsEnrolled(true);
+    }
   }, [id]);
 
   useEffect(() => {
-    const userData = localStorage.getItem("tdcs_user");
-    if (userData) setUser(JSON.parse(userData));
-    checkPurchaseKey();
-  }, [id, checkPurchaseKey]);
+    checkPurchaseStatus();
+  }, [id, checkPurchaseStatus]);
 
-  // Focus listener: when user returns to this tab, re-check the local access key
+  // Focus listener: when user returns to this tab, re-check
   useEffect(() => {
-    const handleFocus = () => checkPurchaseKey();
+    const handleFocus = () => checkPurchaseStatus();
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);
-  }, [checkPurchaseKey]);
+  }, [checkPurchaseStatus]);
 
   const handleEnroll = () => {
     if (!course) return;

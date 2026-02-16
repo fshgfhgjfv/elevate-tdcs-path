@@ -4,6 +4,7 @@ import { ArrowLeft, Truck, ShieldCheck, Trash2, Copy, Check, Phone, Mail, User, 
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/backend/client';
 
 const HardwareCheckout = () => {
   const navigate = useNavigate();
@@ -41,7 +42,13 @@ const HardwareCheckout = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const generateOrderNumber = () => {
+    const timestamp = Date.now().toString(36).toUpperCase();
+    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `TDCS-${timestamp}-${random}`;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.transactionId.trim()) {
@@ -50,12 +57,43 @@ const HardwareCheckout = () => {
     }
 
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      const currentUser = (await supabase.auth.getUser()).data.user;
+      const orderNumber = generateOrderNumber();
+
+      const { error } = await supabase.from('hardware_orders').insert({
+        user_id: currentUser?.id || null,
+        full_name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.pincode,
+        transaction_id: formData.transactionId,
+        order_number: orderNumber,
+        items: items.map(item => ({ id: item.id, name: item.name, price: item.price, quantity: item.quantity })),
+        subtotal,
+        shipping,
+        tax,
+        total,
+      });
+
+      if (error) {
+        console.error('Order submission error:', error);
+        toast({ title: 'Order Error', description: 'Could not save order. Please contact support.', variant: 'destructive' });
+      } else {
+        clearCart();
+        toast({ title: 'Order Submitted!', description: `Order #${orderNumber} placed. We will verify payment and contact you soon.` });
+        navigate('/');
+      }
+    } catch (err) {
+      console.error('Order submission failed:', err);
+      toast({ title: 'Error', description: 'Something went wrong. Please try again.', variant: 'destructive' });
+    } finally {
       setLoading(false);
-      clearCart();
-      toast({ title: 'Order Submitted!', description: 'Your order has been placed. We will verify payment and contact you soon.' });
-      navigate('/');
-    }, 2000);
+    }
   };
 
   if (!items || items.length === 0) {

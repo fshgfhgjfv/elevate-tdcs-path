@@ -215,8 +215,11 @@ export default function Checkout() {
     try {
       // Save payment submission to database
       const { supabase } = await import("@/integrations/backend/client");
+      const currentUser = (await supabase.auth.getUser()).data.user;
+      const userId = currentUser?.id || "00000000-0000-0000-0000-000000000000";
+
       const { error } = await supabase.from("payment_submissions").insert({
-        user_id: (await supabase.auth.getUser()).data.user?.id || "00000000-0000-0000-0000-000000000000",
+        user_id: userId,
         full_name: formData.name,
         email: formData.email,
         phone: formData.phone,
@@ -227,7 +230,14 @@ export default function Checkout() {
 
       if (error) {
         console.error("Payment submission error:", error);
-        // Still proceed - the payment info will be in the form
+      }
+
+      // Namespace the localStorage key by user ID to prevent cross-user leakage
+      if (isCourse && courseId) {
+        const storageKey = currentUser
+          ? `${currentUser.id}:tdcs_purchased_${courseId}`
+          : `tdcs_purchased_${courseId}`;
+        localStorage.setItem(storageKey, "true");
       }
     } catch (err) {
       console.error("Payment submission failed:", err);
@@ -235,9 +245,7 @@ export default function Checkout() {
 
     setIsSubmitting(false);
     setIsSuccess(true);
-    // Clean up storage after successful purchase
     sessionStorage.removeItem("checkoutPending");
-    if (isCourse && courseId) localStorage.setItem(`tdcs_purchased_${courseId}`, "true");
   };
 
   if (isSuccess) {
