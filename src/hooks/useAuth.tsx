@@ -1,7 +1,6 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/backend/client";
-import { dbService } from "@/services/database";
 
 interface AuthContextType {
   user: User | null;
@@ -49,7 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
 
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -63,10 +62,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (error) throw error;
 
-      if (data.user?.id) {
-        await dbService.createProfile(data.user.id, fullName, 'student');
-      }
-
+      // Profile is auto-created by the handle_new_user database trigger
       return { error: null };
     } catch (error) {
       return { error: error as Error };
