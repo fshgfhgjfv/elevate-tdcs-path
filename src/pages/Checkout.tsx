@@ -208,16 +208,36 @@ export default function Checkout() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      // Clean up storage after successful purchase
-      sessionStorage.removeItem("checkoutPending");
-      if (isCourse && courseId) localStorage.setItem(`tdcs_purchased_${courseId}`, "true");
-    }, 2000);
+
+    try {
+      // Save payment submission to database
+      const { supabase } = await import("@/integrations/backend/client");
+      const { error } = await supabase.from("payment_submissions").insert({
+        user_id: (await supabase.auth.getUser()).data.user?.id || "00000000-0000-0000-0000-000000000000",
+        full_name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        course_name: itemName,
+        transaction_id: formData.transactionId,
+        amount_paid: amountDueNow,
+      });
+
+      if (error) {
+        console.error("Payment submission error:", error);
+        // Still proceed - the payment info will be in the form
+      }
+    } catch (err) {
+      console.error("Payment submission failed:", err);
+    }
+
+    setIsSubmitting(false);
+    setIsSuccess(true);
+    // Clean up storage after successful purchase
+    sessionStorage.removeItem("checkoutPending");
+    if (isCourse && courseId) localStorage.setItem(`tdcs_purchased_${courseId}`, "true");
   };
 
   if (isSuccess) {

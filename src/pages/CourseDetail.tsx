@@ -1,5 +1,5 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -34,11 +34,22 @@ export default function CourseDetail() {
   const { scrollYProgress } = useScroll();
   const y1 = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
 
+  const checkPurchaseKey = useCallback(() => {
+    if (localStorage.getItem(`tdcs_purchased_${id}`)) setIsEnrolled(true);
+  }, [id]);
+
   useEffect(() => {
     const userData = localStorage.getItem("tdcs_user");
     if (userData) setUser(JSON.parse(userData));
-    if (localStorage.getItem(`tdcs_purchased_${id}`)) setIsEnrolled(true);
-  }, [id]);
+    checkPurchaseKey();
+  }, [id, checkPurchaseKey]);
+
+  // Focus listener: when user returns to this tab, re-check the local access key
+  useEffect(() => {
+    const handleFocus = () => checkPurchaseKey();
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [checkPurchaseKey]);
 
   const handleEnroll = () => {
     if (!course) return;
