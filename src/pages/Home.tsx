@@ -19,6 +19,7 @@ import { CertificatesSection } from "@/components/CertificatesSection";
 import { RecognizedBy } from "@/components/RecognizedBy";
 import { ChatBot } from "@/components/ChatBot";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { PromoPopup } from "@/components/PromoPopup";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -101,6 +102,8 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden selection:bg-primary/20">
       
+      <PromoPopup />
+
       {/* Top Reading Progress Bar */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-primary origin-left z-50 shadow-[0_0_10px_var(--primary)]"
