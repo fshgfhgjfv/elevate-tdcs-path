@@ -11,11 +11,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { BookOpen, Play, ChevronRight, CheckCircle, Clock } from "lucide-react";
+import { BookOpen, Play, ChevronRight, CheckCircle, Clock, FileText } from "lucide-react";
 import { courses } from "@/data/courses";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/backend/client";
+import { generateReceipt } from "@/utils/generateReceipt";
 
 interface EnrolledCourse {
   courseId: string;
@@ -24,6 +25,7 @@ interface EnrolledCourse {
   progress?: number;
   lastAccessed?: string;
   source: "db" | "local";
+  paymentData?: any; // raw payment record for receipt generation
 }
 
 interface DashboardMyCoursesProps {
@@ -71,15 +73,14 @@ const DashboardMyCourses = ({ user }: DashboardMyCoursesProps) => {
             }
           }
 
-          // 2. Secondary: pending payment submissions (not yet verified)
-          const { data: pendingPayments } = await supabase
+          // 2. Secondary: payment submissions (all statuses for receipt)
+          const { data: payments } = await supabase
             .from("payment_submissions")
             .select("*")
-            .eq("user_id", authUser.id)
-            .eq("status", "pending");
+            .eq("user_id", authUser.id);
 
-          if (pendingPayments) {
-            for (const payment of pendingPayments) {
+          if (payments) {
+            for (const payment of payments) {
               const matchedCourse = courses.find(c => c.title === payment.course_name);
               if (matchedCourse && !addedCourseIds.has(matchedCourse.id)) {
                 addedCourseIds.add(matchedCourse.id);
@@ -90,7 +91,14 @@ const DashboardMyCourses = ({ user }: DashboardMyCoursesProps) => {
                   progress: 0,
                   lastAccessed: payment.created_at,
                   source: "db",
+                  paymentData: payment,
                 });
+              } else if (matchedCourse) {
+                // Attach payment data to existing entry
+                const existing = enrolled.find(e => e.courseId === matchedCourse.id);
+                if (existing && !existing.paymentData) {
+                  existing.paymentData = payment;
+                }
               }
             }
           }
@@ -321,6 +329,18 @@ const DashboardMyCourses = ({ user }: DashboardMyCoursesProps) => {
                                         <ChevronRight className="w-4 h-4" />
                                       </Button>
                                     </Link>
+
+                                    {enrolled.paymentData && (
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="gap-2"
+                                        onClick={() => generateReceipt(enrolled.paymentData)}
+                                      >
+                                        <FileText className="w-4 h-4 text-primary" />
+                                        Receipt
+                                      </Button>
+                                    )}
 
                                     {enrolled.progress! < 100 && (
                                       <Button

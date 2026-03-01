@@ -32,8 +32,8 @@ import { Badge } from "@/components/ui/badge";
 const UPI_ID = "tdcsorganization@sbi"; 
 const STUDENT_DISCOUNT_PERCENT = 15; 
 const TARGET_LITE_COURSE = "Cyber Master's Pro Black-Hat Lite"; 
-const SPECIAL_COUPON_CODE = "NEWSTUDENTFRO70%"; 
-const SPECIAL_DISCOUNT_PERCENT = 70; 
+const SPECIAL_COUPON_CODE = "NEWSTUDENT85"; 
+const SPECIAL_DISCOUNT_PERCENT = 90; // 90% off ₹499 = ~₹49
 
 const QR_CODE_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEiYxV2ayi-nLo4GdGqaDDKDg9OpUiRjbmyav9HoiZp_qm2Zt1-x8jQ7Y4S5gMQSeKrIuZKolSVxZ0c817cdvXKG5IbRLWEngQOEBC8Gah6Edi2snbD0vbr6y-0nJSq8rdvCR4HJIcRJhRDlSTYA9EeYdGj-U6QaRM365bjvdR85QjaR3s4rm1oYOTYTl8gU";
 
@@ -152,9 +152,9 @@ export default function Checkout() {
   const getEffectivePrice = () => {
     if (!isCourse) return basePrice;
 
-    // Priority 1: Special Coupon for Lite Course (70% OFF)
+    // Priority 1: Special Coupon for Lite Course → flat ₹49
     if (isLiteCourse && couponApplied) {
-        return Math.floor(basePrice * (1 - SPECIAL_DISCOUNT_PERCENT / 100));
+        return 49;
     }
 
     // Priority 2: Standard Student Discount (15% OFF)
@@ -505,14 +505,14 @@ export default function Checkout() {
                     </div>
                   )}
 
-                  {/* Special Coupon Discount - 70% OFF */}
+                  {/* Special Coupon Discount */}
                   {isCourse && couponApplied && (
                     <motion.div 
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         className="flex justify-between text-sm text-purple-600 font-bold p-1 bg-purple-50 rounded"
                     >
-                      <span>Special Offer (70%)</span>
+                      <span>🎉 New Student Offer</span>
                       <span>- ₹{discountAmount.toLocaleString()}</span>
                     </motion.div>
                   )}
