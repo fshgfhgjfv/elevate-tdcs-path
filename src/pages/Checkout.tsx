@@ -17,8 +17,11 @@ import {
   CreditCard, 
   Linkedin,
   TicketPercent,
-  AlertCircle // Added for the error icon
+  AlertCircle,
+  FileText,
+  Download
 } from "lucide-react";
+import { generateReceipt } from "@/utils/generateReceipt";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -135,6 +138,7 @@ export default function Checkout() {
   const [emiMonths, setEmiMonths] = useState(3);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [receiptData, setReceiptData] = useState<any>(null);
 
   // --- COUPON STATE ---
   const [couponInput, setCouponInput] = useState("");
@@ -232,6 +236,19 @@ export default function Checkout() {
         console.error("Payment submission error:", error);
       }
 
+      // Always store receipt data for immediate download (no login needed to view receipt)
+      setReceiptData({
+        full_name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        course_name: itemName,
+        transaction_id: formData.transactionId,
+        amount_paid: amountDueNow,
+        status: "pending",
+        created_at: new Date().toISOString(),
+        id: crypto.randomUUID(),
+      });
+
       // Namespace the localStorage key by user ID to prevent cross-user leakage
       if (isCourse && courseId) {
         const storageKey = currentUser
@@ -260,7 +277,17 @@ export default function Checkout() {
                    <br/>We are verifying your transaction ID. You will receive access details shortly.
                 </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-3">
+                {receiptData && (
+                  <Button 
+                    variant="outline" 
+                    className="w-full h-12 text-base gap-2 border-green-500/30 text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-950/30"
+                    onClick={() => generateReceipt(receiptData)}
+                  >
+                    <Download className="w-5 h-5" />
+                    Download Receipt
+                  </Button>
+                )}
                 <Button className="w-full h-12 text-base" onClick={() => navigate("/")}>Return Home</Button>
             </CardContent>
         </Card>
