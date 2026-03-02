@@ -65,7 +65,7 @@ export const courses: Course[] = [
       "Foundational ethical hacking & network security program for beginners.",
     price: 499,
     thumbnail:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEgMKmkTzJvEcIjr3zQ0n8wt-k2D4hq-_cD5twU3IeF_a5y9REqrVDKUuepUCt4Nng6emAaSP1MurvyeXwOZchv200tIdBMdPShsr5wc2QVV7N05ONwXelMMgDNUe3s9biRkRiIJgAwyKORuwVDaLlRhHTl2UeoDn1V1uiwu0XrpQ6fM5Pee7UaAkV5NaMsN",
+      "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhPsDT4DwL1BRvwMEZoAuFs9WlcDbMCS0ysTgsvF6_WiN2d1oYGtQf0t0RYwD5wFWAF53kr68sw4BUqtOoCZw1L6lyalL19FTb9DYYEask81TbC3JHwVXjcmo_I8EIC8w9phIvtvlk4TiJwxZpX4ZXgXiHhM3NI83GK7ATcGePbNKmz9OBLk-WmPsGujgkG/s3200/Untitled%20design%20(43).png",
     category: "Live Online",
     duration: "15 days",
     modules: [
