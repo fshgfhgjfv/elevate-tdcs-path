@@ -136,7 +136,7 @@ const HardwareCheckout = () => {
             <h2 className="text-2xl font-bold text-white">Order Placed Successfully!</h2>
             <p className="text-gray-400 mt-2">
               Order <span className="text-green-400 font-mono">{receiptData?.order_number}</span>
-              <br />Amount: <strong className="text-white">₹{total.toLocaleString()}</strong>
+              <br />Amount: <strong className="text-white">₹{receiptData?.amount_paid?.toLocaleString() || 0}</strong>
               <br />We will verify your payment and ship your order soon.
             </p>
           </div>
