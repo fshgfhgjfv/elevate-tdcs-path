@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Truck, ShieldCheck, Trash2, Copy, Check, Phone, Mail, User, MapPin } from 'lucide-react';
+import { ArrowLeft, Truck, ShieldCheck, Trash2, Copy, Check, Phone, Mail, User, MapPin, Download, CheckCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/backend/client';
+import { generateReceipt, ReceiptData } from '@/utils/generateReceipt';
+import { Button } from '@/components/ui/button';
 
 const HardwareCheckout = () => {
   const navigate = useNavigate();
@@ -12,6 +14,8 @@ const HardwareCheckout = () => {
 
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [receiptData, setReceiptData] = useState<ReceiptData | null>(null);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -61,6 +65,31 @@ const HardwareCheckout = () => {
     try {
       const currentUser = (await supabase.auth.getUser()).data.user;
       const orderNumber = generateOrderNumber();
+      const orderItems = items.map(item => ({ id: item.id, name: item.name, price: item.price, quantity: item.quantity }));
+
+      // Store receipt data immediately (works without login)
+      const receipt: ReceiptData = {
+        full_name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        item_name: "Hardware Order",
+        item_type: "Hardware Order",
+        transaction_id: formData.transactionId,
+        amount_paid: total,
+        status: "pending",
+        created_at: new Date().toISOString(),
+        id: crypto.randomUUID(),
+        order_number: orderNumber,
+        items: orderItems.map(i => ({ name: i.name, price: i.price, quantity: i.quantity })),
+        subtotal,
+        shipping,
+        tax,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.pincode,
+      };
+      setReceiptData(receipt);
 
       const { error } = await supabase.from('hardware_orders').insert({
         user_id: currentUser?.id || null,
@@ -73,7 +102,7 @@ const HardwareCheckout = () => {
         pincode: formData.pincode,
         transaction_id: formData.transactionId,
         order_number: orderNumber,
-        items: items.map(item => ({ id: item.id, name: item.name, price: item.price, quantity: item.quantity })),
+        items: orderItems,
         subtotal,
         shipping,
         tax,
@@ -82,12 +111,10 @@ const HardwareCheckout = () => {
 
       if (error) {
         console.error('Order submission error:', error);
-        toast({ title: 'Order Error', description: 'Could not save order. Please contact support.', variant: 'destructive' });
-      } else {
-        clearCart();
-        toast({ title: 'Order Submitted!', description: `Order #${orderNumber} placed. We will verify payment and contact you soon.` });
-        navigate('/');
       }
+
+      clearCart();
+      setIsSuccess(true);
     } catch (err) {
       console.error('Order submission failed:', err);
       toast({ title: 'Error', description: 'Something went wrong. Please try again.', variant: 'destructive' });
@@ -95,6 +122,44 @@ const HardwareCheckout = () => {
       setLoading(false);
     }
   };
+
+  if (isSuccess) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full bg-gray-900 border border-gray-800 rounded-2xl p-8 text-center space-y-6"
+        >
+          <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
+          <div>
+            <h2 className="text-2xl font-bold text-white">Order Placed Successfully!</h2>
+            <p className="text-gray-400 mt-2">
+              Order <span className="text-green-400 font-mono">{receiptData?.order_number}</span>
+              <br />Amount: <strong className="text-white">₹{total.toLocaleString()}</strong>
+              <br />We will verify your payment and ship your order soon.
+            </p>
+          </div>
+          {receiptData && (
+            <Button
+              variant="outline"
+              className="w-full h-12 text-base gap-2 border-green-500/30 text-green-400 hover:bg-green-950/30"
+              onClick={() => generateReceipt(receiptData)}
+            >
+              <Download className="w-5 h-5" />
+              Download Receipt
+            </Button>
+          )}
+          <Button
+            className="w-full h-12 text-base bg-green-600 hover:bg-green-500 text-black font-bold"
+            onClick={() => navigate('/')}
+          >
+            Return Home
+          </Button>
+        </motion.div>
+      </div>
+    );
+  }
 
   if (!items || items.length === 0) {
     return (

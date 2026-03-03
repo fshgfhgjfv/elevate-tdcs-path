@@ -21,7 +21,7 @@ import {
   FileText,
   Download
 } from "lucide-react";
-import { generateReceipt } from "@/utils/generateReceipt";
+import { generateReceipt, ReceiptData } from "@/utils/generateReceipt";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

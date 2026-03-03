@@ -1,20 +1,79 @@
-export const generateReceipt = (payment: {
+export interface ReceiptData {
   full_name: string;
   email: string;
   phone: string;
-  course_name: string;
+  course_name?: string;
+  item_name?: string;
+  item_type?: string;
   transaction_id: string;
   amount_paid: number;
   status: string;
   created_at: string;
   id: string;
-}) => {
-  const receiptNumber = `TDCS-${payment.id.slice(0, 8).toUpperCase()}`;
+  // Hardware-specific
+  order_number?: string;
+  items?: Array<{ name: string; price: number; quantity: number }>;
+  subtotal?: number;
+  shipping?: number;
+  tax?: number;
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+}
+
+export const generateReceipt = (payment: ReceiptData) => {
+  const receiptNumber = payment.order_number || `TDCS-${payment.id.slice(0, 8).toUpperCase()}`;
   const date = new Date(payment.created_at).toLocaleDateString("en-IN", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
+
+  const isHardware = !!payment.items && payment.items.length > 0;
+  const displayName = payment.item_name || payment.course_name || "Unknown Item";
+  const itemType = payment.item_type || (isHardware ? "Hardware Order" : "Course Enrollment");
+
+  const itemRows = isHardware && payment.items
+    ? payment.items.map(item => `
+        <tr>
+          <td>
+            <strong>${item.name}</strong>
+            <div style="font-size:12px;color:#64748b;margin-top:4px">Qty: ${item.quantity}</div>
+          </td>
+          <td class="amount">₹${(item.price * item.quantity).toLocaleString("en-IN")}</td>
+        </tr>
+      `).join("")
+    : `<tr>
+        <td>
+          <strong>${displayName}</strong>
+          <div style="font-size:12px;color:#64748b;margin-top:4px">${itemType}</div>
+        </td>
+        <td class="amount">₹${payment.amount_paid.toLocaleString("en-IN")}</td>
+      </tr>`;
+
+  const breakdownRows = isHardware ? `
+    <tr style="font-size:13px;color:#64748b">
+      <td style="padding:8px 0">Subtotal</td>
+      <td style="text-align:right;padding:8px 0">₹${(payment.subtotal || 0).toLocaleString("en-IN")}</td>
+    </tr>
+    <tr style="font-size:13px;color:#64748b">
+      <td style="padding:8px 0">Shipping</td>
+      <td style="text-align:right;padding:8px 0">${payment.shipping === 0 ? 'Free' : `₹${(payment.shipping || 0).toLocaleString("en-IN")}`}</td>
+    </tr>
+    <tr style="font-size:13px;color:#64748b">
+      <td style="padding:8px 0">GST (18%)</td>
+      <td style="text-align:right;padding:8px 0">₹${(payment.tax || 0).toLocaleString("en-IN")}</td>
+    </tr>
+  ` : "";
+
+  const shippingAddress = isHardware && payment.address ? `
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid #e2e8f0">
+      <p><strong>Shipping to:</strong></p>
+      <p>${payment.address}</p>
+      <p>${payment.city}, ${payment.state} - ${payment.pincode}</p>
+    </div>
+  ` : "";
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -55,20 +114,15 @@ export const generateReceipt = (payment: {
     </div>
     <div class="body">
       <div class="meta">
-        <div class="meta-item">Receipt No.<strong>${receiptNumber}</strong></div>
+        <div class="meta-item">${isHardware ? 'Order No.' : 'Receipt No.'}<strong>${receiptNumber}</strong></div>
         <div class="meta-item">Date<strong>${date}</strong></div>
         <div class="meta-item">UTR / Transaction ID<strong style="font-family:monospace">${payment.transaction_id}</strong></div>
       </div>
       <table class="details">
         <thead><tr><th>Description</th><th style="text-align:right">Amount</th></tr></thead>
         <tbody>
-          <tr>
-            <td>
-              <strong>${payment.course_name}</strong>
-              <div style="font-size:12px;color:#64748b;margin-top:4px">Course Enrollment</div>
-            </td>
-            <td class="amount">₹${payment.amount_paid.toLocaleString("en-IN")}</td>
-          </tr>
+          ${itemRows}
+          ${breakdownRows}
         </tbody>
       </table>
       <div class="total-row">
@@ -79,6 +133,7 @@ export const generateReceipt = (payment: {
         <p><strong>Billed to:</strong></p>
         <p>${payment.full_name}</p>
         <p>${payment.email} · ${payment.phone}</p>
+        ${shippingAddress}
       </div>
     </div>
     <div class="footer">
