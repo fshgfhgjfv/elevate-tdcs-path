@@ -82,24 +82,38 @@ export const generateReceipt = (payment: ReceiptData) => {
   <title>Receipt - ${receiptNumber}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8fafc; padding: 40px; color: #1e293b; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8fafc; padding: 16px; color: #1e293b; }
     .receipt { max-width: 700px; margin: 0 auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden; }
-    .header { background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; padding: 32px 40px; display: flex; justify-content: space-between; align-items: center; }
-    .header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
-    .header .badge { background: ${payment.status === "verified" ? "#22c55e" : "#f59e0b"}; color: #fff; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
-    .body { padding: 40px; }
-    .meta { display: flex; justify-content: space-between; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px dashed #e2e8f0; }
-    .meta-item { font-size: 13px; color: #64748b; }
-    .meta-item strong { display: block; font-size: 15px; color: #1e293b; margin-top: 4px; }
-    .details { width: 100%; border-collapse: collapse; margin-bottom: 32px; }
-    .details th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; padding: 12px 0; border-bottom: 2px solid #e2e8f0; }
-    .details td { padding: 16px 0; border-bottom: 1px solid #f1f5f9; font-size: 15px; }
-    .details .amount { text-align: right; font-weight: 700; font-size: 18px; color: #0f172a; }
-    .total-row { background: #f0fdf4; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
-    .total-row .label { font-size: 16px; font-weight: 600; color: #166534; }
-    .total-row .value { font-size: 28px; font-weight: 800; color: #166534; }
-    .footer { text-align: center; padding: 24px 40px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
-    .footer p { font-size: 12px; color: #94a3b8; line-height: 1.6; }
+    .header { background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .header h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+    .header .badge { background: ${payment.status === "verified" ? "#22c55e" : "#f59e0b"}; color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    .body { padding: 20px 24px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 2px dashed #e2e8f0; }
+    .meta-item { font-size: 12px; color: #64748b; min-width: 0; }
+    .meta-item strong { display: block; font-size: 13px; color: #1e293b; margin-top: 4px; word-break: break-all; }
+    .details { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+    .details th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; padding: 10px 0; border-bottom: 2px solid #e2e8f0; }
+    .details td { padding: 12px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+    .details .amount { text-align: right; font-weight: 700; font-size: 16px; color: #0f172a; }
+    .total-row { background: #f0fdf4; border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 8px; }
+    .total-row .label { font-size: 15px; font-weight: 600; color: #166534; }
+    .total-row .value { font-size: 24px; font-weight: 800; color: #166534; }
+    .footer { text-align: center; padding: 20px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
+    .footer p { font-size: 11px; color: #94a3b8; line-height: 1.6; }
+    @media (min-width: 640px) {
+      body { padding: 40px; }
+      .header { padding: 32px 40px; }
+      .header h1 { font-size: 28px; }
+      .body { padding: 40px; }
+      .meta-item { font-size: 13px; }
+      .meta-item strong { font-size: 15px; }
+      .details td { font-size: 15px; padding: 16px 0; }
+      .details .amount { font-size: 18px; }
+      .total-row { padding: 20px; }
+      .total-row .value { font-size: 28px; }
+      .footer { padding: 24px 40px; }
+      .footer p { font-size: 12px; }
+    }
     @media print { body { padding: 0; background: #fff; } .receipt { box-shadow: none; } }
   </style>
 </head>

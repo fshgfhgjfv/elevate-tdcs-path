@@ -20,6 +20,7 @@ import { RecognizedBy } from "@/components/RecognizedBy";
 import { ChatBot } from "@/components/ChatBot";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { PromoPopup } from "@/components/PromoPopup";
+import { ToolkitPopup } from "@/components/ToolkitPopup";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -103,6 +104,7 @@ const Home = () => {
     <div className="min-h-screen bg-background text-foreground overflow-hidden selection:bg-primary/20">
       
       <PromoPopup />
+      <ToolkitPopup />
 
       {/* Top Reading Progress Bar */}
       <motion.div
