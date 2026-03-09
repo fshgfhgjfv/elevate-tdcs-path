@@ -104,6 +104,7 @@ const Home = () => {
     <div className="min-h-screen bg-background text-foreground overflow-hidden selection:bg-primary/20">
       
       <PromoPopup />
+      <ToolkitPopup />
 
       {/* Top Reading Progress Bar */}
       <motion.div
