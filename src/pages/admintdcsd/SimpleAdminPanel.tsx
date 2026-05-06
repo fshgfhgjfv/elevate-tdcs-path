@@ -63,7 +63,14 @@ const useToast = () => {
     const style = props.variant === "destructive" ? "bg-red-600" : "bg-emerald-600";
     const notification = document.createElement('div');
     notification.className = `fixed bottom-4 right-4 p-4 rounded-lg shadow-2xl z-50 text-white flex flex-col gap-1 min-w-[300px] animate-slideIn ${style}`;
-    notification.innerHTML = `<span class="font-bold">${props.title}</span><span class="text-sm opacity-90">${props.description || ''}</span>`;
+    const titleEl = document.createElement('span');
+    titleEl.className = 'font-bold';
+    titleEl.textContent = String(props.title ?? '');
+    const descEl = document.createElement('span');
+    descEl.className = 'text-sm opacity-90';
+    descEl.textContent = String(props.description ?? '');
+    notification.appendChild(titleEl);
+    notification.appendChild(descEl);
     document.body.appendChild(notification);
     setTimeout(() => {
       notification.style.opacity = '0';
