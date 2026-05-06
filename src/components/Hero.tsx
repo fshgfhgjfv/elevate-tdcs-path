@@ -532,31 +532,8 @@ export const Hero = () => {
                             </div>
                         </div>
 
-                        {/* 2. OPS & INTEL - SPLIT CARDS */}
-                        <div className="grid grid-cols-2 gap-4 relative z-20">
-                            
-                            {/* SHIVAM SHING - OPS COMMANDER */}
-                            <div className="relative group">
-                                <div className="absolute -inset-[1px] bg-gradient-to-br from-green-500 to-emerald-700 rounded-xl blur opacity-20 group-hover:opacity-60 transition duration-300"></div>
-                                <div className="relative bg-gray-900 border border-gray-800 p-4 rounded-xl h-full overflow-hidden">
-                                    <div className="flex flex-col h-full justify-between relative z-10">
-                                        <div>
-                                            <h3 className="font-bold text-white text-lg">SHIVAM SHING</h3>
-                                            <p className="text-[10px] tracking-widest text-emerald-400 font-mono font-bold mt-1">OPS_COMMANDER</p>
-                                        </div>
-                                        {/* Photo - Pushed to bottom right */}
-                                        <div className="self-end mt-4 relative w-24 h-24 -mb-6 -mr-6">
-                                            <img 
-                                                src="https://blogger.googleusercontent.com/img/a/AVvXsEgiDtg5YtmQ7bdvNmeAAMyhwpc5tLm_RNR2Lv4y4u6hsMzTiuqNyxo7O0qU32donmMZoTduoxe-4WgWVdPh29JH9vmYXkqCI7hiyzwaYBxxXgTfKbCsjTST6gyIWQB230kRXgwfQvxV-dqB9V-Xqr3915tuA9d88D1rGY-l9sJy_vhC3HJR0pdEI6F3E8Nr" 
-                                                className="w-full h-full object-cover rounded-full border-2 border-emerald-500/50 grayscale group-hover:grayscale-0 transition-all duration-300"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="absolute bottom-2 left-2 text-[8px] text-gray-600 font-mono">
-                                        STATUS: DEPLOYED<br/>LOGISTICS: ACTIVE
-                                    </div>
-                                </div>
-                            </div>
+                        {/* 2. INTEL CARD */}
+                        <div className="grid grid-cols-1 gap-4 relative z-20">
 
                             {/* TUSHAR BHAKTA - MARKET INTEL */}
                             <div className="relative group">

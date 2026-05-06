@@ -25,15 +25,6 @@ const testimonials: Testimonial[] = [
     linkedinUrl: "#"
   },
   {
-    posterImg: "https://blogger.googleusercontent.com/img/a/AVvXsEhwxU1wn396TPzXrwwuUFYAptHStVwiAXDoYSEo8_sZM7j5UQ-hpzvTh8XxeVE1eNBctGmFARw_jqnaC4dwuD2L1LFKHMUeWpH1xYZvg-iqtGuEQU4wtgYk7RQ096RFBuD6jQ3d7e2xoA_niTtJhFwDX149xzITVsi0tSbBcb0s0EoosdTTrWC5RfQKdNk8",
-    quoteTitle: "Best Off-Campus Partner",
-    quoteText: "TDCS has become our exclusive off-campus partner for hiring entry-level developers. Their assessment to selection ratio is unbelievable. The students are all-rounders and require little on-job training.",
-    authorName: "Shivam Shing",
-    authorTitle: "Chief Operating Officer",
-    authorAvatar: "https://blogger.googleusercontent.com/img/a/AVvXsEgrwmLkO5Feodxq5QaY_atrGnsO9pqgfFM05kadDK8NB_24j-cIBsML47l20CtYES_Zfa4jUVR24_u4po_QnjcsO4yiRZUlpESCdAb2JVdbzkhp3gaU55kpGn_v-EUQaxkosCtzSR3-0eyjtW4m9gkglNME7wzxffg-A0kX98SqspAZNX1Aep3Wf-OgGpoP",
-    linkedinUrl: "#"
-  },
-  {
     posterImg: "https://blogger.googleusercontent.com/img/a/AVvXsEiTNGkqkHJOS8z5tcDq-Qz8r4-HCfioKGpdCb4iEVLHGIRtaJkT1a6ByD6wbz1rZIsQkOTIFKaWxaF5cNAl9RNldk_X9ISz1ZVYEn39690Yq3fRQYFfhoVZO0ps0HJrAQ4tVDx8h_Ji4jD1vlkZw0WBXJ1Peiq9HdI15X5bRfgrKdxCNPGlOYV1hFD9ty8c",
     quoteTitle: "Unparalleled Value Addition",
     quoteText: "PayGlocal today has the best engineers on board because of TDCS. The value they add to a student's career and the company's hiring needs is unparalleled. It's become a ritual for us to ping TDCS for new openings.",
