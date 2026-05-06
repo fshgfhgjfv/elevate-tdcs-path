@@ -22,7 +22,6 @@ import idcard1 from "@/assets/gallery/idcard1.jpg";
 import tools1 from "@/assets/gallery/tools1.jpg";
 import tools2 from "@/assets/gallery/tools2.jpg";
 import tusharImg from "@/assets/founders/tushar-bhakta.jpg";
-import shivamImg from "@/assets/founders/shivam-shing.jpg";
 import dibyajitImg from "@/assets/founders/dibyajit-ghosh.jpg";
 
 const categories = [
@@ -54,7 +53,6 @@ const galleryItems = [
   { id: 16, image: office5, category: "TDCS Office Setup", title: "Conference Room" },
   { id: 17, image: team1, category: "Team", title: "TDCS Team" },
   { id: 18, image: tusharImg, category: "Team", title: "Tushar Bhakta - CMO" },
-  { id: 19, image: shivamImg, category: "Team", title: "Shivam Shing - COO" },
   { id: 20, image: dibyajitImg, category: "Team", title: "Dibyajit Ghosh - Founder & CEO" },
 ];
 

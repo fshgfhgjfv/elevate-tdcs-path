@@ -19,20 +19,6 @@ const mentors = [
       "Expert in Forensic, Data Security, Cyber Security, and Penetration Testing with a deep understanding of modern cyber defense strategies and investigation techniques.",
   },
   {
-    name: "Shivam Singh",
-    role: "COO",
-    image:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEgrwmLkO5Feodxq5QaY_atrGnsO9pqgfFM05kadDK8NB_24j-cIBsML47l20CtYES_Zfa4jUVR24_u4po_QnjcsO4yiRZUlpESCdAb2JVdbzkhp3gaU55kpGn_v-EUQaxkosCtzSR3-0eyjtW4m9gkglNME7wzxffg-A0kX98SqspAZNX1Aep3Wf-OgGpoP",
-    expertise: [
-      "Reverse Engineering",
-      "Social Engineering",
-      "Bug Bounty",
-      "Python",
-    ],
-    description:
-      "MBA in Finance passionate about cybersecurity and technology. Experienced in Reverse Engineering, Social Engineering, Bug Bounty, and Python Development — blending business insight with technical skill.",
-  },
-  {
     name: "Tushar Bhakta",
     role: "CMO",
     image:

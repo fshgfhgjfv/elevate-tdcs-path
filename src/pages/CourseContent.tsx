@@ -265,7 +265,7 @@ const CourseContent = () => {
   const [earnedBadges, setEarnedBadges] = useState<string[]>([]);
   const [showCertificateModal, setShowCertificateModal] = useState(false);
   const playerRef = useRef<any>(null);
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => {
     // Check enrollment status
     const enrollmentKey = `tdcs_purchased_${id}`;
